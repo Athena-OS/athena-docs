@@ -6,11 +6,11 @@ export default defineConfig({
   site: 'https://athena-os.github.io',
   integrations: [
     starlight({
-      title: 'Documentation',
+      title: 'Athena OS',
+      customCss: process.env.NO_GRADIENTS ? [] : ['/src/assets/landing.css'],
       social: {
         github: 'https://github.com/Athena-OS',
         discord: 'https://discord.gg/DNjvQkb5Ad',
-        instagram: 'https://www.instagram.com/athenaos_sec',
       },
       sidebar: [
         {
