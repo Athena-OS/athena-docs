@@ -3,6 +3,8 @@ import starlight from '@astrojs/starlight';
 
 // https://astro.build/config
 export default defineConfig({
+  site: 'https://athena-os.github.io',
+  base: '/athena-docs',
   integrations: [
     starlight({
       title: 'My Docs',
