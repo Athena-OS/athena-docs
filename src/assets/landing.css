@@ -5,7 +5,7 @@
 
 :root[data-theme='light'] {
   --purple-hsl: 45, 100%, 50%;
-  --sl-hue-accent: 350;
+  --sl-hue-accent: 45;
 }
 
 [data-has-hero] .page {
