@@ -4,8 +4,8 @@
 }
 
 :root[data-theme='light'] {
-  --purple-hsl: 45, 100%, 50%;
-  --sl-hue-accent: 45;
+  --purple-hsl: 45, 100%, 50%; /*Shade color of the background for light theme*/
+  --sl-hue-accent: 45; /*Color of top bar text and icons and Getting Started button*/
 }
 
 [data-has-hero] .page {

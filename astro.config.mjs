@@ -15,12 +15,33 @@ export default defineConfig({
         github: 'https://github.com/Athena-OS',
         discord: 'https://discord.gg/DNjvQkb5Ad',
       },
+      editLink: {
+        baseUrl: 'https://github.com/Athena-OS/athena-docs/tree/main/src/content/docs/',
+      },
+      lastUpdated: true,
       sidebar: [
         {
-          label: 'Guides',
+          label: 'Getting Started',
           items: [
             // Each item here is one entry in the navigation menu.
-            { label: 'Example Guide', link: '/guides/example/' },
+            { label: 'Manifesto', link: '/en/manifesto' },
+            { label: 'Why Athena OS?', link: '/en/athenaos' },
+            { label: 'Downloading Athena OS', link: '/en/download' },
+          ],
+        },
+        {
+          label: 'Installation',
+          items: [
+            // Each item here is one entry in the navigation menu.
+            { label: 'Installing as baremetal', link: '/en/install-baremetal' },
+            { label: 'Installing as dual boot with Linux', link: '/en/install-linux' },
+            { label: 'Installing as dual boot with Windows', link: '/en/install-windows' },
+            { label: 'Installing as guest in VMware', link: '/en/install-vmware' },
+            { label: 'Installing as guest in Virtualbox', link: '/en/install-virtualbox' },
+            { label: 'Installing as guest in Hyper-V', link: '/en/install-hyperv' },
+            { label: 'Installing as guest in Parallels', link: '/en/install-parallels' },
+            { label: 'Installing as guest in UTM', link: '/en/install-utm' },
+            { label: 'Installing as guest in QEMU', link: '/en/install-qemu' },
           ],
         },
         {
