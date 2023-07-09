@@ -4,7 +4,7 @@
 }
 
 :root[data-theme='light'] {
-  --purple-hsl: 255, 85%, 65%;
+  --purple-hsl: 45, 100%, 50%;
   --sl-hue-accent: 350;
 }
 
