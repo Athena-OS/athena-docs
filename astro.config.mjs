@@ -6,9 +6,11 @@ export default defineConfig({
   site: 'https://athena-os.github.io',
   integrations: [
     starlight({
-      title: 'My Docs',
+      title: 'Documentation',
       social: {
-        github: 'https://github.com/withastro/starlight',
+        github: 'https://github.com/Athena-OS',
+        discord: 'https://discord.gg/DNjvQkb5Ad',
+        instagram: 'https://www.instagram.com/athenaos_sec',
       },
       sidebar: [
         {
