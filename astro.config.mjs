@@ -7,6 +7,9 @@ export default defineConfig({
   integrations: [
     starlight({
       title: 'Athena OS',
+      logo: {
+        src: '/src/assets/athena-logo.png',
+      },
       customCss: process.env.NO_GRADIENTS ? [] : ['/src/assets/landing.css'],
       social: {
         github: 'https://github.com/Athena-OS',
