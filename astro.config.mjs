@@ -93,7 +93,7 @@ export default defineConfig({
           label: 'Support',
           items: [
             // Each item here is one entry in the navigation menu.
-            { label: 'Troubleshooting', link: '/en/troubleshooting/troubleshooting' },
+            { label: 'Troubleshooting', link: '/en/support/troubleshooting' },
           ],
         },
         {
