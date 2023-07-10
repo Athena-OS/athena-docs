@@ -24,24 +24,103 @@ export default defineConfig({
           label: 'Getting Started',
           items: [
             // Each item here is one entry in the navigation menu.
-            { label: 'Manifesto', link: '/en/manifesto' },
-            { label: 'Why Athena OS?', link: '/en/athenaos' },
-            { label: 'Downloading Athena OS', link: '/en/download' },
+            { label: 'Manifesto', link: '/en/getting-started/manifesto' },
+            { label: 'Why Athena OS?', link: '/en/getting-started/athenaos' },
+            { label: 'Downloading Athena OS', link: '/en/getting-started/download' },
           ],
         },
         {
           label: 'Installation',
           items: [
             // Each item here is one entry in the navigation menu.
-            { label: 'Installing as baremetal', link: '/en/install-baremetal' },
-            { label: 'Installing as dual boot with Linux', link: '/en/install-linux' },
-            { label: 'Installing as dual boot with Windows', link: '/en/install-windows' },
-            { label: 'Installing as guest in VMware', link: '/en/install-vmware' },
-            { label: 'Installing as guest in Virtualbox', link: '/en/install-virtualbox' },
-            { label: 'Installing as guest in Hyper-V', link: '/en/install-hyperv' },
-            { label: 'Installing as guest in Parallels', link: '/en/install-parallels' },
-            { label: 'Installing as guest in UTM', link: '/en/install-utm' },
-            { label: 'Installing as guest in QEMU', link: '/en/install-qemu' },
+            { label: 'Installing as baremetal', link: '/en/installation/install-baremetal' },
+            { label: 'Installing as dual boot with Linux', link: '/en/installation/install-linux' },
+            { label: 'Installing as dual boot with Windows', link: '/en/installation/install-windows' },
+            { label: 'Installing as guest in VMware', link: '/en/installation/install-vmware' },
+            { label: 'Installing as guest in Virtualbox', link: '/en/installation/install-virtualbox' },
+            { label: 'Installing as guest in Hyper-V', link: '/en/installation/install-hyperv' },
+            { label: 'Installing as guest in Parallels', link: '/en/installation/install-parallels' },
+            { label: 'Installing as guest in UTM', link: '/en/installation/install-utm' },
+            { label: 'Installing as guest in QEMU', link: '/en/installation/install-qemu' },
+          ],
+        },
+        {
+          label: 'Configuration',
+          items: [
+            // Each item here is one entry in the navigation menu.
+            { label: 'Kernel', link: '/en/configuration/kernel' },
+            { label: 'Shell', link: '/en/configuration/shell' },
+            { label: 'Display Manager', link: '/en/configuration/display-manager' },
+            { label: 'GNOME', link: '/en/configuration/gnome' },
+            { label: 'Hyprland', link: '/en/configuration/hyprland' },
+            { label: 'Repositories', link: '/en/configuration/repositories' },
+            { label: 'NVIDIA Settings', link: '/en/configuration/nvidia' },
+            { label: 'Resources', link: '/en/configuration/resources' },
+          ],
+        },
+        {
+          label: 'Tools',
+          items: [
+            // Each item here is one entry in the navigation menu.
+            { label: 'Athena Tools', link: '/en/tools/athena-tools' },
+            { label: 'Submitting Tools', link: '/en/tools/submitting-tools' },
+          ],
+        },
+        {
+          label: 'Customization',
+          items: [
+            // Each item here is one entry in the navigation menu.
+            { label: 'Customizing Athena OS', link: '/en/customization/customization' },
+          ],
+        },
+        {
+          label: 'Containers',
+          items: [
+            // Each item here is one entry in the navigation menu.
+            { label: 'Athena OS Docker Images', link: '/en/containers/docker-images' },
+            { label: 'Athena OS Podman Images', link: '/en/containers/podman-images' },
+          ],
+        },
+        {
+          label: 'Windows Subsystem for Linux',
+          items: [
+            // Each item here is one entry in the navigation menu.
+            { label: 'Athena OS WSL', link: '/en/wsl/wsl' },
+            { label: 'Win-KeX', link: '/en/wsl/win-kex' },
+          ],
+        },
+        {
+          label: 'Troubleshooting',
+          items: [
+            // Each item here is one entry in the navigation menu.
+            { label: 'Athena Tools', link: '/en/troubleshooting/troubleshooting' },
+          ],
+        },
+        {
+          label: 'Community',
+          items: [
+            // Each item here is one entry in the navigation menu.
+            { label: 'Contribute to Athena', link: '/en/community/contribute' },
+            { label: 'Getting Help', link: '/en/community/getting-help' },
+            { label: 'Official Athena OS Mirrors', link: '/en/community/mirrors' },
+            { label: 'Setting Up a Athena OS Mirror', link: '/en/community/setting-mirrors' },
+            { label: 'Submitting Bugs for Athena OS', link: '/en/community/submitting-bugs' },
+          ],
+        },
+        {
+          label: 'Policy',
+          items: [
+            // Each item here is one entry in the navigation menu.
+            { label: 'Athena OS EULA', link: '/en/policy/eula-policy' },
+            { label: 'Athena OS User Policy', link: '/en/policy/user-policy' },
+            { label: 'Athena OS Network Service Policy', link: '/en/policy/network-policy' },
+            { label: 'Athena OS Open Source Policy', link: '/en/policy/opensource-policy' },
+            { label: 'Athena OS Update Policies', link: '/en/policy/update-policies' },
+            { label: 'Athena OS User Policy', link: '/en/policy/user-policy' },
+            { label: 'Athena OS Package Policy', link: '/en/policy/package-policy' },
+            { label: 'Athena OS Penetration Test Tools Policy', link: '/en/policy/tools-policy' },
+            { label: 'Athena OS Privacy Policy', link: '/en/policy/privacy-policy' },
+            { label: 'Cookie Policy', link: '/en/policy/cookie-policy' },
           ],
         },
         {
