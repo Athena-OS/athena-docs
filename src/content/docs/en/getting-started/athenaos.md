@@ -3,6 +3,10 @@ title: Why Athena OS
 description: Motivation about the creation of Athena OS.
 ---
 
+<h3 align="center">
+  🏅Born for InfoSec Professionals, Bug Bounty Hunters, Passionate Students and Spicy Hackers🏅
+</h3>
+
 Athena OS is an open-source, Arch-based Linux distribution intended to build a new concept of pentesting operating system. Its purpose is to offer a different experience than the most used pentesting distributions by providing only tools that fit with the user needs and improving the access to hacking resources and learning materials.
 
 Athena OS is designed from scratch, and, at development phase, useless modules and services have been excluded in order to improve performance and resource consumption. This design approach allows to review in detailed manner each single package and component to include inside the distribution. Despite being based on Arch Linux, Athena OS provides a very user-friendly environment.
@@ -21,6 +25,8 @@ The heritage of Arch Linux impacts positively Athena OS than other pentesting di
 
 ![Athena OS](/assets/athena-banner.png)
 
-<h3 align="center">
-  🏅Born for InfoSec Professionals, Bug Bounty Hunters, Passionate Students and Spicy Hackers🏅
-</h3>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="/assets/athena-banner-dark.png">
+  <source media="(prefers-color-scheme: light)" srcset="/assets/athena-banner-light.png">
+  <img alt="Athena OS banner." src="/assets/athena-banner-light.png">
+</picture>
