@@ -90,10 +90,10 @@ export default defineConfig({
           ],
         },
         {
-          label: 'Troubleshooting',
+          label: 'Support',
           items: [
             // Each item here is one entry in the navigation menu.
-            { label: 'Athena Tools', link: '/en/troubleshooting/troubleshooting' },
+            { label: 'Troubleshooting', link: '/en/troubleshooting/troubleshooting' },
           ],
         },
         {
