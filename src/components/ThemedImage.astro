@@ -1,0 +1,21 @@
+---
+// src/components/ThemedImage.astro
+interface Props {
+  alt?: string;
+  light: string;
+  dark: string;
+}
+
+const { alt = '', light, dark } = Astro.props;
+---
+<img src={light} class="light-only" alt={alt} />
+<img src={dark} class="dark-only" alt={alt} />
+
+<style>
+  :global([data-theme='light']) .dark-only {
+    display: none;
+  }
+  :global([data-theme='dark']) .light-only {
+    display: none;
+  }
+</style>
