@@ -2,7 +2,10 @@
 title: Why Athena OS
 description: Motivation about the creation of Athena OS.
 ---
-import ThemedImage from '../../../../components/ThemedImage.astro';
+import ThemedImage from '@components/ThemedImage.astro';
+import light from '@assets/athena-banner-light.png';
+import dark from '@assets/athena-banner-dark.png';
+
 
 <h3 align="center">
   🏅Born for InfoSec Professionals, Bug Bounty Hunters, Passionate Students and Spicy Hackers🏅
@@ -26,6 +29,6 @@ The heritage of Arch Linux impacts positively Athena OS than other pentesting di
 
 <ThemedImage
   alt="Athena OS banner image"
-  light="/assets/athena-banner-light.png"
-  dark="/assets/athena-banner-dark.png"
+  light={light.src}
+  dark={dark.src}
 />
