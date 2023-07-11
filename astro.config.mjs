@@ -16,7 +16,7 @@ export default defineConfig({
         discord: 'https://discord.gg/DNjvQkb5Ad',
       },
       editLink: {
-        baseUrl: 'https://github.com/Athena-OS/athena-docs/tree/main/src/content/docs/',
+        baseUrl: 'https://github.com/Athena-OS/athena-docs/tree/main/',
       },
       lastUpdated: true,
       sidebar: [
