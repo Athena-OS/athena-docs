@@ -1,10 +1,10 @@
 ---
-title: Installing as baremetal
-description: How to install Athena OS as baremetal.
+title: Baremetal installation prepare
+description: How to prepare Athena OS for installation as baremetal.
 ---
 import ThemedImage from '@components/ThemedImage.astro';
 
-The following section will guide you through the steps to install Athena OS as baremetal by covering all the possible choices you could set.
+The following section will guide you through the steps to prepare all the elements for installing Athena OS as baremetal.
 
 ## System Requirements
 
@@ -91,5 +91,3 @@ At the end of flash process you will get a **Flash Completed!** message. Close B
 At the end of flash process you will get **READY** status. Close Rufus and reboot the system for booting into Athena OS.
 
 *Note: be sure that the USB drive has boot priority over other drives in the BIOS.*
-
-### Install Athena OS
