@@ -38,7 +38,7 @@ export default defineConfig({
             { label: 'Installing as dual boot with Linux', link: '/en/installation/install-dual-linux' },
             { label: 'Installing as dual boot with Windows', link: '/en/installation/install-dual-windows' },
             { label: 'Installing as guest in VMware', link: '/en/installation/install-guest-vmware' },
-            { label: 'Installing as guest in Virtualbox', link: '/en/installation/install-guest-virtualbox' },
+            { label: 'Installing as guest in VirtualBox', link: '/en/installation/install-guest-virtualbox' },
             { label: 'Installing as guest in Hyper-V', link: '/en/installation/install-guest-hyperv' },
             { label: 'Installing as guest in Parallels', link: '/en/installation/install-guest-parallels' },
             { label: 'Installing as guest in UTM', link: '/en/installation/install-guest-utm' },
@@ -50,6 +50,7 @@ export default defineConfig({
           items: [
             // Each item here is one entry in the navigation menu.
             { label: 'Athena Welcome', link: '/en/configuration/athena-welcome' },
+            { label: 'Calamares Installer', link: '/en/configuration/calamares' },
             { label: 'Kernel', link: '/en/configuration/kernel' },
             { label: 'Shell', link: '/en/configuration/shell' },
             { label: 'Display Manager', link: '/en/configuration/display-manager' },

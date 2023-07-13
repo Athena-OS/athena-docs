@@ -1,0 +1,116 @@
+---
+title: Calamares Installer
+description: How to install Athena OS by Calamares.
+---
+import ThemedImage from '@components/ThemedImage.astro';
+
+Calamares has been adapted to Athena OS in order to detect automatically your hardware. It means that the installer is able to detect your environment (baremetal or virtualized), your CPU and your GPU. According to this information, all the needed drivers are automatically installed with no any actions by your side.
+
+Specifically, it will automatically install:
+* Guest Additions / Tools for your virtualized environmment
+* Your CPU ucode package
+* Your GPU drivers
+
+Calamares is run by interacting on Athena Welcome through **Offline Install** and **Online Install** buttons. The former does not require an Internet connection but it installs all default elements in Athena; the latter requires an Internet connection but you can customize your final environment.
+
+### Installation
+
+In the following, for each step is specified also the availability of the installer section for Offline and/or Online install method.
+
+#### Language
+Availability: Offline and Online Install.
+
+1. Select the language
+   ![System Language](@assets/calamares-welcome-offline.png)
+
+#### Environment
+Availability: Online Install.
+
+2. Select your favourite environment
+   ![System Environment](@assets/calamares-environment.png)
+
+   Note: the Offline Install will install **GNOME environment** by default.
+
+#### Theme
+Availability: Online Install.
+
+3. Select your favourite theme
+   ![System Theme](@assets/calamares-theme.png)
+
+   Note: the Offline Install will install **Blue Eyes theme** by default.
+
+#### Login Manager
+Availability: Online Install.
+
+4. Select your favourite display manager for login
+   ![System Login](@assets/calamares-login.png)
+
+   Note: the Offline Install will install **GNOME Display Manager** by default.
+
+#### Shell
+Availability: Online Install.
+
+5. Select your favourite shell
+   ![System Shell](@assets/calamares-shell.png)
+
+   Note: the Offline Install will install **Bash** by default.
+
+#### Terminal
+Availability: Online Install.
+
+6. Select your favourite terminal
+   ![System Terminal](@assets/calamares-terminal.png)
+
+   Note: the Offline Install will install **GNOME Terminal** by default.
+
+#### Browser
+Availability: Online Install.
+
+7. Select your favourite browser
+   ![System Browser](@assets/calamares-browser.png)
+
+   Note: the Offline Install will install **Firefox ESR** by default.
+
+#### Utilities
+Availability: Online Install.
+
+8. Select your favourite utilities
+   ![System Utilities](@assets/calamares-utilities.png)
+
+#### Location
+Availability: Offline and Online Install.
+
+9. Select your location and timezone
+   ![System Location and Timezone](@assets/calamares-location.png)
+
+#### Keyboard
+Availability: Offline and Online Install.
+
+10. Select your keyboard layout
+   ![System Keyboard](@assets/calamares-keyboard.png)
+
+#### Partition
+Availability: Offline and Online Install.
+
+11. Select your partition according to the installation type you are going to. Check the **Installation** chapter related to your setup and follow there the partition scheme to implement:
+* [Installing as single boot](/en/installation/install-single-boot/)
+* [Installing as dual boot with Linux](/en/installation/install-dual-linux/)
+* [Installing as dual boot with Windows](/en/installation/install-dual-windows/)
+* [Installing as guest in VMware](/en/installation/install-guest-vmware/)
+* [Installing as guest in VirtualBox](/en/installation/install-guest-virtualbox/)
+* [Installing as guest in Hyper-V](/en/installation/install-guest-hyperv/)
+* [Installing as guest in Parallels](/en/installation/install-guest-parallels/)
+* [Installing as guest in UTM](/en/installation/install-guest-utm/)
+* [Installing as guest in QEMU](/en/installation/install-guest-qemu/)
+
+#### Users
+Availability: Offline and Online Install.
+
+12. Set your user account
+   ![System Keyboard](@assets/calamares-users.png)
+
+13. Review the **Summary** and run the installation.
+
+14. If no errors have been raised during the installation phase, you are ready to use Athena OS!
+
+    ![Installation Finished](@assets/calamares-finish.png)
