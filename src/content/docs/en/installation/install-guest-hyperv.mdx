@@ -1,0 +1,29 @@
+---
+title: Installing as as guest in Hyper-V
+description: How to install Athena OS as as guest in Hyper-V.
+---
+import ThemedImage from '@components/ThemedImage.astro';
+
+**Hyper-V** is a hypervisor that is included with some versions of Microsoft Windows. For using Athena OS as guest in Hyper-V, you need to [enable it](https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/quick-start/enable-hyper-v).
+
+After enabling Hyper-V, on Windows search and open **Hyper-V Manager** and, on the left pane, click on the resource with the name of our host
+
+![Hyper-V Manager](@assets/hyperv-manager.png)
+
+Click on **Quick Create...** on the right pane. A window will popup. Click on **Location installation source** button and on **Change installation source...** button for loading Athena OS ISO image file, uncheck **This virtual machine will run Windows**, and on the bottom-right side, expand **More options** and type the name of the VM and click on **Create Virtual Machine**
+
+![Hyper-V Create VM](@assets/hyperv-create.png)
+
+Once finished, you should get the following window
+
+![Hyper-V VM Created](@assets/hyperv-finish.png)
+
+Click on **Edit settings...** and you can tweak the options you wish, for example move to **Processor** tab and set the **Number of virtual processors** to 2
+
+![Hyper-V Processors](@assets/hyperv-processor.png)
+
+When you set all your favourite settings, click on **Apply** button and then **OK**. You can now click on **Connect** and finally on **Start**
+
+![Hyper-V Start VM](@assets/hyperv-start.png)
+
+*Note: Athena OS automatically recognizes if you are using a virtualized environment so you don't need to install Hyper-V Guest Tools because the system will do automatically for you during the OS installation.*
