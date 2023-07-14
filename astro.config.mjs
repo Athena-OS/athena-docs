@@ -39,9 +39,9 @@ export default defineConfig({
             { label: 'Installing as guest in VMware', link: '/en/installation/install-guest-vmware' },
             { label: 'Installing as guest in VirtualBox', link: '/en/installation/install-guest-virtualbox' },
             { label: 'Installing as guest in Hyper-V', link: '/en/installation/install-guest-hyperv' },
+            { label: 'Installing as guest in QEMU/KVM', link: '/en/installation/install-guest-qemu' },
             { label: 'Installing as guest in Parallels', link: '/en/installation/install-guest-parallels' },
             { label: 'Installing as guest in UTM', link: '/en/installation/install-guest-utm' },
-            { label: 'Installing as guest in QEMU/KVM', link: '/en/installation/install-guest-qemu' },
           ],
         },
         {
