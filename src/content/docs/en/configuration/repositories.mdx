@@ -1,0 +1,30 @@
+---
+title: Repositories
+description: A description of repositories used in Athena OS.
+---
+import ThemedImage from '@components/ThemedImage.astro';
+
+Athena OS leverages on several repositories for accessing to security tools and learning resources in a comfortable manner. They are:
+* [Arch Linux repositories](https://archlinux.org/packages/)
+  * core
+  * extra
+  * community
+  * multilib
+  for system and utility packages
+* [BlackArch repository](https://blackarch.org/) for retrieving all the security tools
+* [Chaotic repository](https://aur.chaotic.cx/) for accessing to the AUR packages directly by pacman
+* [Athena repository](https://athena-os.github.io/athena-repository/), a remote repository where new tools or packages not stored in other existing repositories can be built and maintained.
+
+The structure of the [repository package source](https://github.com/Athena-OS/package-source) is public for any contribution.
+
+The source files of each single package is inside the `packages` directory. Each package has `PKGBUILD` file for defining the `.pkg.tar.zst` package rules and `build.sh` is used for automating this process by generating the new `.pkg.tar.zst`, signing it, moving it and its signature to `x86_64` folder and delete all the temporary files.
+When all packages are built, they are moved to the actual [Athena Repository](https://github.com/Athena-OS/athena-repository) and `update-database.sh` must be run for calling `update_repo.sh` script in order to update the `athena-repository.db*` files with the new built packages with `.pkg.tar.zst` extension stored in `x86_64` folder.
+
+The declaration of Athena repository is defined inside `/etc/pacman.conf` as:
+```
+[athena-repository]
+SigLevel = Optional TrustedOnly
+Include = /etc/pacman.d/athena-mirrorlist
+```
+In Athena, the repository keys and related files, `athena.gpg`, `athena-trusted`, `athena-revoked`, `blackarch.gpg`, `blackarch-trusted`, `blackarch-revoked`, `chaotic.gpg`, `chaotic-trusted` and `chaotic-revoked` files are stored in `/usr/share/pacman/keyrings/` folder. `athena.gpg` file is the public key needed to be imported in order to access to Athena repository, `athena-trusted` contains the keys to trust, and `athena-revoked` contains the list of revoked keys in long format.
+This operation is managed by Calamares installer that will initialize all the keys stored in `/usr/share/pacman/keyrings/` folder.
