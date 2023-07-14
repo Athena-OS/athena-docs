@@ -48,7 +48,6 @@ export default defineConfig({
           label: 'Configuration',
           items: [
             // Each item here is one entry in the navigation menu.
-            { label: 'Athena Welcome', link: '/en/configuration/athena-welcome' },
             { label: 'Calamares Installer', link: '/en/configuration/calamares' },
             { label: 'Kernel', link: '/en/configuration/kernel' },
             { label: 'Shell', link: '/en/configuration/shell' },
@@ -57,15 +56,15 @@ export default defineConfig({
             { label: 'Hyprland', link: '/en/configuration/hyprland' },
             { label: 'Repositories', link: '/en/configuration/repositories' },
             { label: 'NVIDIA Settings', link: '/en/configuration/nvidia' },
-            { label: 'Resources', link: '/en/configuration/resources' },
           ],
         },
         {
-          label: 'Tools',
+          label: 'Cyber Resources',
           items: [
             // Each item here is one entry in the navigation menu.
-            { label: 'Athena Tools', link: '/en/tools/athena-tools' },
-            { label: 'Submitting Tools', link: '/en/tools/submitting-tools' },
+            { label: 'Athena Welcome', link: '/en/resources/athena-welcome' },
+            { label: 'Hacking Tools', link: '/en/resources/hacking-tools' },
+            { label: 'Submitting Tools', link: '/en/resources/submitting-tools' },
           ],
         },
         {
