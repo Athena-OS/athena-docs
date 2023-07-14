@@ -72,6 +72,7 @@ export default defineConfig({
           items: [
             // Each item here is one entry in the navigation menu.
             { label: 'Customizing Athena OS', link: '/en/customization/customization' },
+            { label: 'Customizing Shells', link: '/en/customization/shell' },
           ],
         },
         {
