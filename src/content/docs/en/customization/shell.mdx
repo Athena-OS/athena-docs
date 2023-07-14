@@ -5,6 +5,8 @@ description: How to customize shells.
 import ThemedImage from '@components/ThemedImage.astro';
 
 ## Bash
+
+### Customize Prompt
 You can customize the Bash shell prompt by editing the `PS1` variable in `~/.bashrc`. For example, the current shell prompt is the following:
 ```bash
 PS1="\e[1;32m┌──[HQ🚀🌐\e[1;31m$(ip -4 addr | grep -v '127.0.0.1' | grep -v 'secondary' | grep -oP '(?<=inet\s)\d+(\.\d+){3}' | sed -z 's/\n/|/g;s/|\$/\n/' | rev | cut -c 2- | rev)🔥\u\e[1;32m]\n└──╼[👾]\[\e[1;36m\]\$(pwd) $ \[\e[0m\]"
@@ -14,6 +16,8 @@ NOTE: the output colors could be affected by the current terminal theme. Further
 The emoji used on `PS1` come from [Emojipedia](https://emojipedia.org/). For showing them on terminal, the `noto-fonts-emoji` package is needed.
 
 ## Fish
+
+### Customize Prompt
 
 You can customize the Fish [shell prompt](https://fishshell.com/docs/current/tutorial.html#prompt) by editing `~/.config/fish/functions/fish_prompt.fish`. For example, you can start to edit the shell prompt in Athena that is:
 ```fish
@@ -60,12 +64,16 @@ set_color 123e7c -> Dark Blue
 
 ## Zsh
 
+### Customize Prompt
+
 You can customize the Zsh shell prompt by editing the `PROMPT` variable in `~/.zshrc`. The Athena OS default shell prompt appears as:
 ```bash
 PROMPT="%F{46}┌──[HQ🚀🌐%F{201}$(ip -4 addr | grep -v '127.0.0.1' | grep -v 'secondary' | grep -oP '(?<=inet\s)\d+(\.\d+){3}' | sed -z 's/\n/|/g;s/|\$/\n/' | rev | cut -c 2- | rev)🔥%n%F{46}]"$'\n'"└──╼[👾]%F{44}%~ $%f "
 ```
 
 ## PowerShell
+
+### Customize Prompt
 
 You can customize the PowerShell prompt by editing `~/.config/powershell/Microsoft.PowerShell_profile.ps1` and modifying its content:
 ```powershell
