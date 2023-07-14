@@ -5,15 +5,14 @@ description: A description of repositories used in Athena OS.
 import ThemedImage from '@components/ThemedImage.astro';
 
 Athena OS leverages on several repositories for accessing to security tools and learning resources in a comfortable manner. They are:
-* [Arch Linux repositories](https://archlinux.org/packages/)
+* [Athena repository](https://athena-os.github.io/athena-repository/), a remote repository where new tools or packages not stored in other existing repositories can be built and maintained.
+* [BlackArch repository](https://blackarch.org/) for retrieving all the security tools
+* [Chaotic repository](https://aur.chaotic.cx/) for accessing to the AUR packages directly by pacman
+* [Arch Linux repositories](https://archlinux.org/packages/) for system and utility packages
   * core
   * extra
   * community
   * multilib
-  for system and utility packages
-* [BlackArch repository](https://blackarch.org/) for retrieving all the security tools
-* [Chaotic repository](https://aur.chaotic.cx/) for accessing to the AUR packages directly by pacman
-* [Athena repository](https://athena-os.github.io/athena-repository/), a remote repository where new tools or packages not stored in other existing repositories can be built and maintained.
 
 These repositories are set in `/etc/pacman.conf`. Here you can choose to add more repositories or remove the existing ones. Each time you edit this file by adding or removing repositories, run `sudo pacman -Syy` for synchronizing the database.
 
