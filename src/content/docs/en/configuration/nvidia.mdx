@@ -18,7 +18,11 @@ Some packages could disable NVIDIA modules (i.e., bumblebee). For checking if NV
 
 ## Integrated GPU and Dedicated GPU
 
-During the installation phase in Calamares, Athena will set the NVIDIA drivers **automatically**. The switch between **Integrated** and **Dedicated GPU** can be managed by [EnvyControl](https://github.com/bayasdev/envycontrol).
+During the installation phase in Calamares, Athena will set the NVIDIA drivers **automatically**.
+
+### Xorg
+
+The switch between **Integrated** and **Dedicated GPU** can be managed by [EnvyControl](https://github.com/bayasdev/envycontrol).
 
 There are three working modes:
 * **Integrated**
@@ -69,6 +73,16 @@ Generally, at the first startup, the system should work in **Integrated** mode. 
   ```
   sudo envycontrol --reset
   ```
+
+### Wayland
+
+Currently EnvyControl does not work on Wayland. In case you are in this kind of environment and you need to switch to a dedicated NVIDIA GPU scenario, Athena OS offers [nvx](https://github.com/pedro00dk/nvidia-exec).
+
+Just open a terminal and run:
+```
+nvx on
+```
+It will turn on the NVIDIA GPU and load the related modules.
 
 ## Dedicated GPU only
 
