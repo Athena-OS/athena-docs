@@ -1,0 +1,23 @@
+@font-face {
+    font-family: GreekCesarFont;
+    src: url("/src/assets/fonts/CaesarDressing-Regular.ttf");
+}
+
+#changing_text {
+    font-family: GreekCesarFont;
+    color: darkorange;
+}
+
+@keyframes animate {
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
