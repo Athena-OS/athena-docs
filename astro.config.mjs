@@ -90,8 +90,8 @@ export default defineConfig({
           label: 'Containers',
           items: [
             // Each item here is one entry in the navigation menu.
-            { label: 'Athena OS Docker Images', link: '/en/containers/docker-images' },
-            { label: 'Athena OS Podman Images', link: '/en/containers/podman-images' },
+            { label: 'Athena OS Core Image', link: '/en/containers/core-image' },
+            { label: 'Athena OS RDP Image', link: '/en/containers/rdp-image' },
           ],
         },
         {
@@ -135,10 +135,6 @@ export default defineConfig({
             { label: 'Athena OS Privacy Policy', link: '/en/policy/privacy-policy' },
             { label: 'Cookie Policy', link: '/en/policy/cookie-policy' },
           ],
-        },
-        {
-          label: 'Reference',
-          autogenerate: { directory: 'reference' },
         },
       ],
     }),
