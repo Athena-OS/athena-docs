@@ -63,8 +63,15 @@ export default defineConfig({
           items: [
             // Each item here is one entry in the navigation menu.
             { label: 'Athena Welcome', link: '/en/resources/athena-welcome' },
-            { label: 'Hacking Tools', link: '/en/resources/hacking-tools' },
-            { label: 'Submitting Tools', link: '/en/resources/submitting-tools' },
+            { label: 'Pentesting Tools', link: '/en/resources/pentesting-tools' },
+            { label: 'Athena Cyber Hub', link: '/en/resources/cyber-hub' },
+            { label: 'Blue Team Menu', link: '/en/resources/blueteam-menu' },
+            { label: 'Red Team Menu', link: '/en/resources/redteam-menu' },
+            { label: 'PWNage Menu', link: '/en/resources/pwnage-menu' },
+            { label: 'Payload to Dock', link: '/en/resources/payload-dock' },
+            { label: 'Payload Environment Variables', link: '/en/resources/payload-variables' },
+            { label: 'Browser Pentesting Extensions', link: '/en/resources/browser-pentesting' },
+            { label: 'NIST Feed', link: '/en/resources/nist-feed' },
           ],
         },
         {
@@ -73,6 +80,9 @@ export default defineConfig({
             // Each item here is one entry in the navigation menu.
             { label: 'Customizing Shells', link: '/en/customization/shell' },
             { label: 'Customizing Display Managers', link: '/en/customization/display-manager' },
+            { label: 'Customizing Terminal Tools', link: '/en/customization/terminal-tools' },
+            { label: 'Customizing GNOME', link: '/en/customization/gnome' },
+            { label: 'Customizing Hyprland', link: '/en/customization/hyprland' },
           ],
         },
         {

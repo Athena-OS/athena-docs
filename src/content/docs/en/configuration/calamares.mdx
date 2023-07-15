@@ -4,6 +4,10 @@ description: How to install Athena OS by Calamares.
 ---
 import ThemedImage from '@components/ThemedImage.astro';
 
+[Calamares](https://calamares.io/) is an installer customizable framework with the purpose to satisfy a wide variety of needs and use cases. Calamares aims to be easy and usable while remaining independent of any Linux distribution. For these reasons, it has been chosen as installation framework in Athena.
+
+Calamares has been configured with several modules invoked inside /etc/calamares/settings.conf at the installation time.
+
 Calamares has been adapted to Athena OS in order to detect automatically your hardware. It means that the installer is able to detect your environment (baremetal or virtualized), your CPU and your GPU. According to this information, all the needed drivers are automatically installed with no any actions by your side.
 
 Specifically, it will automatically install:
@@ -12,6 +16,15 @@ Specifically, it will automatically install:
 * Your GPU drivers
 
 Calamares is run by interacting on Athena Welcome through **Offline Install** and **Online Install** buttons. The former does not require an Internet connection but it installs all default elements in Athena; the latter requires an Internet connection but you can customize your final environment.
+
+If you want to store installation logs in a file, run the installer by:
+```
+sudo calamares -D8 | sudo tee calamares.log
+```
+Anyway, Calamares always will store the installation logs in:
+```
+/root/.cache/calamares/session.log
+```
 
 ### Installation
 
@@ -108,6 +121,8 @@ Availability: Offline and Online Install.
     ![VM Erase Disk](@assets/calamares-vm-erase.png)
 
 13. Review the **Summary** and run the installation.
+
+    During the installation, you can click on **Toggle log** button for reading in real time the installation logs. In case the installation gets some issues, Calamares provides to you a link to https://termbin.com where the logs are temporary saved in order to be accessed by the Athena OS team for troubleshooting.
 
 14. If no errors have been raised during the installation phase, you are ready to use Athena OS!
 
