@@ -3,12 +3,17 @@ title: Athena OS
 description: Get started learning and hacking with Athena OS.
 template: splash
 hero:
-  tagline: Dive into a new Pentesting Experience.
+  tagline: |
+    Dive into a new Pentesting Experience.
+    <div class="roller">
+      <span id="pre_text">Born for</span>
+      <span id="changing_text">InfoSec Professionals.</span>
+    </div>
   image:
     file: /src/assets/athena-chibi.png
   actions:
     - text: Getting Started
-      link: /en/getting-started/athenaos/
+      link: /guides/example/
       icon: right-arrow
       variant: primary
     - text: Link to the Project
@@ -16,21 +21,25 @@ hero:
       icon: external
 ---
 
+import "/src/styles/_overrides.scss";
 import { Card, CardGrid } from '@astrojs/starlight/components';
 
-## Next steps
 
 <CardGrid stagger>
-  <Card title="Update content" icon="pencil">
-    Edit `src/content/docs/index.mdx` to see this page change.
+  <Card title="Pentesting" icon="add-document">
+    Athena has access to the BlackArch Repository, the biggest pentesting tool warehouse. 
+    Packages are fully maintained and have always the latest updates.
   </Card>
-  <Card title="Add new content" icon="add-document">
-    Add Markdown or MDX files to `src/content/docs` to create new pages.
+  <Card title="User-oriented" icon="star">
+   If Arch-Linux was born for experienced users, Athena is conceived for decreasing complexity and improving user experience.
   </Card>
-  <Card title="Configure your site" icon="setting">
-    Edit your `sidebar` and other config in `astro.config.mjs`.
+  <Card title="Performance" icon="rocket">
+    Athena optimizes the disk space consumption by retrieving the tools you need only when you use them.
+    It is also configured to load the bare minimum for its purpose. No useless services or modules consuming your resources.
   </Card>
-  <Card title="Read the docs" icon="open-book">
-    Learn more in [the Starlight Docs](https://starlight.astro.build/).
+  <Card title="Flexibilty" icon="puzzle">
+    Athena OS aims to be as flexible as possible, leading to a unique user experience with the power to change every aspect of the distribution.
   </Card>
 </CardGrid>
+
+<script src="/src/javascript/utils.js"></script>

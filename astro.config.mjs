@@ -10,7 +10,7 @@ export default defineConfig({
       logo: {
         src: '/src/assets/athena-logo.png',
       },
-      customCss: process.env.NO_GRADIENTS ? [] : ['/src/assets/landing.css'],
+      customCss: process.env.NO_GRADIENTS ? [] : ['/src/styles/landing.css'],
       social: {
         github: 'https://github.com/Athena-OS',
         discord: 'https://discord.gg/DNjvQkb5Ad',
