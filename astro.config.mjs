@@ -54,8 +54,8 @@ export default defineConfig({
             { label: 'Display Manager', link: '/en/configuration/display-manager' },
             { label: 'GNOME', link: '/en/configuration/gnome' },
             { label: 'Hyprland', link: '/en/configuration/hyprland' },
+            { label: 'NVIDIA GPU', link: '/en/configuration/nvidia' },
             { label: 'Repositories', link: '/en/configuration/repositories' },
-            { label: 'NVIDIA Settings', link: '/en/configuration/nvidia' },
           ],
         },
         {
