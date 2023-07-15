@@ -1,0 +1,38 @@
+---
+title: Hack The Box Tools
+description: Details about Hack The Box Tools in Athena OS.
+---
+import ThemedImage from '@components/ThemedImage.astro';
+
+Users can also play Hack The Box directly on Athena OS by **Hack The Box Tools**. It is a set of tools that allow you to play Active and Retired Machines, retrieve information about the machines and which one have been pwned by you.
+
+You can play Hack The Box mainly by two modes:
+* Command Line Interface as described in this chapter
+* PWNage Menu as described in the [related chapter](/en/resources/pwnage-menu/)
+
+Hack The Box Tools consists of the following binaries:
+* **htb-play**
+  ```
+  HTB Play allows you to spawn Hack The Box machines from CLI.
+  
+  htb-play [-h] [-a] [-m] <machine-name> [-r] [-s]
+  
+  Options:
+  a     List active machines.
+  h     Print this Help.
+  m     Specify the machine name to play.
+  r     List retired machines.
+  s     List starting point machines.
+  
+  Usage Examples:
+  htb-play
+  htb-play -a
+  htb-play -m RouterSpace
+  ```
+* **htb-stop**: stopping active machines
+* **htb-reset**: resetting active machines
+* **htb-update**: set your Hack The Box App Token
+* **htb-flag**: submitting user and root flags and writing a review
+* **htb-vpn**: connecting to a Hack The Box VPN
+
+![Hack The Box Play](@assets/images/htb-play.png)
