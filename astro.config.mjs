@@ -56,6 +56,7 @@ export default defineConfig({
             { label: 'Hyprland', link: '/en/configuration/hyprland' },
             { label: 'NVIDIA GPU', link: '/en/configuration/nvidia' },
             { label: 'Repositories', link: '/en/configuration/repositories' },
+            { label: 'Utilities', link: '/en/configuration/utilities' },
           ],
         },
         {
