@@ -53,29 +53,32 @@ In Athena OS, PowerShell has been implemented by adding a lot of useful modules 
 ## Aliases
 
 On Bash, Fish and Zsh are set several shells defined in `~/.bash_aliases`. The most useful aliases are:
-* **cpc filename.txt**: copy the content of a file in clipboard
-* **anycommand | tb**: generate a link to a webpage containing the output of the piped command
-* **journalctl-upload**: generate a link to a webpage containing the output of journalctl for troubleshooting purpose
-* **unlock**: remove the packmane lock file `/var/lib/pacman/db.lck`
-* **pyserver**: initiate a HTTP server instance on the current directory on port 8000
-* **update**: run pacman package update
-* **psa**: show a detailed list of all processes
-* **update-grub**: update the GRUB
-* **update-fc**: update the font cache when a new font is added
-* **hw**: show hardware info
-* **iso**: show ISO release and version information used to install the system
-* **cleanup**: cleanup orphaned packages
-* **jctl**: get the error messages from journalctl
-* **npacman**: edit `/etc/pacman.conf` by the `EDITOR` defined in `~/.bashrc`
-* **ngrub**: edit `/etc/default/grub` by the `EDITOR` defined in `~/.bashrc`
-* **nconfgrub**: edit `/boot/grub/grub.cfg` by the `EDITOR` defined in `~/.bashrc`
-* **nmkinitcpio**: edit `/etc/mkinitcpio.conf` by the `EDITOR` defined in `~/.bashrc`
-* **nfstab**: edit `/etc/fstab` by the `EDITOR` defined in `~/.bashrc`
-* **nhosts**: edit `/etc/hosts` by the `EDITOR` defined in `~/.bashrc`
-* **nb**: edit `~/.bashrc` by the `EDITOR` defined in `~/.bashrc`
-* **nz**: edit `~/.zshrc` by the `EDITOR` defined in `~/.bashrc`
-* **nf**: edit `~/.config/fish/config.fish` by the `EDITOR` defined in `~/.bashrc`
-* **lockreset**: unlock the user account due to multiple failed sudo attempts
-* **openports**: show open ports
-* **ssn**: shutdown now
-* **sr**: reboot the system
+
+| Keybind | Description |
+| ------- | ----------- |
+| **anycommand \| tb** | Generate a link to a webpage containing the output of the piped command. |
+| **cleanup** | Cleanup orphaned packages. |
+| **cpc filename.txt** | Copy the content of a file in clipboard. |
+| **hw** | Show hardware info. |
+| **iso** | Show ISO release and version information used to install the system. |
+| **jctl** | Get the error messages from journalctl. |
+| **journalctl-upload** | Generate a link to a webpage containing the output of journalctl for troubleshooting purpose. |
+| **lockreset** | Unlock the user account due to multiple failed sudo attempts. |
+| **nb** | Edit `~/.bashrc` by the `EDITOR` defined in `~/.bashrc`. |
+| **nconfgrub** | Edit `/boot/grub/grub.cfg` by the `EDITOR` defined in `~/.bashrc`. |
+| **nf** | Edit `~/.config/fish/config.fish` by the `EDITOR` defined in `~/.bashrc`. |
+| **nfstab** | Edit `/etc/fstab` by the `EDITOR` defined in `~/.bashrc`. |
+| **ngrub** | Edit `/etc/default/grub` by the `EDITOR` defined in `~/.bashrc`. |
+| **nhosts** | Edit `/etc/hosts` by the `EDITOR` defined in `~/.bashrc`. |
+| **nmkinitcpio** | Edit `/etc/mkinitcpio.conf` by the `EDITOR` defined in `~/.bashrc`. |
+| **npacman** | Edit `/etc/pacman.conf` by the `EDITOR` defined in `~/.bashrc`. |
+| **nz** | Edit `~/.zshrc` by the `EDITOR` defined in `~/.bashrc`. |
+| **openports** | Show open ports. |
+| **psa** | Show a detailed list of all processes. |
+| **pyserver** | Initiate a HTTP server instance on the current directory on port 8000. |
+| **sr** | Reboot the system. |
+| **ssn** | Shutdown now. |
+| **unlock** | Remove the packmane lock file `/var/lib/pacman/db.lck`. |
+| **update** | Run pacman package update. |
+| **update-fc** | Update the font cache when a new font is added. |
+| **update-grub** | Update the GRUB. |
