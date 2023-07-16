@@ -24,7 +24,7 @@ hero:
 
 import "/src/styles/_overrides.scss";
 import { Card, CardGrid } from '@astrojs/starlight/components';
-
+import ScriptWorkaround from "/src/components/ScriptWorkaround.astro";
 
 <CardGrid stagger>
   <Card title="Pentesting" icon="add-document">
@@ -43,4 +43,4 @@ import { Card, CardGrid } from '@astrojs/starlight/components';
   </Card>
 </CardGrid>
 
-<script src="/src/javascript/utils.js"></script>
+<ScriptWorkaround />
