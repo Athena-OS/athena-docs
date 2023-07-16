@@ -5,29 +5,29 @@ description: Details about PWNage Menu in Athena OS.
 import ThemedImage from '@components/ThemedImage.astro';
 
 **PWNage Menu** allows users to access quickly to the main hacking platforms for learning purposes and to join the main Discord InfoSec Communities:
-* 1st shell deploys all quick links to the main hacking platforms
-* 2nd shell can be accessed by the **Discurity** icon on top where the user can join several Discord InfoSec servers or open Discord App.
+* 1st shell deploys all quick links to the main **hacking platforms**
+* 2nd shell can be accessed by the **Discurity** icon on top where the user can join several Discord InfoSec servers or open [ArmCord](https://github.com/ArmCord/ArmCord) App
 
-![PWNage Menu](@assets/pwnage-menu.png)
+![PWNage Menu](@assets/images/pwnage-menu.png)
 
-PWNage menu can be accessed by `CTRL+TAB`.
+PWNage menu can be accessed by `CTRL+SHIFT+SPACE`.
 
-One of the most interesting features of Athena is the deep integration with Hack The Box platform, accessible by PWNage menu. Athena gives the possibility to play Hack The Box machines directly on the OS environment in a quick and comfortable manner. It offers:
-* Connect/Disconnect to/from Hack The Box VPN servers
-* Play any active free machine you wish
-* Reset the active machine
-* Stop any active machine
-* Submit a flag and write a review about your hacking experience!
-* ... and access to the Hack The Box website
+One of the most interesting features of Athena is the deep **integration** with [Hack The Box](https://app.hackthebox.com) platform, accessible by PWNage menu. Athena gives the possibility to play Hack The Box machines directly on the OS environment in a **quick** and **comfortable** manner. It offers:
+* **Connect/Disconnect** to/from Hack The Box VPN servers
+* **Play** any active free machine you wish
+* **Reset** the active machine
+* **Stop** any active machine
+* **Submit** a flag and write a **review** about your hacking experience!
+* ... and access to the Hack The Box **website**
 
-It can be done by accessing to the Hack The Box icon on the PWNage menu. The menu is automatically updated by a command inside `/etc/profile.d/run-once.sh` in order to call Hack The Box APIs and retrieve the last free active machines.
+It can be done by accessing to the Hack The Box icon in PWNage menu.
+
+![Hack The Box Menu](@assets/images/hackthebox.png)
+
+The menu is updated by a cronjob in order to call Hack The Box APIs and retrieve the last free active machines.
 
 Playing with one of these machines will edit the PROMPT of the shell by showing the name of the laboratory, the target IP address, the attacker IP address, the Hack The Box username of the user and the prize points.
 
-The set of tools that manages the Hack The Box environment needs of the App Token of the Hack The Box user that can be retrieved on the profile settings of the Hack The Box website. Once retrieved, it can be set by calling `htb-update` command.
+![Hack The Box Machine](@assets/images/htb-spawn.png)
 
-![image](@assets/hackthebox.png)
-
-Users can also play retired machines if they have a Hack The Box VIP subscription by `htb-play` tool. It can list all retired machines by `htb-play -l` command and then start the machine by specifying its name
-
-![image](@assets/htb-play.png)
+The set of tools that manages the Hack The Box environment needs of the App Token of the Hack The Box user that can be set as described in [Athena Welcome section](/en/resources/athena-welcome/#htb-update) or by calling `htb-update` command.

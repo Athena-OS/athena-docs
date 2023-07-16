@@ -10,11 +10,11 @@ The following section will guide you through the steps to install Athena OS as d
 
 Once prepared the setup as described in [Baremetal installation prepare](/en/installation/prepare-baremetal/), and rebooted the system with your plugged USB drive containing the Athena OS installation media, according to your boot mode (EFI or BIOS/Legacy), you will be shown:
 
-![EFI Boot](@assets/efi-boot.png)
+![EFI Boot](@assets/images/efi-boot.png)
 
 for **EFI boot**, select **Athena OS install medium** or:
 
-![BIOS/Legacy Boot](@assets/bios-boot.png)
+![BIOS/Legacy Boot](@assets/images/bios-boot.png)
 
 for **BIOS/Legacy boot**, select **Boot Athena OS (x86_64, BIOS, open source)**.
 
@@ -36,7 +36,7 @@ The available file systems are defined in the same file.
 
 ### Install alongside
 
-![Install alongside](@assets/calamares-partition-alongside.png)
+![Install alongside](@assets/images/calamares-partition-alongside.png)
 
 Look on the part with **Current** bar, select the Linux or Windows partition on the related colored bar and drag it until you get the needed disk space for Athena OS.
 
@@ -57,25 +57,25 @@ Once you land on the Live Environment, Athena Welcome will be shown. Click on **
 
 Let's guess you have an existing Linux or Windows OS on your endpoint. We need to use the free space of this existing partition to the one we will use for Athena OS.
 
-![GParted](@assets/gparted.png)
+![GParted](@assets/images/gparted.png)
 
 On GParted, on top-right select the disk to work on. Then, right-click on the existing Linux or Windows partition to shrink for getting our empty space (if we don't already have a disk space to use), click on **Resize/Move** and set the available space we need on **New size (MiB)** field:
 
-![GParted Resize](@assets/gparted-resize.png)
+![GParted Resize](@assets/images/gparted-resize.png)
 
 *Note: the size is measured in **MiB** by default and, when you fill **New size (MiB)** field, the other fields are automatically filled. You can also resize the partition by moving the slider on the top part of the window.*
 
 Click **Resize** button. Once resized your Linux or Windows partition, click **Apply All Operations** icon for applying these changes on your disk.
 
-![GParted Apply](@assets/gparted-apply.png)
+![GParted Apply](@assets/images/gparted-apply.png)
 
 On the appearing popup window, click on **Apply**.
 
-![GParted Apply Confirmation](@assets/gparted-apply-confirm.png)
+![GParted Apply Confirmation](@assets/images/gparted-apply-confirm.png)
 
 Go back to Athena Welcome, and select `Offline Install` or `Online Install`, reach the **Partitions** section, check **Replace a partition** and on the **Current** bar, click on the colored partition where you want to install Athena OS.
 
-![Replace a partition](@assets/calamares-partition-replace.png)
+![Replace a partition](@assets/images/calamares-partition-replace.png)
 
 Select **Encrypt system** checkbox if you wish to encrypt your partition.
 :::caution
@@ -86,7 +86,7 @@ Click **Next** and proceed to the installation.
 
 ### Manual partitioning
 
-![Manual partitioning](@assets/calamares-partition-manual.png)
+![Manual partitioning](@assets/images/calamares-partition-manual.png)
 
 You should:
 * click on **New Partition Table** and select **GUID Partition Table**

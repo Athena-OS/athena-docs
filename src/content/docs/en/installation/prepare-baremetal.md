@@ -42,7 +42,7 @@ You can use several software for creating a bootable Athena USB drive on Linux o
 4. Click **Select target** and choose the label of your plugged USB drive.
 5. Click **Flash** for starting the process. Note that you could be asked for administration privileges, so insert credentials and press **Authenticate**.
 
-![Balena Etcher](@assets/linux-etcher.png)
+![Balena Etcher](@assets/images/linux-etcher.png)
 
 At the end of flash process you will get a **Flash Completed!** message. Close Balena Etcher and reboot the system for booting into Athena OS.
 
@@ -68,7 +68,7 @@ At the end of flash process you will get a **Flash Completed!** message. Close B
 4. Click **Select target** and choose the label of your plugged USB drive.
 5. Click **Flash** for starting the process. Note that you could be asked for administration privileges, so insert credentials and press **Authenticate**.
 
-![Balena Etcher](@assets/windows-etcher.png)
+![Balena Etcher](@assets/images/windows-etcher.png)
 
 At the end of flash process you will get a **Flash Completed!** message. Close Balena Etcher and reboot the system for booting into Athena OS.
 
@@ -82,11 +82,11 @@ At the end of flash process you will get a **Flash Completed!** message. Close B
 4. On **Boot selection**, click on **SELECT** and locate the Athena ISO image file.
 5. Click **START**.
 
-![Balena Etcher](@assets/windows-rufus.png)
+![Balena Etcher](@assets/images/windows-rufus.png)
 
 6. When the **ISOHybrid image detected** window appears, select what you wish. DD Image mode provides more compatibility and it should be used in case of issues during boot.
 
-![Balena Etcher](@assets/windows-rufus-confirm.png)
+![Balena Etcher](@assets/images/windows-rufus-confirm.png)
 
 At the end of flash process you will get **READY** status. Close Rufus and reboot the system for booting into Athena OS.
 

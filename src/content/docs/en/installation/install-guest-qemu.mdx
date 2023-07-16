@@ -18,46 +18,46 @@ sudo systemctl start dnsmasq
 ```
 Run `virt-manager`. At first run, in case there is only `LXC` connection but not `QEMU/KVM` connection, click on **File** -> **Add Connection...**, be sure that **Hypervisor** field is set to **QEMU/KVM** and click on **Connect**
 
-![Virt-Manager Connecting to QEMU/KVM](@assets/virtmanager-connect.png)
+![Virt-Manager Connecting to QEMU/KVM](@assets/images/virtmanager-connect.png)
 
 Once connected, click on **QEMU/KVM** entry and click on **Create a new virtual machine** icon button and set the several settings in the following manner
 
-![Virt-Manager VM Creation](@assets/virtmanager-create.png)
+![Virt-Manager VM Creation](@assets/images/virtmanager-create.png)
 
 On the next step, click on **Browse...** and on the popup window click on **Browse Local** button at bottom side and select the Athena ISO image file
 
-![Virt-Manager Locate ISO](@assets/virtmanager-locate.png)
+![Virt-Manager Locate ISO](@assets/images/virtmanager-locate.png)
 
 Deselect **Automatically detect from the installation media / source** checkbox and the current step should appear as
-![Virt-Manager Set Media](@assets/virtmanager-media.png)
+![Virt-Manager Set Media](@assets/images/virtmanager-media.png)
 
 Then, set your resources as CPU and RAM
 
-![Virt-Manager Set Resources](@assets/virtmanager-resources.png)
+![Virt-Manager Set Resources](@assets/images/virtmanager-resources.png)
 
 Set the disk size of the virtual machine
 
-![Virt-Manager Set Disk Size](@assets/virtmanager-disk.png)
+![Virt-Manager Set Disk Size](@assets/images/virtmanager-disk.png)
 
 On the final summary window, check **Customize configuration before install** checkbox, assign a VM name, expand the network selection for checking if it is set on NAT and click on **Finish**
 
-![Virt-Manager VM Summary](@assets/virtmanager-summary.png)
+![Virt-Manager VM Summary](@assets/images/virtmanager-summary.png)
 
 You could get a message related to the activation of the Virtual Network, press **Yes**
 
-![Virt-Manager Virtual Network](@assets/virtmanager-network.png)
+![Virt-Manager Virtual Network](@assets/images/virtmanager-network.png)
 
 Afterwards, the VM settings window is opened. You should move to **CPUs** tab and expand **Topology** section and increment **Sockets** and **Cores** at least to 2
 
-![Virt-Manager VM CPU Settings](@assets/virtmanager-processor.png)
+![Virt-Manager VM CPU Settings](@assets/images/virtmanager-processor.png)
 
 Move to **Display Spice** tab, set **Listen type** to **None** and check **OpenGL** in order to use it
 
-![Virt-Manager VM Display Settings](@assets/virtmanager-display.png)
+![Virt-Manager VM Display Settings](@assets/images/virtmanager-display.png)
 
 Finally, make sure that the 3D Acceleration is enabled on **Video Virtio** tab
 
-![Virt-Manager VM 3D Acceleration](@assets/virtmanager-accel.png)
+![Virt-Manager VM 3D Acceleration](@assets/images/virtmanager-accel.png)
 
 At the end, apply all the changes and click on **Begin Installation** button on the top-left side of the settings window.
 
