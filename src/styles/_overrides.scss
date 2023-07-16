@@ -1,11 +1,13 @@
 @font-face {
     font-family: GreekCesarFont;
-    src: url("/src/assets/fonts/CaesarDressing-Regular.ttf");
+    src: url("/src/assets/fonts/Interfearence.ttf");
 }
 
 #changing_text {
+    text-transform: uppercase;
     font-family: GreekCesarFont;
     color: darkorange;
+    font-size: 0.9em;
 }
 
 @keyframes animate {
