@@ -8,7 +8,8 @@ export default defineConfig({
     starlight({
       title: 'Athena OS',
       logo: {
-        src: '/src/assets/athena-logo.png',
+        light: './src/assets/athena-light-logo.svg',
+        dark: './src/assets/athena-dark-logo.svg',
       },
       customCss: process.env.NO_GRADIENTS ? [] : ['/src/styles/landing.css'],
       social: {
