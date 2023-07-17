@@ -6,6 +6,10 @@ import ThemedImage from '@components/ThemedImage.astro';
 
 The following section will guide you through the steps to install Athena OS as dual booth with Linux or Windows by covering all the possible choices you could set.
 
+## Windows pre-settings
+
+In case you are installing Athena OS in dual boot with Windows, make sure that **Fast Startup** is disabled. For doing that on Windows, open **Control Panel** -> **Hardware and Sound** -> **Power Options** -> click on **Choose what the power buttons do** on the left side -> click on **Change Settings that are currently unavailable** on top (This will ask for administrator permissions) -> Unselect the **Turn on fast startup** option and click on **Save Changes** button.
+
 ## Install Athena OS as dual boot
 
 Once prepared the setup as described in [Baremetal installation prepare](/en/installation/prepare-baremetal/), and rebooted the system with your plugged USB drive containing the Athena OS installation media, according to your boot mode (EFI or BIOS/Legacy), you will be shown:
@@ -19,10 +23,6 @@ for **EFI boot**, select **Athena OS install medium** or:
 for **BIOS/Legacy boot**, select **Boot Athena OS (x86_64, BIOS, open source)**.
 
 Once you land on the Live Environment, follow the [Calamares Installer](/en/configuration/calamares/) chapter until the **Partitions** section.
-
-## Windows pre-settings
-
-In case you are installing Athena OS in dual boot with Windows, make sure that **Fast Startup** is disabled. For doing that on Windows, open **Control Panel** -> **Hardware and Sound** -> **Power Options** -> click on **Choose what the power buttons do** on the left side -> click on **Change Settings that are currently unavailable** on top (This will ask for administrator permissions) -> Unselect the **Turn on fast startup** option and click on **Save Changes** button.
 
 ## Partitioning
 
