@@ -52,6 +52,10 @@ You should:
 You should have something like:
 ![USB Manual Partitioning](@assets/images/calamares-partition-usb.png)
 
+or, for encrypted data partition, like
+
+![USB Manual Partitioning Encryption](@assets/images/calamares-partition-usb-encrypted.png)
+
 Then click **Next**. You will get some warning messages, just click **OK** and run the installation.
 
 :::caution
@@ -61,6 +65,10 @@ Note that we don't create a SWAP space because Athena OS uses [ZRAM](https://wik
   * File System: linuxswap
   * Flags: swap
   * Click OK
+:::
+
+:::danger
+Note that by installing the system in a persistent USB, the GRUB installed on the hard disk will be deleted and you would need to reinstall it.
 :::
 
 <ImageComponent />
