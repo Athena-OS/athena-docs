@@ -102,7 +102,7 @@ export default defineConfig({
           items: [
             // Each item here is one entry in the navigation menu.
             { label: 'Athena OS WSL', link: '/en/wsl/wsl' },
-            { label: 'Win-KeX', link: '/en/wsl/win-kex' },
+            // { label: 'Win-KeX', link: '/en/wsl/win-kex' },
           ],
         },
         {
@@ -130,13 +130,13 @@ export default defineConfig({
             // Each item here is one entry in the navigation menu.
             { label: 'Athena OS EULA', link: '/en/policy/eula-policy' },
             { label: 'Athena OS User Policy', link: '/en/policy/user-policy' },
-            { label: 'Athena OS Network Service Policy', link: '/en/policy/network-policy' },
+            // { label: 'Athena OS Network Service Policy', link: '/en/policy/network-policy' },
             { label: 'Athena OS Open Source Policy', link: '/en/policy/opensource-policy' },
-            { label: 'Athena OS Update Policies', link: '/en/policy/update-policies' },
+            { label: 'Athena OS Update Policy', link: '/en/policy/update-policy' },
             { label: 'Athena OS Package Policy', link: '/en/policy/package-policy' },
-            { label: 'Athena OS Penetration Test Tools Policy', link: '/en/policy/tools-policy' },
+            { label: 'Athena OS Pentesting Tools Policy', link: '/en/policy/tools-policy' },
             { label: 'Athena OS Privacy Policy', link: '/en/policy/privacy-policy' },
-            { label: 'Cookie Policy', link: '/en/policy/cookie-policy' },
+            // { label: 'Cookie Policy', link: '/en/policy/cookie-policy' },
           ],
         },
       ],
