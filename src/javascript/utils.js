@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
           if (letter == " ") {
             return " ";
           }
-          return letters[Math.floor(Math.random() * 26)];
+          return letters[Math.floor(Math.random() * 22)];
         })
         .join("");
 
