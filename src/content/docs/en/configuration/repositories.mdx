@@ -2,6 +2,7 @@
 title: Repositories
 description: A description of repositories used in Athena OS.
 ---
+import ImageComponent from "@components/ImageComponent.astro";
 import ThemedImage from '@components/ThemedImage.astro';
 
 Athena OS leverages on several repositories for accessing to security tools and learning resources in a comfortable manner. They are:
@@ -29,3 +30,5 @@ Include = /etc/pacman.d/athena-mirrorlist
 ```
 In Athena, the repository keys and related files, `athena.gpg`, `athena-trusted`, `athena-revoked`, `blackarch.gpg`, `blackarch-trusted`, `blackarch-revoked`, `chaotic.gpg`, `chaotic-trusted` and `chaotic-revoked` files are stored in `/usr/share/pacman/keyrings/` folder. `athena.gpg` file is the public key needed to be imported in order to access to Athena repository, `athena-trusted` contains the keys to trust, and `athena-revoked` contains the list of revoked keys in long format.
 This operation is managed by Calamares installer that will initialize all the keys stored in `/usr/share/pacman/keyrings/` folder.
+
+<ImageComponent />

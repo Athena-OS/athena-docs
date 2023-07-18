@@ -2,6 +2,7 @@
 title: NIST Feed
 description: NIST NVD feed and popup notifications.
 ---
+import ImageComponent from "@components/ImageComponent.astro";
 import ThemedImage from '@components/ThemedImage.astro';
 
 [NIST Feed](https://github.com/D3vil0p3r/NIST-Feed) is a special tool able to retrieve information about **existing CVE (Common Vulnerabilities and Exposures)** and **inform** you about a **new published** or **updated CVE** by a popup notification by connecting to the [NIST National Vulnerability Database (NVD)](https://nvd.nist.gov/)!
@@ -63,3 +64,5 @@ NIST Feed can be configured according to the parameters shown by `nist-feed -h` 
   ```
 
 The `-s` argument is used for setting a scheduled popup notification on crontab according to the specified filters.
+
+<ImageComponent />

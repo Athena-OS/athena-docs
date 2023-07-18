@@ -2,6 +2,7 @@
 title: Athena OS Core Image
 description: Official Athena OS core image.
 ---
+import ImageComponent from "@components/ImageComponent.astro";
 import ThemedImage from '@components/ThemedImage.astro';
 
 Athena OS container brings you to live a funny hacking experience in a containerized environment:
@@ -221,3 +222,5 @@ docker run --rm --privileged multiarch/qemu-user-static:register --reset
 ```
 
 Once registered you can define the dockerfile to use with `-f Dockerfile.aarch64`. This method has not been tested yet.
+
+<ImageComponent />

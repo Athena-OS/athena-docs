@@ -2,6 +2,7 @@
 title: Installing as guest in QEMU/KVM
 description: How to install Athena OS as as guest in QEMU/KVM.
 ---
+import ImageComponent from "@components/ImageComponent.astro";
 import ThemedImage from '@components/ThemedImage.astro';
 
 This guide shows you how to run Athena OS inside of **QEMU** and **KVM** as hypervisor both for Linux and Windows hosts.
@@ -127,3 +128,5 @@ The command above enables the virtual machine to use QEMU Guest Agent. In genera
 ### Limitations
 
 The main disadvantage of using QEMU on a Windows host does not allow to perform a GPU Passthrough, it means that all virtual machines running there will work by Software Rendering as graphics. Furthermore, currently it is not clear how to enable 3D Acceleration.
+
+<ImageComponent />

@@ -2,6 +2,7 @@
 title: Installing as as guest in VirtualBox
 description: How to install Athena OS as as guest in VirtualBox.
 ---
+import ImageComponent from "@components/ImageComponent.astro";
 import ThemedImage from '@components/ThemedImage.astro';
 
 This chapter explains how to virtualize Athena OS inside of VirtualBox in order to run Athena OS as virtual machine. This approach could be useful in case you would like to have a separated machine from the host that could also interact with other virtual machines, the host itself and other endpoints on the local network.
@@ -51,3 +52,5 @@ Finally you can set the USB as you wish, for example
 Save changes and run the virtual machine and install Athena OS as explained in [Installing as single boot](/en/installation/install-single-boot/) chapter.
 
 *Note: Athena OS automatically recognizes if you are using a virtualized environment so you don't need to install VirtualBox Guest Additions because the system will do automatically for you during the OS installation.*
+
+<ImageComponent />
