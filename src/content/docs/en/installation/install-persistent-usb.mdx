@@ -1,0 +1,66 @@
+---
+title: Installing as dual boot with Linux or Windows
+description: How to install Athena OS as dual boot with Linux or Windows.
+---
+import ImageComponent from "@components/ImageComponent.astro";
+import ThemedImage from '@components/ThemedImage.astro';
+
+The following section will guide you through the steps to install Athena OS in a persistent USB by covering all the possible choices you could set.
+
+Before starting, you need two USB drives:
+* **USB-1**: for creating bootable media
+* **USB-2**: on which persistent Athena OS will be installed
+
+Burn Athena OS ISO on USB-1 as described in the [Baremetal installation prepare](/en/installation/prepare-baremetal/) guide.
+
+After that, reboot the system while keeping USB-1 plugged in your USB port and, according to your boot mode (EFI or BIOS/Legacy), you will be shown:
+
+![EFI Boot](@assets/images/efi-boot.png)
+
+for **EFI boot**, select **Athena OS install medium** or:
+
+![BIOS/Legacy Boot](@assets/images/bios-boot.png)
+
+for **BIOS/Legacy boot**, select **Boot Athena OS (x86_64, BIOS, open source)**.
+
+Once you land on the Live Environment, attach USB-2 to a different USB port and be sure it is working, and follow the [Calamares Installer](/en/configuration/calamares/) chapter until the **Partitions** section.
+
+## Partitioning
+
+On **Partitions** section, on **Select storage device** dropdown menu at top side, select the name of your USB-2 device and select **Manual Partitioning**.
+
+You should:
+* click on **New Partition Table** and select **GUID Partition Table**
+* BIOS-GRUB. Click on **Free Space** and click on **Create** then:
+  * Size: 8 MB
+  * File System: unformatted
+  * Flags: bios-grub
+  * Click OK
+* Boot partition. Click on **Free Space** and click on **Create** then:
+  * Size: 300 MB
+  * File System: ext4 or fat32
+  * Mount Point: /boot
+  * Flags: boot (or boot-efi)
+  * Click OK
+* Data partition. Click on **Free Space** and click on **Create** then:
+  * Size: the remaining size
+  * File System: btrfs (or any file system you wish)
+  * Encrypt: select it if you want to encrypt your data partition
+  * Mount Point: /
+  * Click OK
+
+You should have something like:
+![USB Manual Partitioning](@assets/images/calamares-partition-usb.png)
+
+Then click **Next**. You will get some warning messages, just click **OK** and run the installation.
+
+:::caution
+Note that we don't create a SWAP space because Athena OS uses [ZRAM](https://wiki.archlinux.org/title/Zram). In case you perform a custom configuration where you remove ZRAM and use ZSWAP, you can create the SWAP partition as above by setting:
+* Swap Space if you wish to have it. Click on **Free Space** and click on **Create** then
+  * Size: set a suitable size for Swap Space if you would like to set it (it should be a power of 2)
+  * File System: linuxswap
+  * Flags: swap
+  * Click OK
+:::
+
+<ImageComponent />

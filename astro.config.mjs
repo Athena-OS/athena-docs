@@ -37,6 +37,7 @@ export default defineConfig({
             { label: 'Baremetal installation prepare', link: '/en/installation/prepare-baremetal' },
             { label: 'Installing as single boot', link: '/en/installation/install-single-boot' },
             { label: 'Installing as dual boot with Linux or Windows', link: '/en/installation/install-dual-boot' },
+            { label: 'Installing as persistent USB', link: '/en/installation/install-persistent-usb' },
             { label: 'Installing as guest in VMware', link: '/en/installation/install-guest-vmware' },
             { label: 'Installing as guest in VirtualBox', link: '/en/installation/install-guest-virtualbox' },
             { label: 'Installing as guest in Hyper-V', link: '/en/installation/install-guest-hyperv' },
