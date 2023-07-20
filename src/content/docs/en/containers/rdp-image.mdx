@@ -214,4 +214,26 @@ Use `--no-cache` option:
 docker build --tag 'custom-athena-rdp:latest' --no-cache .
 ```
 
+## Deployment on Apple M1/M2
+
+Download **Docker Desktop**, open it and go to **Settings**, then enable it (use **Rosetta** for x86/amd64 emulation on Apple Silicon):
+![image](https://github.com/Athena-OS/athena-iso/assets/83867734/09c2cd7e-d289-41e3-8b53-6fef879e90ae)
+
+In **General**, enable **VirtueFS**, then apply and restart:
+![image](https://github.com/Athena-OS/athena-iso/assets/83867734/23bae03a-3ec0-4bc6-87df-e545e388c826)
+
+Open **Terminal** and pull Athena OS container by using `docker pull --platform linux/amd64 athenaos/rdp:latest` for Athena OS RDP container.
+
+Once pulled, run:
+```
+docker run -ti --name athena-rdp --cap-add CAP_SYS_ADMIN --cap-add IPC_LOCK --cap-add NET_ADMIN --cgroupns=host --device /dev/net/tun --shm-size 2G --sysctl net.ipv6.conf.all.disable_ipv6=0 --volume /sys/fs/cgroup:/sys/fs/cgroup --publish 23389:3389 --publish 8022:22 --restart unless-stopped docker.io/athenaos/rdp:latest
+```
+
+Login by using **athena\:athena** credential.
+
+To connect by RDP session, use Microsoft Remote Desktop Service, type **127.0.0.1:23389**:
+![image](https://github.com/Athena-OS/athena-iso/assets/83867734/989204dc-1dba-439f-9662-4547ac148300)
+
+Save and connect to it.
+
 <ImageComponent />
