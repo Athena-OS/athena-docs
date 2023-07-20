@@ -68,7 +68,68 @@ Note that we don't create a SWAP space because Athena OS uses [ZRAM](https://wik
 :::
 
 :::danger
-Note that by installing the system in a persistent USB, the GRUB installed on the hard disk will be deleted and you would need to reinstall it.
+Note that by installing the system in a persistent USB, the GRUB installed on the hard disk could be deleted and you would need to reinstall it.
 :::
+### Post-installation
+For fixing the GRUB, before exiting from the Live Environment, before proceeding, you must detect the existing Linux partition and the EFI partition containing the GRUB entries for Linux and Windows (or other OS). You can do that by running `sudo fdisk -l`.
+
+Let's guess the existing Linux partition is `/dev/sda3` and the boot efi partition is at `/dev/nvme0n1p1`.
+
+If your existing Linux distribution is based on BTRFS file system, run:
+```
+sudo mount -o subvol=@ /dev/sda3 /mnt
+sudo mount -o subvol=@home /dev/sda3 /mnt/home
+sudo mount -o subvol=@log /dev/sda3 /mnt/var/log
+```
+otherwise run:
+```
+sudo mount /dev/sda3 /mnt
+sudo mount /dev/sda3 /mnt/home
+sudo mount /dev/sda3 /mnt/var/log
+```
+Then, run:
+```
+mkdir /tmp/intermediate
+sudo mount /dev/nvme0n1p1 /tmp/intermediate
+sudo mount --bind /tmp/intermediate/EFI /mnt/boot/efi/
+
+sudo arch-chroot /mnt
+grub-install --efi-directory=/boot/efi
+grub-mkconfig -o /boot/grub/grub.cfg
+```
+at reboot, be sure that on BIOS the **athena** GRUB has the first priority over Windows Boot Manager. Then, it should work.
+
+:::danger
+Don't remove any files or folders on mounted directories otherwise they will be deleted also on the related device and the boot manager could break.
+:::
+
+## Restore Linux and Windows EFI Boot
+
+In case you broke the EFI partition containing Linux and Windows EFI Boot files (assuming they were on the same partition), download a Windows ISO and burn it on a USB key. Then, boot up it. When you reach the Windows installation environment:
+1. select your language and keyboard layout
+2. click on **Repair your computer** button
+3. click on **Troubleshooting**
+4. click on **Command Prompt**
+5. run **diskpart**
+6. run **list disk** and identify the disk number of the disk containing the Windows EFI Boot partition
+7. run **sel disk \<number\>** where *\<number\>* must be replaced with the number of the interested disk
+8. run **list part** and identify the partition number of the partition of the selected disk containing the Windows EFI Boot. Usually it is tagged as **System** and it has small size
+9. run **sel part \<number\>** where *\<number\>* must be replaced with the number of the interested partition
+10. run **delete partition override** to delete the current broken EFI partition
+11. run **create part efi size=1024** for creating a new EFI partition
+12. run **format fs=fat32 quick** to format the EFI partition as fat32
+13. run **assign letter=m**
+14. exit
+15. Supposing that your Windows installation is installed in **C:**, run **bcdboot c:\windows /s m: /f uefi**
+16. If it does not produce error, type **exit** for exiting the Command Prompt and click on **Continue** button for entering to Windows
+17. If it produces an error:
+  * run **bootrec /fixmbr**
+  * run **bootrec /fixboot**
+  * run **bootrec /scanos**
+  * run **bootrec /rebuildbcd**
+  * run **bootsect.exe /nt60 all /force**
+18. Exit from the Command Prompt and click on **Startup Repair** button. It should bring you to Windows.
+
+Then, for fixing also the Linux access, burn Athena OS ISO on a USB and follow the steps explained at [Post-installation](/en/installation/install-persistent-usb/#post-installation) section.
 
 <ImageComponent />
