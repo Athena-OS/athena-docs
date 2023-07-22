@@ -121,7 +121,7 @@ export default defineConfig({
             { label: 'Getting Help', link: '/en/community/getting-help' },
             // { label: 'Official Athena OS Mirrors', link: '/en/community/mirrors' },
             { label: 'Setting Up a Mirror', link: '/en/community/setting-mirror' },
-            { label: 'Submitting Bugs for Athena OS', link: '/en/community/submitting-bugs' },
+            { label: 'Submitting Bugs', link: '/en/community/submitting-bugs' },
           ],
         },
         {
