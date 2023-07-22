@@ -6,3 +6,11 @@ import ImageComponent from "@components/ImageComponent.astro";
 import ThemedImage from '@components/ThemedImage.astro';
 
 This document shows common issues and solutions to any problems a user can meet.
+
+#### Bloodhound
+
+On Bloodhound, when neo4j database is run by `sudo neo4j console`, we can get some errors like:
+```
+Exception in thread "main" java.lang.LinkageError: Cannot to link java.nio.DirectByteBuffer
+```
+For solving it, just run neo4j server by `systemctl start neo4j`. You can check the proof that the server is correctly running by `systemctl status neo4j`.
