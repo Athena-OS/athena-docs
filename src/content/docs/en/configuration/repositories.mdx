@@ -31,4 +31,10 @@ Include = /etc/pacman.d/athena-mirrorlist
 In Athena, the repository keys and related files, `athena.gpg`, `athena-trusted`, `athena-revoked`, `blackarch.gpg`, `blackarch-trusted`, `blackarch-revoked`, `chaotic.gpg`, `chaotic-trusted` and `chaotic-revoked` files are stored in `/usr/share/pacman/keyrings/` folder. `athena.gpg` file is the public key needed to be imported in order to access to Athena repository, `athena-trusted` contains the keys to trust, and `athena-revoked` contains the list of revoked keys in long format.
 This operation is managed by Calamares installer that will initialize all the keys stored in `/usr/share/pacman/keyrings/` folder.
 
+## Automation
+
+Athena repository automates the update of its packages, indeed, mostly for git packages, when a developer updates its tool, the implemented automation is able to detect it, update the package and deploy it to the repository. This automated check runs periodically.
+
+It has been implemented by a GitHub Actions workflow that contains a bash script for checking all directories containing a PKGBUILD file and running the build script inside each package source.
+
 <ImageComponent />
