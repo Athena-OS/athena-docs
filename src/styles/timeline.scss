@@ -47,7 +47,7 @@
   }
   
   .completed span:before {
-    background-color: darkorange;
+    border: 3px solid darkorange;
   }
   
   .swiper-slide {
@@ -198,7 +198,6 @@
   
   .time-wrapper {
     display: inline;
-    
     line-height: 1em;
     font-size: 0.66666em;
     color: darkorange;
@@ -259,7 +258,7 @@
       margin-left: -0.5rem;
       background: hsl(222, 13%, 16%);
       border-radius: 10px;
-      border: 2px solid hsl(222, 13%, 16%);
+      border: 2px solid hsl(222, 11%, 23%);
     }
     
     .direction-l .flag:after,
