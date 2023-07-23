@@ -1,0 +1,104 @@
+---
+title: Submitting Themes
+description: How to submit themes.
+---
+import ImageComponent from "@components/ImageComponent.astro";
+import ThemedImage from '@components/ThemedImage.astro';
+
+Athena OS gives you the chance to propose your favourite rice and deploy it. This document explains how to prepare and propose your custom theme in order to be submitted for Athena OS.
+
+Generally, an Athena environment theme consists of:
+* GTK4 theme: change the colours, window decorations, and overall style
+* Icon theme: change the application and system icon style
+* Cursor theme: change the mouse cursor style
+* Background: desktop image
+
+Let's suppose you would like to submit a theme for Athena OS. The process consists of the following steps:
+1. Identify the elements of the theme (GTK4 theme, Icon theme, Cursor theme, Background)
+2. Test the theme on your local machine
+3. Submit the theme
+
+#### Identify the elements
+
+The elements of a theme can be retrieved from Internet. There are several websites that offer these elements for each environment, for example [GNOME Look](https://www.gnome-look.org/browse/) for GNOME or [MATE Look](https://www.mate-look.org/browse/). Just use an online search engine for getting them.
+
+If you are a GTK or Icon or Cursor theme developer, you can create your elements from scratch.
+
+#### Test the theme
+
+Once you get all the elements of the theme, you need to test them in your local machine to check if the overall theme works as intended. You should follow the provided instructions but in general you may:
+* store the GTK theme folder in **/usr/share/themes/**
+* store the Icon theme folder in **/usr/share/icons/**
+* store the Cursor theme folder in **/usr/share/icons/**
+
+Then, you must apply these elements on your environment. This step depends on the environment you are looking for.
+
+##### GNOME
+
+Open **Tweaks** application and set the theme elements there:
+![GNOME Tweaks](@assets/images/gnome-custom-theme.png)
+
+Move to **Appearance** tab and:
+* for the GTK theme, select your theme on **Shell** (for top bar) and **Legacy Applications** (for GTK windows) fields.
+* for the Icon theme, select your icon theme on **Icons** field.
+* for the Cursor theme, select your cursor theme on **Cursor** field.
+* for the Background image, tweak your image and its adjustment under the **Background** section.
+
+You can set them also by using your terminal. Open the terminal and apply the GTK theme by running:
+```
+gsettings set org.gnome.desktop.interface gtk-theme <gtk_foldername>
+gsettings set org.gnome.desktop.wm.preferences theme <gtk_foldername>
+gsettings set org.gnome.shell.extensions.user-theme name <gtk_foldername>
+```
+**\<gtk_foldername\>** is the name of the GTK theme folder you stored in **/usr/share/themes/**
+
+Apply the Icon theme by running:
+```
+gsettings set org.gnome.desktop.interface icon-theme <icon_theme_foldername>
+```
+**\<icon_theme_foldername\>** is the name of the Icon theme folder you stored in **/usr/share/icons/**
+
+Apply the Cursor theme by running:
+```
+gsettings set org.gnome.desktop.interface cursor-theme <cursor_theme_foldername>
+```
+**\<cursor_theme_foldername\>** is the name of the Icon theme folder you stored in **/usr/share/icons/**
+
+Apply the Background image by running:
+```
+gsettings set org.gnome.desktop.background picture-uri-dark background.png
+gsettings set org.gnome.desktop.background picture-options stretched
+```
+**stretched** is used to adjust the image in order to fill the entire screen.
+
+*Note that, if you are using a dark theme, use **picture-uri-dark**. If you are using a light theme, replace it by **picture-uri** parameter.*
+
+##### Hyprland
+
+Open the terminal and apply the GTK theme by running:
+```
+gsettings set org.gnome.desktop.interface gtk-theme <gtk_foldername>
+gsettings set org.gnome.desktop.wm.preferences theme <gtk_foldername>
+gsettings set org.gnome.shell.extensions.user-theme name <gtk_foldername>
+```
+**\<gtk_foldername\>** is the name of the GTK theme folder you stored in **/usr/share/themes/**
+
+Apply the Icon theme by running:
+```
+gsettings set org.gnome.desktop.interface icon-theme <icon_theme_foldername>
+```
+**\<icon_theme_foldername\>** is the name of the Icon theme folder you stored in **/usr/share/icons/**
+
+Apply the Cursor theme by running:
+```
+gsettings set org.gnome.desktop.interface cursor-theme <cursor_theme_foldername>
+```
+**\<cursor_theme_foldername\>** is the name of the Icon theme folder you stored in **/usr/share/icons/**
+
+Apply the Background image by renaming your image as **wallpaper** and just replace **~/.config/eww/images/wallpaper/wallpaper** by your image file.
+
+#### Submit the theme
+
+Propose your theme to the Community and open a ticket
+
+<ImageComponent />
