@@ -18,13 +18,13 @@ Let's suppose you would like to submit a theme for Athena OS. The process consis
 2. Test the theme on your local machine
 3. Submit the theme
 
-#### Identify the elements
+### Identify the elements
 
 The elements of a theme can be retrieved from Internet. There are several websites that offer these elements for each environment, for example [GNOME Look](https://www.gnome-look.org/browse/) for GNOME or [MATE Look](https://www.mate-look.org/browse/). Just use an online search engine for getting them.
 
 If you are a GTK or Icon or Cursor theme developer, you can create your elements from scratch.
 
-#### Test the theme
+### Test the theme
 
 Once you get all the elements of the theme, you need to test them in your local machine to check if the overall theme works as intended. You should follow the provided instructions but in general you may:
 * store the GTK theme folder in **/usr/share/themes/**
@@ -33,7 +33,7 @@ Once you get all the elements of the theme, you need to test them in your local 
 
 Then, you must apply these elements on your environment. This step depends on the environment you are looking for.
 
-##### GNOME
+#### GNOME
 
 Open **Tweaks** application and set the theme elements there:
 ![GNOME Tweaks](@assets/images/gnome-custom-theme.png)
@@ -73,7 +73,7 @@ gsettings set org.gnome.desktop.background picture-options stretched
 
 *Note that, if you are using a dark theme, use **picture-uri-dark**. If you are using a light theme, replace it by **picture-uri** parameter.*
 
-##### Hyprland
+#### Hyprland
 
 Open the terminal and apply the GTK theme by running:
 ```
@@ -97,7 +97,7 @@ gsettings set org.gnome.desktop.interface cursor-theme <cursor_theme_foldername>
 
 Apply the Background image by renaming your image as **wallpaper** and just replace **~/.config/eww/images/wallpaper/wallpaper** by your image file.
 
-#### Submit the theme
+### Submit the theme
 
 Propose your theme to the Community and open a ticket
 
