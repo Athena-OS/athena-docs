@@ -117,11 +117,12 @@ export default defineConfig({
           items: [
             // Each item here is one entry in the navigation menu.
             { label: 'Contribute to Athena', link: '/en/community/contribute' },
-            { label: 'Submitting Tools', link: '/en/community/submitting-tools' },
             { label: 'Getting Help', link: '/en/community/getting-help' },
             // { label: 'Official Athena OS Mirrors', link: '/en/community/mirrors' },
             { label: 'Setting Up a Mirror', link: '/en/community/setting-mirror' },
             { label: 'Submitting Bugs', link: '/en/community/submitting-bugs' },
+            { label: 'Submitting Themes', link: '/en/community/submitting-themes' },
+            { label: 'Submitting Tools', link: '/en/community/submitting-tools' },
           ],
         },
         {
