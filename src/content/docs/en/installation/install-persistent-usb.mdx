@@ -1,0 +1,160 @@
+---
+title: Installing as persistent USB
+description: How to install Athena OS as persistent USB.
+---
+import ImageComponent from "@components/ImageComponent.astro";
+import ThemedImage from '@components/ThemedImage.astro';
+
+The following section will guide you through the steps to install Athena OS in a persistent USB by covering all the possible choices you could set.
+
+Before starting, you need two USB drives:
+* **USB-1**: for creating bootable media
+* **USB-2**: on which persistent Athena OS will be installed
+
+Burn Athena OS ISO on USB-1 as described in the [Baremetal installation prepare](/en/installation/prepare-baremetal/) guide.
+
+After that, reboot the system while keeping USB-1 plugged in your USB port and, according to your boot mode (EFI or BIOS/Legacy), you will be shown:
+
+![EFI Boot](@assets/images/efi-boot.png)
+
+for **EFI boot**, select **Athena OS install medium** or:
+
+![BIOS/Legacy Boot](@assets/images/bios-boot.png)
+
+for **BIOS/Legacy boot**, select **Boot Athena OS (x86_64, BIOS, open source)**.
+
+Once you land on the Live Environment, attach USB-2 to a different USB port and be sure it is working, and follow the [Calamares Installer](/en/configuration/calamares/) chapter until the **Partitions** section.
+
+## Partitioning
+
+On **Partitions** section, on **Select storage device** dropdown menu at top side, select the name of your USB-2 device and select **Manual Partitioning**.
+
+You should:
+* click on **New Partition Table** and select **GUID Partition Table**
+* BIOS-GRUB. Click on **Free Space** and click on **Create** then:
+  * Size: 8 MB
+  * File System: unformatted
+  * Flags: bios-grub
+  * Click OK
+* Boot partition. Click on **Free Space** and click on **Create** then:
+  * Size: 300 MB
+  * File System: ext4 or fat32
+  * Mount Point: /boot
+  * Flags: boot (or boot-efi)
+  * Click OK
+* Data partition. Click on **Free Space** and click on **Create** then:
+  * Size: the remaining size
+  * File System: btrfs (or any file system you wish)
+  * Encrypt: select it if you want to encrypt your data partition
+  * Mount Point: /
+  * Click OK
+
+You should have something like:
+![USB Manual Partitioning](@assets/images/calamares-partition-usb.png)
+
+or, for encrypted data partition, like
+
+![USB Manual Partitioning Encryption](@assets/images/calamares-partition-usb-encrypted.png)
+
+Then click **Next**. You will get some warning messages, just click **OK** and run the installation.
+
+:::note
+We don't create a SWAP space because Athena OS uses [ZRAM](https://wiki.archlinux.org/title/Zram).
+:::
+
+:::tip
+If you would like to disable ZRAM and use ZSWAP, you can create the SWAP partition by:
+* clicking on **Free Space** and clicking on **Create** then
+  * Size: set a suitable size for Swap Space if you would like to set it (it should be a power of 2)
+  * File System: linuxswap
+  * Flags: swap
+  * Click OK
+
+After the OS installation, disable ZRAM by running:
+```
+swapoff /dev/zram0
+modprobe -r zram
+echo 1 > /sys/module/zswap/parameters/enabled
+```
+and enable ZSWAP by removing `zswap.enabled=0` from **/etc/default/grub** inside **GRUB_CMDLINE_LINUX_DEFAULT** variable and running:
+```
+update-grub
+```
+or
+```
+sudo grub-mkconfig -o /boot/grub/grub.cfg
+```
+Reboot your system. Finally, verify if the ZSWAP as been set correctly by running:
+```
+swapon -s
+```
+and check if the output corresponds to your swap partition.
+:::
+
+:::danger
+By installing the system in a persistent USB, the GRUB installed on the hard disk could be deleted and you would need to reinstall it.
+:::
+
+### Post-installation
+For fixing the GRUB, before exiting from the Live Environment, before proceeding, you must detect the existing Linux partition and the EFI partition containing the GRUB entries for Linux and Windows (or other OS). You can do that by running `sudo fdisk -l`.
+
+Let's guess the existing Linux partition is `/dev/sda3` and the boot efi partition is at `/dev/nvme0n1p1`.
+
+If your existing Linux distribution is based on BTRFS file system, run:
+```
+sudo mount -o subvol=@ /dev/sda3 /mnt
+sudo mount -o subvol=@home /dev/sda3 /mnt/home
+sudo mount -o subvol=@log /dev/sda3 /mnt/var/log
+```
+otherwise run:
+```
+sudo mount /dev/sda3 /mnt
+sudo mount /dev/sda3 /mnt/home
+sudo mount /dev/sda3 /mnt/var/log
+```
+Then, run:
+```
+mkdir /tmp/intermediate
+sudo mount /dev/nvme0n1p1 /tmp/intermediate
+sudo mount --bind /tmp/intermediate/EFI /mnt/boot/efi/
+
+sudo arch-chroot /mnt
+grub-install --efi-directory=/boot/efi
+grub-mkconfig -o /boot/grub/grub.cfg
+```
+at reboot, be sure that on BIOS the **athena** GRUB has the first priority over Windows Boot Manager. Then, it should work.
+
+:::danger
+Don't remove any files or folders on mounted directories otherwise they will be deleted also on the related device and the boot manager could break.
+:::
+
+## Restore Linux and Windows EFI Boot
+
+In case you broke the EFI partition containing Linux and Windows EFI Boot files (assuming they were on the same partition), download a Windows ISO and burn it on a USB key. Then, boot up it. When you reach the Windows installation environment:
+1. select your language and keyboard layout
+2. click on **Repair your computer** button
+3. click on **Troubleshooting**
+4. click on **Command Prompt**
+5. run **diskpart**
+6. run **list disk** and identify the disk number of the disk containing the Windows EFI Boot partition
+7. run **sel disk \<number\>** where *\<number\>* must be replaced with the number of the interested disk
+8. run **list part** and identify the partition number of the partition of the selected disk containing the Windows EFI Boot. Usually it is tagged as **System** and it has small size
+9. run **sel part \<number\>** where *\<number\>* must be replaced with the number of the interested partition
+10. run **delete partition override** to delete the current broken EFI partition
+11. run **create part efi size=1024** for creating a new EFI partition
+12. run **format fs=fat32 quick** to format the EFI partition as fat32
+13. run **assign letter=m**
+14. exit
+15. Supposing that your Windows installation is installed in **C:**, run **bcdboot c:\windows /s m: /f uefi**
+16. If it does not produce error, type **exit** for exiting the Command Prompt and click on **Continue** button for entering to Windows
+17. If it produces an error:
+  * run **bootrec /fixmbr**
+  * run **bootrec /fixboot**
+  * run **bootrec /scanos**
+  * run **bootrec /rebuildbcd**
+  * run **bootsect.exe /nt60 all /force**
+18. Exit from the Command Prompt and click on **Startup Repair** button. It should bring you to Windows.
+
+Then, for fixing also the Linux access, burn Athena OS ISO on a USB and follow the steps explained at [Post-installation](/en/installation/install-persistent-usb/#post-installation) section.
+
+<ImageComponent />

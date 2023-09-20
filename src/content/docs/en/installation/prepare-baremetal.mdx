@@ -1,0 +1,106 @@
+---
+title: Baremetal installation prepare
+description: How to prepare Athena OS for installation as baremetal.
+---
+import ImageComponent from "@components/ImageComponent.astro";
+import ThemedImage from '@components/ThemedImage.astro';
+
+The following section will guide you through the steps to prepare all the elements for installing Athena OS as baremetal.
+
+## System Requirements
+
+Athena OS is currently supported on amd64 (x86_64/64-bit) platforms.
+
+Athena OS requires:
+* A minimum of 20GB hard disk space for installation.
+* A minimum of 2GB RAM.
+* A bootable CD-DVD drive or a USB stick.
+
+The recommended hardware specification for a smooth experience are:
+* 30 GB of hard disk space, SSD preferred.
+* At least 4GB of RAM.
+* At least 2 cores.
+
+## Preparing for the Installation
+
+Before installing Athena OS on your endpoint, you need a set of tasks to prepare.
+
+### Download the Image
+
+Download Athena OS as described in [Downloading Athena OS](/en/getting-started/download/) chapter.
+
+### Creating a Bootable Athena USB drive
+
+You can use several software for creating a bootable Athena USB drive on Linux or Windows. The USB drive must be atleast 4 GB of size.
+
+#### Creating a Bootable USB drive on Linux
+
+##### Balena Etcher
+
+1. Plug your USB drive into your available USB port.
+2. Download [Balena Etcher](https://etcher.balena.io/). If you download the `.AppImage` file, assign executable permission by `chmod +x balenaEtcher-<version>-<arch>.AppImage` and run it by `./balenaEtcher-<version>-<arch>.AppImage`.
+3. Click **Flash from file** and select the Athena ISO image file.
+4. Click **Select target** and choose the label of your plugged USB drive.
+5. Click **Flash** for starting the process. 
+   :::note
+   You could be asked for administration privileges, so insert credentials and press **Authenticate**.
+   :::
+
+![Balena Etcher](@assets/images/linux-etcher.png)
+
+At the end of flash process you will get a **Flash Completed!** message. Close Balena Etcher and reboot the system for booting into Athena OS.
+:::note
+Be sure to have the USB drive **boot priority** over other drives in the BIOS.
+:::
+
+##### Command Line Interface
+
+1. Plug your USB drive into your available USB port.
+2. Detect the drive device label of the plugged USB drive by `sudo fdisk -l` (i.e., it could be `/dev/sdX` where `X` is `a`, `b`, and so on).
+3. Run `sudo dd bs=4M if=athena-<file-version>-<arch>.iso of=/dev/sdX status=progress oflag=sync` (replace `/dev/sdX` by the drive device label of your plugged USB drive).
+
+`dd` command` will now copy the contents of the ISO file over to your USB driive. Once done, you’re ready to use the USB drive as Athena OS installation media. Reboot the system for booting into Athena OS.
+:::note
+Be sure to have the USB drive **boot priority** over other drives in the BIOS.
+:::
+
+#### Creating a Bootable USB drive on Windows
+
+##### Balena Etcher
+
+1. Plug your USB drive into your available USB port.
+2. Download [Balena Etcher](https://etcher.balena.io/) and install it, or run the portable version.
+3. Click **Flash from file** and select the Athena ISO image file.
+4. Click **Select target** and choose the label of your plugged USB drive.
+5. Click **Flash** for starting the process.
+   :::note
+   You could be asked for administration privileges, so insert credentials and press **Authenticate**.
+   :::
+
+![Balena Etcher](@assets/images/windows-etcher.png)
+
+At the end of flash process you will get a **Flash Completed!** message. Close Balena Etcher and reboot the system for booting into Athena OS.
+:::note
+Be sure to have the USB drive **boot priority** over other drives in the BIOS.
+:::
+
+##### Rufus
+
+1. Plug your USB drive into your available USB port.
+2. Download [Rufus](https://rufus.ie/) and install it, or run the portable version.
+3. On **Device**, click on the dropdown list and select your plugged USB drive.
+4. On **Boot selection**, click on **SELECT** and locate the Athena ISO image file.
+5. Click **START**.
+
+![Balena Etcher](@assets/images/windows-rufus.png)
+
+6. When the **ISOHybrid image detected** window appears, select what you wish. DD Image mode provides more compatibility and it should be used in case of issues during boot.
+
+![Balena Etcher](@assets/images/windows-rufus-confirm.png)
+
+At the end of flash process you will get **READY** status. Close Rufus and reboot the system for booting into Athena OS.
+:::note
+Be sure to have the USB drive **boot priority** over other drives in the BIOS.
+:::
+
+<ImageComponent />

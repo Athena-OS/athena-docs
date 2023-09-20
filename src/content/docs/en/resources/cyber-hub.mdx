@@ -1,0 +1,45 @@
+---
+title: Athena Cyber Hub
+description: Running vulnerable labs and Cyber Security platforms.
+---
+import ImageComponent from "@components/ImageComponent.astro";
+import ThemedImage from '@components/ThemedImage.astro';
+
+[Athena Cyber Hub (ACH)](https://github.com/Athena-OS/athena-cyber-hub) is a forked version of [Vanilla Control Center](https://github.com/Vanilla-OS/vanilla-control-center) with several differences in order to fit the needs of Cyber Security users on Athena OS.
+It is intended to run vulnerable laboratories for learning purposes and cyber security platforms for offensive and defensive activities.
+
+![Cyber Hub](@assets/images/cyber-hub.png)
+
+## Usage
+**Athena OS Cyber Hub** can be run by clicking its icon in the Application List or running `athena-cyber-hub` in the terminal.
+
+It provides three sections:
+* Cyber Platform Center
+* Vulnerability Lab
+* Cyber Lab
+
+#### Cyber Platform Center
+It offers a set of **Cyber Security platforms** used for several purposes (i.e., defensive), as [DefectDojo](https://github.com/DefectDojo/django-DefectDojo) and [GreenBone](https://github.com/greenbone/) tools.
+
+#### Vulnerability Lab
+It contains several **CVE laboratories** from [Vulhub](https://github.com/vulhub/vulhub) where you can train on **real CVEs** to exploit technologies and services. Furthermore, it provides also several OWASP machines to enjoy with. Run your favourite vulnerable environment and get your CVE!
+
+#### Cyber Lab
+Set your **custom containers** and manage them in a centralized manner! When ACH is run for the first time, it will create `~/.config/athena-cyber-hub/cyberlab.toml` configuration file. Edit it by inserting the required information about your container, and then run ACH. Your containers will be collected in Cyber Lab section.
+
+Example configuration file:
+```toml
+[[environment]]
+id = "vulhub/activemq"
+name = "ActiveHello"
+path_docker = "/usr/share/athena-platform-center/vulhub/activemq/CVE-2015-5254/docker-compose.yml"
+path_readme = "/usr/share/athena-platform-center/vulhub/activemq/CVE-2015-5254/README.md"
+
+[[environment]]
+id = "well-hub/yourlab"
+name = "Container 2"
+path_docker = "/path/to/docker-compose.yml"
+path_readme = "/path/to/README.md"
+```
+
+<ImageComponent />

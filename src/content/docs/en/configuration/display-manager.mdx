@@ -1,0 +1,52 @@
+---
+title: Display Manager
+description: Athena OS Display Managers.
+---
+import ImageComponent from "@components/ImageComponent.astro";
+import ThemedImage from '@components/ThemedImage.astro';
+
+An important element in the system is the **Display Manager** that manages the login phase. By Athena OS installer, users can choose among different Display Managers as they wish under the “Login Manager” pane. Indeed, currently Athena offers three solutions: **GDM**, **LightDM** and **SDDM**.
+
+## GDM
+
+[GNOME Display Manager (GDM)](https://wiki.archlinux.org/title/GDM) is a program that manages graphical display servers and handles graphical user logins.
+
+If you need to swap desktop environment or window manager (i.e., you need to switch from GNOME Xorg to GNOME Wayland), click on your user account, and a gear icon appears on bottom-right side of the screen. Click there and a dropdown menu will be shown where you can select your destination environment.
+
+In case the gear icon does not appear, it means you have only one environment installed inside of your system. In Athena OS, if you installed GNOME as desktop environment, you don't get the gear icon because GNOME Wayland is disabled by default and you will land on GNOME Xorg because more stable than Wayland. If you wish to use GNOME Wayland, just edit `/etc/gdm/custom.conf` by adding:
+```
+WaylandEnable=true
+```
+
+![GDM Night City Theme](@assets/images/gdm-nightcity.png)
+
+## LightDM
+
+[LightDM](https://wiki.archlinux.org/title/LightDM) is a cross-desktop display manager.
+
+If you need to swap desktop environment or window manager (i.e., you need to switch from GNOME Xorg to GNOME Wayland), click on the dropdown menu where you can select your destination environment.
+
+![LightDM Arch Girl Theme](@assets/images/lightdm-penguin.png)
+
+You can access to LightDM settings for changing your view. Just pass the mouse pointer over the bottom-left side of the screen and a menu icon will appear where you can click there for opening the Settings window.
+
+![LightDM Settings](@assets/images/lightdm-penguin-settings.png)
+
+Here you can change the OS logo and the styke and colors of the display manager.
+
+Furthermore, you can slide several backgrounds by just clicking on the OS logo on the login window.
+
+![LightDM Background](@assets/images/lightdm-penguin-background.png)
+:::tip
+LightDM cannot manage Screen Lock on GNOME, so, if the user clicks on the Power Button on top-right, the Lock entry is not shown. However, the screen can be still locked by the user by pressing `Super+L`.
+:::
+
+## SDDM
+
+[Simple Desktop Display Manager (SDDM)](https://wiki.archlinux.org/title/SDDM) is a display manager (a graphical login program and session manager) for the X11 and Wayland windowing systems.
+
+If you need to swap desktop environment or window manager (i.e., you need to switch from GNOME Xorg to GNOME Wayland), click on the dropdown menu, under **Log In** button, where you can select your destination environment.
+
+![SDDM Astronaut Theme](@assets/images/sddm-astronaut.png)
+
+<ImageComponent />

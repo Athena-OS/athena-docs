@@ -1,0 +1,61 @@
+---
+title: Hack The Box Toolkit
+description: Details about Hack The Box Toolkit in Athena OS.
+---
+import ImageComponent from "@components/ImageComponent.astro";
+import ThemedImage from '@components/ThemedImage.astro';
+
+Users can also play Hack The Box directly on Athena OS by **Hack The Box Toolkit**. It is a software that allows you to play **Free**, **Retired** and **Starting Point** machines, retrieve **information** about the machines and which one you **pwned**.
+
+You can play Hack The Box mainly by two modes:
+* **Command Line Interface** as described in this chapter
+* **PWNage Menu** as described in the [related chapter](/en/resources/pwnage-menu/)
+
+Hack The Box Toolkit has been developed in **Rust** and can be run by:
+
+**htb-toolkit**
+![Hack The Box Toolkit](@assets/images/htb-toolkit.png)
+```
+Play Hack The Box machines directly on your system.
+
+htb-toolkit [-h] [-a] [-f] [-k] <set|reset|delete> [-m] <machine-name> [-l] <free|retired|starting> [-p] <true|false> [-r] [-s] [-u] [-v] <vpn-name>
+
+Options:
+-a                            Print information about the current active machine.
+-f                            Submit a flag.
+-h                            Print this help.
+-k <set|reset|delete>         Set, reset or delete the Hack The Box App Key.
+-m <machine-name>             Specify the machine name to play.
+-l <free|retired|starting>    List free, retired or starting point machines.
+-p <true|false>               Set if the shell prompt should be changed.
+-r                            Reset the playing machine.
+-s                            Stop the playing machine.
+-u                            Update free machines in the Red Team menu.
+-v <vpn-name>                 Set a Hack The Box VPN.
+
+Available VPN Servers:
+┌────────────────────────────────────────────────────┐
+| Starting Point Free VPN : EUSPFree1 USSPFree1      |
+| Starting Point VIP VPN  : EUSPVIP1  USSPVIP1       |
+└────────────────────────────────────────────────────┘
+┌────────────────────────────────────────────────────┐
+| Machines Free VPN       : EUFree1 EUFree2 EUFree3  |
+|                           USFree1 USFree2 USFree3  |
+|                           AUFree1 SGFree1          |
+| Machines VIP VPN        : EUVIP1 to EUVIP28        |
+|                           USVIP1 to USVIP27        |
+|                           SGVIP1 SGVIP2 AUVIP1     |
+| Machines VIP+ VPN       : EUVIP+1 EUVIP+2          |
+| Machines VIP+ VPN       : USVIP+1 SGVIP+1          |
+└────────────────────────────────────────────────────┘
+
+Usage Examples:
+htb-toolkit 
+htb-toolkit -k set
+htb-toolkit -l free
+htb-toolkit -m RouterSpace
+htb-toolkit -u
+htb-toolkit -v EUFree1
+```
+
+<ImageComponent />

@@ -1,0 +1,57 @@
+---
+title: Installing as guest in VirtualBox
+description: How to install Athena OS as as guest in VirtualBox.
+---
+import ImageComponent from "@components/ImageComponent.astro";
+import ThemedImage from '@components/ThemedImage.astro';
+
+This chapter explains how to virtualize Athena OS inside of VirtualBox in order to run Athena OS as virtual machine. This approach could be useful in case you would like to have a separated machine from the host that could also interact with other virtual machines, the host itself and other endpoints on the local network.
+
+:::caution
+In order to use a virtual machine, make sure to enable virtualization in BIOS/UEFI.
+:::
+
+For this guide, VirtualBox on Linux has been used, but the steps are the same for Windows.
+
+Once you downloaded and installed VirtualBox, open it and click on **New** button
+
+![VirtualBox Create VM](@assets/images/vbox-create.png)
+
+Then, you can set the same choices that you see on the next images or you can tweak some option you wish
+
+![VirtualBox VM Name](@assets/images/vbox-vmname.png)
+![VirtualBox Resources](@assets/images/vbox-resources.png)
+![VirtualBox Media](@assets/images/vbox-media.png)
+![VirtualBox Summary](@assets/images/vbox-summary.png)
+
+When you finished to set this initial configuration, we need to tweak some settings.
+
+For first, click on **Settings** button and go on the **General** pane -> **Advanced** and set
+
+![VirtualBox Bidirectional Feature](@assets/images/vbox-bidirectional.png)
+
+
+Move to the **System** pane -> **Motherboard** tab and disable **Floppy** and set the **Boot Order** as
+
+![VirtualBox Motherboard](@assets/images/vbox-motherboard.png)
+
+Check **Enable EFI** box. Go to the **Processor** tab:
+
+![VirtualBox Processor](@assets/images/vbox-processor.png)
+
+In the **Display** pane set the options as
+
+![VirtualBox Display](@assets/images/vbox-display.png)
+
+It is not suggested on VirtualBox to enable 3D Acceleration because it could cause graphic glitch and other issues.
+
+Finally you can set the USB as you wish, for example
+
+![VMware USB](@assets/images/vbox-usb.png)
+
+Save changes and run the virtual machine and install Athena OS as explained in [Installing as single boot](/en/installation/install-single-boot/) chapter.
+:::note
+Athena OS automatically recognizes if you are using a virtualized environment so you don't need to install VirtualBox Guest Additions because the system will do automatically for you during the OS installation.
+:::
+
+<ImageComponent />

@@ -1,0 +1,34 @@
+---
+import "../styles/bulletin.scss";
+import { Icon } from '@astrojs/starlight/components';
+---
+
+<div class="container not-content" id="notificationContainer">
+	<div class="rectangle">
+		<div class="notification-content">
+			<div class="icon-title">
+				<Icon name="information" />
+				<h4>Bulletin</h4>
+			</div>
+			<ul class="notification-list">
+				<li>
+					🟠 Observed freezing on Virtual Environment on Athena OS GNOME
+				</li>
+				<li>
+					🟠 Red Team, Blue Team and PWNage menus and other GNOME extensions not working
+				</li>
+				<li>
+					🟠 Red Team, Blue Team and PWNage menus and other GNOME extensions not working
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+<script>
+const notificationContainer = document.getElementById('notificationContainer');
+
+notificationContainer.addEventListener('click', function() {
+    notificationContainer.style.display = 'none';
+});
+</script>

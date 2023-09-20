@@ -1,0 +1,110 @@
+---
+title: GNOME
+description: GNOME environment in Athena OS.
+---
+import ImageComponent from "@components/ImageComponent.astro";
+import ThemedImage from '@components/ThemedImage.astro';
+
+[GNOME](https://wiki.archlinux.org/title/GNOME) is a desktop environment that aims to be simple and easy to use.
+
+In Athena OS, GNOME has been configured in order to decrease the usage complexity and to improve the user desktop experience.
+
+![GNOME Environment](@assets/images/gnome-sweetdark.png)
+
+The environment consists of several applications that will shown in this chapter.
+
+## Top Bar
+
+The GNOME top bar is composed of **Logo Menu** extension that provides a menu to access to several resources as settings, software center and application list.
+
+![GNOME Logo Menu](@assets/images/gnome-logomenu.png)
+
+As example, by clicking on **Software Center...** you can access to its application for getting the applications you need.
+
+![GNOME Software Center](@assets/images/gnome-softwarecenter.png)
+
+Next to Logo Menu, a **calendar** is placed showing your avatar and your account name
+
+![GNOME Calendar](@assets/images/gnome-calendar.png)
+
+At the center of the top bar, several **workspaces** have been set. They have been conceived to be used for different activities, for example:
+* 🕵️ Cyber Security
+* 📖 Coding
+* 🍒 Note Taking
+* 🎸 Music
+* 🎮 Recreation
+* 🐝 Misc
+
+![GNOME Workspaces](@assets/images/gnome-workspaces.png)
+
+By clicking on one of them, you will be switched to the related workspace.
+
+On the right side of the top bar, by clicking on the statement **Athena is Great!**, a set of widgets appears.
+
+![GNOME Widget](@assets/images/gnome-widget.png)
+![GNOME Dashboard](@assets/images/gnome-dashboard.png)
+
+Here, you can access to several resources.
+
+Next to it, you can find some metrics about the system resource consumption.
+
+![GNOME Vitals](@assets/images/gnome-vitals.png)
+
+It gives you also information about physical metrics as Temperature, Voltage and Fan. Furthermore, by the buttons on the bottom side, you can access to other resources as **GNOME Monitor**.
+
+![GNOME Monitor](@assets/images/gnome-monitor.png)
+
+Going forward, the **Pop Shell** extension allows you to change some settings and mainly to switch between stacked windows and tiling windows.
+
+![GNOME Pop Shell](@assets/images/gnome-pop.png)
+
+At the end there is the power and settings menu that could be used for using power options (shutdown, reboot, logout), accessing system settings or taking screenshots.
+
+![GNOME Power Menu](@assets/images/gnome-power.png)
+
+## Desktop
+
+The desktop is pretty simple in terms of elements. Default GNOME usually does not show desktop icons. Here, you can have them.
+
+![GNOME Desktop Icons](@assets/images/gnome-desktop.png)
+
+At the bottom side, a **Menu Dock** has been implemented showing the pinned applications of the system and the active ones.
+
+![GNOME Menu Dock](@assets/images/gnome-dock.png)
+
+GNOME in Athena offers also the **Gestures Improvement** extension that allow you to improve touchpad gestures. It can be managed by accessing to the Extensions, finding this extension and clicking on **Settings**.
+
+![GNOME Menu Dock](@assets/images/gnome-gestures.png)
+
+By pressing `Super` key (i.e., `Windows` key), or by the Menu Dock on **Show Apps** or Logo Menu on **App Grid** button, you can access to the installed applications.
+
+![GNOME Application Grid](@assets/images/gnome-applications.png)
+
+## Keybindings
+
+Here are reported some useful **keybindings** set by default in Athena OS GNOME.
+
+| Keybind | Description |
+| ------- | ----------- |
+| **CTRL+ALT+T** | Open the Terminal |
+| **Super** | Multi-desktop environment |
+| **Super + Super** | Switch between desktop and application grid |
+| **Super + E** | Open the File Manager | 
+| **Super + F** | Open Aylur's Widgets dashboard |
+| **Super + L** | Lock the screen |
+
+## Side Installation
+
+To install Athena OS GNOME environment on side of an existing environment, run:
+```
+sudo pacman -S athena-gnome-config
+dconf load /org/gnome/settings-daemon/plugins/media-keys/ < /usr/share/athena-gnome-config/dconf-custom-keybindings.ini
+dconf load /org/gnome/mutter/ < /usr/share/athena-gnome-config/dconf-mutter.ini
+dconf load /org/gnome/desktop/ < /usr/share/athena-gnome-config/dconf-desktop.ini
+dconf load /org/gnome/shell/ < /usr/share/athena-gnome-config/dconf-shell.ini
+```
+Then reboot. On Login Manager, select **GNOME Wayland** or **GNOME Xorg** session and login.
+
+If your theme is not correctly displayed, run `athena-theme-tweak` to set or change the current environment theme.
+
+<ImageComponent />

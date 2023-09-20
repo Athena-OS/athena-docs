@@ -1,0 +1,170 @@
+---
+title: Hyprland
+description: Hyprland environment in Athena OS.
+---
+import ImageComponent from "@components/ImageComponent.astro";
+import ThemedImage from '@components/ThemedImage.astro';
+
+[Hyprland](https://wiki.archlinux.org/title/Hyprland) is a dynamic tiling Wayland compositor based on wlroots that doesn't sacrifice on its looks.
+
+In Athena OS, Hyprland has been configured in order to **facilitate** the **user experience** in a window manager environment. In general, Hyprland does not support NVIDIA GPU but on Athena OS, a special **NVIDIA dedicated package** has been used in order to make Hyprland working also on their endpoints using NVIDIA GPUs.
+
+Currently, since Hyprland project is in beta, it does not work on virtual machines that don't allow **GPU passthrough**, so it is strongly suggested to use it in a baremetal configuration.
+
+Hyprland used in Athena OS is inspired on the wonderful work of [@end-4](https://github.com/end-4/dots-hyprland).
+
+![Hyprland](@assets/images/hyprland-example.png)
+
+The environment consists of several applications distributed between the top bar and the desktop environment.
+
+:::caution
+Hyprland is still in beta, and it could happen that some buttons or windows become unclickable due to an invisible frame. For solving this issue, just press **Super+SHIFT+R** to restore Hyprland environment.
+:::
+
+## Top Bar
+
+The top bar offers several interesting items useful to manage your environment. On the left side there is a gear icon allowing you to access to the so called **OSettings**.
+
+![Hyprland OSettings](@assets/images/hyprland-settings.png)
+
+OSettings keeps also buttons for power manager (lock, suspend, logout, shutdown) and for Hyprland itself.
+
+![Hyprland OSettings](@assets/images/hyprland-settings-bottom.png)
+
+The environment has a **media player** integrated with YouTube and Spotify in order to show the playing music.
+
+![Hyprland Music](@assets/images/hyprland-music.png)
+
+At the center of the top bar, there are two useful elements: the **application search** and the **workspace list**.
+
+The application search opens the overview of the current workspaces showing the active applications inside them. The workspace list allows you to switch quickly to the different workspaces.
+
+![Hyprland Activity Overview](@assets/images/hyprland-activity-overview.png)
+
+Furthermore, by typing on the search bar, you can find all the installed applications you need to use. You can move by arrow keyboard for selecting the application and Enter key for running it.
+
+![Hyprland App Search](@assets/images/hyprland-search.png)
+
+The right side of the top bar starts with the **Color Profiles** button. It can be used for setting new colors on your environment according to the one specified in the configuration files.
+
+![Hyprland Color Profiles](@assets/images/hyprland-profiles.png)
+
+Finally, the last set of buttons allows you to access to **ONotify** that is the place where the notifications are kept, the Network connection, Bluetooth, Airplane mode and Power can be managed, and the calendar is shown.
+
+![Hyprland ONotify](@assets/images/hyprland-notifications.png)
+
+## Desktop
+
+A clean desktop view appears like the following:
+
+![Hyprland Desktop](@assets/images/hyprland-sweetdark.png)
+
+This environment hides several useful resouces that can be invoked by keybindings. By considering you are using the default keybindings, you can invoke the **terminal** by **Super+Enter**.
+
+![Hyprland Terminal](@assets/images/hyprland-terminal.png)
+
+By pressing **Super+G** will popup the **perfomance monitoring** window.
+
+![Hyprland Monitoring](@assets/images/hyprland-monitor.png)
+
+You can also pull up the **music bar view** by **Super+M** button.
+
+![Hyprland Music Bar](@assets/images/hyprland-sweetdark-music-bars.png)
+
+If you would like to have a **summary dashboard** about the main information and buttons to interact with the environment, press **Super+D**.
+
+![Hyprland Dashboard Overview](@assets/images/hyprland-widget.png)
+
+A more **complete dashboard** with more information can be reached by **Super+CTRL+D**.
+
+![Hyprland Complete Dashboard](@assets/images/hyprland-dashboard.png)
+
+## Settings
+
+### Power Settings
+
+The timeout before locking or suspending the system is specified in `$HOME/.config/hypr/execs.conf` in the following lines:
+```
+exec-once = swayidle -w timeout 300 '$HOME/.local/bin/lock.sh' before-sleep '$HOME/.local/bin/lock.sh' &
+exec-once = swayidle -w timeout 450 'systemctl suspend'
+```
+Edit the timeout value to change the trigger of lock screen and system suspend. You can also edit the behavior of these two commands by changing the last parameters or creating a new command in a new line.
+
+At the end, reboot.
+
+## Keybindings
+
+In order to help you and not getting crazy, here are reported the **main keybindings** set by default in Athena OS Hyprland.
+
+### Applications
+
+| Keybind | Description |
+| ------- | ----------- |
+| **Super + C** | Open VSCodium as code editor |
+| **Super + Enter** | Open the Terminal |
+| **Super + E** | Open the File Manager |
+| **Super + W** | Open the Browser | 
+| **Super + A** | Open ArmCord as Discord client |
+
+### Actions
+
+| Keybind | Description |
+| ------- | ----------- |
+| **ALT + Q** | Close the active window |
+| **Super + CTRL + V** | Open pavucontrol |
+| **CTRL + SHIFT + Escape** | Open GNOME System Monitor |
+| **Super + SHIFT + ALT + S** | Take screenshot and open the image editor. Files will be saved in Desktop |
+| **Print** | Take screenshot and copy it in clipboard |
+| **Super + SHIFT + S** | Take screenshot and copy it in clipboard |
+| **Super + L** | Lock the screen |
+| **Super + CTRL + R** | Reset eww |
+| **Super + TAB** | Toggle View |
+| **Super + O** | Toggle OSettings |
+| **Super + M** | Toggle Music Bar |
+| **Super + N** | Toggle ONotify |
+| **Super + ,** | Toggle Themer |
+| **Super + D** | Toggle Summary Dashboard |
+| **Super + CTRL + D** | Toggle Complete Dashboard |
+| **Super + G** | Toggle Performance Monitor |
+| **Super + CTRL + TAB** | Toggle Compact Mode |
+| **Super + ALT + W** | Toggle Window Mode |
+
+### Windows and Workspaces
+
+| Keybind | Description |
+| ------- | ----------- |
+| **Super + SHIFT + Left** | Move window to left |
+| **Super + SHIFT + Right** | Move window to right |
+| **Super + SHIFT + Up** | Move window to up |
+| **Super + SHIFT + Down** | Move window to down |
+| **Super + Left** | Move focus to left |
+| **Super + Right** | Move focus to right |
+| **Super + Up** | Move focus to up |
+| **Super + Down** | Move focus to down |
+| **Super + CTRL + Left** | Move to the previous workspace |
+| **Super + CTRL + Right** | Move to the next workspace |
+| **Super + CTRL + SHIFT + Left** | Move the active window to the previous workspace |
+| **Super + CTRL + SHIFT + Right** | Move the active window to the next workspace |
+| **Super + MouseDown** | Move to the previous workspace |
+| **Super + MouseUp** | Move to the next workspace |
+| **Super + CTRL + SHIFT + MouseDown** | Move the active window to the previous workspace |
+| **Super + CTRL + SHIFT + MouseUp** | Move the active window to the next workspace |
+| **Super + F** | Switch to fullscreen |
+| **Super + \<N\>** | Switch to the workspace \<N\> (N is a number between 0 and 9) |
+| **ALT + TAB** | Bring active window to top |
+| **Super + LeftMouseButton** | Drag the window |
+
+Other keybindings can be found in **~/.config/hypr/keybindings.conf**
+
+## Side Installation
+
+To install Athena OS Hyprland environment on side of an existing environment, run:
+```
+sudo pacman -S athena-hyprland-config
+dconf load /org/gnome/desktop/ < /usr/share/athena-hyprland-config/dconf-desktop.ini
+```
+Then reboot. On Login Manager, select **Hyprland** session and login.
+
+If your theme is not correctly displayed, run `athena-theme-tweak` to set or change the current environment theme.
+
+<ImageComponent />
