@@ -64,7 +64,14 @@ You can set also the **Synchronize guest time with host** option
 Finally, go to **Advanced** and enable **UEFI** boot
 ![VMware UEFI](@assets/images/vmware-uefi.png)
 
-Save changes and run the virtual machine and install Athena OS as explained in [Installing as single boot](/en/installation/install-single-boot/) chapter.
+Save changes, open the terminal, and run:
+```
+sudo modprobe vmmon
+sudo modprobe vmnet
+sudo modprobe vmw_vmci
+```
+
+Finally, run the virtual machine and install Athena OS as explained in [Installing as single boot](/en/installation/install-single-boot/) chapter.
 :::note
 Athena OS automatically recognizes if you are using a virtualized environment so you don't need to install VMware Tools because the system will do automatically for you during the OS installation.
 :::
