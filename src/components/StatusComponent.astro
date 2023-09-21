@@ -7,15 +7,18 @@ import { Icon } from '@astrojs/starlight/components';
 	<div class="rectangle">
 		<div class="notification-content">
 			<div class="icon-title">
-				<Icon name="information" />
-				<h4>Bulletin</h4>
+				<div class="info-group">
+					<Icon name="information" />
+					<h4>Bulletin</h4>
+				</div>
+				<Icon class="close-icon" name="close" />
 			</div>
 			<ul class="notification-list">
 				<li>
-					🟠 Observed freezing on VMware VM on Athena OS due to a 6.5.x kernel bug
+					🟠 Observed freezing on VMware VM on Athena OS due to a <a style="text-decoration:none" href='https://bugzilla.kernel.org/show_bug.cgi?id=217914'>6.5.x kernel bug</a>
 				</li>
 				<li>
-					🟠 Red Team, Blue Team and PWNage menus and other GNOME extensions migrating to GNOME 45
+					🟠 Red Team, Blue Team and PWNage menus and other GNOME extensions not working due to <a style="text-decoration:none" href='https://archlinux.org/packages/extra/x86_64/gnome-shell/'>GNOME 45</a> migration
 				</li>
 			</ul>
 		</div>
@@ -23,9 +26,11 @@ import { Icon } from '@astrojs/starlight/components';
 </div>
 
 <script>
-const notificationContainer = document.getElementById('notificationContainer');
+const closeIcon = document.querySelector('.close-icon');
 
-notificationContainer.addEventListener('click', function() {
+closeIcon.addEventListener('click', function(event) {
     notificationContainer.style.display = 'none';
+    event.stopPropagation(); // Prevent triggering the container's click event
 });
+
 </script>
