@@ -4,7 +4,6 @@ html, body {
 }
 
 .rectangle {
-    cursor: pointer;
 	position: absolute;
 	top: 5rem; 
 	right: 1rem;
@@ -32,13 +31,23 @@ html, body {
     .icon-title {
         display: flex;
         align-items: center;
+		justify-content: space-between;
         gap:0.3rem;
         font-size: 1.2em;
 		margin-bottom: 0.4rem;
+
+		.info-group {
+			display: flex;
+			align-items: center;
+			gap: 0.3rem;
+		}
 		
 		h4 {
-			margin: 0 !important;
 			font-size: 1em;
+		}
+
+		.close-icon {
+			cursor: pointer;
 		}
     }
 

@@ -7,8 +7,11 @@ import { Icon } from '@astrojs/starlight/components';
 	<div class="rectangle">
 		<div class="notification-content">
 			<div class="icon-title">
-				<Icon name="information" />
-				<h4>Bulletin</h4>
+				<div class="info-group">
+					<Icon name="information" />
+					<h4>Bulletin</h4>
+				</div>
+				<Icon class="close-icon" name="close" />
 			</div>
 			<ul class="notification-list">
 				<li>
@@ -23,9 +26,11 @@ import { Icon } from '@astrojs/starlight/components';
 </div>
 
 <script>
-const notificationContainer = document.getElementById('notificationContainer');
+const closeIcon = document.querySelector('.close-icon');
 
-notificationContainer.addEventListener('click', function() {
+closeIcon.addEventListener('click', function(event) {
     notificationContainer.style.display = 'none';
+    event.stopPropagation(); // Prevent triggering the container's click event
 });
+
 </script>
