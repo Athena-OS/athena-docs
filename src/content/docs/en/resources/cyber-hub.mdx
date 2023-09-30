@@ -25,9 +25,9 @@ It offers a set of **Cyber Security platforms** used for several purposes (i.e.,
 
 Wazuh is an open source security platform that provides an **unified XDR and SIEM protection** for workloads across on-premises, virtualized, containerized, and cloud-based environments. It is used for **threat prevention**, **detection**, and **response**.
 
-Wazuh solution consists of an **endpoint security agent**, deployed to the monitored systems, and a **management server**, which collects and analyzes data gathered by the agents.
+It consists of an **endpoint security agent**, deployed to the monitored systems, and a **management server**, which collects and analyzes data gathered by the agents.
 
-Athena Cyber Hub makes Athena OS to be your **Blue Team OS** by running the **Wazuh Management Server** where to collect **centrally** all information about **threats** and **vulnerabilities** through all endpoints where you deployed Wazuh agents.
+Athena Cyber Hub makes Athena OS to be the **Wazuh Management Server** to collect **centrally** all information about **threats** and **vulnerabilities** through all endpoints where you deployed Wazuh agents.
 
 Wazuh Management Server can be initiated easily on Athena OS by starting its container in Athena Cyber Hub.
 If you wish to monitor a particular system, as a Windows, MacOS or a Linux distribution system, and taking their threat and vulnerability information, how can you do it?
@@ -75,6 +75,8 @@ Started wazuh-modulesd...
 Completed.
 ```
 If Wazuh is still not started on Athena Cyber Hub, start it and wait for 2-3 minutes for its initialization. After that, open the browser and navigate to `https://localhost`. You should get Wazuh login page where to type the default access credentials `admin:SecretPassword` and, once landed on Wazuh dashboard, you should see the **Active agents** number to 1, that is the Wazuh agent just installed.
+
+Unleash **Athena OS** to be your **Blue Team OS**! Monitor your OS and your infrastructure for vulnerabilities and threats in order to be always aware of your security posture!
 
 ![Cyber Hub](@assets/images/wazuh-dashboard.png)
 
