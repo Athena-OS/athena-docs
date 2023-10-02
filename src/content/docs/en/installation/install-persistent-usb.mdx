@@ -238,12 +238,6 @@ Don't run `CLEAN` command in **DISKPART** otherwise it will soft delete the sele
     ```
     Choose if logging or not. Then select the disk where you will restore the EFI partition:
     ```
-    TestDisk 7.1, Data Recovery Utility, July 2019
-    Christophe GRENIER <grenier@cgsecurity.org>
-    https://www.cgsecurity.org
-
-    TestDisk is free software, and comes with ABSOLUTELY NO WARRANTY.
-
     Select a media (use Arrow keys, then press Enter):
     Disk /dev/sda - 1000 GB / 931 GiB - ST1000LM049-2GH172
     Disk /dev/sdb - 4026 MB / 3840 MiB - Generic Flash Disk
@@ -252,11 +246,6 @@ Don't run `CLEAN` command in **DISKPART** otherwise it will soft delete the sele
    ```
    Then select **EFI GPT**:
    ```
-   TestDisk 7.1, Data Recovery Utility, July 2019
-   Christophe GRENIER <grenier@cgsecurity.org>
-   https://www.cgsecurity.org
-
-
    Disk /dev/nvme0n1 - 256 GB / 238 GiB
 
    Please select the partition table type, press Enter when done.
@@ -270,18 +259,12 @@ Don't run `CLEAN` command in **DISKPART** otherwise it will soft delete the sele
     [Return ] Return to disk selection
 
 
-
    Hint: EFI GPT partition table type has been detected.
    Note: Do NOT select 'None' for media with only a single partition. It's very
    rare for a disk to be 'Non-partitioned'.
    ```
    Select **Analyse**:
    ```
-   TestDisk 7.1, Data Recovery Utility, July 2019
-   Christophe GRENIER <grenier@cgsecurity.org>
-   https://www.cgsecurity.org
-
-
    Disk /dev/nvme0n1 - 256 GB / 238 GiB
         CHS 244198 64 32 - sector size=512
 
@@ -297,10 +280,6 @@ Don't run `CLEAN` command in **DISKPART** otherwise it will soft delete the sele
    ```
    Press **Quick Search**:
    ```
-   TestDisk 7.1, Data Recovery Utility, July 2019
-   Christophe GRENIER <grenier@cgsecurity.org>
-   https://www.cgsecurity.org
-
    Disk /dev/nvme0n1 - 256 GB / 238 GiB - CHS 244198 64 32
    Current partition structure:
         Partition                  Start        End    Size in sectors
@@ -318,10 +297,6 @@ Don't run `CLEAN` command in **DISKPART** otherwise it will soft delete the sele
    ```
    Press **Continue**:
    ```
-   TestDisk 7.1, Data Recovery Utility, July 2019
-   Christophe GRENIER <grenier@cgsecurity.org>
-   https://www.cgsecurity.org
-
    Disk /dev/nvme0n1 - 256 GB / 238 GiB - CHS 244198 64 32
 
    The harddisk (256 GB / 238 GiB) seems too small! (< 509 GB / 474 GiB)
@@ -352,10 +327,6 @@ Don't run `CLEAN` command in **DISKPART** otherwise it will soft delete the sele
    ```
    You will get a similar view:
    ```
-   TestDisk 7.1, Data Recovery Utility, July 2019
-   Christophe GRENIER <grenier@cgsecurity.org>
-   https://www.cgsecurity.org
-
    Disk /dev/nvme0n1 - 256 GB / 238 GiB - CHS 244198 64 32
         Partition               Start        End    Size in sectors
    >P EFI System                  2048     878591     876544 [EFI System Partition]
@@ -374,10 +345,6 @@ Don't run `CLEAN` command in **DISKPART** otherwise it will soft delete the sele
    ```
    Now you need to change some of those `D` (Delete) in `P` (Primary) to avoid that during the conversion process your partition is not deleted. To do this, move to the **MS Data** partitions and set them to `P`. Some of them cannot be set as `P`, probably because they are corrupt or other issues but in your case you need only those ones containing your data or have important purposes. To understand this, you can read the information on the last column is present and the size between **Start** and **End** columns, just pick the largest one if the other partitions cannot be set to `P`:
    ```
-   TestDisk 7.1, Data Recovery Utility, July 2019
-   Christophe GRENIER <grenier@cgsecurity.org>
-   https://www.cgsecurity.org
-
    Disk /dev/nvme0n1 - 256 GB / 238 GiB - CHS 244198 64 32
         Partition               Start        End    Size in sectors
    >P EFI System                  2048     878591     876544 [EFI System Partition]
