@@ -54,7 +54,11 @@ Check the `EFI`directory and **be sure** that there are not nested further `EFI`
 ```
 Boot Microsoft
 ```
-If you see also another `EFI` directory or other ones containing the file `grubx64.efi` (i.e., `GRUB` directory), delete these folders. Note that in other distros, `GRUB` folder could have a different name. Don't worry to delete `GRUB`folder, the next command will create it again.
+If you see also another `EFI` directory or other ones containing the file `grubx64.efi` (i.e., `GRUB` directory), delete these folders. Note that in other distros, `GRUB` folder could have a different name. Don't worry to delete `GRUB`folder by:
+```
+rm -rf /boot/efi/EFI/GRUB
+```
+The next command will create it again.
 
 Then run:
 ```
@@ -67,6 +71,12 @@ Finally:
 grub-mkconfig -o /boot/grub/grub.cfg
 ```
 at reboot, be sure that on BIOS the **GRUB** entry has the first priority over Windows Boot Manager. Then, it should work.
+
+Once landed on your working and fixed Linux environment, open the terminal and run:
+```
+sudo grub-mkconfig -o /boot/grub/grub.cfg
+```
+to restore the Windows entry in GRUB in case it is missing. Reboot the system to check all GRUB entries are working as intended.
 
 :::danger
 Don't remove any other files or folders on mounted directories otherwise they will be deleted also on the related device and the boot manager could break.
@@ -139,7 +149,9 @@ to restore the Windows entry in GRUB in case it is missing. Reboot the system to
 
 #### Restore Linux and Windows EFI Boot
 
-In case you broke the EFI partition containing Linux and Windows EFI Boot files (assuming they were on the same partition), download a Windows ISO and burn it on a USB key. Then, boot up it. When you reach the Windows installation environment:
+In case you broke the EFI partition containing Linux and Windows EFI Boot files (assuming they were on the same partition), download a Windows ISO and burn it on a USB key. Then, boot up it. If needed, backup your data.
+
+When you reach the Windows installation environment:
 1. select your language and keyboard layout
 2. click on **Repair your computer** button
 3. click on **Troubleshooting**
@@ -322,11 +334,16 @@ Don't run `CLEAN` command in **DISKPART** otherwise it will soft delete the sele
 In case you try to run **bcdedit** on Windows CMD to check the list of Windows Boot Manager entries, and you get an error like **Requested device cannot be found**, be sure your EFI partition is inside a **GPT** disk, otherwise you need to convert it as explained above.
 :::
 :::note
-During the boot of the system, if your BIOS sees multiple **Windows Boot Manager** entries, where only one is working and the other ones are broken, on Windows CMD run `bcdedit /enum firmware`, detect the wrong entries (they should have description field as "Windows Boot Manager" and delete the one that has not **current** string in some fields. You can delete them by
+During the boot of the system, if your BIOS sees multiple **Windows Boot Manager** entries, where only one is working and the other ones are broken, run `efibootmgr` on Linux terminal and identify which entry is bad, and use `efibootmgr -b XXXX --delete-bootnum` to remove it. For example, if you have:
 ```
-bcdedit /delete {THE_GUID}
+BootCurrent: 0001
+Timeout: 1 seconds
+BootOrder: 0000,0001,0002
+Boot0000* Windows Boot Manager	HD(1,GPT,71e827d6-2276-46f2-816b-881e51c53d30,0x800,0x96000)/File(\EFI\MICROSOFT\BOOT\BOOTMGFW.EFI)57494e444f5753000100000088000000780000004200430044004f0042004a004500430054003d007b00390064006500610038003600320063002d0035006300640064002d0034006500370030002d0061006300630031002d006600330032006200330034003400640034003700390035007d0000000c000100000010000000040000007fff0400
+Boot0001* GRUB	HD(1,GPT,71e827d6-2276-46f2-816b-881e51c53d30,0x800,0x96000)/File(\EFI\GRUB\GRUBX64.EFI)
+Boot0002* Windows Boot Manager	HD(2,GPT,4ae5c801-ebf3-be4c-a9b3-cab7a69f40a8,0xd6800,0x1da5a7f9)/File(\EFI\MICROSOFT\BOOT\BOOTMGFW.EFI)0000424f
 ```
-`{THE_GUID}` is the value in **identifier** field. You can do this also in Linux Live Environment by detecting the Windows Boot Manager entries to delete by `efibootmgr` command. Compare each entry's shown partition GUID and file path with the GUIDs in `partx /dev/nvme0n1` (replace `/dev/nvme0n1` by your disk), or use `efibootmgr -n XXXX` to temporarily select one specific entry for "next boot" (and reboot to test if it's the working one or not). Once you've determined which entry is bad, use `efibootmgr -b XXXX --delete-bootnum` to remove it.
+Assume the bad one is `Boot0002*` entry. In this example with two separated disks, you can see that the assumed good Windows Boot Manager is on HD 1, and the bad one is in HD 2. These entries in general appear because each partition where they are stored maintain `EFI`. It means that a partition of the disk related to HD 2 has this `EFI` folder that you must delete. In general, when you are not sure in which partition this additional `EFI` folder is located, mount each partition and check its content. Of course, be careful to not delete the `EFI` folder inside the partition maintaining the working Windows Boot Manager entry. Finally, after the deletion of rogue `EFI` folder, you can run the command `sudo efibootmgr -b 2 --delete-bootnum`, where `2` is related to the `Boot0002` of the example output above.
 :::
 
 Finally, for fixing also the Linux access, burn Athena OS ISO on a USB and follow the steps explained at [Post-installation](/en/installation/install-persistent-usb/#post-installation) section.
