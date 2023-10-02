@@ -233,152 +233,152 @@ Don't run `CLEAN` command in **DISKPART** otherwise it will soft delete the sele
     MSR and EFI are Only Supported on the GPT Disk.
     ```
     it means that the disk where you are creating the EFI disk is not GPT. If it is already GPT type, skip to the next step. If not, you need to make it GPT type as follows. Boot on Linux Live Environment by a USB pendrive and use **testdisk** tool. Open the terminal and run:
-   ```
-   testdisk
-   ```
-   Choose if logging or not. Then select the disk where you will restore the EFI partition:
-   ```
-   Select a media (use Arrow keys, then press Enter):
-    Disk /dev/sda - 1000 GB / 931 GiB - ST1000LM049-2GH172
-    Disk /dev/sdb - 4026 MB / 3840 MiB - Generic Flash Disk
-    Disk /dev/loop0 - 2849 MB / 2717 MiB (RO)
-   >Disk /dev/nvme0n1 - 256 GB / 238 GiB
-   ```
-   Then select **EFI GPT**:
-   ```
-   Disk /dev/nvme0n1 - 256 GB / 238 GiB
+    ```
+    testdisk
+    ```
+    Choose if logging or not. Then select the disk where you will restore the EFI partition:
+    ```
+    Select a media (use Arrow keys, then press Enter):
+     Disk /dev/sda - 1000 GB / 931 GiB - ST1000LM049-2GH172
+     Disk /dev/sdb - 4026 MB / 3840 MiB - Generic Flash Disk
+     Disk /dev/loop0 - 2849 MB / 2717 MiB (RO)
+    >Disk /dev/nvme0n1 - 256 GB / 238 GiB
+    ```
+    Then select **EFI GPT**:
+    ```
+    Disk /dev/nvme0n1 - 256 GB / 238 GiB
 
-   Please select the partition table type, press Enter when done.
-    [Intel  ] Intel/PC partition
-   >[EFI GPT] EFI GPT partition map (Mac i386, some x86_64...)
-    [Humax  ] Humax partition table
-    [Mac    ] Apple partition map (legacy)
-    [None   ] Non partitioned media
-    [Sun    ] Sun Solaris partition
-    [XBox   ] XBox partition
-    [Return ] Return to disk selection
-
-
-   Hint: EFI GPT partition table type has been detected.
-   Note: Do NOT select 'None' for media with only a single partition. It's very
-   rare for a disk to be 'Non-partitioned'.
-   ```
-   Select **Analyse**:
-   ```
-   Disk /dev/nvme0n1 - 256 GB / 238 GiB
-        CHS 244198 64 32 - sector size=512
-
-   >[ Analyse  ] Analyse current partition structure and search for lost partitions
-    [ Advanced ] Filesystem Utils
-    [ Geometry ] Change disk geometry
-    [ Options  ] Modify options
-    [ Quit     ] Return to disk selection
+    Please select the partition table type, press Enter when done.
+     [Intel  ] Intel/PC partition
+    >[EFI GPT] EFI GPT partition map (Mac i386, some x86_64...)
+     [Humax  ] Humax partition table
+     [Mac    ] Apple partition map (legacy)
+     [None   ] Non partitioned media
+     [Sun    ] Sun Solaris partition
+     [XBox   ] XBox partition
+     [Return ] Return to disk selection
 
 
-   Note: Correct disk geometry is required for a successful recovery. 'Analyse'
-   process may give some warnings if it thinks the logical geometry is mismatched.
-   ```
-   Press **Quick Search**:
-   ```
-   Disk /dev/nvme0n1 - 256 GB / 238 GiB - CHS 244198 64 32
-   Current partition structure:
-        Partition                  Start        End    Size in sectors
+    Hint: EFI GPT partition table type has been detected.
+    Note: Do NOT select 'None' for media with only a single partition. It's very
+    rare for a disk to be 'Non-partitioned'.
+    ```
+    Select **Analyse**:
+    ```
+    Disk /dev/nvme0n1 - 256 GB / 238 GiB
+         CHS 244198 64 32 - sector size=512
 
-    1 P EFI System                  2048     878591     876544 [EFI System Partition]
-   Warning: number of heads/cylinder mismatches 255 (NTFS) != 64 (HD)
-   Warning: number of sectors per track mismatches 63 (NTFS) != 32 (HD)
-    2 P MS Data                   878592  498274296  497395705
-   Warning: number of heads/cylinder mismatches 255 (NTFS) != 64 (HD)
-   Warning: number of sectors per track mismatches 63 (NTFS) != 32 (HD)
-    3 P MS Data                498274304  500117503    1843200 [WinRE tools]
-
-                   P=Primary  D=Deleted
-   >[Quick Search]  [ Backup ]
-   ```
-   Press **Continue**:
-   ```
-   Disk /dev/nvme0n1 - 256 GB / 238 GiB - CHS 244198 64 32
-
-   The harddisk (256 GB / 238 GiB) seems too small! (< 509 GB / 474 GiB)
-   Check the harddisk size: HD jumper settings, BIOS detection...
-
-   The following partition can't be recovered:
-        Partition               Start        End    Size in sectors
-   >  MS Data                498274303  995670007  497395705
+    >[ Analyse  ] Analyse current partition structure and search for lost partitions
+     [ Advanced ] Filesystem Utils
+     [ Geometry ] Change disk geometry
+     [ Options  ] Modify options
+     [ Quit     ] Return to disk selection
 
 
-   [ Continue ]
-   NTFS, blocksize=4096, 254 GB / 237 GiB
-   ```
-   Then select the partition:
-   ```
-   Disk /dev/nvme0n1: 238.47 GiB, 256060514304 bytes, 500118192 sectors
-   Disk model: KINGSTON RBUSNS8154P3256GJ              
-   Units: sectors of 1 * 512 = 512 bytes
-   Sector size (logical/physical): 512 bytes / 512 bytes
-   I/O size (minimum/optimal): 512 bytes / 512 bytes
-   Disklabel type: gpt
-   Disk identifier: A4802A1C-614B-11EE-9562-806E6F6E6963
+    Note: Correct disk geometry is required for a successful recovery. 'Analyse'
+    process may give some warnings if it thinks the logical geometry is mismatched.
+    ```
+    Press **Quick Search**:
+    ```
+    Disk /dev/nvme0n1 - 256 GB / 238 GiB - CHS 244198 64 32
+    Current partition structure:
+         Partition                  Start        End    Size in sectors
 
-   Device             Start       End   Sectors   Size Type
-   /dev/nvme0n1p1      2048    878591    876544   428M EFI System
-   /dev/nvme0n1p2    878592 498274296 497395705 237.2G Microsoft basic data
-   /dev/nvme0n1p3 498274304 500117503   1843200   900M Microsoft basic data
-   ```
-   You will get a similar view:
-   ```
-   Disk /dev/nvme0n1 - 256 GB / 238 GiB - CHS 244198 64 32
-        Partition               Start        End    Size in sectors
-   >P EFI System                  2048     878591     876544 [EFI System Partition]
-    D MS Data                   878592  498274296  497395705
-    D MS Data                   878599  498274303  497395705
-    D MS Data                496431105  498274304    1843200
-    D MS Data                498274304  500117503    1843200 [WinRE tools]
+     1 P EFI System                  2048     878591     876544 [EFI System Partition]
+    Warning: number of heads/cylinder mismatches 255 (NTFS) != 64 (HD)
+    Warning: number of sectors per track mismatches 63 (NTFS) != 32 (HD)
+     2 P MS Data                   878592  498274296  497395705
+    Warning: number of heads/cylinder mismatches 255 (NTFS) != 64 (HD)
+    Warning: number of sectors per track mismatches 63 (NTFS) != 32 (HD)
+     3 P MS Data                498274304  500117503    1843200 [WinRE tools]
 
+                    P=Primary  D=Deleted
+    >[Quick Search]  [ Backup ]
+    ```
+    Press **Continue**:
+    ```
+    Disk /dev/nvme0n1 - 256 GB / 238 GiB - CHS 244198 64 32
 
-   Structure: Ok.  Use Up/Down Arrow keys to select partition.
-   Use Left/Right Arrow keys to CHANGE partition characteristics:
-                   P=Primary  D=Deleted
-   Keys A: add partition, L: load backup, T: change type, P: list files,
-        Enter: to continue
-   FAT32, blocksize=4096, 448 MB / 428 MiB
-   ```
-   Now you need to change some of those `D` (Delete) in `P` (Primary) to avoid that during the conversion process your partition is not deleted. To do this, move to the **MS Data** partitions and set them to `P`. Some of them cannot be set as `P`, probably because they are corrupt or other issues but in your case you need only those ones containing your data or have important purposes. To understand this, you can read the information on the last column is present and the size between **Start** and **End** columns, just pick the largest one if the other partitions cannot be set to `P`:
-   ```
-   Disk /dev/nvme0n1 - 256 GB / 238 GiB - CHS 244198 64 32
-        Partition               Start        End    Size in sectors
-   >P EFI System                  2048     878591     876544 [EFI System Partition]
-    P MS Data                   878592  498274296  497395705
-    D MS Data                   878599  498274303  497395705
-    D MS Data                496431105  498274304    1843200
-    P MS Data                498274304  500117503    1843200 [WinRE tools]
+    The harddisk (256 GB / 238 GiB) seems too small! (< 509 GB / 474 GiB)
+    Check the harddisk size: HD jumper settings, BIOS detection...
+
+    The following partition can't be recovered:
+         Partition               Start        End    Size in sectors
+    >  MS Data                498274303  995670007  497395705
 
 
-   Structure: Ok.  Use Up/Down Arrow keys to select partition.
-   Use Left/Right Arrow keys to CHANGE partition characteristics:
-                   P=Primary  D=Deleted
-   Keys A: add partition, L: load backup, T: change type, P: list files,
-        Enter: to continue
-   FAT32, blocksize=4096, 448 MB / 428 MiB
-   ```
-   After this, press **Enter** to continue and convert your disk to GPT. At the end, by **testdisk**, be sure that your disk is labelled as **gpt** and all your data partitions are still there, for example:
-   ```
-   Disk /dev/nvme0n1: 238.47 GiB, 256060514304 bytes, 500118192 sectors
-   Disk model: KINGSTON RBUSNS8154P3256GJ              
-   Units: sectors of 1 * 512 = 512 bytes
-   Sector size (logical/physical): 512 bytes / 512 bytes
-   I/O size (minimum/optimal): 512 bytes / 512 bytes
-   Disklabel type: gpt
-   Disk identifier: A4802A1C-614B-11EE-9562-806E6F6E6963
+    [ Continue ]
+    NTFS, blocksize=4096, 254 GB / 237 GiB
+    ```
+    Then select the partition:
+    ```
+    Disk /dev/nvme0n1: 238.47 GiB, 256060514304 bytes, 500118192 sectors
+    Disk model: KINGSTON RBUSNS8154P3256GJ              
+    Units: sectors of 1 * 512 = 512 bytes
+    Sector size (logical/physical): 512 bytes / 512 bytes
+    I/O size (minimum/optimal): 512 bytes / 512 bytes
+    Disklabel type: gpt
+    Disk identifier: A4802A1C-614B-11EE-9562-806E6F6E6963
 
-   Device             Start       End   Sectors   Size Type
-   /dev/nvme0n1p1      2048    878591    876544   428M EFI System
-   /dev/nvme0n1p2    878592 498274296 497395705 237.2G Microsoft basic data
-   /dev/nvme0n1p3 498274304 500117503   1843200   900M Microsoft basic data
-   ```
-   :::tip
-   In case you delete a partition as mistake, don't write any data on your disk. Just use **testdisk** to retrieve your lost partition by selecting the disk containing the lost partition and select **Intel** option (unless you have a different kind of partition). Note that, when you restore lost partitions, testdisk could make your disk as **MBR**, so, in case you need to create in this disk an EFI partition, you must convert the disk as **GPT** as explained above.
-   :::
+    Device             Start       End   Sectors   Size Type
+    /dev/nvme0n1p1      2048    878591    876544   428M EFI System
+    /dev/nvme0n1p2    878592 498274296 497395705 237.2G Microsoft basic data
+    /dev/nvme0n1p3 498274304 500117503   1843200   900M Microsoft basic data
+    ```
+    You will get a similar view:
+    ```
+    Disk /dev/nvme0n1 - 256 GB / 238 GiB - CHS 244198 64 32
+         Partition               Start        End    Size in sectors
+    >P EFI System                  2048     878591     876544 [EFI System Partition]
+     D MS Data                   878592  498274296  497395705
+     D MS Data                   878599  498274303  497395705
+     D MS Data                496431105  498274304    1843200
+     D MS Data                498274304  500117503    1843200 [WinRE tools]
+
+
+    Structure: Ok.  Use Up/Down Arrow keys to select partition.
+    Use Left/Right Arrow keys to CHANGE partition characteristics:
+                    P=Primary  D=Deleted
+    Keys A: add partition, L: load backup, T: change type, P: list files,
+         Enter: to continue
+    FAT32, blocksize=4096, 448 MB / 428 MiB
+    ```
+    Now you need to change some of those `D` (Delete) in `P` (Primary) to avoid that during the conversion process your partition is not deleted. To do this, move to the **MS Data** partitions and set them to `P`. Some of them cannot be set as `P`, probably because they are corrupt or other issues but in your case you need only those ones containing your data or have important purposes. To understand this, you can read the information on the last column is present and the size between **Start** and **End** columns, just pick the largest one if the other partitions cannot be set to `P`:
+    ```
+    Disk /dev/nvme0n1 - 256 GB / 238 GiB - CHS 244198 64 32
+         Partition               Start        End    Size in sectors
+    >P EFI System                  2048     878591     876544 [EFI System Partition]
+     P MS Data                   878592  498274296  497395705
+     D MS Data                   878599  498274303  497395705
+     D MS Data                496431105  498274304    1843200
+     P MS Data                498274304  500117503    1843200 [WinRE tools]
+
+
+    Structure: Ok.  Use Up/Down Arrow keys to select partition.
+    Use Left/Right Arrow keys to CHANGE partition characteristics:
+                    P=Primary  D=Deleted
+    Keys A: add partition, L: load backup, T: change type, P: list files,
+         Enter: to continue
+    FAT32, blocksize=4096, 448 MB / 428 MiB
+    ```
+    After this, press **Enter** to continue and convert your disk to GPT. At the end, by **testdisk**, be sure that your disk is labelled as **gpt** and all your data partitions are still there, for example:
+    ```
+    Disk /dev/nvme0n1: 238.47 GiB, 256060514304 bytes, 500118192 sectors
+    Disk model: KINGSTON RBUSNS8154P3256GJ              
+    Units: sectors of 1 * 512 = 512 bytes
+    Sector size (logical/physical): 512 bytes / 512 bytes
+    I/O size (minimum/optimal): 512 bytes / 512 bytes
+    Disklabel type: gpt
+    Disk identifier: A4802A1C-614B-11EE-9562-806E6F6E6963
+
+    Device             Start       End   Sectors   Size Type
+    /dev/nvme0n1p1      2048    878591    876544   428M EFI System
+    /dev/nvme0n1p2    878592 498274296 497395705 237.2G Microsoft basic data
+    /dev/nvme0n1p3 498274304 500117503   1843200   900M Microsoft basic data
+    ```
+    :::tip
+    In case you delete a partition as mistake, don't write any data on your disk. Just use **testdisk** to retrieve your lost partition by selecting the disk containing the lost partition and select **Intel** option (unless you have a different kind of partition). Note that, when you restore lost partitions, testdisk could make your disk as **MBR**, so, in case you need to create in this disk an EFI partition, you must convert the disk as **GPT** as explained above.
+    :::
 12. run **format fs=fat32 quick** to format the EFI partition as fat32
 13. run **assign letter=m**
 14. exit
