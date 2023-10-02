@@ -233,12 +233,12 @@ Don't run `CLEAN` command in **DISKPART** otherwise it will soft delete the sele
     MSR and EFI are Only Supported on the GPT Disk.
     ```
     it means that the disk where you are creating the EFI disk is not GPT. If it is already GPT type, skip to the next step. If not, you need to make it GPT type as follows. Boot on Linux Live Environment by a USB pendrive and use **testdisk** tool. Open the terminal and run:
-    ```
-    testdisk
-    ```
-    Choose if logging or not. Then select the disk where you will restore the EFI partition:
-    ```
-    Select a media (use Arrow keys, then press Enter):
+   ```
+   testdisk
+   ```
+   Choose if logging or not. Then select the disk where you will restore the EFI partition:
+   ```
+   Select a media (use Arrow keys, then press Enter):
     Disk /dev/sda - 1000 GB / 931 GiB - ST1000LM049-2GH172
     Disk /dev/sdb - 4026 MB / 3840 MiB - Generic Flash Disk
     Disk /dev/loop0 - 2849 MB / 2717 MiB (RO)
