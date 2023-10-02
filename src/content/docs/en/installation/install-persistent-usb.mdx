@@ -398,7 +398,7 @@ In case you try to run **bcdedit** on Windows CMD to check the list of Windows B
 :::note
 During the boot of the system, if your BIOS sees multiple **Windows Boot Manager** entries, where only one is working and the other ones are broken, on Windows CMD run `bcdedit /enum firmware`, detect the wrong entries (they should have description field as "Windows Boot Manager" and delete the one that has not **current** string in some fields. You can delete them by
 ```
-bcdedit /delete {THE_GUID}
+bcdedit /delete \{THE_GUID\}
 ```
 `THE_GUID` is the value in **identifier** field. You can do this also in Linux Live Environment by detecting the Windows Boot Manager entries to delete by `efibootmgr` command. Compare each entry's shown partition GUID and file path with the GUIDs in `partx /dev/nvme0n1` (replace `/dev/nvme0n1` by your disk), or use `efibootmgr -n XXXX` to temporarily select one specific entry for "next boot" (and reboot to test if it's the working one or not). Once you've determined which entry is bad, use `efibootmgr -b XXXX --delete-bootnum` to remove it.
 :::
