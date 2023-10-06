@@ -54,7 +54,11 @@ Check the `EFI`directory and **be sure** that there are not nested further `EFI`
 ```
 Boot Microsoft
 ```
-If you see also another `EFI` directory or other ones containing the file `grubx64.efi` (i.e., `GRUB` directory), delete these folders. Note that in other distros, `GRUB` folder could have a different name. Don't worry to delete `GRUB`folder, the next command will create it again.
+If you see also another `EFI` directory or other ones containing the file `grubx64.efi` (i.e., `GRUB` directory), delete these folders. Note that in other distros, `GRUB` folder could have a different name. Don't worry to delete `GRUB`folder by:
+```
+rm -rf /boot/efi/EFI/GRUB
+```
+The next command will create it again.
 
 Then run:
 ```
@@ -67,6 +71,12 @@ Finally:
 grub-mkconfig -o /boot/grub/grub.cfg
 ```
 at reboot, be sure that on BIOS the **GRUB** entry has the first priority over Windows Boot Manager. Then, it should work.
+
+Once landed on your working and fixed Linux environment, open the terminal and run:
+```
+sudo grub-mkconfig -o /boot/grub/grub.cfg
+```
+to restore the Windows entry in GRUB in case it is missing. Reboot the system to check all GRUB entries are working as intended.
 
 :::danger
 Don't remove any other files or folders on mounted directories otherwise they will be deleted also on the related device and the boot manager could break.
