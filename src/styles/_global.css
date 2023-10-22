@@ -3,3 +3,7 @@
 :root {
 	--sl-font: 'Noto Sans', serif !important;
 }
+
+.card {
+	border-radius: 10px;
+}
