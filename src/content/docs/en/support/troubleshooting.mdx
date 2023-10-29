@@ -409,7 +409,7 @@ conda activate $CONDA_DEFAULT_ENV
 
 ### WSL
 
-#### Win-Kex ESM Mode
+#### Win-Kex ESM Mode 'cannot execute: required file not found'
 This issue affects both Athena OS and Kali Linux. When you run `kex --esm` and you get:
 ```
 /usr/bin/kex: line 389: /mnt/c/Windows/system32/cmdkey.exe: cannot execute: required file not found
@@ -420,6 +420,19 @@ it could be due to two reasons:
 2. you are running Athena OS and Kali Linux WSL together
 
 Uninstall wine package, close both the WSL sessions, open CMD in Windows and run `wsl --shutdown`. Run Athena OS and you should not get this error anymore.
+
+#### Win-Kex ESM Mode 'Remote Desktop can't connect'
+In case you get the following error:
+![Kex ESM RDP error](@assets/images/kex-esm-rdp-error.png)
+
+just open a new Windows terminal and run:
+```
+wsl --shutdown
+```
+Then, reopen Athena OS WSL and try to run again:
+```
+kex --esm --ip -s
+```
 
 ### Misc
 
