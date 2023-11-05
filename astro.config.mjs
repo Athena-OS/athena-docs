@@ -57,6 +57,7 @@ export default defineConfig({
             { label: 'Shell', link: '/en/configuration/shell' },
             { label: 'Display Manager', link: '/en/configuration/display-manager' },
             { label: 'GNOME', link: '/en/configuration/gnome' },
+            { label: 'Bspwm', link: '/en/configuration/bspwm' },
             { label: 'Hyprland', link: '/en/configuration/hyprland' },
             { label: 'NVIDIA GPU', link: '/en/configuration/nvidia' },
             { label: 'Repositories', link: '/en/configuration/repositories' },
