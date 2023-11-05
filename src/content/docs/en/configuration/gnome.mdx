@@ -94,7 +94,7 @@ I you wish to change some GNOME elements in Athena OS, you can follow this guide
 
 GNOME is composed of several resources and we will discuss each one of them in order to tweak it as possible.
 
-### Customize Background
+### Background
 
 Backgrounds are stored in `/usr/share/backgrounds/default/` folder.
 
@@ -123,7 +123,7 @@ gsettings set org.gnome.desktop.background picture-options stretched
 If you are using a dark theme, use **picture-uri-dark**. If you are using a light theme, replace **picture-uri-dark** by **picture-uri** parameter.
 :::
 
-### Customize Mouse Cursor
+### Mouse Cursor
 
 If you wish to customize your **mouse pointer**, download one mouse cursor theme. Look at [GNOME Look](https://www.gnome-look.org/) and select **Cursors** category.
 
@@ -139,7 +139,7 @@ gsettings set org.gnome.desktop.interface cursor-theme <cursor_theme_foldername>
 ```
 The cursor theme folder must always be stored in `/usr/share/icons/` or `~/.local/share/icons/`
 
-### Customize Icons
+### Icons
 
 If you wish to customize the **icon theme**, download one of it. Look at [GNOME Look](https://www.gnome-look.org/) and select **Full Icon Themes** category.
 
@@ -155,7 +155,7 @@ gsettings set org.gnome.desktop.interface icon-theme <icon_theme_foldername>
 ```
 The icon theme folder must always be stored in `/usr/share/icons/` or `~/.local/share/icons/`
 
-### Customize Theme
+### Theme
 
 If you wish to change the theme of top bar and the GTK windows, download one of it. Look at [GNOME Look](https://www.gnome-look.org/) and select **GTK3/4 Themes** category. Download only themes that are compatible with the actual installed version of GNOME.
 
@@ -193,7 +193,7 @@ athena-theme-tweak -b
 ```
 Once applied the new theme, if you are on Xorg, press **ALT + F2**, then type **r** and press **Enter** for restarting GNOME Shell and close and reopen the terminal. If you are on Wayland, logout or reboot the system.
 
-### Customize Fonts
+### Fonts
 
 Usually the customization of fonts could be application-specific (for example for a terminal). By GNOME Tweaks, you can try to set your preferred font. Open GNOME Tweaks and move to **Fonts** section.
 
