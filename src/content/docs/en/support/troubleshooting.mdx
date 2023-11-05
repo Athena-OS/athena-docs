@@ -476,4 +476,8 @@ and select the **Linux Kernel** to run
 
 ![Athena Snapshots Run](@assets/images/athena-snapshots-run.png)
 
+#### Cannot store HTB App Token due to secret-tool hanging
+
+When you run `htb-toolkit -k set` and, by entering your App Token in the Password field secret-tool hangs, try to reboot the system. If it does not work, install Brave browser, open it and at first run a popup window asking for the creation of a new password is shown. You can choose to set a password or just press **Enter** two times if you don't want, and finally try again `htb-toolkit -k set`.
+
 <ImageComponent />
