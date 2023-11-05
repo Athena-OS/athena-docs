@@ -92,11 +92,39 @@ Edit the timeout value to change the trigger of lock screen and system suspend. 
 
 At the end, reboot.
 
-## Keybindings
+## Customization
+
+At any time you can choose to customize the current environment or to use a different theme.
+
+### Customize Environment
+
+Hyprland leverages on several files for applying its current theme. These files are distributed mainly between:
+* **~/.config/hypr**: containing all Hyprland configuration files (as keybindings, startup applications, background)
+* **~/.config/eww**: containing all eww configuration files (as top bar, OSettings, ONotify)
+* **~/.local/bin**: containing binaries used for this theme
+* **~/.local/share**: containing icon theme and font
+
+Files in **~/.config/hypr** that you can customize are:
+* **env.conf**: define environment variables to be used in Hyprland
+* **execs.conf**: define the processes to start at Hyprland startup
+* **keybindings.conf**: define the keybindings for launching applications and actions
+* **hyprland.conf**: define several settings for Hyprland environment and invoke the previous configuration files above
+
+Customize them according to your needs.
+
+If you wish to change the Desktop background, rename your image as **wallpaper** and just replace **~/.config/eww/images/wallpaper/wallpaper** by your image file.
+
+### Customize Theme
+
+If you would like to change the entire theme of Hyprland and applying a different one, you need to search for different. Usually, Hyprland themes are distributed as **dotfiles**. Dotfiles are named in this manner because they are the usual folder in your home directory that start with **.** in their name. So, a Hyprland theme typically consists of a **.config** and **.local** folders, but they could have also more of them.
+
+For applying an Hyprland theme, you must copy the content of these folders in the related **dot folders** inside your home directory. If there is no error in Hyprland configuration, the theme should be applied automatically.
+
+### Keybindings
 
 In order to help you and not getting crazy, here are reported the **main keybindings** set by default in Athena OS Hyprland.
 
-### Applications
+#### Applications
 
 | Keybind | Description |
 | ------- | ----------- |
@@ -106,7 +134,7 @@ In order to help you and not getting crazy, here are reported the **main keybind
 | **Super + W** | Open the Browser | 
 | **Super + A** | Open ArmCord as Discord client |
 
-### Actions
+#### Actions
 
 | Keybind | Description |
 | ------- | ----------- |
@@ -129,7 +157,7 @@ In order to help you and not getting crazy, here are reported the **main keybind
 | **Super + CTRL + TAB** | Toggle Compact Mode |
 | **Super + ALT + W** | Toggle Window Mode |
 
-### Windows and Workspaces
+#### Windows and Workspaces
 
 | Keybind | Description |
 | ------- | ----------- |
