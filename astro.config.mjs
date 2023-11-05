@@ -88,8 +88,6 @@ export default defineConfig({
             { label: 'Customizing Shells', link: '/en/customization/shell' },
             { label: 'Customizing Display Managers', link: '/en/customization/display-manager' },
             { label: 'Customizing Terminal Tools', link: '/en/customization/terminal-tools' },
-            { label: 'Customizing GNOME', link: '/en/customization/gnome' },
-            { label: 'Customizing Hyprland', link: '/en/customization/hyprland' },
           ],
         },
         {
