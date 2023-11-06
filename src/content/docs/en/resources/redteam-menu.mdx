@@ -5,7 +5,9 @@ description: Details about Red Team Menu in Athena OS.
 import ImageComponent from "@components/ImageComponent.astro";
 import ThemedImage from '@components/ThemedImage.astro';
 
-Red Team Menu is born for organizing in pretty manner the main pentesting tools that users need to start their hacking activity. It consists of two levels:
+Red Team Menu is born for organizing in pretty manner the main pentesting tools that users need to start their hacking activity. It is deployed in different manner according to the installed environment.
+
+In GNOME, it consists of two levels:
 * 1st level containing several hacking categories, plus browser and VSCodium as editor
 * 2nd level consisting of hacking tools deployed for each hacking category
 
@@ -86,6 +88,10 @@ In details:
     <td>weevely</td>
   </tr>
 </table>
+
+In other environments, it reflects the classic menu layout in Linux. For example:
+
+![Red Team Menu](@assets/images/xfce-well-redmenu.png)
 
 At the beginning, these tools are not installed to avoid that users would store in the disk space installed tools or services that never use. For users that would like to get these main tools, the **Enthusiast Student** role must be chosen on the Welcome App.
 
