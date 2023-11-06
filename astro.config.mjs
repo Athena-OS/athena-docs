@@ -58,7 +58,7 @@ export default defineConfig({
             { label: 'Display Manager', link: '/en/configuration/display-manager' },
             { label: 'GNOME', link: '/en/configuration/gnome' },
             { label: 'Bspwm', link: '/en/configuration/bspwm' },
-            { label: 'KDE', link: '/en/configuration/kde' },
+            { label: 'KDE Plasma', link: '/en/configuration/kde' },
             { label: 'XFCE', link: '/en/configuration/xfce' },
             { label: 'Hyprland', link: '/en/configuration/hyprland' },
             { label: 'NVIDIA GPU', link: '/en/configuration/nvidia' },
