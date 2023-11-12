@@ -18,6 +18,18 @@ grub-install: error: filesystem `btrfs' doesn't support blocklists.
 ```
 is caused when the partition table is GPT and you are not using EFI boot mode. If you would like to use GPT, remember to use EFI instead of BIOS/Legacy mode.
 
+### Installation
+
+#### time warp or clock problem
+
+During the installation of Athena, if you get an error like:
+```
+gpg: key <keyid> was created 3474 seconds in the future (time warp or clock problem)
+```
+it can occur when you are installing Athena OS by an ISO that has been released just now. To solve the issue, just wait 30 minutes and boot again by the ISO.
+
+The cause of the issue is due to a key in `/etc/pacman.d/gnupg` that has been generated in a Live Environment that has a different time of the running installer. Since in Live Environment the time changes and fixes to the right time after some minutes, if this change is done during the running of `pacman-key --init`, it causes that error. For example, the Live Environment shows 18:40 and during the install, it switches to 19:40, so the running installer, if creates new key by `pacman-key --init` when the time of Live Environment is switched, it cause the error. If you get this error, boot on Live Environment and, before to run the installer, wait for some minutes that the time clock fixes automatically.
+
 ### Boot
 
 #### Restore GRUB
