@@ -16,7 +16,7 @@ export default defineConfig({
       social: {
         github: 'https://github.com/Athena-OS',
         instagram: 'https://www.instagram.com/athenaos_sec',
-        discord: 'https://discord.gg/AHXqyJHhGc',
+        discord: 'https://discord.gg/athena-os-977645785170714644',
       },
       editLink: {
         baseUrl: 'https://github.com/Athena-OS/athena-docs/tree/main/',
