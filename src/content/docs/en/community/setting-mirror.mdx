@@ -1,0 +1,110 @@
+---
+title: Setting up a Mirror
+description: Setting up a Mirror.
+---
+import ImageComponent from "@components/ImageComponent.astro";
+import ThemedImage from '@components/ThemedImage.astro';
+
+In the context of Linux package management, a mirror refers to a server or repository that contains a copy of software packages and related metadata from another source, typically an official distribution server. The primary purpose of mirrors is to provide users with alternative, geographically distributed locations from which they can download software packages.
+
+## Definition
+
+There are different mirror servers deployed for different purposes and used for different types of content.
+
+**Git Server as a Mirror**
+
+* Purpose: A Git mirror is often used for version control systems, allowing users to clone, fetch, and push changes to a repository.
+* Setup: To create a Git mirror, you can use the `--mirror` option with `git clone`. This option ensures that all remote branches and tags are mirrored.
+* Usage: Users can clone from the Git mirror, and the mirror can periodically synchronize with the upstream repository using `git fetch --all --prune`.
+
+**Rsync Server as a Mirror**
+
+* Purpose: An rsync mirror is commonly used for mirroring files and directories, such as Linux distribution packages or other large datasets.
+* Setup: The rsync command is used to synchronize files between servers. A basic example is `rsync -a source/ destination/`.
+* Usage: Rsync mirrors are often set up to regularly synchronize with the upstream source to ensure the mirror remains up to date.
+
+**HTTP/HTTPS Server**
+
+* Purpose: HTTP or HTTPS servers can serve as mirrors for distributing files, packages, or software updates.
+* Setup: Configure the server to host the files, and users can download them using a web browser or tools like `wget` or `curl`.
+* Usage: Users can download files by navigating to the server's URL using a web browser. Alternatively, they can use command-line tools like `wget` or `curl` to retrieve files.
+
+**FTP Server**
+
+* Purpose: FTP servers can also be used to mirror files, and users can access them using FTP clients.
+* Setup: Similar to HTTP servers, configure the FTP server to host the files for distribution.
+* Usage: Users can access the FTP server using FTP clients such as `ftp` or graphical FTP clients.
+
+**Package Repository Server**
+
+* Purpose: Some software packages, especially those for specific programming languages, have dedicated servers for distributing packages. For example, Python has the Python Package Index (PyPI), and Node.js has the Node Package Manager (NPM).
+* Setup: Configure the server to host the packages, and users can download them using the respective package manager for their programming language.
+* Usage: Users can install packages using the respective package manager for their programming language.
+
+When creating a mirror, consider the specific needs of the content you are mirroring and choose the appropriate server type accordingly. Additionally, ensure that your mirroring process includes regular synchronization with the upstream source to keep the mirror up to date.
+
+## Athena OS Mirrors
+
+At the beginning, Athena OS used git mirror server but it was not suitable for package mirroring for the nature of git usage. One suitable option to consider has been rsync mirror server.
+
+#### Rsync
+1. Efficiency: Rsync is designed for efficient file synchronization. It only transfers the differences between files, making it bandwidth-friendly and quick.
+2. Ease of Use: Rsync is straightforward to set up and use. It's a common choice for mirroring tasks and is widely supported.
+3. Network Usage: Rsync is generally more bandwidth-efficient, as it only transfers the parts of files that have changed.
+4. Incremental Updates:  Rsync excels at incremental updates, ensuring that only the changes are transferred, saving time and resources.
+
+#### Git
+1. Versioning: Git provides versioning, allowing you to track changes over time. This can be beneficial if you need to audit or understand the history of the repository.
+2. Ease of Collaboration: Git is a distributed version control system, which can be advantageous if you have multiple contributors or if you want to collaborate with others on managing the mirrored repository.
+3. Branching and Merging: Git supports branching and merging, enabling you to experiment with changes before applying them to the main repository.
+4. Granular Control: Git provides more granular control over what parts of the repository you want to mirror. You can clone specific branches or tags, which can be useful for selectively mirroring only the components you need.
+
+#### Considerations Rsync vs. Git
+**Type of Repository**
+* Rsync: Best for simple mirroring tasks where you just need the latest version of files.
+* Git: Useful for scenarios where versioning, collaboration, and granular control are important.
+
+**Bandwidth**
+* Rsync: Generally more bandwidth-efficient.
+* Git: Can consume more bandwidth, especially if you need the entire version history.
+
+**Complexity**
+* Rsync: Simple and effective for basic mirroring tasks.
+* Git: Adds complexity, but offers powerful version control features.
+
+**Storage**
+* Rsync: Requires less storage space as it only transfers differences.
+* Git: Can consume more storage space, especially if you mirror the entire version history.
+
+In conclusion, **rsync** is often the more straightforward and bandwidth-friendly choice. If versioning, collaboration, and granular control are important, **git** may be a better fit. So, for a package repository, **rsync** should be the most suitable choice.
+
+## Setting up a Rsync mirror server
+
+It is assumed that you own a server (i.e., you subscribed a VPS (Virtual Private Server) service) complying the specified requirements.
+
+### Requirements
+
+* CPU: >= 4 cores
+* RAM: >= 8 GB
+* Storage: the Athena repository size is around 5 GB, so you can set at least x3 repository size as server storage
+* Bandwidth: >= 1 Gbps
+* Operating System: Arch Linux, Debian, Ubuntu (or any Linux distro you wish)
+* Backup: snapshots at regular interval
+* Performance optimization: CDN, caching, compression
+* Monitoring: centralized monitoring system of mirrors to check server resources and ensure reliability
+
+### Setting up
+
+Create a dedicated account for mirroring process named, as example, `vsync`.
+```
+sudo useradd -m vsync
+```
+The user will be created with disabled password meaning that it cannot be accessed by a password.
+
+Create directories storing mirrored files and set the created user as owner.
+```
+sudo mkdir -p /srv/mirrors/athena{,-images}
+sudo chown -R vsync:vsync /srv/mirrors/athena{,-images}
+```
+
+WORK IN PROGRESS
