@@ -344,3 +344,5 @@ and send it to **keeper@athenaos.org**. The email should contain:
 * email to inform you in case we make changes on mirroring design
 
 Once Athena OS Team accepts your request and authorize your host to pull mirror data, your scheduled rsync task should correctly work.
+
+Final consideration: currently the PULL approach by SSH is not a good option (unless hardening the source server). For this reason, the documentation will be updated by using PUSH approach or pure rsync protocol for mirroring.
