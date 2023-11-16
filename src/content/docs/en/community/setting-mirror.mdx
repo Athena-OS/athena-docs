@@ -14,27 +14,27 @@ There are different mirror synchronization protocols deployed for different purp
 
 **Rsync**
 
-* Purpose: An rsync mirror is commonly used for mirroring files and directories, such as Linux distribution packages or other large datasets.
-* Setup: The rsync command is used to synchronize files between servers. A basic example is `rsync -a source/ destination/`.
-* Usage: Rsync mirrors are often set up to regularly synchronize with the upstream source to ensure the mirror remains up to date.
+* Purpose: a rsync mirror is commonly used for mirroring files and directories, such as Linux distribution packages or other large datasets.
+* Setup: the rsync command is used to synchronize files between servers. A basic example is `rsync -a source/ destination/`.
+* Usage: rsync mirrors are often set up to regularly synchronize with the upstream source to ensure the mirror remains up to date.
 
 **Git**
 
-* Purpose: A Git mirror is often used for version control systems, allowing users to clone, fetch, and push changes to a repository.
-* Setup: To create a Git mirror, you can use the `--mirror` option with `git clone`. This option ensures that all remote branches and tags are mirrored.
-* Usage: Users can clone from the Git mirror, and the mirror can periodically synchronize with the upstream repository using `git fetch --all --prune`.
+* Purpose: a Git mirror is often used for version control systems, allowing users to clone, fetch, and push changes to a repository.
+* Setup: to create a Git mirror, you can use the `--mirror` option with `git clone`. This option ensures that all remote branches and tags are mirrored.
+* Usage: users can clone from the Git mirror, and the mirror can periodically synchronize with the upstream repository using `git fetch --all --prune`.
 
 **HTTP/HTTPS**
 
 * Purpose: HTTP or HTTPS servers can serve as mirrors for distributing files, packages, or software updates.
-* Setup: Configure the server to host the files, and users can download them using a web browser or tools like `wget` or `curl`.
-* Usage: Users can download files by navigating to the server's URL using a web browser. Alternatively, they can use command-line tools like `wget` or `curl` to retrieve files.
+* Setup: configure the server to host the files, and users can download them using a web browser or tools like `wget` or `curl`.
+* Usage: users can download files by navigating to the server's URL using a web browser. Alternatively, they can use command-line tools like `wget` or `curl` to retrieve files.
 
 **FTP**
 
 * Purpose: FTP servers can also be used to mirror files, and users can access them using FTP clients.
-* Setup: Similar to HTTP servers, configure the FTP server to host the files for distribution.
-* Usage: Users can access the FTP server using FTP clients such as `ftp` or graphical FTP clients.
+* Setup: similar to HTTP servers, configure the FTP server to host the files for distribution.
+* Usage: users can access the FTP server using FTP clients such as `ftp` or graphical FTP clients.
 
 When creating a mirror, consider the specific needs of the content you are mirroring and choose the appropriate server type accordingly. Additionally, ensure that your mirroring process includes regular synchronization with the upstream source to keep the mirror up to date.
 
@@ -56,20 +56,20 @@ At the beginning, Athena OS synchronized mirrors by git protocol but it was not 
 
 #### Considerations Rsync vs. Git
 **Type of Repository**
-* Rsync: Best for simple mirroring tasks where you just need the latest version of files.
-* Git: Useful for scenarios where versioning, collaboration, and granular control are important.
+* Rsync: best for simple mirroring tasks where you just need the latest version of files.
+* Git: useful for scenarios where versioning, collaboration, and granular control are important.
 
 **Bandwidth**
-* Rsync: Generally more bandwidth-efficient.
-* Git: Can consume more bandwidth, especially if you need the entire version history.
+* Rsync: generally more bandwidth-efficient.
+* Git: can consume more bandwidth, especially if you need the entire version history.
 
 **Complexity**
-* Rsync: Simple and effective for basic mirroring tasks.
-* Git: Adds complexity, but offers powerful version control features.
+* Rsync: simple and effective for basic mirroring tasks.
+* Git: adds complexity, but offers powerful version control features.
 
 **Storage**
-* Rsync: Requires less storage space as it only transfers differences.
-* Git: Can consume more storage space, especially if you mirror the entire version history.
+* Rsync: requires less storage space as it only transfers differences.
+* Git: can consume more storage space, especially if you mirror the entire version history.
 
 In conclusion, **rsync** is often the more straightforward and bandwidth-friendly choice. If versioning, collaboration, and granular control are important, **git** may be a better fit. So, for a package repository, **rsync** should be the most suitable choice.
 
@@ -337,7 +337,7 @@ su -s rsyncuser
 cat ~/.ssh/id_rsa.pub
 ```
 and send it to **keeper@athenaos.org**. The email should contain:
-* Public hostname
-* Content of `~/.ssh/id_rsa.pub`
+* public hostname
+* content of `~/.ssh/id_rsa.pub` created by your `rsyncuser` as explained in the related section above
 
 Once Athena OS Team accepts your request and authorize your host to pull mirror data, your scheduled rsync task should correctly work.
