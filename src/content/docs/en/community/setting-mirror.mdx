@@ -93,6 +93,7 @@ It is assumed that you own a server (i.e., you subscribed a VPS (Virtual Private
 * Protocol used for mirroring: `rsync`
 * Protocol used to expose mirror server to the final users: `HTTP/HTTPS`
 * Mirroring synchronization strategy: Pull
+* Sync Time: \<= 6 hours
 
 ### Setting up
 
@@ -339,5 +340,7 @@ cat ~/.ssh/id_rsa.pub
 and send it to **keeper@athenaos.org**. The email should contain:
 * public hostname
 * content of `~/.ssh/id_rsa.pub` created by your `rsyncuser` as explained in the related section above
+* scheduled sync time
+* email to inform you in case we make changes on mirroring design
 
 Once Athena OS Team accepts your request and authorize your host to pull mirror data, your scheduled rsync task should correctly work.
