@@ -245,8 +245,9 @@ server {
         autoindex on;
     }
 }
-Note that there is no need to create a `index.html` file.
 ```
+Note that there is no need to create a `index.html` file.
+
 Replace `your_mirror_domain.com` by your mirror domain.
 
 Create the following symbolic link:
@@ -262,12 +263,27 @@ Test the Nginx configuration:
 sudo nginx -t
 ```
 If you don't get any error, start nginx service:
+
+<Tabs>
+<TabItem label="init">
+
+```sh
+sudo service nginx start
 ```
-sudo service nginx restart
+
+</TabItem>
+<TabItem label="systemd">
+
+```sh
+sudo systemctl enable nginx
+sudo systemctl start nginx
 ```
-Finally, on your Athena OS or Arch Linux environment, you can test it by adding your mirror in `/etc/pacman.d/athena-mirrorlist` by:
+</TabItem>
+</Tabs>
+
+Finally, on your Athena OS or Arch Linux environment, you can test it on your test Athena OS client by adding your mirror in `/etc/pacman.d/athena-mirrorlist` by:
 ```
-Server = http://your_mirror_domain.com/$repo/os/$arch
+Server = http://your_mirror_domain.com/$repo/$arch
 ```
 
 ### Make HTTPS mirror server
@@ -300,28 +316,31 @@ sudo certbot --nginx -d your_mirror_domain.com
 ```
 Follow the prompts to complete the certificate installation. Certbot will automatically configure Nginx to use the obtained certificate.
 
-After obtaining the certificate, Certbot will automatically update your Nginx configuration to use HTTPS. If, for any reason, this doesn't happen, you can manually edit the Nginx configuration file.
-
-Edit the Nginx configuration file `/etc/nginx/sites-available/athenamirror`:
+After obtaining the certificate, Certbot will automatically update your Nginx configuration to use HTTPS. If, for any reason, this doesn't happen, you can manually edit `/etc/nginx/sites-available/athenamirror` by:
 ```
 server {
-    listen 80;
     server_name your_mirror_domain.com;
-    return 301 https://$host$request_uri;
-}
-
-server {
-    listen 443 ssl;
-    server_name your_mirror_domain.com;
-
-    ssl_certificate /etc/letsencrypt/live/your_mirror_domain.com/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/your_mirror_domain.com/privkey.pem;
 
     location / {
         root   /srv/mirrors;
         index  index.html;
         autoindex on;
     }
+
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/your_mirror_domain.com/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/your_mirror_domain.com/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+}
+server {
+    if ($host = your_mirror_domain.com) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+    listen 80;
+    server_name your_mirror_domain.com;
+    return 404; # managed by Certbot
 }
 ```
 Make sure to replace `your_mirror_domain.com` with your actual domain. Save the file.
@@ -331,31 +350,47 @@ Test the Nginx configuration:
 sudo nginx -t
 ```
 If you don't get any error, start nginx service:
+
+<Tabs>
+<TabItem label="init">
+
+```sh
+sudo service nginx start
 ```
-sudo service nginx restart
+
+</TabItem>
+<TabItem label="systemd">
+
+```sh
+sudo systemctl enable nginx
+sudo systemctl start nginx
 ```
+</TabItem>
+</Tabs>
+
 Certbot will automatically renew your SSL certificate before it expires. You can test the renewal process with:
 ```
 sudo certbot renew --dry-run
 ```
-Finally, on your Athena OS or Arch Linux environment, you can test it by adding your mirror in `/etc/pacman.d/athena-mirrorlist` by:
+Finally, on your Athena OS or Arch Linux environment, you can test it on your test Athena OS client by adding your mirror in `/etc/pacman.d/athena-mirrorlist` by:
 ```
 Server = https://your_mirror_domain.com/$repo/os/$arch
 ```
 
 ### Publish
 
+{/*
 At this point the new mirror server cannot still retrieve information from the main Athena OS mirror. To do that, get the content of the previously created SSH public key by:
 ```
 su -s rsyncuser
 cat ~/.ssh/id_rsa.pub
 ```
-and send it to **keeper@athenaos.org**. The email should contain:
+*/}
+Finally, to be deployed to all users, your mirror must be added communicated to Athena OS Team in order to be added in the official Athena OS mirrorlist.
+
+Send the following information to **keeper@athenaos.org**:
 * public hostname
-* content of `~/.ssh/id_rsa.pub` created by your `rsyncuser` as explained in the related section above
 * scheduled sync time
 * email to inform you in case we make changes on mirroring design
 
-Once Athena OS Team accepts your request and authorize your host to pull mirror data, your scheduled rsync task should correctly work.
-
-Final consideration: currently the PULL approach by SSH is not a good option (unless hardening the source server). For this reason, the documentation will be updated by using PUSH approach or pure rsync protocol for mirroring.
+Once Athena OS Team accepts your request, you will be informed your mirror has been added on Athena OS mirrorlist.
