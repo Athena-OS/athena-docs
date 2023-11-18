@@ -89,7 +89,7 @@ It is assumed that you own a server (i.e., you subscribed a VPS (Virtual Private
 * Backup: snapshots at regular interval
 * Performance optimization: CDN, caching, compression
 * Monitoring: centralized monitoring system of mirrors to check server resources and ensure reliability
-* Dependencies: `rsync`, `openssh` for Arch Linux, `openssh-server` for Debian, `cron`, `nginx`, `certbot`
+* Dependencies: `rsync`, `cron`, `nginx`, `certbot`
 * Protocol used for mirroring: `rsync`
 * Protocol used to expose mirror server to the final users: `HTTP/HTTPS`
 * Mirroring synchronization strategy: Pull
@@ -99,14 +99,15 @@ It is assumed that you own a server (i.e., you subscribed a VPS (Virtual Private
 
 Create a dedicated account for mirroring process named, as example, `rsyncuser`.
 ```
-sudo useradd -m -d /var/lib/rsync rsyncuser
+sudo useradd -m -d /var/lib/rsync -s /usr/sbin/nologin rsyncuser
 ```
 The user will be created with disabled password meaning that it cannot be accessed by a password.
 
 Create directories storing mirrored files and set the created user as owner.
 ```
 sudo mkdir -p /srv/mirrors/athena{,-images}
-sudo chown -R rsyncuser:rsyncuser /srv/mirrors
+sudo chown -R rsyncuser:rsyncuser /srv/mirrors/athena
+sudo chown -R rsyncuser:rsyncuser /srv/mirrors/athena-images
 ```
 
 Configure and enable the rsync daemon by:
@@ -115,8 +116,9 @@ sudo sed -i -e "s/RSYNC_ENABLE=false/RSYNC_ENABLE=true/" /etc/default/rsync &> /
 ```
 Create or edit the `/etc/rsyncd.conf` file by using the following content:
 ```
-uid = nobody
-gid = nogroup
+uid = rsyncuser
+gid = rsyncuser
+use chroot = yes
 max connections = 25
 socket options = SO_KEEPALIVE
 
@@ -166,6 +168,7 @@ hub.athenaos.org will push and trigger delta changes to the new destination mirr
 NOTE: currently we use PULL approach instead of PUSH approach, so it is not the main Athena OS mirror server that pushes changes to your new mirror, but it is the new mirror that pulls changes from main Athena OS mirror server.
 */}
 
+{/*
 To pull and synchronize Athena OS packages, you must create a SSH keypair and provide the public key to Athena OS Team. In particular, generate a SSH keypair:
 ```
 su - rsyncuser
@@ -174,6 +177,8 @@ ssh-keygen -t rsa -b 4096
 :::caution
 If you set a passphrase to your SSH keys, ensure that the automated running of rsync by scheduled tasks by cron explained later, won't be stopped by passphrase request popup.
 :::
+NOTE: we commented this part because implementing RSYNC OVER SSH can introduce a security risk because when the mirror server owner is authorized by SSH key to pull data, it can use rsyncuser to enter inside the source server. For this reason, we don't implement this mode and we use a pure rsync synchronization.
+*/}
 
 To keep your mirror up-to-date, you should regularly sync with the Athena OS repositories. First, enable `cron` service:
 
@@ -199,9 +204,17 @@ Open your crontab configuration:
 sudo crontab -e
 ```
 Add a line to run the sync at your preferred interval. For example, to sync every 6 hours:
+{/*
+NOTE: commented because don't use SSH anymore. Read reasons in the comment above.
 ```
-0 */6 * * * rsync -avzzlr --delete -e ssh rsyncuser@hub.athenaos.org:/srv/mirrors/ /srv/mirrors/
+0 *\/6 * * * rsync -avzzlr --delete -e ssh rsyncuser@hub.athenaos.org:/srv/mirrors/ /srv/mirrors/
 ```
+*/}
+```
+0 */6 * * * rsync -avzzlr --delete rsync://hub.athenaos.org/athena /srv/mirrors/athena
+0 */6 * * * rsync -avzzlr --delete rsync://hub.athenaos.org/athena-images /srv/mirrors/athena-images
+```
+
 where:
 * -a: preserve attributes like file permissions, timestamps, and others.
 * -v: verbose mode.
