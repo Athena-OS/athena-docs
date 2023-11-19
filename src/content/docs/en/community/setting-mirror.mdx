@@ -203,16 +203,16 @@ Open your crontab configuration:
 ```
 sudo crontab -e
 ```
-Add a line to run the sync at your preferred interval. For example, to sync every 6 hours:
+Add a line to run the sync at your preferred interval. For example, to sync every hour:
 {/*
 NOTE: commented because don't use SSH anymore. Read reasons in the comment above.
 ```
-0 *\/6 * * * rsync -avzzlr --delete -e ssh rsyncuser@hub.athenaos.org:/srv/mirrors/ /srv/mirrors/
+0 *\/1 * * * rsync -avzzlr --delete -e ssh rsyncuser@hub.athenaos.org:/srv/mirrors/ /srv/mirrors/
 ```
 */}
 ```
-0 */6 * * * rsync -avzzlr --delete rsync://hub.athenaos.org/athena /srv/mirrors/athena
-0 */6 * * * rsync -avzzlr --delete rsync://hub.athenaos.org/athena-images /srv/mirrors/athena-images
+0 */1 * * * rsync -avzzlr --delete rsync://hub.athenaos.org/athena /srv/mirrors/athena
+0 */1 * * * rsync -avzzlr --delete rsync://hub.athenaos.org/athena-images /srv/mirrors/athena-images
 ```
 
 where:
