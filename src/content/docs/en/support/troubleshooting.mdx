@@ -18,8 +18,6 @@ grub-install: error: filesystem `btrfs' doesn't support blocklists.
 ```
 is caused when the partition table is GPT and you are not using EFI boot mode. If you would like to use GPT, remember to use EFI instead of BIOS/Legacy mode.
 
-### Installation
-
 #### time warp or clock problem
 
 During the installation of Athena, if you get an error like:
@@ -113,8 +111,6 @@ sudo mount -o subvol=@log /dev/sda3 /mnt/var/log
 otherwise run:
 ```
 sudo mount /dev/sda3 /mnt
-sudo mount /dev/sda3 /mnt/home
-sudo mount /dev/sda3 /mnt/var/log
 ```
 Then, run:
 ```
