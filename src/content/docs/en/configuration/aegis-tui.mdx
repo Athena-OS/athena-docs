@@ -23,123 +23,125 @@ Open the terminal and run:
 ```
 aegis-tui
 ```
+![Aegis TUI](@assets/images/aegis-tui.png)
 
-#### Language
-Availability: Easy and Advanced Installation.
+#### Timezone
 
-1. Select the language
-   ![System Language](@assets/images/calamares-welcome-offline.png)
+1. Select the timezone
+   ![System Timezone](@assets/images/aegis-tui-timezone.png)
 
-#### Kernel
-Availability: Advanced Installation.
+#### Keymap
 
-2. Select your favourite kernel
-   ![System Kernel](@assets/images/calamares-kernel.png)
+2. Select the keymap
+   ![System Keymap](@assets/images/calamares-kernel.png)
 
    :::note
    The Easy Installation will implement **Linux Zen kernel** by default.
    :::
 
-#### Environment
-Availability: Advanced Installation.
+#### Locale
 
-3. Select your favourite environment
-   ![System Environment](@assets/images/calamares-environment.png)
+3. Select the locale
+   ![System Locale](@assets/images/aegis-tui-locale.png)
 
-   :::note
-   The Easy Installation will install **GNOME environment** by default.
-   :::
-
-#### Theme
-Availability: Advanced Installation.
-
-4. Select your favourite theme
-   ![System Theme](@assets/images/calamares-theme.png)
-
-   :::note
-   The Easy Installation will install **Blue Eyes theme** by default.
-   :::
-
-#### Login Manager
-Availability: Advanced Installation.
-
-5. Select your favourite display manager for login
-   ![System Login](@assets/images/calamares-login.png)
-
-   :::note
-   The Easy Installation will install **GNOME Display Manager** by default.
-   :::
-
-#### Shell
-Availability: Advanced Installation.
-
-6. Select your favourite shell
-   ![System Shell](@assets/images/calamares-shell.png)
-
-   :::note
-   The Easy Installation will install **Bash** by default.
-   :::
-
-#### Terminal
-Availability: Advanced Installation.
-
-7. Select your favourite terminal
-   ![System Terminal](@assets/images/calamares-terminal.png)
-
-   :::note
-   The Easy Installation will install **GNOME Terminal** by default.
-   :::
-
-#### Browser
-Availability: Advanced Installation.
-
-8. Select your favourite browser
-   ![System Browser](@assets/images/calamares-browser.png)
-
-   :::note
-   The Easy Installation will install **Firefox ESR** by default.
-   :::
-
-#### Utilities
-Availability: Advanced Installation.
-
-9. Select your favourite utilities
-   ![System Utilities](@assets/images/calamares-utilities.png)
-
-#### Location
-Availability: Easy and Advanced Installation.
-
-10. Select your location and timezone
-   ![System Location and Timezone](@assets/images/calamares-location.png)
-
-#### Keyboard
-Availability: Easy and Advanced Installation.
-
-11. Select your keyboard layout
-   ![System Keyboard](@assets/images/calamares-keyboard.png)
 
 #### Users
-Availability: Easy and Advanced Installation.
 
-12. Set your user account
-   ![System Keyboard](@assets/images/calamares-users.png)
+4. Set your user account
+   ![User Account](@assets/images/aegis-tui-username.png)
 
-#### Partition
-Availability: Easy and Advanced Installation.
+   Set your password
+   ![User Password](@assets/images/aegis-tui-password.png)
+   ![User Verify Password](@assets/images/aegis-tui-password-verify.png)
 
-13. Select your partition according to the installation type you are going to. Check the **Installation** chapter related to your setup and follow there the partition scheme to implement:
+   Choose if the inserted password should be the same for the root account too
+   ![User Same Root Password](@assets/images/aegis-tui-password-root-same.png)
+
+   If choose **No**, set a password for the root account
+   ![Root Password](@assets/images/aegis-tui-password-root.png)
+   ![Root Verify Password](@assets/images/aegis-tui-password-root-verify.png)
+
+#### Shell
+
+5. Select your favourite shell
+   ![System Shell](@assets/images/aegis-tui-shell.png)
+
+#### Hostname
+
+6. Set the hostname
+   ![System Hostname](@assets/images/aegis-tui-hostname.png)
+
+#### Partitioning
+
+7. Select your partition according to the installation type you are going to. Check the **Installation** chapter related to your setup and follow there the partition scheme to implement:
 * [Installing as single boot](/en/installation/install-single-boot/#partitioning)
+* [Viirtual Machine scenario](/en/installation/install-single-boot/#partitioning)
 * [Installing as dual boot with Linux or Windows](/en/installation/install-dual-boot/#partitioning)
-    
-    For virtual machine scenarios, just select **Erase disk**
-    ![VM Erase Disk](@assets/images/calamares-vm-erase.png)
+
+#### Desktop
+
+8. Select your favourite theme
+   ![System Desktop](@assets/images/aegis-tui-desktop.png)
+
+#### Theme
+
+9. Select your favourite theme
+   ![System Theme](@assets/images/aegis-tui-theme.png)
+
+#### Login Manager
+
+10. Select your favourite display manager for login
+   ![System Login](@assets/images/aegis-tui-dm.png)
+
+#### Browser
+
+11. Select your favourite browser
+   ![System Browser](@assets/images/aegis-tui-browser.png)
+
+#### Terminal
+
+12. Select your favourite terminal
+   ![System Terminal](@assets/images/aegis-tui-terminal.png)
+
+#### Miscellaneous Settings
+
+13. Select your favourite settings by using **Space** key button and confirm by **Enter**
+   ![System Settings](@assets/images/aegis-tui-misc.png)
+
+   :::note
+   Currently these settings are still not implemented, so their choice are uneffective.
+   :::
 
 14. Review the **Summary** and run the installation.
+   ![Install Summary](@assets/images/aegis-tui-summary.png)
 
-    During the installation, you can click on **Toggle log** button for reading in real time the installation logs. In case the installation gets some issues, Calamares provides to you a link to https://termbin.com where the logs are temporary saved in order to be accessed by the Athena OS team for troubleshooting.
+15. Select the install parameters for the installation process
+   ![Install Set Cores](@assets/images/aegis-tui-install-cores.png)
+   ![Install Set Jobs](@assets/images/aegis-tui-install-jobs.png)
+
+   Select if the installation should continue even if the building process of a software can fail
+   ![Install Keep Going](@assets/images/aegis-tui-install-keep.png)
+
+   Finally, if you are ready to install, proceed
+   ![Install Confirm](@assets/images/aegis-tui-install-confirm.png)
+
+   During the installation, installation logs are saved in `/tmp/aegis.log`. In case the installation gets some issues, run:
+    ```
+    cat /tmp/aegis.log | nc termbin.com 9999
+    ```
+    to get a link to https://termbin.com where the logs are temporary saved. Communicate this link to Athena OS Team for troubleshooting.
 
 15. If no errors have been raised during the installation phase, you are ready to use Athena OS!
 
-    ![Installation Finished](@assets/images/calamares-finish.png)
+    ![Installation Finished](@assets/images/aegis-tui-finish.png)
 
+   :::note
+   At the end of a successful installation in an EFI system, you could get a message like:
+   ```
+   ⚠ Mount point '/boot' which backs the random seed file is world accessible, which is a security hole! ⚠
+   ⚠ Random seed file '/boot/loader/.#bootctlrandom-seedc5706ea22f8895b0' is world accessible, which is a security hole! ⚠
+   Random seed file /boot/loader/random-seed successfully written (32 bytes).
+   ```
+   It is related to all Linux systems, but it should be mitigated by using encrypted partitions. To get more details about this warning, refer to [this resource](https://discourse.nixos.org/t/security-warning-when-installing-nixos-23-11/37636).
+   :::
 <ImageComponent />

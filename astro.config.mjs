@@ -52,6 +52,7 @@ export default defineConfig({
           label: 'Configuration',
           items: [
             // Each item here is one entry in the navigation menu.
+            { label: 'Aegis Installer TUI', link: '/en/configuration/aegis-tui' },
             { label: 'Calamares Installer', link: '/en/configuration/calamares' },
             { label: 'Kernel', link: '/en/configuration/kernel' },
             { label: 'Shell', link: '/en/configuration/shell' },
