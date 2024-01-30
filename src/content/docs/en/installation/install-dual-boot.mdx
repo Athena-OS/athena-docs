@@ -31,14 +31,16 @@ Once you land on the Live Environment, follow the [Calamares Installer](/en/conf
 If you are using Aegis TUI, on **Partitioning**, select **Manual**:
 ![Aegis TUI Partitioning Manual](@assets/images/aegis-tui-partitioning-mode-manual.png)
 
-An example partition layout will be shown according to your boot system.
+If your system is UEFI, follow **EFI** section. If your system is BIOS-Legacy, scroll down and follow **BIOS-Legacy** section below.
 
 #### EFI
 
 The example partition will appear like:
 ![Aegis TUI Partitioning Example Layout EFI](@assets/images/aegis-tui-partitioning-manual-layout-efi.png)
 
-Select the disk to work on. It is needed now to create the needed partitions for Athena OS.
+Select the disk to work on. It is needed now to create the needed partitions for Athena OS. At label selection, select **gpt**.
+
+![Aegis TUI Partitioning Table EFI](@assets/images/aegis-tui-partitioning-manual-table-efi.png)
 
 First, we create the EFI partition. If you have already enough available free space, press **"New"**, otherwise **"Delete"** or **"Resize"** an existing partition to get additional free space. As **Partition Size**, set **"512M"**, select **"Type"** option and select **"EFI System"** as partition type.
 
@@ -65,6 +67,37 @@ Then, as **root partition mountpoint**, select **/** and as **root partition fil
 
 Next it will be asked if you created a Swap partition. If you didn't create it, press **No**. If you did, press **Yes**. It will be asked you to select what is the swap partition you created. Select it (usually it should be the one sized 1G or 2G or 4G or 8G):
 ![Aegis TUI Partitioning Select Swap](@assets/images/aegis-tui-partitioning-manual-select-swap-partition-efi.png)
+
+Then, continue to follow the [Aegis TUI guide](/en/configuration/aegis-tui/#partitioning).
+
+#### BIOS Legacy
+
+![Aegis TUI Partitioning Example Layout Legacy](@assets/images/aegis-tui-partitioning-manual-layout-legacy.png)
+
+Select the disk to work on. It is needed now to create the needed partitions for Athena OS. At label selection, select **dos**.
+
+![Aegis TUI Partitioning Table Legacy](@assets/images/aegis-tui-partitioning-manual-table-legacy.png)
+
+In a GRUB-BIOS Legacy system, the creation of a boot partition is not needed because it will be created automatically by MBR (dos) in the boot sector.
+
+(Optional) If you want to set a Swap Partition, if you have enough available free space, press **"New"**, otherwise **"Delete"** or **"Resize"** an existing partition to get additional free space. As Partition Size, set **"1G"** or **"2G"** or **"4G"** or **"8G"** depending on the amount of your RAM or your preference, set **"primary"** and select **"Type"** option and select **"Linux swap"** as partition type.
+
+:::note
+If you are going to enable **Zram** later, you don't need to create a Swap partition.
+:::
+
+Now, create a root partition for your system. If you have enough available free space, press **"New"**, otherwise **"Delete"** or **"Resize"** an existing partition to get space. As Partition Size, set the remaning free space amountand set it as **"primary"**. As **"Type"**, be sure it is set as **"Linux"**. Keeping the selection on the created root partition, press on **"Bootable"** option to mark it as bootable partition.
+
+Afterwards, on the menu, select **"Write"** to apply these changes to your disk. When asked **"Are you sure you want to write the partition table to disk?"** type **yes** and press **Enter** key. Finally, press **Quit**.
+![Aegis TUI Partitioning Manual Quit Legacy](@assets/images/aegis-tui-partitioning-manual-quit-legacy.png)
+
+Now it will be asked you to select what is the root partition you created. Select it (usually it should be the one sized as you set previously):
+![Aegis TUI Partitioning Select Root Legacy](@assets/images/aegis-tui-partitioning-manual-select-root-partition-legacy.png)
+
+Then, as **root partition mountpoint**, select **/** and as **root partition filesystem** select one of shown options (i.e., **btrfs**).
+
+Next it will be asked if you created a Swap partition. If you didn't create it, press **No**. If you did, press **Yes**. It will be asked you to select what is the swap partition you created. Select it (usually it should be the one sized 1G or 2G or 4G or 8G):
+![Aegis TUI Partitioning Select Swap Legacy](@assets/images/aegis-tui-partitioning-manual-select-swap-partition-legacy.png)
 
 Then, continue to follow the [Aegis TUI guide](/en/configuration/aegis-tui/#partitioning).
 
