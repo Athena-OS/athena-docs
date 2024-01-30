@@ -130,13 +130,13 @@ aegis-tui
 
     ![Installation Finished](@assets/images/aegis-tui-finish.png)
 
-   :::note
-   At the end of a successful installation in an EFI system, you could get a message like:
-   ```
-   ⚠ Mount point '/boot' which backs the random seed file is world accessible, which is a security hole! ⚠
-   ⚠ Random seed file '/boot/loader/.#bootctlrandom-seedc5706ea22f8895b0' is world accessible, which is a security hole! ⚠
-   Random seed file /boot/loader/random-seed successfully written (32 bytes).
-   ```
-   It is related to all Linux systems, but it should be mitigated by using encrypted partitions. To get more details about this warning, refer to [this resource](https://discourse.nixos.org/t/security-warning-when-installing-nixos-23-11/37636).
-   :::
+    :::note
+    At the end of a successful installation in an EFI system, you could get a message like:
+    ```
+    ⚠ Mount point '/boot' which backs the random seed file is world accessible, which is a security hole! ⚠
+    ⚠ Random seed file '/boot/loader/.#bootctlrandom-seedc5706ea22f8895b0' is world accessible, which is a security hole! ⚠
+    Random seed file /boot/loader/random-seed successfully written (32 bytes).
+    ```
+    It is related to all Linux systems, but it should be mitigated by using encrypted partitions. To get more details about this warning, refer to [this resource](https://discourse.nixos.org/t/security-warning-when-installing-nixos-23-11/37636).
+    :::
 <ImageComponent />
