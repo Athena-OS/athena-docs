@@ -27,6 +27,49 @@ Once you land on the Live Environment, follow the [Calamares Installer](/en/conf
 
 ## Partitioning
 
+### Aegis TUI
+If you are using Aegis TUI, on **Partitioning**, select **Manual**:
+![Aegis TUI Partitioning Manual](@assets/images/aegis-tui-partitioning-mode-manual.png)
+
+An example partition layout will be shown according to your boot system.
+
+#### EFI
+
+The example partition will appear like:
+![Aegis TUI Partitioning Example Layout EFI](@assets/images/aegis-tui-partitioning-manual-layout-efi.png)
+
+Select the disk to work on. It is needed now to create the needed partitions for Athena OS.
+
+First, we create the EFI partition. If you have already enough available free space, press **"New"**, otherwise **"Delete"** or **"Resize"** an existing partition to get additional free space. As **Partition Size**, set **"512M"**, select **"Type"** option and select **"EFI System"** as partition type.
+
+(Optional) If you want to set a Swap Partition, if you have enough available free space, press **"New"**, otherwise **"Delete"** or **"Resize"** an existing partition to get additional free space. As Partition Size, set **"1G"** or **"2G"** or **"4G"** or **"8G"** depending on the amount of your RAM or your preference, select **"Type"** option and select **"Linux swap"** as partition type.
+
+:::note
+Note: if you are going to enable Zram, you don't need to create a Swap partition.
+:::
+
+Now, create a root partition for your system. If you have enough available free space, press **"New"**, otherwise **"Delete"** or **"Resize"** an existing partition to get space. As Partition Size, set the remaning free space amount. As **"Type"**, be sure it is set as **"Linux filesystem"**.
+
+Afterwards, on the menu, select **"Write"** to apply these changes to your disk. When asked **"Are you sure you want to write the partition table to disk?"** type **yes** and press **Enter** key. Finally, press **Quit**.
+![Aegis TUI Partitioning Manual Quit EFI](@assets/images/aegis-tui-partitioning-manual-quit-efi.png)
+
+Now it will be asked you to select what is the EFI partition you created. Select it (usually it should be the one sized 512M):
+![Aegis TUI Partitioning Select EFI](@assets/images/aegis-tui-partitioning-manual-select-efi-partition-efi.png)
+
+Then, as **EFI partition mountpoint**, select **/boot** and as **EFI partition filesystem** select **fat** or **vfat**.
+
+Now it will be asked you to select what is the root partition you created. Select it (usually it should be the one sized as you set previously):
+![Aegis TUI Partitioning Select Root](@assets/images/aegis-tui-partitioning-manual-select-root-partition-efi.png)
+
+Then, as **root partition mountpoint**, select **/** and as **root partition filesystem** select one of shown options (i.e., **btrfs**).
+
+Next it will be asked if you created a Swap partition. If you didn't create it, press **No**. If you did, press **Yes**. It will be asked you to select what is the swap partition you created. Select it (usually it should be the one sized 1G or 2G or 4G or 8G):
+![Aegis TUI Partitioning Select Swap](@assets/images/aegis-tui-partitioning-manual-select-swap-partition-efi.png)
+
+Then, continue to follow the [Aegis TUI guide](/en/configuration/aegis-tui/#partitioning).
+
+### Calamares
+
 You can install Athena OS by three methods for dual boot: Install alongside, Replace a partition, Manual partitioning.
 :::note
 Currently, the default file system that will be set for *Install alongside* and *Replace a partition* methods is BTRFS. BTRFS provides several interesting features as **snapshots** in order to rollback your system in case of fault. For changing default file system, you need to edit `/etc/calamares/modules/partition.conf` and replace the `btrfs` value by one of the available file systems. The value must be replaced in the line containing:
