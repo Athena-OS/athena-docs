@@ -23,7 +23,7 @@ for **EFI boot**, select **Athena OS install medium** or:
 
 for **BIOS/Legacy boot**, select **Boot Athena OS (x86_64, BIOS, open source)**.
 
-Once you land on the Live Environment, follow the [Calamares Installer](/en/configuration/calamares/) chapter until the **Partitions** section.
+Once you land on the Live Environment, follow the [Aegis TUI Installer](/en/configuration/aegis-tui/) chapter until the **Partitions** section.
 
 ## Partitioning
 
@@ -101,6 +101,7 @@ Next it will be asked if you created a Swap partition. If you didn't create it, 
 
 Then, continue to follow the [Aegis TUI guide](/en/configuration/aegis-tui/#partitioning).
 
+{/*
 ### Calamares
 
 You can install Athena OS by three methods for dual boot: Install alongside, Replace a partition, Manual partitioning.
@@ -214,7 +215,7 @@ swapoff /dev/zram0
 modprobe -r zram
 echo 1 > /sys/module/zswap/parameters/enabled
 ```
-and enable ZSWAP by removing `zswap.enabled=0` from **/etc/default/grub** inside **GRUB_CMDLINE_LINUX_DEFAULT** variable and running:
+and enable ZSWAP by removing `zswap.enabled=0` from `/etc/default/grub` inside **GRUB_CMDLINE_LINUX_DEFAULT** variable and running:
 ```
 update-grub
 ```
@@ -228,5 +229,5 @@ swapon -s
 ```
 and check if the output corresponds to your swap partition.
 :::
-
+*/}
 <ImageComponent />

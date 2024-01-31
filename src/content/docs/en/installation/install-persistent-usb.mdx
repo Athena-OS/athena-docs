@@ -23,73 +23,11 @@ for **EFI boot**, select **Athena OS install medium** or:
 
 for **BIOS/Legacy boot**, select **Boot Athena OS (x86_64, BIOS, open source)**.
 
-Once you land on the Live Environment, attach USB-2 to a different USB port and be sure it is working, and follow the [Calamares Installer](/en/configuration/calamares/) chapter until the **Partitions** section.
+Once you land on the Live Environment, attach USB-2 to a different USB port and be sure it is working, and follow the [Aegis TUI Installer](/en/configuration/aegis-tui/) chapter until the **Partitions** section.
 
 ## Partitioning
 
-On **Partitions** section, on **Select storage device** dropdown menu at top side, select the name of your USB-2 device and select **Manual Partitioning**.
-
-You should:
-* click on **New Partition Table** and select **GUID Partition Table**
-* BIOS-GRUB. Click on **Free Space** and click on **Create** then:
-  * Size: 8 MB
-  * File System: unformatted
-  * Flags: bios-grub
-  * Click OK
-* Boot partition. Click on **Free Space** and click on **Create** then:
-  * Size: 300 MB
-  * File System: ext4 or fat32
-  * Mount Point: /boot
-  * Flags: boot (or boot-efi)
-  * Click OK
-* Data partition. Click on **Free Space** and click on **Create** then:
-  * Size: the remaining size
-  * File System: btrfs (or any file system you wish)
-  * Encrypt: select it if you want to encrypt your data partition
-  * Mount Point: /
-  * Click OK
-
-You should have something like:
-![USB Manual Partitioning](@assets/images/calamares-partition-usb.png)
-
-or, for encrypted data partition, like
-
-![USB Manual Partitioning Encryption](@assets/images/calamares-partition-usb-encrypted.png)
-
-Then click **Next**. You will get some warning messages, just click **OK** and run the installation.
-
-:::note
-We don't create a SWAP space because Athena OS uses [ZRAM](https://wiki.archlinux.org/title/Zram).
-:::
-
-:::tip
-If you would like to disable ZRAM and use ZSWAP, you can create the SWAP partition by:
-* clicking on **Free Space** and clicking on **Create** then
-  * Size: set a suitable size for Swap Space if you would like to set it (it should be a power of 2)
-  * File System: linuxswap
-  * Flags: swap
-  * Click OK
-
-After the OS installation, disable ZRAM by running:
-```
-swapoff /dev/zram0
-modprobe -r zram
-echo 1 > /sys/module/zswap/parameters/enabled
-```
-and enable ZSWAP by removing `zswap.enabled=0` from **/etc/default/grub** inside **GRUB_CMDLINE_LINUX_DEFAULT** variable and running:
-```
-update-grub
-```
-or
-```
-sudo grub-mkconfig -o /boot/grub/grub.cfg
-```
-Reboot your system. Finally, verify if the ZSWAP as been set correctly by running:
-```
-swapon -s
-```
-and check if the output corresponds to your swap partition.
-:::
+On **Partitions** section, follow [Aegis TUI Manual Partitioning](/en/installation/install-dual-boot/#partitioning) EFI or BIOS-Legacy according to your setup, and select the name of the USB-2 device.
 
 :::danger
 By installing the system in a persistent USB, the GRUB installed on the hard disk could be deleted and you would need to reinstall it.

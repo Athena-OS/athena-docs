@@ -39,10 +39,9 @@ For Tmux, the available themes can be found in the [Tmux Powerline Theme](https:
 
 ### Test the theme
 
-Once you get all the elements of the theme, you need to test them in your local machine to check if the overall theme works as intended. You should follow the provided instructions but in general you may:
-* store the GTK theme folder in **/usr/share/themes/**
-* store the Icon theme folder in **/usr/share/icons/**
-* store the Cursor theme folder in **/usr/share/icons/**
+Once you get all the elements of the theme, you need to test them in your local machine to check if the overall theme works as intended.
+
+Athena OS is a declarative OS, it means you need to "declare" the theme resources you need to test. You need to create a `.nix` module that sets the defined theme. For GTK theme, Icon theme and Cursor theme, you can refer as example to the [Nix modules](https://github.com/Athena-OS/athena-nix/blob/main/nixos/modules/themes/akame/default.nix) provided by Athena OS.
 
 Kitty can be tested directly by running:
 ```
@@ -56,6 +55,7 @@ Tmux theme can be tested by editing `~/.tmux.conf` and setting the line containi
 ```
 set -g @tmux_power_theme '<theme-name>'
 ```
+or it can be done declarative in case `.tmux.conf` is read-only.
 
 Then, you must apply these elements on your environment. The implementation of GTK, Icon and Cursor themes depends on the environment you are looking for, whereas Kitty, VSCodium and Tmux themes are independent from that.
 
@@ -127,6 +127,6 @@ Apply the Background image by renaming your image as **wallpaper** and just repl
 
 ### Submit the theme
 
-Submit the theme on [Athena Ticketing System](https://github.com/Athena-OS/athena-iso/issues/new/choose) by clicking on **Get started** of **Submit theme** entry and propose your theme to the Community! Ask Community for reacting to the opened ticket and **high reacted themes** will be implemented in Athena repository!
+Submit the theme on [Athena Ticketing System](https://github.com/Athena-OS/athena-nix/issues/new/choose) by clicking on **Get started** of **Submit theme** entry and propose your theme to the Community! Ask Community for reacting to the opened ticket and **high reacted themes** will be implemented in Athena Nix!
 
 <ImageComponent />

@@ -53,18 +53,18 @@ export default defineConfig({
           items: [
             // Each item here is one entry in the navigation menu.
             { label: 'Aegis Installer TUI', link: '/en/configuration/aegis-tui' },
-            { label: 'Calamares Installer', link: '/en/configuration/calamares' },
+            // { label: 'Calamares Installer', link: '/en/configuration/calamares' },
             { label: 'Kernel', link: '/en/configuration/kernel' },
             { label: 'Shell', link: '/en/configuration/shell' },
-            { label: 'Display Manager', link: '/en/configuration/display-manager' },
+            // { label: 'Display Manager', link: '/en/configuration/display-manager' },
             { label: 'GNOME', link: '/en/configuration/gnome' },
-            { label: 'Bspwm', link: '/en/configuration/bspwm' },
-            { label: 'KDE Plasma', link: '/en/configuration/kde' },
+            // { label: 'Bspwm', link: '/en/configuration/bspwm' },
+            // { label: 'KDE Plasma', link: '/en/configuration/kde' },
             { label: 'MATE', link: '/en/configuration/mate' },
             { label: 'Cinnamon', link: '/en/configuration/cinnamon' },
-            { label: 'XFCE', link: '/en/configuration/xfce' },
-            { label: 'Hyprland', link: '/en/configuration/hyprland' },
-            { label: 'NVIDIA GPU', link: '/en/configuration/nvidia' },
+            // { label: 'XFCE', link: '/en/configuration/xfce' },
+            // { label: 'Hyprland', link: '/en/configuration/hyprland' },
+            // { label: 'NVIDIA GPU', link: '/en/configuration/nvidia' },
             { label: 'Repositories', link: '/en/configuration/repositories' },
             { label: 'Utilities', link: '/en/configuration/utilities' },
           ],
@@ -73,9 +73,9 @@ export default defineConfig({
           label: 'Cyber Resources',
           items: [
             // Each item here is one entry in the navigation menu.
-            { label: 'Athena Welcome', link: '/en/resources/athena-welcome' },
+            // { label: 'Athena Welcome', link: '/en/resources/athena-welcome' },
             { label: 'Pentesting Tools', link: '/en/resources/pentesting-tools' },
-            { label: 'Athena Cyber Hub', link: '/en/resources/cyber-hub' },
+            // { label: 'Athena Cyber Hub', link: '/en/resources/cyber-hub' },
             { label: 'Hack The Box Toolkit', link: '/en/resources/htb-toolkit' },
             { label: 'PWNage Menu', link: '/en/resources/pwnage-menu' },
             { label: 'Blue Team Menu', link: '/en/resources/blueteam-menu' },
@@ -86,15 +86,15 @@ export default defineConfig({
             { label: 'NIST Feed', link: '/en/resources/nist-feed' },
           ],
         },
-        {
-          label: 'Customization',
-          items: [
-            // Each item here is one entry in the navigation menu.
-            { label: 'Customizing Shells', link: '/en/customization/shell' },
-            { label: 'Customizing Display Managers', link: '/en/customization/display-manager' },
-            { label: 'Customizing Terminal Tools', link: '/en/customization/terminal-tools' },
-          ],
-        },
+        //{
+        //  label: 'Customization',
+        //  items: [
+        //    // Each item here is one entry in the navigation menu.
+        //    { label: 'Customizing Shells', link: '/en/customization/shell' },
+        //    { label: 'Customizing Display Managers', link: '/en/customization/display-manager' },
+        //    { label: 'Customizing Terminal Tools', link: '/en/customization/terminal-tools' },
+        //  ],
+        //},
         {
           label: 'Containers',
           items: [
@@ -126,7 +126,7 @@ export default defineConfig({
             { label: 'Getting Help', link: '/en/community/getting-help' },
             // { label: 'Official Athena OS Mirrors', link: '/en/community/mirrors' },
             { label: 'Style Guide', link: '/en/community/style-guide' },
-            { label: 'Setting up a Mirror', link: '/en/community/setting-mirror' },
+            // { label: 'Setting up a Mirror', link: '/en/community/setting-mirror' },
             { label: 'Submitting Bugs', link: '/en/community/submitting-bugs' },
             { label: 'Submitting Themes', link: '/en/community/submitting-themes' },
             { label: 'Submitting Tools', link: '/en/community/submitting-tools' },
