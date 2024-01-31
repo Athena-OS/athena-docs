@@ -1,0 +1,41 @@
+---
+title: Installing over NixOS
+description: How to install Athena OS on top of NixOS.
+---
+import ImageComponent from "@components/ImageComponent.astro";
+import ThemedImage from '@components/ThemedImage.astro';
+
+The following section will guide you through the steps to install Athena OS on top of NixOS. This section is useful for those cases where by using Athena OS ISO the system is not installed correctly.
+
+## Install Athena OS over NixOS
+
+Get the latest stable NixOS ISO from the [official NixOS website](https://nixos.org/download.html#nixos-iso) and install it by following the [NixOS Installation manual](https://nixos.org/manual/nixos/stable/#sec-installation). For an easy post-configuration, use a UEFI system.
+
+Once the installation has been ended, reboot the system and land in your NixOS environment.
+
+Open terminal and run:
+```
+git clone https://github.com/Athena-OS/athena-nix
+cd athena-nix/nixos
+sudo cp -rf home-manager hosts modules pkgs users configuration.nix default.nix /etc/nixos/
+```
+Then, edit the file `/etc/nixos/configuration.nix` to set your favourite choices for Athena configuration, for example:
+```nix
+  username = "athena"; # Change it by your favourite username
+  hashed = "$6$zjvJDfGSC93t8SIW$AHhNB.vDDPMoiZEG3Mv6UYvgUY6eya2UY5E2XA1lF7mOg6nHXUaaBmJYAMMQhvQcA54HJSLdkJ/zdy8UKX3xL1"; # The shown password hash is 'athena'. To set your password, change it by opening the terminal and run 'openssl passwd -6 "yourpassword"' and replace the result inside it to set the password of your user account
+  hashedRoot = "$6$zjvJDfGSC93t8SIW$AHhNB.vDDPMoiZEG3Mv6UYvgUY6eya2UY5E2XA1lF7mOg6nHXUaaBmJYAMMQhvQcA54HJSLdkJ/zdy8UKX3xL1"; # The shown password hash is 'athena'. To set your password, change it by opening the terminal and run 'openssl passwd -6 "yourpassword"' and replace the result inside it to set the password of your root account
+  hostname = "athenaos"; # Change it by your favourite hostname
+  theme = "sweet"; # You can choose between: akame, cyborg, graphite, hackthebox, samurai, sweet
+  desktop = "gnome"; # You can choose between: cinnamon, gnome, mate
+  dmanager = "gdm"; # You can choose between: gdm, lightdm
+  shell = "fish"; # You can choose between: bash, fish, zsh
+  terminal = "kitty"; # You can choose between: alacritty, kitty
+```
+Save `configuration.nix` and run:
+```nix
+sudo nixos-rebuild switch
+```
+If you get a black screen with blanking cursor, it could occur due to the switching to a different display manager. In this case, reboot your computer and run again `sudo nixos-rebuild switch`.
+
+After the switch command is successfully ended, reboot your system.
+<ImageComponent />
