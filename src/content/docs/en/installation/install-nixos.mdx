@@ -15,6 +15,8 @@ Once the installation has been ended, reboot the system and land in your NixOS e
 
 Open terminal and run:
 ```
+nix-shell -p git
+sudo nix-channel --update
 git clone https://github.com/Athena-OS/athena-nix
 cd athena-nix/nixos
 sudo cp -rf home-manager hosts modules pkgs users configuration.nix default.nix /etc/nixos/
