@@ -32,7 +32,13 @@ Then, edit the file `/etc/nixos/configuration.nix` to set your favourite choices
   dmanager = "gdm"; # You can choose between: gdm, lightdm
   shell = "fish"; # You can choose between: bash, fish, zsh
   terminal = "kitty"; # You can choose between: alacritty, kitty
+  browser = "firefox"; # Only firefox is available
+  bootloader = "systemd";
 ```
+:::note
+If you are using BIOS-Legacy instead of GRUB, edit `bootloader = "systemd";` to `bootloader = "grub";` in `/etc/nixos/configuration.nix`, then edit `/etc/nixos/modules/boot/grub/default.nix` and replace `sda` by your actual disk device. To list your disk devices, run `lsblk -d` (check `TYPE` as `disk`).
+:::
+
 Save `configuration.nix` and run:
 ```nix
 sudo nixos-rebuild switch
