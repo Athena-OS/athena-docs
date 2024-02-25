@@ -11,4 +11,17 @@ This document shows common issues and solutions to any problems a user can meet.
 
 When you search for a pentesting tool, like Nmap, in Application Menu or by Red/Blue Team Menu in GNOME, where the terminal is invoked but with no output, just go to the Virtual Machine settings and disable 3D Acceleration.
 
+### Virtual machine freezes randomly after a while in VMware Workstation Pro 17.x
+
+Uninstall VMware Workstation 17 and [download](https://download3.vmware.com/software/WKST-1625-WIN/VMware-workstation-full-16.2.5-20904516.exe) from [VMware website](https://customerconnect.vmware.com/en/downloads/info/slug/desktop_end_user_computing/vmware_workstation_pro/16_0).
+
+Then, locate the directory where your existing virtual machines are stored, edit `<vmname>.vmx` file and change:
+```
+virtualHW.version = "21"
+```
+to
+```
+virtualHW.version = "19"
+```
+
 <ImageComponent />
