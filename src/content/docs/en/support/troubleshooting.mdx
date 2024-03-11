@@ -7,6 +7,207 @@ import ThemedImage from '@components/ThemedImage.astro';
 
 This document shows common issues and solutions to any problems a user can meet.
 
+### Installation
+
+#### filesystem `btrfs' doesn't support blocklists
+
+The error during the installation:
+```
+grub-install: warning: this GPT partition label contains no BIOS Boot Partition; embedding won't be possible.
+grub-install: error: filesystem `btrfs' doesn't support blocklists.
+```
+is caused when the partition table is GPT and you are not using EFI boot mode. If you would like to use GPT, remember to use EFI instead of BIOS/Legacy mode.
+
+#### time warp or clock problem
+
+During the installation of Athena, if you get an error like:
+```
+gpg: key <keyid> was created 3474 seconds in the future (time warp or clock problem)
+```
+it can occur when you are installing Athena OS by an ISO that has been released just now. To solve the issue, just wait 30 minutes and boot again by the ISO.
+
+The cause of the issue is due to a key in `/etc/pacman.d/gnupg` that has been generated in a Live Environment that has a different time of the running installer. Since in Live Environment the time changes and fixes to the right time after some minutes, if this change is done during the running of `pacman-key --init`, it causes that error. For example, the Live Environment shows 18:40 and during the install, it switches to 19:40, so the running installer, if creates new key by `pacman-key --init` when the time of Live Environment is switched, it cause the error. If you get this error, boot on Live Environment and, before to run the installer, wait for some minutes that the time clock fixes automatically.
+
+### Boot
+
+#### Restore GRUB
+
+For fixing the GRUB, before exiting from the Live Environment, before proceeding, you must detect the existing Linux partition and the EFI partition containing the GRUB entries for Linux and Windows (or other OS). You can do that by running `sudo fdisk -l`.
+
+Let's guess the existing Linux partition is `/dev/sda3` and the boot efi partition is at `/dev/nvme0n1p1`.
+
+If your existing Linux distribution is based on BTRFS file system, run:
+```
+sudo mount -o subvol=@ /dev/sda3 /mnt
+sudo mount -o subvol=@home /dev/sda3 /mnt/home
+sudo mount -o subvol=@log /dev/sda3 /mnt/var/log
+```
+otherwise run:
+```
+sudo mount /dev/sda3 /mnt
+sudo mount /dev/sda3 /mnt/home
+sudo mount /dev/sda3 /mnt/var/log
+```
+Then, run:
+```
+mkdir /tmp/intermediate
+sudo mount /dev/nvme0n1p1 /tmp/intermediate
+sudo mount --bind /tmp/intermediate /mnt/boot/efi/
+
+sudo arch-chroot /mnt
+```
+Now, check the directory tree in `/boot/efi` folder and you should have only these files/directories:
+```
+'$RECYCLE.BIN'  EFI  'System Volume Information'
+```
+Check the `EFI`directory and **be sure** that there are not nested further `EFI` directories otherwise your GRUB never work. You must have only the current `EFI` directory with the following files/directories:
+```
+Boot Microsoft
+```
+If you see also another `EFI` directory or other ones containing the file `grubx64.efi` (i.e., `GRUB` directory), delete these folders. Note that in other distros, `GRUB` folder could have a different name. Don't worry to delete `GRUB`folder by:
+```
+rm -rf /boot/efi/EFI/GRUB
+```
+The next command will create it again.
+
+Then run:
+```
+grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB
+```
+This command will create the file `/boot/efi/EFI/GRUB/grubx64.efi`.
+
+Finally:
+```
+grub-mkconfig -o /boot/grub/grub.cfg
+```
+at reboot, be sure that on BIOS the **GRUB** entry has the first priority over Windows Boot Manager. Then, it should work.
+
+Once landed on your working and fixed Linux environment, open the terminal and run:
+```
+sudo grub-mkconfig -o /boot/grub/grub.cfg
+```
+to restore the Windows entry in GRUB in case it is missing. Reboot the system to check all GRUB entries are working as intended.
+
+:::danger
+Don't remove any other files or folders on mounted directories otherwise they will be deleted also on the related device and the boot manager could break.
+:::
+
+In case you previously formatted your EFI partition, its UUID could be changed, so, at this point, when you boot, you could get an error and be dropped on the emergency shell:
+```
+[ TIME ] Timed out waiting for device /dev/disk/by-uuid/0EBF-C0AD.
+[DEPEND] Dependency failed for File System Check on /dev/disk/by-uuid/0EBF-C0AD.
+[DEPEND] Dependency failed for /boot/efi
+[DEPEND] Dependency failed for Local File Systems.
+You are in emergency mode. After logging in, type "journalctl -xb" to view system logs, "systemctl reboot" to reboot, or "exit" to continue bootup.
+Give root password for maintenance
+```
+To fix this, boot again by USB to the Athena OS Live Environment and mounting the devices as done before, like:
+If your existing Linux distribution is based on BTRFS file system, run:
+```
+sudo mount -o subvol=@ /dev/sda3 /mnt
+sudo mount -o subvol=@home /dev/sda3 /mnt/home
+sudo mount -o subvol=@log /dev/sda3 /mnt/var/log
+```
+otherwise run:
+```
+sudo mount /dev/sda3 /mnt
+```
+Then, run:
+```
+mkdir /tmp/intermediate
+sudo mount /dev/nvme0n1p1 /tmp/intermediate
+sudo mount --bind /tmp/intermediate /mnt/boot/efi/
+
+sudo arch-chroot /mnt
+```
+Once you are on chroot environment, run:
+```
+sudo blkid /dev/nvme0n1p1
+```
+replace `/dev/nvme0n1p1` by your EFI partition device. This command gives you the valid UUID of your EFI partition, for example:
+```
+/dev/nvme0n1p1: UUID="E856-25BA" BLOCK_SIZE="512" TYPE="vfat" PARTLABEL="EFI system partition" PARTUUID="71e827d6-2276-46f2-816b-881e51c53d30"
+```
+Then, you must edit **fstab** to replace the old EFI UUID with this new one. So, open the **fstab** file by:
+```
+nano /etc/fstab
+```
+and you should get something similar to:
+```
+# /etc/fstab: static file system information.
+### WSL
+
+#### Win-Kex ESM Mode 'cannot execute: required file not found'
+This issue affects both Athena OS and Kali Linux. When you run `kex --esm` and you get:
+```
+/usr/bin/kex: line 389: /mnt/c/Windows/system32/cmdkey.exe: cannot execute: required file not found
+/usr/bin/kex: line 490: /mnt/c/Windows/system32/mstsc.exe: cannot execute: required file not found
+```
+it could be due to two reasons:
+1. wine is installed
+2. you are running Athena OS and Kali Linux WSL together
+
+Uninstall wine package, close both the WSL sessions, open CMD in Windows and run `wsl --shutdown`. Run Athena OS and you should not get this error anymore.
+
+#### Win-Kex ESM Mode 'Remote Desktop can't connect'
+In case you get the following error:
+![Kex ESM RDP error](@assets/images/kex-esm-rdp-error.png)
+
+just open a new Windows terminal and run:
+```
+wsl --shutdown
+```
+Then, reopen Athena OS WSL and try to run again:
+```
+kex --esm --ip -s
+```
+
+### Misc
+
+#### Browser elements overlap
+
+In case it occurs that browser elements can overlap as the following case:
+![Website Overlapping](@assets/images/website-overlapping.png)
+
+The reason is that the website is using the Athena OS system font instead of using its one.
+
+In case you would like to solve this behavior on the system side, you need to delete the entry `font-name='JetBrains Mono 11'` set in **/org/gnome/desktop/** or changing its font.
+:::caution
+If you remove the **font-name** entry, several elements of the desktop (like the top bar) will use the default font. In case you change the font name, the desktop elements will apply it as well.
+:::
+You can remove it or change the font by:
+```
+dconf dump /org/gnome/desktop/ > fix.txt
+```
+Edit **fix.txt** and delete the line containing `font-name='JetBrains Mono 11'` or replace this font name with your preferred, save and close the file, then run:
+```
+dconf reset -f /org/gnome/desktop/
+cat fix.txt | dconf load /org/gnome/desktop/
+```
+In case your theme will be reset, just run:
+```
+athena-theme-tweak -t <name of your favourite theme>
+```
+Use `athena-theme-tweak -l` to get the list of themes to be chosen.
+
+#### Restore system by snapshots in GRUB
+
+In case you are not able to get in the system due to a broken upgrade or similar events, you can leverage on Grub BTRFS snapshots in order to restore a previous state of your system. To do this, run the system, on the GRUB select **Athena OS Snapshots**
+
+![Athena Snapshots](@assets/images/athena-snapshots.png)
+
+Choose the **snapshot** you want to restore
+
+![Athena Snapshots Selection](@assets/images/athena-snapshots-selection.png)
+
+and select the **Linux Kernel** to run
+
+![Athena Snapshots Run](@assets/images/athena-snapshots-run.png)
+
+#### Cannot store HTB App Token due to secret-tool hanging
+
+When you run `htb-toolkit -k set` and, by entering your App Token in the Password field secret-tool hangs, try to reboot the system. If it does not work, install Brave browser, open it and at first run a popup window asking for the creation of a new password is shown. You can choose to set a password or just press **Enter** two times if you don't want, and finally try again `htb-toolkit -k set`.
+
 ### Pentesting tool from menu opening terminal with no output in VirtualBox
 
 When you search for a pentesting tool, like Nmap, in Application Menu or by Red/Blue Team Menu in GNOME, where the terminal is invoked but with no output, just go to the Virtual Machine settings and disable 3D Acceleration.
