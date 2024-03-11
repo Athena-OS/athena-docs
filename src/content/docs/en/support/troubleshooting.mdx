@@ -70,9 +70,14 @@ rm -rf /boot/efi/EFI/GRUB
 ```
 The next command will create it again.
 
-Then run:
+Then, if EFI boot, run:
 ```
 grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB
+```
+If GRUB BIOS/Legacy boot:
+```
+grub-install --force --target=i386-pc --recheck --boot-directory=/boot /dev/nvme0n1p1
+```
 
 Finally, for fixing also the Linux access, burn Athena OS ISO on a USB and follow the steps explained at [Post-installation](/en/installation/install-persistent-usb/#post-installation) section.
 
