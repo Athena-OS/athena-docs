@@ -73,68 +73,68 @@ The next command will create it again.
 Then run:
 ```
 grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB
-```
-This command will create the file `/boot/efi/EFI/GRUB/grubx64.efi`.
 
-Finally:
-```
-grub-mkconfig -o /boot/grub/grub.cfg
-```
-at reboot, be sure that on BIOS the **GRUB** entry has the first priority over Windows Boot Manager. Then, it should work.
+Finally, for fixing also the Linux access, burn Athena OS ISO on a USB and follow the steps explained at [Post-installation](/en/installation/install-persistent-usb/#post-installation) section.
 
-Once landed on your working and fixed Linux environment, open the terminal and run:
+#### Several boot entries have been disappeared
+
+In case you are in dual boot and some entries are not shown anymore (i.e., Windows Boot Manager if you have Windows in dual boot), enter in Athena OS and run:
 ```
 sudo grub-mkconfig -o /boot/grub/grub.cfg
 ```
-to restore the Windows entry in GRUB in case it is missing. Reboot the system to check all GRUB entries are working as intended.
+Then reboot.
 
-:::danger
-Don't remove any other files or folders on mounted directories otherwise they will be deleted also on the related device and the boot manager could break.
-:::
+#### ERROR kdfontop.c:183 put_font_kdfontop: Unable to load such font with such kernel version
 
-In case you previously formatted your EFI partition, its UUID could be changed, so, at this point, when you boot, you could get an error and be dropped on the emergency shell:
+The message:
 ```
-[ TIME ] Timed out waiting for device /dev/disk/by-uuid/0EBF-C0AD.
-[DEPEND] Dependency failed for File System Check on /dev/disk/by-uuid/0EBF-C0AD.
-[DEPEND] Dependency failed for /boot/efi
-[DEPEND] Dependency failed for Local File Systems.
-You are in emergency mode. After logging in, type "journalctl -xb" to view system logs, "systemctl reboot" to reboot, or "exit" to continue bootup.
-Give root password for maintenance
+setfont: ERROR kdfontop.c:183 put_font_kdfontop: Unable to load such font with such kernel version
 ```
-To fix this, boot again by USB to the Athena OS Live Environment and mounting the devices as done before, like:
-If your existing Linux distribution is based on BTRFS file system, run:
-```
-sudo mount -o subvol=@ /dev/sda3 /mnt
-sudo mount -o subvol=@home /dev/sda3 /mnt/home
-sudo mount -o subvol=@log /dev/sda3 /mnt/var/log
-```
-otherwise run:
-```
-sudo mount /dev/sda3 /mnt
-```
-Then, run:
-```
-mkdir /tmp/intermediate
-sudo mount /dev/nvme0n1p1 /tmp/intermediate
-sudo mount --bind /tmp/intermediate /mnt/boot/efi/
+can be fixed by disabling the deferred takeover by adding `fbcon=nodefer` as kernel parameter in the `GRUB_CMDLINE_LINUX_DEFAULT` variable of **/etc/default/grub** file.
+Reference: [#99](https://github.com/legionus/kbd/issues/99)
 
-sudo arch-chroot /mnt
+### Display Managers
+
+#### GDM: login background turned to grey
+
+It should be caused by an update of GDM or GNOME packages that restored the default gresource theme file. To restore the Athena GDM theme, run:
 ```
-Once you are on chroot environment, run:
+sudo pacman -S athena-gdm-config
 ```
-sudo blkid /dev/nvme0n1p1
+
+### Tools
+
+#### Bloodhound
+
+On Bloodhound, when neo4j database is run by `sudo neo4j console`, we can get some errors like:
 ```
-replace `/dev/nvme0n1p1` by your EFI partition device. This command gives you the valid UUID of your EFI partition, for example:
+Exception in thread "main" java.lang.LinkageError: Cannot to link java.nio.DirectByteBuffer
 ```
-/dev/nvme0n1p1: UUID="E856-25BA" BLOCK_SIZE="512" TYPE="vfat" PARTLABEL="EFI system partition" PARTUUID="71e827d6-2276-46f2-816b-881e51c53d30"
+For solving it, just run neo4j server by `systemctl start neo4j`. You can check the proof that the server is correctly running by `systemctl status neo4j`.
+
+#### Conda
+
+`conda activate` continues to show the prompt **(base)** instead of **(test)**.
+
+The issue is related to the usage of `no-repeat-flag` in `.bashrc`. To solve this, add the following code inside `.bashrc`:
+```bash
+if [[ $1 != no-repeat-flag  ]]; then
+    __conda_setup="$('/home/kumquat/miniconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+    if [ $? -eq 0 ]; then
+        eval "$__conda_setup"
+    else
+        if [ -f "/home/kumquat/miniconda3/etc/profile.d/conda.sh" ]; then
+            . "/home/kumquat/miniconda3/etc/profile.d/conda.sh"
+        else
+            export PATH="/home/kumquat/miniconda3/bin:$PATH"
+        fi
+    fi
+    unset __conda_setup
+fi
+# <<< conda initialize <<<
+conda activate $CONDA_DEFAULT_ENV
 ```
-Then, you must edit **fstab** to replace the old EFI UUID with this new one. So, open the **fstab** file by:
-```
-nano /etc/fstab
-```
-and you should get something similar to:
-```
-# /etc/fstab: static file system information.
+
 ### WSL
 
 #### Win-Kex ESM Mode 'cannot execute: required file not found'
