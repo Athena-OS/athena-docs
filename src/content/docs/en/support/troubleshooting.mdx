@@ -52,8 +52,17 @@ Then, run:
 ```
 mkdir /tmp/intermediate
 sudo mount /dev/nvme0n1p1 /tmp/intermediate
+```
+If EFI boot, run:
+```
 sudo mount --bind /tmp/intermediate /mnt/boot/efi/
-
+```
+If GRUB BIOS/Legacy boot:
+```
+sudo mount --bind /tmp/intermediate /mnt/boot/
+```
+Finally:
+```
 sudo arch-chroot /mnt
 ```
 Now, check the directory tree in `/boot/efi` folder and you should have only these files/directories:
