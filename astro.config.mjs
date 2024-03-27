@@ -65,7 +65,7 @@ export default defineConfig({
             { label: 'MATE', link: '/en/configuration/mate' },
             { label: 'Cinnamon', link: '/en/configuration/cinnamon' },
             // { label: 'XFCE', link: '/en/configuration/xfce' },
-            // { label: 'Hyprland', link: '/en/configuration/hyprland' },
+            { label: 'Hyprland', link: '/en/configuration/hyprland' },
             // { label: 'NVIDIA GPU', link: '/en/configuration/nvidia' },
             { label: 'Repositories', link: '/en/configuration/repositories' },
             { label: 'Utilities', link: '/en/configuration/utilities' },
