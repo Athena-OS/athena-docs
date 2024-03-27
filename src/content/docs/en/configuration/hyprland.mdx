@@ -5,11 +5,11 @@ description: Hyprland environment in Athena OS.
 import ImageComponent from "@components/ImageComponent.astro";
 import ThemedImage from '@components/ThemedImage.astro';
 
-[Hyprland](https://wiki.archlinux.org/title/Hyprland) is a dynamic tiling Wayland compositor based on wlroots that doesn't sacrifice on its looks.
+[Hyprland](https://wiki.archlinux.org/title/Hyprland) is a dynamic tiling Wayland compositor based on wlroots that doesn't sacrifice on its looks. Note: it's in beta.
 
-In Athena OS, Hyprland has been been set up to make the user experience smoother in a window manager environment
+In Athena OS, Hyprland has been been set up to make the user experience smoother in a window manager environment.
 
-Note that Hyprland is currently in beta. It doesn't work in virtual machines without **GPU passthrough**, so it is suggested to use it on bare metal.
+It doesn't work [in virtual machines](https://wiki.hyprland.org/Getting-Started/Master-Tutorial/#vm) out of the box, so it is suggested to use it on bare metal.
 
 Athena's Hyprland config is based on the wonderful [dotfiles from @end-4](https://github.com/end-4/dots-hyprland).
 
@@ -66,16 +66,23 @@ Typically, you launch apps either using the terminal or the launcher. With defau
 
 ### Power Settings
 
-You can change the inactivity duration after which the system will be locked by editing ~/.config/hypr/hypridle.conf
-Edit the lines that say timeout=NUMBER. The number is in seconds. For example, if you want your device to sleep after 15 minutes, the `listener` entry for it should look like this:
+You can change the inactivity duration after which the system will be locked by editing `~/.config/hypr/hypridle.conf`
+Edit the lines that say timeout=NUMBER. The number is in seconds. 
+
+For example, if you want your device to sleep after 15 minutes, the `listener` entry for it should look like this:
 ```ini
 listener {
-    timeout = 540 # 9mins
+    timeout = 900  # = 15 × 60 seconds
     on-timeout = $suspend_cmd
 }
 ```
 
 ## Customization
+
+### Changing wallpaper
+
+- Hit **Super** to open the launcher and type in `>img`. A popup will show up, allowing you to select an image.
+  - The color of shell elements will change according to the chosen wallpaper
 
 ### Environment
 
@@ -89,24 +96,16 @@ To configure your environment, take a look at these directories:
     * **hypridle.conf**: Power settings, as mentioned above
     * **hyprlock.conf**: Lock screen
 * **~/.config/ags**: AGS stands for "Aylur's Gtk Shell". This folder contains the config of shell elements like bars and sidebars. Normal users would want to edit `user_options.js`, while advanced users might want to edit the code in there.
-* **~/.local/bin**: Contains local scripts and possibly binaries
+* **~/.local/bin**: Contains scripts and possibly binaries
 
 Resources:
 - [Hyprland Wiki](https://wiki.hyprland.org/)
 - [AGS Wiki](https://aylur.github.io/ags-docs/): for tinkerers who would like to thoroughly edit that `ags` folder
 - [end-4's dotfiles wiki](https://end-4.github.io/dots-hyprland-wiki/en/i-i/02usage/): useful tips specifically for the provided configs
 
-### Theme
-
-- To change the wallpaper, hit **Super** to open the launcher and type in `>img`. A popup will show up, allowing to select an image.
-  - Colors will automatically generate for the chosed wallpaper
-  - For more commands, see the cheat sheet **(Super + /)**
-
 ## Keybindings
 
-To view them any time, hit **Super + /**.
-
-Here are some **common ones**:
+To view them any time, hit **Super + /**. Here are some common ones:
 
 #### Applications
 
