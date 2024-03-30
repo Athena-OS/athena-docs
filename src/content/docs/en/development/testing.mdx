@@ -37,6 +37,11 @@ parted /dev/sda -- set 1 boot on
 </TabItem>
 </Tabs>
 
+The created partitions are:
+* /dev/sda1 -> Boot partition
+* /dev/sda2 -> Swap partition
+* /dev/sda3 -> Root partition
+
 Format the partitions:
 <Tabs>
 <TabItem label="Unencrypted">
