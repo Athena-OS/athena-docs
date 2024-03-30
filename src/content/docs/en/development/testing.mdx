@@ -4,7 +4,7 @@ description: List of test cases to verify the correct working of the environment
 ---
 import ImageComponent from "@components/ImageComponent.astro";
 import ThemedImage from '@components/ThemedImage.astro';
-import PackageManagerTabs from '@components/tabs/PackageManagerTabs.astro';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
 
 
 This document shows a list of test cases that can be used to check the correctness of the environment.
@@ -16,8 +16,8 @@ Create the needed partitions.
 ```shell
 sudo -i
 ```
-<PackageManagerTabs>
-<Fragment slot="EFI">
+<Tabs>
+<TabItem label="EFI">
 ```shell
 parted /dev/sda -- mklabel gpt
 parted /dev/sda -- mkpart ESP fat32 1MiB 512MiB
@@ -25,8 +25,8 @@ parted /dev/sda -- set 1 esp on
 parted /dev/sda -- mkpart swap linux-swap 512MiB 8GB
 parted /dev/sda -- mkpart primary 8GB 100%
 ```
-</Fragment>
-<Fragment slot="BIOS/Legacy">
+</TabItem>
+<TabItem label="BIOS/Legacy">
 ```shell
 parted /dev/sda -- mklabel msdos
 parted /dev/sda -- mkpart primary 1MiB 512MiB
@@ -34,26 +34,31 @@ parted /dev/sda -- mkpart primary linux-swap 512MiB 8GB
 parted /dev/sda -- mkpart primary 8GB 100%
 parted /dev/sda -- set 1 boot on
 ```
-</Fragment>
-</PackageManagerTabs>
+</TabItem>
+</Tabs>
 
-Formaat the partitions:
-<PackageManagerTabs>
-<Fragment slot="Unencrypted">
+The created partitions are:
+* /dev/sda1 -> Boot partition
+* /dev/sda2 -> Swap partition
+* /dev/sda3 -> Root partition
+
+Format the partitions:
+<Tabs>
+<TabItem label="Unencrypted">
 ```shell
 mkfs.btrfs -L arch /dev/sda3
 mount /dev/disk/by-label/arch /mnt
 ```
-</Fragment>
-<Fragment slot="Encrypted">
+</TabItem>
+<TabItem label="Encrypted">
 ```shell
 cryptsetup -y -v luksFormat /dev/sda3
 cryptsetup open /dev/sda3 crypted
 mkfs.btrfs -L arch /dev/mapper/crypted
 mount /dev/mapper/crypted /mnt
 ```
-</Fragment>
-</PackageManagerTabs>
+</TabItem>
+</Tabs>
 Format and mount the boot partition:
 ```shell
 mkfs.fat -F 32 -n BOOT /dev/sda1
@@ -87,18 +92,18 @@ Enter in the mounted partition by `arch-chroot`:
 ```shell
 arch-chroot /mnt
 ```
-<PackageManagerTabs>
-<Fragment slot="EFI">
+<Tabs>
+<TabItem label="EFI">
 ```shell
 pacman -S nano mkinitcpio linux-lts linux-lts-headers grub efibootmgr
 ```
-</Fragment>
-<Fragment slot="BIOS/Legacy">
+</TabItem>
+<TabItem label="BIOS/Legacy">
 ```shell
 pacman -S nano mkinitcpio linux-lts linux-lts-headers grub
 ```
-</Fragment>
-</PackageManagerTabs>
+</TabItem>
+</Tabs>
 Then, edit `/etc/default/grub` and add the `rd.luks.name` to `GRUB_CMDLINE_LINUX_DEFAULT` as:
 ```
 GRUB_CMDLINE_LINUX_DEFAULT="rd.luks.name=7ab2a484-95a8-4ded-b483-b0bf086c7e41=crypted root=/dev/mapper/crypted loglevel=3 quiet"
@@ -121,18 +126,18 @@ Save it and run:
 mkinitcpio -P
 sed -i "s/#GRUB_ENABLE_CRYPTODISK=.*/GRUB_ENABLE_CRYPTODISK=y/g" /etc/default/grub
 ```
-<PackageManagerTabs>
-<Fragment slot="EFI">
+<Tabs>
+<TabItem label="EFI">
 ```shell
 grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
 ```
-</Fragment>
-<Fragment slot="BIOS/Legacy">
+</TabItem>
+<TabItem label="BIOS/Legacy">
 ```shell
 grub-install --target=i386-pc --recheck --boot-directory=/boot /dev/sda
 ```
-</Fragment>
-</PackageManagerTabs>
+</TabItem>
+</Tabs>
 ```shell
 grub-mkconfig -o /boot/grub/grub.cfg
 passwd
