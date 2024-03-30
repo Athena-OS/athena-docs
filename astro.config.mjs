@@ -135,6 +135,13 @@ export default defineConfig({
           ],
         },
         {
+          label: 'Development',
+          items: [
+            // Each item here is one entry in the navigation menu.
+            { label: 'Testing', link: '/en/development/testing' },
+          ],
+        },
+        {
           label: 'Policy',
           items: [
             // Each item here is one entry in the navigation menu.

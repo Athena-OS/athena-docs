@@ -1,0 +1,141 @@
+---
+title: Testing
+description: List of test cases to verify the correct working of the environment.
+---
+import ImageComponent from "@components/ImageComponent.astro";
+import ThemedImage from '@components/ThemedImage.astro';
+
+This document shows a list of test cases that can be used to check the correctness of the environment.
+
+### Manual minimal Arch environment installation
+Boot into Athena Live Environment by using Athena ISO.
+#### EFI
+Create the needed partitions.
+```shell
+sudo -i
+```
+<PackageManagerTabs>
+<Fragment slot="EFI">
+```shell
+parted /dev/sda -- mklabel gpt
+parted /dev/sda -- mkpart ESP fat32 1MiB 512MiB
+parted /dev/sda -- set 1 esp on
+parted /dev/sda -- mkpart swap linux-swap 512MiB 8GB
+parted /dev/sda -- mkpart primary 8GB 100%
+```
+</Fragment>
+<Fragment slot="BIOS/Legacy">
+```shell
+parted /dev/sda -- mklabel msdos
+parted /dev/sda -- mkpart primary 1MiB 512MiB
+parted /dev/sda -- mkpart primary linux-swap 512MiB 8GB
+parted /dev/sda -- mkpart primary 8GB 100%
+parted /dev/sda -- set 1 boot on
+```
+</Fragment>
+</PackageManagerTabs>
+
+Formaat the partitions:
+<PackageManagerTabs>
+<Fragment slot="Unencrypted">
+```shell
+mkfs.btrfs -L arch /dev/sda3
+mount /dev/disk/by-label/arch /mnt
+```
+</Fragment>
+<Fragment slot="Encrypted">
+```shell
+cryptsetup -y -v luksFormat /dev/sda3
+cryptsetup open /dev/sda3 crypted
+mkfs.btrfs -L arch /dev/mapper/crypted
+mount /dev/mapper/crypted /mnt
+```
+</Fragment>
+</PackageManagerTabs>
+Format and mount the boot partition:
+```shell
+mkfs.fat -F 32 -n BOOT /dev/sda1
+mount --mkdir /dev/sda1 /mnt/boot
+```
+Format the swap partition
+```shell
+mkswap -L swap /dev/sda2
+swapon /dev/sda2
+```
+Now proceed to the minimal Arch installation:
+```shell
+pacman-key --init
+pacman-key --populate
+pacstrap /mnt base
+genfstab -U /mnt >> /mnt/etc/fstab
+```
+Now, take the UUID of the root partition (i.e., sda3) that will be used later:
+```shell
+lsblk -no name,uuid
+```
+and you will get:
+```
+sda
+|-sda1      733f5e5e-e53e-48aa-b975-3176e685c199
+|-sda2      2c29bffd-a015-4485-9571-72fb1c5102f8
+`-sda3      7ab2a484-95a8-4ded-b483-b0bf086c7e41
+  `-crypted 506a895e-2e87-4955-ba47-8c25029b994d
+```
+Enter in the mounted partition by `arch-chroot`:
+```shell
+arch-chroot /mnt
+```
+<PackageManagerTabs>
+<Fragment slot="EFI">
+```shell
+pacman -S nano mkinitcpio linux-lts linux-lts-headers grub efibootmgr
+```
+</Fragment>
+<Fragment slot="BIOS/Legacy">
+```shell
+pacman -S nano mkinitcpio linux-lts linux-lts-headers grub
+```
+</Fragment>
+</PackageManagerTabs>
+Then, edit `/etc/default/grub` and add the `rd.luks.name` to `GRUB_CMDLINE_LINUX_DEFAULT` as:
+```
+GRUB_CMDLINE_LINUX_DEFAULT="rd.luks.name=7ab2a484-95a8-4ded-b483-b0bf086c7e41=crypted root=/dev/mapper/crypted loglevel=3 quiet"
+```
+Save it and run:
+```shell
+echo "en_US.UTF-8 UTF-8" > /etc/locale.gen
+locale-gen
+echo "LANG=en_US.UTF-8" > /etc/locale.conf
+ln -sf /usr/share/zoneinfo/Europe/Zurich /etc/localtime
+echo "athenaos" > /etc/hostname
+echo "KEYMAP=us" > /etc/vconsole.conf
+```
+Edit `/etc/mkinitcpio.conf` and edit `HOOKS` as:
+```
+HOOKS=(base systemd autodetect modconf kms keyboard sd-vconsole sd-encrypt block filesystems fsck)
+```
+Save it and run:
+```shell
+mkinitcpio -P
+sed -i "s/#GRUB_ENABLE_CRYPTODISK=.*/GRUB_ENABLE_CRYPTODISK=y/g" /etc/default/grub
+```
+<PackageManagerTabs>
+<Fragment slot="EFI">
+```shell
+grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
+```
+</Fragment>
+<Fragment slot="BIOS/Legacy">
+```shell
+grub-install --target=i386-pc --recheck --boot-directory=/boot /dev/sda
+```
+</Fragment>
+</PackageManagerTabs>
+```shell
+grub-mkconfig -o /boot/grub/grub.cfg
+passwd
+exit
+umount -R /mnt
+reboot
+```
+<ImageComponent />
