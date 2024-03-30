@@ -81,7 +81,7 @@ The next command will create it again.
 
 Then, if EFI boot, run:
 ```
-grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB
+grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
 ```
 If GRUB BIOS/Legacy boot:
 ```
@@ -106,6 +106,19 @@ setfont: ERROR kdfontop.c:183 put_font_kdfontop: Unable to load such font with s
 ```
 can be fixed by disabling the deferred takeover by adding `fbcon=nodefer` as kernel parameter in the `GRUB_CMDLINE_LINUX_DEFAULT` variable of **/etc/default/grub** file.
 Reference: [#99](https://github.com/legionus/kbd/issues/99)
+
+#### Blinking cursor after boot
+
+After an upgrade of your system, when you boot, after the GRUB choice, if you get only a blinking cursor, the issue could be related to the upgrade of some components that could break your system boot. To solve this issue, mount an Athena ISO to your computer to enter in a Live Environment, mount to `&mnt` the partition where your original system was installed and run:
+```
+sudo arch-chroot /mnt
+```
+After that, downgrade the affected components, for example you can try with the kernel. Remove the existing kernel and kernel headers packages and install:
+```
+pacman -Rnsd --nodeps <yourkernel> <yourkernel>-headers
+pacman -S linux-lts linux-lts-headers
+```
+If you boot, and you are able to get some output log strings and you reach another different blinking cursor, press `CTRL+ALT+Fx` (where `x` can be 2, 3, 4, and so on) to perform more troubleshooting. 
 
 ### Display Managers
 
