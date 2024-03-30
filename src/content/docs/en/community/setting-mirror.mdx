@@ -137,14 +137,14 @@ Finally, run the rsync service:
 <Tabs>
 <TabItem label="init">
 
-```sh
+```shell
 sudo service rsync start
 ```
 
 </TabItem>
 <TabItem label="systemd">
 
-```sh
+```shell
 sudo systemctl enable rsyncd
 sudo systemctl start rsyncd
 ```
@@ -185,14 +185,14 @@ To keep your mirror up-to-date, you should regularly sync with the Athena OS rep
 <Tabs>
 <TabItem label="init">
 
-```sh
+```shell
 sudo service cron start
 ```
 
 </TabItem>
 <TabItem label="systemd">
 
-```sh
+```shell
 sudo systemctl enable cronie
 sudo systemctl start cronie
 ```
@@ -267,14 +267,14 @@ If you don't get any error, start nginx service:
 <Tabs>
 <TabItem label="init">
 
-```sh
+```shell
 sudo service nginx start
 ```
 
 </TabItem>
 <TabItem label="systemd">
 
-```sh
+```shell
 sudo systemctl enable nginx
 sudo systemctl start nginx
 ```
@@ -297,14 +297,14 @@ Install the certbot plugin for Nginx:
 <Tabs>
 <TabItem label="Arch Linux">
 
-```sh
+```shell
 sudo pacman -S certbot-nginx
 ```
 
 </TabItem>
 <TabItem label="Debian">
 
-```sh
+```shell
 sudo apt install python3-certbot-nginx
 ```
 </TabItem>
@@ -354,14 +354,14 @@ If you don't get any error, start nginx service:
 <Tabs>
 <TabItem label="init">
 
-```sh
+```shell
 sudo service nginx start
 ```
 
 </TabItem>
 <TabItem label="systemd">
 
-```sh
+```shell
 sudo systemctl enable nginx
 sudo systemctl start nginx
 ```
