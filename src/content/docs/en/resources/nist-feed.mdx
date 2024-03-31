@@ -39,27 +39,27 @@ URL: https://nvd.nist.gov/vuln/detail/CVE-2023-2268
 
 NIST Feed can be configured according to the parameters shown by `nist-feed -h` command. Users can decide which kind of CVE they wish to be informed about, for instance CVEs with a high impact on the confidentiality and integrity, or CRITICAL CVEs. Some examples:
 * Set Desktop Notifications for latest or updated CVE with CRITICAL severity:
-  ```
+  ```shell
   nist-feed -n -l -s CRITICAL
   ```
 * Show details about the last three CVEs. No Desktop Notifications:
-  ```
+  ```shell
   nist-feed -r 3
   ```
 * Show details about the last twenty CVEs with PHYSICAL as attack vector and MEDIUM severity. No Desktop Notifications:
-  ```
+  ```shell
   nist-feed -V AV:P -s MEDIUM
   ```
 * Set Desktop Notifications for latest or updated CVE having high Confidentiality, Integrity and Availability impact:
-  ```
+  ```shell
   nist-feed -n -l -m C:H/I:H/A:H
   ```
   or
-  ```
+  ```shell
   nist-feed -n -l -c C:H -i I:H -a A:H
   ```
 * Set Desktop Notifications for latest or updated CVE with HIGH attack complexity and NETWORK as attack vector:
-  ```
+  ```shell
   nist-feed -n -l -A AC:H -V AV:N
   ```
 

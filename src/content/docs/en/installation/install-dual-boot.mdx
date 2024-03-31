@@ -210,21 +210,21 @@ If you would like to disable ZRAM and use ZSWAP, you can create the SWAP partiti
   * Click OK
 
 After the OS installation, disable ZRAM by running:
-```
+```shell
 swapoff /dev/zram0
 modprobe -r zram
 echo 1 > /sys/module/zswap/parameters/enabled
 ```
 and enable ZSWAP by removing `zswap.enabled=0` from `/etc/default/grub` inside **GRUB_CMDLINE_LINUX_DEFAULT** variable and running:
-```
+```shell
 update-grub
 ```
 or
-```
+```shell
 sudo grub-mkconfig -o /boot/grub/grub.cfg
 ```
 Reboot your system. Finally, verify if the ZSWAP as been set correctly by running:
-```
+```shell
 swapon -s
 ```
 and check if the output corresponds to your swap partition.

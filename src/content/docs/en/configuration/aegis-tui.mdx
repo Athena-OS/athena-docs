@@ -20,7 +20,7 @@ The installation logs will be saved to `/tmp/aegis.log` and copied to the instal
 ### Installation
 
 Open the terminal and run:
-```
+```shell
 sudo nix-channel --update
 aegis-tui
 ```
@@ -118,7 +118,7 @@ aegis-tui
     ![Install Confirm](@assets/images/aegis-tui-install-confirm.png)
  
     During the installation, installation logs are saved in `/tmp/aegis.log`. In case the installation gets some issues, run:
-    ```
+    ```shell
     cat /tmp/aegis.log | nc termbin.com 9999
     ```
     to get a link to https://termbin.com where the logs are temporary saved. Communicate this link to Athena OS Team for troubleshooting.

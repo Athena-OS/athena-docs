@@ -98,20 +98,20 @@ It is assumed that you own a server (i.e., you subscribed a VPS (Virtual Private
 ### Setting up
 
 Create a dedicated account for mirroring process named, as example, `rsyncuser`.
-```
+```shell
 sudo useradd -m -d /var/lib/rsync -s /usr/sbin/nologin rsyncuser
 ```
 The user will be created with disabled password meaning that it cannot be accessed by a password.
 
 Create directories storing mirrored files and set the created user as owner.
-```
+```shell
 sudo mkdir -p /srv/mirrors/athena{,-images}
 sudo chown -R rsyncuser:rsyncuser /srv/mirrors/athena
 sudo chown -R rsyncuser:rsyncuser /srv/mirrors/athena-images
 ```
 
 Configure and enable the rsync daemon by:
-```
+```shell
 sudo sed -i -e "s/RSYNC_ENABLE=false/RSYNC_ENABLE=true/" /etc/default/rsync &> /dev/null || echo "RSYNC_ENABLE=true" | sudo tee -a /etc/default/rsync
 ```
 Create or edit the `/etc/rsyncd.conf` file by using the following content:
@@ -153,7 +153,7 @@ sudo systemctl start rsyncd
 
 {/*
 Download the public key of `hub.athenaos.org` and set it among your authorized keys by:
-```
+```shell
 su - rsyncuser
 mkdir -p ~/.ssh/
 chmod 0700 ~/.ssh/
@@ -161,7 +161,7 @@ wget -O - -q https://hub.athenaos.org/mirrorkey.pub >> ~/.ssh/authorized_keys
 chmod 0600 ~/.ssh/authorized_keys
 ```
 By this configuration above, and adding:
-```
+```shell
 rsync -avzzlr --delete -e ssh /srv/mirrors/ rsyncuser@your_mirror_domain.com:/srv/mirrors/
 ```
 hub.athenaos.org will push and trigger delta changes to the new destination mirror server.
@@ -170,7 +170,7 @@ NOTE: currently we use PULL approach instead of PUSH approach, so it is not the 
 
 {/*
 To pull and synchronize Athena OS packages, you must create a SSH keypair and provide the public key to Athena OS Team. In particular, generate a SSH keypair:
-```
+```shell
 su - rsyncuser
 ssh-keygen -t rsa -b 4096
 ```
@@ -200,7 +200,7 @@ sudo systemctl start cronie
 </Tabs>
 
 Open your crontab configuration:
-```
+```shell
 sudo crontab -e
 ```
 Add a line to run the sync at your preferred interval. For example, to sync every hour:
@@ -251,15 +251,15 @@ Note that there is no need to create a `index.html` file.
 Replace `your_mirror_domain.com` by your mirror domain.
 
 Create the following symbolic link:
-```
+```shell
 sudo ln -s /etc/nginx/sites-available/athenamirror /etc/nginx/sites-enabled/
 ```
 and remove the Nginx configuration:
-```
+```shell
 sudo rm /etc/nginx/sites-enabled/default
 ```
 Test the Nginx configuration:
-```
+```shell
 sudo nginx -t
 ```
 If you don't get any error, start nginx service:
@@ -311,7 +311,7 @@ sudo apt install python3-certbot-nginx
 </Tabs>
 
 Run Certbot to obtain a certificate. Replace `your_mirror_domain.com` by your actual domain:
-```
+```shell
 sudo certbot --nginx -d your_mirror_domain.com
 ```
 Follow the prompts to complete the certificate installation. Certbot will automatically configure Nginx to use the obtained certificate.
@@ -346,7 +346,7 @@ server {
 Make sure to replace `your_mirror_domain.com` with your actual domain. Save the file.
 
 Test the Nginx configuration:
-```
+```shell
 sudo nginx -t
 ```
 If you don't get any error, start nginx service:
@@ -369,7 +369,7 @@ sudo systemctl start nginx
 </Tabs>
 
 Certbot will automatically renew your SSL certificate before it expires. You can test the renewal process with:
-```
+```shell
 sudo certbot renew --dry-run
 ```
 Finally, on your Athena OS or Arch Linux environment, you can test it on your test Athena OS client by adding your mirror in `/etc/pacman.d/athena-mirrorlist` by:
@@ -389,7 +389,7 @@ If your network is restricted, ensure that the following connections are allowed
 
 {/*
 At this point the new mirror server cannot still retrieve information from the main Athena OS mirror. To do that, get the content of the previously created SSH public key by:
-```
+```shell
 su -s rsyncuser
 cat ~/.ssh/id_rsa.pub
 ```

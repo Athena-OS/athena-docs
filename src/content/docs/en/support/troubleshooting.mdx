@@ -37,32 +37,32 @@ For fixing the GRUB, before exiting from the Live Environment, before proceeding
 Let's guess the existing Linux partition is `/dev/sda3` and the boot efi partition is at `/dev/nvme0n1p1`.
 
 If your existing Linux distribution is based on BTRFS file system, run:
-```
+```shell
 sudo mount -o subvol=@ /dev/sda3 /mnt
 sudo mount -o subvol=@home /dev/sda3 /mnt/home
 sudo mount -o subvol=@log /dev/sda3 /mnt/var/log
 ```
 otherwise run:
-```
+```shell
 sudo mount /dev/sda3 /mnt
 sudo mount /dev/sda3 /mnt/home
 sudo mount /dev/sda3 /mnt/var/log
 ```
 Then, run:
-```
+```shell
 mkdir /tmp/intermediate
 sudo mount /dev/nvme0n1p1 /tmp/intermediate
 ```
 If EFI boot, run:
-```
+```shell
 sudo mount --bind /tmp/intermediate /mnt/boot/efi/
 ```
 If GRUB BIOS/Legacy boot:
-```
+```shell
 sudo mount --bind /tmp/intermediate /mnt/boot/
 ```
 Finally:
-```
+```shell
 sudo arch-chroot /mnt
 ```
 Now, check the directory tree in `/boot/efi` folder and you should have only these files/directories:
@@ -74,17 +74,17 @@ Check the `EFI`directory and **be sure** that there are not nested further `EFI`
 Boot Microsoft
 ```
 If you see also another `EFI` directory or other ones containing the file `grubx64.efi` (i.e., `GRUB` directory), delete these folders. Note that in other distros, `GRUB` folder could have a different name. Don't worry to delete `GRUB`folder by:
-```
+```shell
 rm -rf /boot/efi/EFI/GRUB
 ```
 The next command will create it again.
 
 Then, if EFI boot, run:
-```
+```shell
 grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
 ```
 If GRUB BIOS/Legacy boot:
-```
+```shell
 grub-install --force --target=i386-pc --recheck --boot-directory=/boot /dev/nvme0n1p1
 ```
 
@@ -93,7 +93,7 @@ Finally, for fixing also the Linux access, burn Athena OS ISO on a USB and follo
 #### Several boot entries have been disappeared
 
 In case you are in dual boot and some entries are not shown anymore (i.e., Windows Boot Manager if you have Windows in dual boot), enter in Athena OS and run:
-```
+```shell
 sudo grub-mkconfig -o /boot/grub/grub.cfg
 ```
 Then reboot.
@@ -110,11 +110,11 @@ Reference: [#99](https://github.com/legionus/kbd/issues/99)
 #### Blinking cursor after boot
 
 After an upgrade of your system, when you boot, after the GRUB choice, if you get only a blinking cursor, the issue could be related to the upgrade of some components that could break your system boot. To solve this issue, mount an Athena ISO to your computer to enter in a Live Environment, mount to `&mnt` the partition where your original system was installed and run:
-```
+```shell
 sudo arch-chroot /mnt
 ```
 After that, downgrade the affected components, for example you can try with the kernel. Remove the existing kernel and kernel headers packages and install:
-```
+```shell
 pacman -Rnsd --nodeps <yourkernel> <yourkernel>-headers
 pacman -S linux-lts linux-lts-headers
 ```
@@ -125,7 +125,7 @@ If you boot, and you are able to get some output log strings and you reach anoth
 #### GDM: login background turned to grey
 
 It should be caused by an update of GDM or GNOME packages that restored the default gresource theme file. To restore the Athena GDM theme, run:
-```
+```shell
 sudo pacman -S athena-gdm-config
 ```
 
@@ -181,11 +181,11 @@ In case you get the following error:
 ![Kex ESM RDP error](@assets/images/kex-esm-rdp-error.png)
 
 just open a new Windows terminal and run:
-```
+```shell
 wsl --shutdown
 ```
 Then, reopen Athena OS WSL and try to run again:
-```
+```shell
 kex --esm --ip -s
 ```
 
@@ -203,16 +203,16 @@ In case you would like to solve this behavior on the system side, you need to de
 If you remove the **font-name** entry, several elements of the desktop (like the top bar) will use the default font. In case you change the font name, the desktop elements will apply it as well.
 :::
 You can remove it or change the font by:
-```
+```shell
 dconf dump /org/gnome/desktop/ > fix.txt
 ```
 Edit **fix.txt** and delete the line containing `font-name='JetBrains Mono 11'` or replace this font name with your preferred, save and close the file, then run:
-```
+```shell
 dconf reset -f /org/gnome/desktop/
 cat fix.txt | dconf load /org/gnome/desktop/
 ```
 In case your theme will be reset, just run:
-```
+```shell
 athena-theme-tweak -t <name of your favourite theme>
 ```
 Use `athena-theme-tweak -l` to get the list of themes to be chosen.

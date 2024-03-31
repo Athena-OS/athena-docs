@@ -73,7 +73,7 @@ secrets:
 and the `htb-api-file` must be in the same directory, otherwise you can change its path in `docker-compose.yml`.
 
 Run the container by:
-```
+```shell
 sudo docker-compose run athena
 ```
 
@@ -90,26 +90,26 @@ docker run -ti \
   docker.io/athenaos/core:latest
 ```
 or
-```
+```shell
 docker run -ti --name athena --volume ./htb-api-file:/run/secrets/htb-api:ro --cap-add NET_ADMIN --device /dev/net/tun --sysctl net.ipv6.conf.all.disable_ipv6=0 --restart unless-stopped docker.io/athenaos/core:latest
 ```
 
 In case you exit the container and need to re-enter, run:
-```
+```shell
 docker exec --user athena -ti athena /bin/zsh
 ```
 In case the container is not running, run:
-```
+```shell
 docker start athena
 ```
 
 For stopping the container, run:
-```
+```shell
 docker stop athena
 ```
 
 For deleting the container, run:
-```
+```shell
 docker container rm athena
 ```
 
@@ -117,7 +117,7 @@ docker container rm athena
 
 Store your App Token in a file called `htb-api-file`, save and close it, and then run:
 
-```
+```shell
 podman secret create htb-api htb-api-file
 ```
 In this manner, podman will store securely your API key. Now, you can delete the `htb-api-file` by `rm -rf htb-api-file`.
@@ -126,7 +126,7 @@ You can run the container by `podman run`.
 
 #### podman run
 
-```bash
+```shell
 podman run -ti \
   --name athena \
   --secret htb-api \
@@ -137,27 +137,27 @@ podman run -ti \
   docker.io/athenaos/core:latest
 ```
 or
-```
+```shell
 podman run -ti --name athena --secret htb-api --cap-add NET_RAW --cap-add NET_ADMIN --device /dev/net/tun --restart unless-stopped docker.io/athenaos/core:latest
 ```
 Podman will automatically replicate `/etc/hosts` and `/etc/hostname` files of your host. For preventing this, add `--no-hosts` argument to the `podman run` command above.
 
 In case you exit the container and need to re-enter, run:
-```
+```shell
 podman exec --user athena -ti athena /bin/zsh
 ```
 In case the container is not running, run:
-```
+```shell
 podman start athena
 ```
 
 For stopping the container, run:
-```
+```shell
 podman stop athena
 ```
 
 For deleting the container, run:
-```
+```shell
 podman container rm athena
 ```
 ### Default Credentials
@@ -193,7 +193,7 @@ Below are the instructions for updating containers:
 
 If you want to make local modifications to these images for development purposes or just to customize the logic:
 
-```bash
+```shell
 git clone https://github.com/Athena-OS/athena-core-docker.git
 cd athena-core-docker
 docker build \
@@ -205,19 +205,19 @@ docker build \
 
 For pushing to Docker Hub, first login to it:
 
-```bash
+```shell
 docker login
 ```
 
 and then:
 
-```
+```shell
 docker push athenaos/core:latest
 ```
 
 The ARM variants can be built on x86_64 hardware using `multiarch/qemu-user-static`
 
-```bash
+```shell
 docker run --rm --privileged multiarch/qemu-user-static:register --reset
 ```
 
