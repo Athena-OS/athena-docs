@@ -10,12 +10,12 @@ Athena OS leverages on two repositories for accessing to security tools and lear
 * [Nixpkgs repository](https://github.com/NixOS/nixpkgs/) to retrieve all packages and security tools
 
 Athena uses stable version of Nixpks repository and it is managed by Nix Channels. To keep the nix channel of the stable version updated, in order to retrieve always the most updated stable packages, run:
-```
+```shell
 sudo nix-channel --update
 ```
 
 Athena Nix repository can be used also by flakes. In this manner an host can retrieve a specific configuration set in Athena Nix remotely with minimum effort. The usage of flakes is specified in the main page of Athena Nix repository. To keep update flakes in order to retrieve always the latest updated packages, run:
-```
+```shell
 sudo nix flake update
 ```
 

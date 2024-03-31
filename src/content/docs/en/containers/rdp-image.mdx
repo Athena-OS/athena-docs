@@ -74,7 +74,7 @@ services:
 ```
 
 Run the container by:
-```
+```shell
 sudo docker-compose run athena-rdp
 ```
 
@@ -97,26 +97,26 @@ docker run -ti \
   docker.io/athenaos/rdp:latest
 ```
 or
-```
+```shell
 docker run -ti --name athena-rdp --cap-add CAP_SYS_ADMIN --cap-add IPC_LOCK --cap-add NET_ADMIN --cgroupns=host --device /dev/net/tun --shm-size 2G --sysctl net.ipv6.conf.all.disable_ipv6=0 --volume /sys/fs/cgroup:/sys/fs/cgroup --publish 23389:3389 --publish 8022:22 --restart unless-stopped docker.io/athenaos/rdp:latest
 ```
 
 In case you exit the container and need to re-enter, run:
-```
+```shell
 docker exec --user athena -ti athena-rdp /bin/zsh
 ```
 In case the container is not running, run:
-```
+```shell
 docker start athena-rdp
 ```
 
 For stopping the container, run:
-```
+```shell
 docker stop athena-rdp
 ```
 
 For deleting the container, run:
-```
+```shell
 docker container rm athena-rdp
 ```
 
@@ -126,7 +126,7 @@ You can run the container by `podman run`.
 
 #### podman run
 
-```bash
+```shell
 podman run -ti \
   --name athena-rdp \
   --cap-add NET_RAW \
@@ -136,28 +136,28 @@ podman run -ti \
   docker.io/athenaos/rdp:latest
 ```
 or
-```
+```shell
 podman run -ti --name athena-rdp --cap-add NET_RAW --cap-add NET_ADMIN --device /dev/net/tun --restart unless-stopped docker.io/athenaos/rdp:latest
 ```
 
 Podman will automatically replicate `/etc/hosts` and `/etc/hostname` files of your host. For preventing this, add `--no-hosts` argument to the `podman run` command above.
 
 In case you exit the container and need to re-enter, run:
-```
+```shell
 podman exec --user athena -ti athena-rdp /bin/zsh
 ```
 In case the container is not running, run:
-```
+```shell
 podman start athena-rdp
 ```
 
 For stopping the container, run:
-```
+```shell
 podman stop athena-rdp
 ```
 
 For deleting the container, run:
-```
+```shell
 podman container rm athena-rdp
 ```
 
@@ -172,7 +172,7 @@ athena:athena
 Once you retrieved your HTB API Token from your Hack The Box website profile settings, you can set the HTB API Token in two ways:
 * By connecting by RDP to the GUI as explained in the next section, open terminal and run `htb-update` (or clicking **HTB Update** button in Athena Welcome)
 * If you don't want to connect to the GUI environment, run the following commands:
-  ```
+  ```shell
   sudo mkdir -p /run/secrets
   sudo nano /run/secrets/htb-api
   <store your HTB API Token in htb-api file and save it>
@@ -184,7 +184,7 @@ Once you retrieved your HTB API Token from your Hack The Box website profile set
 You should now be able to access your full-featured GNOME desktop using
 the RDP client of your choice. For example, using [Remmina](https://remmina.org) along with the install of `freerdp` package:
 
-```
+```shell
 remmina -c rdp://127.0.0.1:23389
 ```
 
@@ -200,7 +200,7 @@ For copy and paste text from the host to the environment, copy a string, then, o
 
 Clone this repository, edit `Dockerfile` and then run `docker build` as usual:
 
-```
+```shell
 git clone https://github.com/Athena-OS/athena-rdp-docker.git
 cd athena-rdp-docker
 docker build --tag 'custom-athena-rdp:latest' .
@@ -210,7 +210,7 @@ docker build --tag 'custom-athena-rdp:latest' .
 
 Use `--no-cache` option:
 
-```
+```shell
 docker build --tag 'custom-athena-rdp:latest' --no-cache .
 ```
 
@@ -225,7 +225,7 @@ In **General**, enable **VirtueFS**, then apply and restart:
 Open **Terminal** and pull Athena OS container by using `docker pull --platform linux/amd64 athenaos/rdp:latest` for Athena OS RDP container.
 
 Once pulled, run:
-```
+```shell
 docker run -ti --name athena-rdp --cap-add CAP_SYS_ADMIN --cap-add IPC_LOCK --cap-add NET_ADMIN --cgroupns=host --device /dev/net/tun --shm-size 2G --sysctl net.ipv6.conf.all.disable_ipv6=0 --volume /sys/fs/cgroup:/sys/fs/cgroup --publish 23389:3389 --publish 8022:22 --restart unless-stopped docker.io/athenaos/rdp:latest
 ```
 

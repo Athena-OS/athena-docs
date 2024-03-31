@@ -28,7 +28,7 @@ The elements of a theme can be retrieved from Internet. There are several websit
 If you are a GTK or Icon or Cursor theme developer, you can create your elements from scratch.
 
 For Kitty theme, you can retrieve them by opening a Kitty terminal and running:
-```
+```shell
 kitty +kitten themes
 ```
 Take note of the name of the theme.
@@ -44,7 +44,7 @@ Once you get all the elements of the theme, you need to test them in your local 
 Athena OS is a declarative OS, it means you need to "declare" the theme resources you need to test. You need to create a `.nix` module that sets the defined theme. For GTK theme, Icon theme and Cursor theme, you can refer as example to the [Nix modules](https://github.com/Athena-OS/athena-nix/blob/main/nixos/modules/themes/akame/default.nix) provided by Athena OS.
 
 Kitty can be tested directly by running:
-```
+```shell
 kitty +kitten themes
 ```
 and selecting the color style suitable for your theme.
@@ -71,7 +71,7 @@ Move to **Appearance** tab and:
 * for the Background image, tweak your image and its adjustment under the **Background** section.
 
 You can set them also by using your terminal. Open the terminal and apply the GTK theme by running:
-```
+```shell
 gsettings set org.gnome.desktop.interface gtk-theme <gtk_foldername>
 gsettings set org.gnome.desktop.wm.preferences theme <gtk_foldername>
 gsettings set org.gnome.shell.extensions.user-theme name <gtk_foldername>
@@ -79,19 +79,19 @@ gsettings set org.gnome.shell.extensions.user-theme name <gtk_foldername>
 **\<gtk_foldername\>** is the name of the GTK theme folder you stored in **/usr/share/themes/**
 
 Apply the Icon theme by running:
-```
+```shell
 gsettings set org.gnome.desktop.interface icon-theme <icon_theme_foldername>
 ```
 **\<icon_theme_foldername\>** is the name of the Icon theme folder you stored in **/usr/share/icons/**
 
 Apply the Cursor theme by running:
-```
+```shell
 gsettings set org.gnome.desktop.interface cursor-theme <cursor_theme_foldername>
 ```
 **\<cursor_theme_foldername\>** is the name of the Icon theme folder you stored in **/usr/share/icons/**
 
 Apply the Background image by running:
-```
+```shell
 gsettings set org.gnome.desktop.background picture-uri-dark background.png
 gsettings set org.gnome.desktop.background picture-options stretched
 ```
@@ -104,7 +104,7 @@ If you are using a dark theme, use **picture-uri-dark**. If you are using a ligh
 #### Hyprland
 
 Open the terminal and apply the GTK theme by running:
-```
+```shell
 gsettings set org.gnome.desktop.interface gtk-theme <gtk_foldername>
 gsettings set org.gnome.desktop.wm.preferences theme <gtk_foldername>
 gsettings set org.gnome.shell.extensions.user-theme name <gtk_foldername>
@@ -112,13 +112,13 @@ gsettings set org.gnome.shell.extensions.user-theme name <gtk_foldername>
 **\<gtk_foldername\>** is the name of the GTK theme folder you stored in **/usr/share/themes/**
 
 Apply the Icon theme by running:
-```
+```shell
 gsettings set org.gnome.desktop.interface icon-theme <icon_theme_foldername>
 ```
 **\<icon_theme_foldername\>** is the name of the Icon theme folder you stored in **/usr/share/icons/**
 
 Apply the Cursor theme by running:
-```
+```shell
 gsettings set org.gnome.desktop.interface cursor-theme <cursor_theme_foldername>
 ```
 **\<cursor_theme_foldername\>** is the name of the Icon theme folder you stored in **/usr/share/icons/**

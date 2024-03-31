@@ -46,21 +46,21 @@ SigLevel = Optional TrustedOnly
 Include = /etc/pacman.d/athena-mirrorlist
 ```
 Get the mirrorlist file by running:
-```
+```shell
 sudo curl https://raw.githubusercontent.com/Athena-OS/package-source/main/packages/athena-mirrorlist/athena-mirrorlist -o /etc/pacman.d/athena-mirrorlist
 ```
 On the terminal, execute:
-```
+```shell
 sudo pacman-key --recv-keys A3F78B994C2171D5 --keyserver keys.openpgp.org
 ```
 :::tip
 If it is not working, try:
-```
+```shell
 sudo pacman-key --recv-keys A3F78B994C2171D5 --keyserver keyserver.ubuntu.com
 ```
 :::
 Finally, trust the imported key by:
-```
+```shell
 sudo pacman-key --lsign A3F78B994C2171D5
 ```
 

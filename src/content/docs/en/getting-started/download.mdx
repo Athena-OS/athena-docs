@@ -11,7 +11,7 @@ Athena OS can be installed by an ISO file downloaded from the [official website]
 
 Are you not sure about your architecture?
 * If you are on a Linux or macOS, run:
-  ```
+  ```shell
   uname -m
   ```
 * If you are on a Windows, follow the procedure described on [Microsoft documentation](http://windows.microsoft.com/en-us/windows7/find-out-32-or-64-bit).
@@ -30,11 +30,11 @@ In addition of the integrity, it is possible to check also the **authenticity** 
 
 To verify the integrity of the ISO file, download it and:
 * if you are on Linux or macOS, run the following command (by replacing `athena-<file-version>-<arch>.iso` with the actual ISO filename):
-  ```
+  ```shell
   shasum -a 256 athena-<file-version>-<arch>.iso
   ```
 * if you are on Windows, run the following command (by replacing `athena-<file-version>-<arch>.iso` with the actual ISO filename):
-  ```
+  ```shell
   certutil -hashfile athena-<file-version>-<arch>.iso sha256
   ```
   :::note
@@ -49,7 +49,7 @@ Assuming that the official website has not been tampered, if the values are equa
 
 To verify the authenticity of the ISO file to be sure that the actual one has been released by the official Athena OS development team:
 1. Import the GPG key for verifying the authenticity:
-   ```
+   ```shell
    gpg --keyserver hkps://keys.openpgp.org --recv-key A3F78B994C2171D5
    ```
    and you should get the following output:
@@ -60,7 +60,7 @@ To verify the authenticity of the ISO file to be sure that the actual one has be
    ```
 
 2. Download the ISO file and its `.sig` signature file and run the following commmand (by replacing `athena-<file-version>-<arch>.iso` with the actual ISO filename):
-   ```
+   ```shell
    gpg --verify athena-<file-version>-<arch>.iso.sig athena-<file-version>-<arch>.iso
    ```
    If you get a **Good signature** output, the ISO file is genuine:

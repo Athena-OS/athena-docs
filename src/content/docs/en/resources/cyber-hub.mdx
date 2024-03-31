@@ -37,7 +37,7 @@ You need to deploy the Wazuh agent on the interested machines. You can deploy it
 For other systems not listed there, like Arch-based distros, the agent can be **built from source** directly on the target machine.
 
 To monitor Athena OS itself, deploy the Wazuh agent as follows:
-```
+```shell
 sudo pacman --needed --noconfirm -Syu curl gcc make sudo wget expect gnupg perl-base perl fakeroot python brotli automake autoconf libtool gawk libsigsegv nodejs base-devel inetutils cmake
 curl -Ls https://github.com/wazuh/wazuh/archive/v4.5.2.tar.gz | tar zx
 cd wazuh-4.5.2
@@ -61,7 +61,7 @@ Wait for success...
 success
 ```
 and press **Enter** when asked to back to the shell. Finally, run:
-```
+```shell
 sudo /var/ossec/bin/wazuh-control start
 ```
 and you should get:
@@ -85,7 +85,7 @@ Unleash **Athena OS** to be your **Blue Team OS**! Monitor your OS and your infr
 :::
 :::note
  If you need to reinstall the agent, remember to uninstall first the previous one by:
- ```
+ ```shell
  sudo /var/ossec/bin/wazuh-control stop
  sudo rm -rf /var/ossec
  ```

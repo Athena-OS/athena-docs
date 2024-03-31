@@ -51,27 +51,27 @@ There are three working modes:
 
 Generally, at the first startup, the system should work in **Integrated** mode. If you wish to switch to a specific mode, here some examples:
 * Query the current graphics mode:
-  ```
+  ```shell
   envycontrol --query
   ```
 * Set graphics mode to integrated:
-  ```
+  ```shell
   sudo envycontrol -s integrated
   ```
 * Set graphics mode to hybrid and enable fine-grained power control:
-  ```
+  ```shell
   sudo envycontrol -s hybrid --rtd3
   ```
 * Set graphics mode to nvidia, enable ForceCompositionPipeline and Coolbits with a value of 24:
-  ```
+  ```shell
   sudo envycontrol -s nvidia --force-comp --coolbits 24
   ```
 * Set current graphics mode to nvidia and specify to setup LightDM display manager:
-  ```
+  ```shell
   sudo envycontrol -s nvidia --dm lightdm
   ```
 * Revert all changes made by EnvyControl:
-  ```
+  ```shell
   sudo envycontrol --reset
   ```
 
@@ -80,7 +80,7 @@ Generally, at the first startup, the system should work in **Integrated** mode. 
 Currently EnvyControl does not work on Wayland. In case you are in this kind of environment and you need to switch to a dedicated NVIDIA GPU scenario, Athena OS offers [nvx](https://github.com/pedro00dk/nvidia-exec).
 
 Just open a terminal and run:
-```
+```shell
 nvx on
 ```
 It will turn on the NVIDIA GPU and load the related modules.

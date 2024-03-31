@@ -10,11 +10,11 @@ Being based on Nix, the update of Athena resources needs to update the nix chann
 ## Update Athena OS
 
 The update process requires the update of nix channel by:
-```
+```shell
 sudo nix-channel --update
 ```
 This command allows the system to retrieve all the latest information about the Nix packages from Nix repository. Finally, run:
-```
+```shell
 sudo nixos-rebuild switch
 ```
 to update the system.

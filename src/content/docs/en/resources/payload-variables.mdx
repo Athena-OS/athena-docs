@@ -28,11 +28,11 @@ For accessing these resources in a **quick** manner, several **environment varia
 | **$WEBPARAM** | **/usr/share/payloads/SecLists/Discovery/Web-Content/burp-parameter-names.txt** |
 
 In this manner, you can retrieve the needed **payloads** with **less effort**, for example:
-```
+```shell
 ffuf -u <target_url> -w $DIRSMALL
 ```
 or
-```
+```shell
 john file.hash --wordlist=$ROCKYOU
 ```
 

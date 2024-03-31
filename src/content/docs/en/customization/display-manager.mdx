@@ -83,11 +83,11 @@ Now, open the `gnome-shell.css` file in the directory, search for `#lockDialogGr
 while `imagefilename` must be replaced with the only filename of your background image you want to apply.
 
 Store your background image file inside the `$HOME/shell-theme/theme`, and, finally, compile the theme using the following command:
-```
+```shell
 glib-compile-resources gnome-shell-theme.gresource.xml
 ```
 Copy the resulting `gnome-shell-theme.gresource` to the `/usr/share/gnome-shell` directory. Before copying it, just for safety, we create a backup file of the old one:
-```
+```shell
 sudo cp -rf /usr/share/gnome-shell/gnome-shell-theme.gresource /usr/share/gnome-shell/gnome-shell-theme.gresource.bak
 sudo cp -rf gnome-shell-theme.gresource /usr/share/gnome-shell/
 ```
