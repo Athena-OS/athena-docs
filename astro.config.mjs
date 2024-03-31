@@ -9,8 +9,8 @@ export default defineConfig({
       title: 'Athena OS',
       description: 'Athena OS, a new pentesting/cybersecurity linux distribution.',
       logo: {
-        light: '/src/assets/athena-light-logo.svg',
-        dark: '/src/assets/athena-dark-logo.svg',
+        light: '/src/assets/athenaos-logo.png',
+        dark: '/src/assets/athenaos-logo.png',
       },
       customCss: process.env.NO_GRADIENTS ? [	'./src/styles/_global.css'] : ['./src/styles/landing.css', 	'./src/styles/_global.css'],
       social: {
