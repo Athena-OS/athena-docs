@@ -9,7 +9,7 @@ import { Tabs, TabItem } from '@astrojs/starlight/components';
 
 This document shows a list of test cases that can be used to check the correctness of the environment.
 
-### Manual minimal Arch environment installation
+### Manual environment installation
 Boot into Athena Live Environment by using Athena ISO.
 
 Create the needed partitions.
@@ -69,6 +69,9 @@ Format the swap partition
 mkswap -L swap /dev/sda2
 swapon /dev/sda2
 ```
+If you need to test the deployment of an Arch environment, please follow the **Arch Installation** section, otherwise, for Nix environment, follow the **Nix Installation** section.
+
+#### Minimal Arch Installation
 Now proceed to the minimal Arch installation:
 ```shell
 pacman-key --init
@@ -144,5 +147,30 @@ passwd
 exit
 umount -R /mnt
 reboot
+```
+
+#### Nix Installation
+
+Add Nix channels as:
+```shell
+nix-channel --add https://nixos.org/channels/unstable nixpkgs
+nix-channel --update
+```
+Then, generate the hardware configuration and get the Athena Nix configuration:
+```shell
+mkdir -p /mnt/etc/nixos
+nix-shell -p nixos-install-tools --command "nixos-generate-config --root /mnt"
+curl -o /tmp/athena-nix.zip https://codeload.github.com/Athena-OS/athena-nix/zip/refs/heads/main
+unzip /tmp/athena-nix.zip -d /tmp/
+cp -rf /tmp/athena-nix-main/nixos/home-manager /tmp/athena-nix-main/nixos/hosts /tmp/athena-nix-main/nixos/modules /tmp/athena-nix-main/nixos/pkgs /tmp/athena-nix-main/nixos/users /tmp/athena-nix-main/nixos/configuration.nix /tmp/athena-nix-main/nixos/default.nix /mnt/etc/nixos/
+sed -i "s/\/etc\/nixos\/hardware-configuration.nix/.\/hardware-configuration.nix/g" /mnt/etc/nixos/configuration.nix
+```
+If you are in a GRUB BIOS/Legacy environment, run:
+```shell
+sed -i "s/bootloader = \"systemd\"/bootloader = \"grub\"/g" /mnt/etc/nixos/configuration.nix
+```
+Finally, run the Athena Nix installation:
+```shell
+nix-shell -p nixos-install-tools --run "nixos-install --no-root-password --cores 2 --max-jobs 16 --keep-going"
 ```
 <ImageComponent />
