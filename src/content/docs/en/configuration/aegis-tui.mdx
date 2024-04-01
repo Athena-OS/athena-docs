@@ -25,7 +25,7 @@ aegis-tui
 ```
 ![Aegis TUI](@assets/images/aegis-tui-base-system.png)
 
-Choose your favourite base system between Athena Arch or Athena Nix:
+Choose your favourite base system between Athena Arch or Athena Nix
 ![Aegis TUI](@assets/images/aegis-tui-archnix.png)
 
 :::note
@@ -35,37 +35,39 @@ The choices proposed for the following sections (i.e., Desktop, Theme) can vary 
 #### Timezone
 
 Select the timezone
-   ![System Timezone](@assets/images/aegis-tui-timezone.png)
+![System Timezone](@assets/images/aegis-tui-timezone.png)
 
 #### Console Keymap
-   ![Console Keymap](@assets/images/aegis-tui-console-keymap.png)
+
+Select the console keymap
+![Console Keymap](@assets/images/aegis-tui-console-keymap.png)
 
 #### X11 Keymap
 
 Select the X11 keymap
-   ![X11 Keymap](@assets/images/aegis-tui-keymap.png)
+![X11 Keymap](@assets/images/aegis-tui-keymap.png)
 
 #### Locale
 
 Select the locale
-   ![System Locale](@assets/images/aegis-tui-locale.png)
+![System Locale](@assets/images/aegis-tui-locale.png)
 
 
 #### Users
 
 Set your user account
-   ![User Account](@assets/images/aegis-tui-username.png)
+![User Account](@assets/images/aegis-tui-username.png)
 
-   Set your password
-   ![User Password](@assets/images/aegis-tui-password.png)
-   ![User Verify Password](@assets/images/aegis-tui-password-verify.png)
+Set your password
+![User Password](@assets/images/aegis-tui-password.png)
+![User Verify Password](@assets/images/aegis-tui-password-verify.png)
 
-   Choose if the inserted password should be the same for the root account too
-   ![User Same Root Password](@assets/images/aegis-tui-password-root-same.png)
+Choose if the inserted password should be the same for the root account too
+![User Same Root Password](@assets/images/aegis-tui-password-root-same.png)
 
-   If choose **No**, set a password for the root account
-   ![Root Password](@assets/images/aegis-tui-password-root.png)
-   ![Root Verify Password](@assets/images/aegis-tui-password-root-verify.png)
+If choose **No**, set a password for the root account
+![Root Password](@assets/images/aegis-tui-password-root.png)
+![Root Verify Password](@assets/images/aegis-tui-password-root-verify.png)
 
 :::tip
 If you don't type any value for username or password, the default credential will be `athena:athena`.
@@ -74,12 +76,12 @@ If you don't type any value for username or password, the default credential wil
 #### Shell
 
 Select your favourite shell
-   ![System Shell](@assets/images/aegis-tui-shell.png)
+![System Shell](@assets/images/aegis-tui-shell.png)
 
 #### Hostname
 
 Set the hostname
-   ![System Hostname](@assets/images/aegis-tui-hostname.png)
+![System Hostname](@assets/images/aegis-tui-hostname.png)
 
 :::tip
 If you don't type any value for hostname, the default value will be `athenaos`.
@@ -88,75 +90,75 @@ If you don't type any value for hostname, the default value will be `athenaos`.
 #### Partitioning
 
 Select your partition according to the installation type you are going to. Check the **Installation** chapter related to your setup and follow there the partition scheme to implement:
-   * [Installing as single boot](/en/installation/install-single-boot/#aegis-tui)
-   * [Virtual Machine scenario](/en/installation/install-single-boot/#aegis-tui)
-   * [Installing as dual boot with Linux or Windows](/en/installation/install-dual-boot/#partitioning)
+* [Installing as single boot](/en/installation/install-single-boot/#aegis-tui)
+* [Virtual Machine scenario](/en/installation/install-single-boot/#aegis-tui)
+* [Installing as dual boot with Linux or Windows](/en/installation/install-dual-boot/#partitioning)
 
 #### Desktop
 
 Select your favourite theme
-   ![System Desktop](@assets/images/aegis-tui-desktop.png)
+![System Desktop](@assets/images/aegis-tui-desktop.png)
 
 #### Theme
 
 Select your favourite theme
-   ![System Theme](@assets/images/aegis-tui-theme.png)
+![System Theme](@assets/images/aegis-tui-theme.png)
 
 #### Login Manager
 
 Select your favourite display manager for login
-   ![System Login](@assets/images/aegis-tui-dm.png)
+![System Login](@assets/images/aegis-tui-dm.png)
 
 #### Browser
 
 Select your favourite browser
-   ![Browser](@assets/images/aegis-tui-browser.png)
+![Browser](@assets/images/aegis-tui-browser.png)
 
 #### Terminal
 
 Select your favourite terminal
-    ![System Terminal](@assets/images/aegis-tui-terminal.png)
+![System Terminal](@assets/images/aegis-tui-terminal.png)
 
 #### Miscellaneous Settings
 
 Select your favourite settings by using **Space** key button and confirm by **Enter**
-    ![System Settings](@assets/images/aegis-tui-misc.png)
+![System Settings](@assets/images/aegis-tui-misc.png)
 
-    :::note
-    **Zram** should be enabled only if a swap partition has not been created.
-    :::
+:::note
+**Zram** should be enabled only if a swap partition has not been created.
+:::
 
 Review the **Summary** and run the installation.
-    ![Install Summary](@assets/images/aegis-tui-summary.png)
+![Install Summary](@assets/images/aegis-tui-summary.png)
 
 Select the install parameters for the installation process (**Athena Nix only**)
-    ![Install Set Cores](@assets/images/aegis-tui-install-cores.png)
-    ![Install Set Jobs](@assets/images/aegis-tui-install-jobs.png)
+![Install Set Cores](@assets/images/aegis-tui-install-cores.png)
+![Install Set Jobs](@assets/images/aegis-tui-install-jobs.png)
  
-    Finally, if you are ready to install, proceed
-    ![Install Confirm](@assets/images/aegis-tui-install-confirm.png)
+Finally, if you are ready to install, proceed
+![Install Confirm](@assets/images/aegis-tui-install-confirm.png)
  
-    During the installation, installation logs are saved in `/tmp/aegis.log`. In case the installation gets some issues, run:
-    ```shell
-    cat /tmp/aegis.log | nc termbin.com 9999
-    ```
-    to get a link to https://termbin.com where the logs are temporary saved. Communicate this link to Athena OS Team for troubleshooting.
+During the installation, installation logs are saved in `/tmp/aegis.log`. In case the installation gets some issues, run:
+```shell
+cat /tmp/aegis.log | nc termbin.com 9999
+```
+to get a link to https://termbin.com where the logs are temporary saved. Communicate this link to Athena OS Team for troubleshooting.
  
-    :::tip
-    If the screen locks due to user inactivity, unlock the screen by using `athena` as password.
-    :::
+:::tip
+If the screen locks due to user inactivity, unlock the screen by using `athena` as password.
+:::
 
 If no errors have been raised during the installation phase, you are ready to use Athena OS!
 
-    ![Installation Finished](@assets/images/aegis-tui-finish.png)
+![Installation Finished](@assets/images/aegis-tui-finish.png)
 
-    :::note
-    At the end of a successful installation in an EFI system, you could get a message like:
-    ```
-    ⚠ Mount point '/boot' which backs the random seed file is world accessible, which is a security hole! ⚠
-    ⚠ Random seed file '/boot/loader/.#bootctlrandom-seedc5706ea22f8895b0' is world accessible, which is a security hole! ⚠
-    Random seed file /boot/loader/random-seed successfully written (32 bytes).
-    ```
-    It is related to all Linux systems, but it should be mitigated by using encrypted partitions. To get more details about this warning, refer to [this resource](https://discourse.nixos.org/t/security-warning-when-installing-nixos-23-11/37636).
-    :::
+:::note
+At the end of a successful installation in an EFI system, you could get a message like:
+```
+⚠ Mount point '/boot' which backs the random seed file is world accessible, which is a security hole! ⚠
+⚠ Random seed file '/boot/loader/.#bootctlrandom-seedc5706ea22f8895b0' is world accessible, which is a security hole! ⚠
+Random seed file /boot/loader/random-seed successfully written (32 bytes).
+```
+It is related to all Linux systems, but it should be mitigated by using encrypted partitions. To get more details about this warning, refer to [this resource](https://discourse.nixos.org/t/security-warning-when-installing-nixos-23-11/37636).
+:::
 <ImageComponent />
