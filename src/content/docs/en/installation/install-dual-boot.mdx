@@ -42,7 +42,9 @@ Select the disk to work on. It is needed now to create the needed partitions for
 
 ![Aegis TUI Partitioning Table EFI](@assets/images/aegis-tui-partitioning-manual-table-efi.png)
 
-First, we create the EFI partition. If you have already enough available free space, press **"New"**, otherwise **"Delete"** or **"Resize"** an existing partition to get additional free space. As **Partition Size**, set **"512M"**, select **"Type"** option and select **"EFI System"** as partition type.
+First, due to Windows installation, a UEFI boot partition should already exist, so we don't need to create an EFI partition.
+
+(Optional) In case you want to install a separated EFI partition, select the free space entry, press **"New"**, otherwise **"Delete"** or **"Resize"** an existing partition to get additional free space. As **Partition Size**, set **"512M"**, select **"Type"** option and select **"EFI System"** as partition type.
 
 (Optional) If you want to set a Swap Partition, if you have enough available free space, press **"New"**, otherwise **"Delete"** or **"Resize"** an existing partition to get additional free space. As Partition Size, set **"1G"** or **"2G"** or **"4G"** or **"8G"** depending on the amount of your RAM or your preference, select **"Type"** option and select **"Linux swap"** as partition type.
 
@@ -55,10 +57,11 @@ Now, create a root partition for your system. If you have enough available free 
 Afterwards, on the menu, select **"Write"** to apply these changes to your disk. When asked **"Are you sure you want to write the partition table to disk?"** type **yes** and press **Enter** key. Finally, press **Quit**.
 ![Aegis TUI Partitioning Manual Quit EFI](@assets/images/aegis-tui-partitioning-manual-quit-efi.png)
 
-Now it will be asked you to select what is the EFI partition you created. Select it (usually it should be the one sized 512M):
+Now it will be asked you to select what is the EFI partition. Select the existing one (usually it should be the one sized 512M):
 ![Aegis TUI Partitioning Select EFI](@assets/images/aegis-tui-partitioning-manual-select-efi-partition-efi.png)
 
-Then, as **EFI partition mountpoint**, select **/boot** and as **EFI partition filesystem** select **fat** or **vfat**.
+If you want to use the UEFI boot partition used by Windows, as **EFI partition mountpoint**, select **/boot** and as **EFI partition filesystem** select **Don't format**.
+Instead, if you created a new separated EFI partition, as **EFI partition mountpoint**, select **/boot** and as **EFI partition filesystem** select **fat** or **vfat**.
 
 Now it will be asked you to select what is the root partition you created. Select it (usually it should be the one sized as you set previously):
 ![Aegis TUI Partitioning Select Root](@assets/images/aegis-tui-partitioning-manual-select-root-partition-efi.png)
@@ -80,16 +83,24 @@ Select the disk to work on. It is needed now to create the needed partitions for
 
 In a GRUB-BIOS Legacy system, the creation of a boot partition is not needed because it will be created automatically by MBR (dos) in the boot sector.
 
+But, if you need to create an encrypted root partition, you need to create a separated GRUB-BIOS Legacy boot partition. To do this, select the free space entry, press **"New"**, otherwise **"Delete"** or **"Resize"** an existing partition to get additional free space. As **Partition Size**, set **"512M"**, select **"Type"** option and select **"Linux"** as partition type. Keeping the selection on the created root partition, press on **"Bootable"** option to mark it as bootable partition.
+In case you have already an existing GRUB Legacy partition, and you want to use it, then don't create a new one.
+
 (Optional) If you want to set a Swap Partition, if you have enough available free space, press **"New"**, otherwise **"Delete"** or **"Resize"** an existing partition to get additional free space. As Partition Size, set **"1G"** or **"2G"** or **"4G"** or **"8G"** depending on the amount of your RAM or your preference, set **"primary"** and select **"Type"** option and select **"Linux swap"** as partition type.
 
 :::note
 If you are going to enable **Zram** later, you don't need to create a Swap partition.
 :::
 
-Now, create a root partition for your system. If you have enough available free space, press **"New"**, otherwise **"Delete"** or **"Resize"** an existing partition to get space. As Partition Size, set the remaning free space amountand set it as **"primary"**. As **"Type"**, be sure it is set as **"Linux"**. Keeping the selection on the created root partition, press on **"Bootable"** option to mark it as bootable partition.
+Now, create a root partition for your system. If you have enough available free space, press **"New"**, otherwise **"Delete"** or **"Resize"** an existing partition to get space. As Partition Size, set the remaning free space amountand set it as **"primary"**. As **"Type"**, be sure it is set as **"Linux"**. In case you didn't create any GRUB Legacy partition because you use the one created automatically by MBR (dos) in the boot sector, keeping the selection on the created root partition, press on **"Bootable"** option to mark it as bootable partition.
 
 Afterwards, on the menu, select **"Write"** to apply these changes to your disk. When asked **"Are you sure you want to write the partition table to disk?"** type **yes** and press **Enter** key. Finally, press **Quit**.
 ![Aegis TUI Partitioning Manual Quit Legacy](@assets/images/aegis-tui-partitioning-manual-quit-legacy.png)
+
+Now it will be asked you to select what is the GRUB partition. Select the existing one (usually it should be the one sized 512M). If you use the GRUB inside the boot sector of the root partition, skip this step by pressing **CTRL+C**.
+
+If you want to use an already existing GRUB boot partition, as **GRUB partition mountpoint**, select **/boot** and as **GRUB partition filesystem** select **Don't format**.
+Instead, if you created a new separated GRUB partition, as **GRUB partition mountpoint**, select **/boot** and as **GRUB partition filesystem** select **ext4**.
 
 Now it will be asked you to select what is the root partition you created. Select it (usually it should be the one sized as you set previously):
 ![Aegis TUI Partitioning Select Root Legacy](@assets/images/aegis-tui-partitioning-manual-select-root-partition-legacy.png)
