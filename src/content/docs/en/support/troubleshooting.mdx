@@ -28,6 +28,21 @@ it can occur when you are installing Athena OS by an ISO that has been released 
 
 The cause of the issue is due to a key in `/etc/pacman.d/gnupg` that has been generated in a Live Environment that has a different time of the running installer. Since in Live Environment the time changes and fixes to the right time after some minutes, if this change is done during the running of `pacman-key --init`, it causes that error. For example, the Live Environment shows 18:40 and during the install, it switches to 19:40, so the running installer, if creates new key by `pacman-key --init` when the time of Live Environment is switched, it cause the error. If you get this error, boot on Live Environment and, before to run the installer, wait for some minutes that the time clock fixes automatically.
 
+#### Nix install process killed
+
+If Athena Nix installation is killed and the following error is produced:
+```
+[ INFO ] 17:45:48 /nix/store/2ig2gxwx3xzavg43s6x17ym520la6d5w-nixos-install-tools-24.05pre604424.d8fe5e6c92d0/bin/nixos-install: line 178:  6209 Killed                  nix-build --out-link "$outLink" --store "$mountPoint" "${extraBuildFlags[@]}" --extra-substituters "$sub" '<nixpkgs/nixos>' -A system -I "nixos-config=$NIXOS_CONFIG" "${verbosity[@]}"
+
+[ INFO ] 17:45:49 Installation log file copied to /var/log/aegis.log
+[ INFO ] 17:45:49 create /mnt/var/log
+[ INFO ] 17:45:49 Copy /tmp/aegis.log to /mnt/var/log/aegis.log
+[ INFO ] 17:45:49 unmount command processed on /mnt/home
+[ INFO ] 17:45:50 unmount command processed on /mnt
+[ ERROR ] 17:45:50 Installation failed. Exit code: 137
+```
+just assign more resources (CPU, RAM, Swap space) to your system.
+
 ### Boot
 
 #### Restore GRUB
