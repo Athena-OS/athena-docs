@@ -59,9 +59,22 @@ mount /dev/mapper/crypted /mnt
 ```
 </TabItem>
 </Tabs>
-Format and mount the boot partition:
+Format the boot partition:
+<Tabs>
+<TabItem label="EFI">
 ```shell
 mkfs.fat -F 32 -n BOOT /dev/sda1
+```
+</TabItem>
+<TabItem label="BIOS/Legacy">
+```shell
+mkfs.ext4 /dev/sda1
+```
+</TabItem>
+</Tabs>
+
+and mount it:
+```shell
 mount --mkdir /dev/sda1 /mnt/boot
 ```
 Format the swap partition
