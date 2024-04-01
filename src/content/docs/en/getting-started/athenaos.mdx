@@ -15,16 +15,33 @@ import dark from '@assets/images/athena-banner-dark.png';
   🏅
 </h3>
 
-**Athena OS** is an open-source, **Nix-based** distribution intended to build a new concept of **pentesting operating system**. Its purpose is to offer a different experience than the most used pentesting distributions by providing reproducibility, flexibility, isolation, and only those tools that fit with the user needs and improving the access to hacking resources and learning materials.
+**Athena OS** is an open-source, **Arch-based** and **Nix-based** distribution intended to build a new concept of **pentesting operating system**. Its purpose is to offer a different experience than the most used pentesting distributions by providing reproducibility, flexibility, isolation, and only those tools that fit with the user needs and improving the access to hacking resources and learning materials.
 
-Athena OS is designed from scratch, and, at development phase, useless modules and services have been excluded in order to improve performance and resource consumption. This design approach allows to review in detailed manner each single package and component to include inside the distribution. Despite being based on Nix that at first impact could seem hard to use, Athena OS offers a very user-friendly environment to make easy the usage of the resources.
+Athena OS is designed from scratch, and, at development phase, useless modules and services have been excluded in order to improve performance and resource consumption. This design approach allows to review in detailed manner each single package and component to include inside the distribution. Despite being based on Arch and Nix that at first impact could seem hard to use, Athena OS offers a very user-friendly environment to make easy the usage of the resources.
 
 ## Features
-
-The heritage of Nix impacts positively Athena OS than other pentesting distributions:
+Both Athena souls have common aspects that tie them:
+* **Open source model**: all the elements of the system are available on Athena [development tree](https://github.com/Athena-OS) for all users that wish to access or edit according to their needs.
+* **Free**: Athena OS is free and accessible to everyone and it will be forever.
+* **Performance**: several strategies have been applied on the system in order to make it faster, acting from kernel and passing through virtual memory, RAM, package manager and so on.
+* **Flexibility**: Athena OS allows deep customization of system configurations, enabling pentesters to tailor the environment to specific testing requirements. The ability to express configurations in a high-level language by Nix allows for more flexibility and adaptability compared to traditional configuration management systems.
 * **Tailored pentesting tools**: Athena OS provides pentesting tools classified by **Cyber Roles**. Each role consists of a Cyber Security domain where the several tools are distributed on. These tools are continuously maintained in order to improve the efficiency of their usage and kept updated for getting a cleaned and secured environment.
+* **Minimalist Approach**: pentesting packages and services are not preinstalled. This minimalist approach allows for greater control over system resources and reduces unnecessary bloat, resulting in faster performance and more efficient resource utilization. 
+* **Comprehensive  documentation**: extensive documentation which covers installation guides, troubleshooting tips, package management, system configuration, and more. The documentation is renowned for its accuracy, clarity, and helpfulness, making it a valuable resource for both beginners and experienced users.
+* **Industry-compliant**: the system is built according to the [Filesystem Hierarchy Standard](https://www.pathname.com/fhs/), [ISO-9660](https://www.iso.org/obp/ui/#iso:std:iso:9660:ed-1:v1:en) and [FAT32 requirements](https://www.keil.com/pack/doc/mw6/FileSystem/html/fat_fs.html#:~:text=Volume%20name,%5B%20%5D%20%22%22%20).
+
+
+### Athena Arch
+The heritage of Arch Linux impacts positively Athena OS according to the following characteristics:
+* **More and more pentesting tools**: Athena OS relies on [Athena repository](https://github.com/Athena-OS/athena) that contains 2800+ pentesting and security tools. These tools are continuously maintained in order to improve the efficiency of their usage and kept updated for getting a cleaned and secured environment.
+* **Trusted packages**: all the packages developed on Athena are GPG-signed and maintained in a public and dedicated repository.
+* **Rolling release model**: rolling release distribution, meaning you receive updates continuously rather than waiting for major releases. This ensures you always have access to the latest features, security patches, and software versions without the need for full system upgrades.
+* **Customizability**: "do-it-yourself" philosophy, allowing users to build their system from the ground up. You install only the packages and components you need, resulting in a highly customized environment tailored to your preferences.
+* **AUR (Arch User Repository)**: being based on Arch-Linux, Athena Arch can access to the AUR. It is a vast community-driven repository that extends the official Arch Linux repositories. It allows users to easily access and install thousands of additional packages maintained by the community. This vast collection of software expands the capabilities of Athena Arch and makes it easy to find and install software that may not be available in the official repositories.
+
+### Athena Nix
+The heritage of Nix impacts positively Athena OS according to the following characteristics:
 * **Secure software**: the system is set to retrieve only secure packages. Nix Community continuously works to check vulnerable software and, if needed, set them as insecure. By Nix, Athena is able to inform you if a software is affected by a CVE and it prevents its installation in your system.
-* **Great performance**: several strategies have been applied on the system in order to make it faster, acting from kernel and passing through virtual memory, RAM, and so on.
 * **Declarative**: Athena OS uses a declarative approach to system configuration, meaning that the entire system configuration can be potentially described in a single configuration file. This makes it easy to understand, reproduce the system state, and to version control configurations, replicate environments, and maintain consistency across different systems, which can be valuable in pentesting scenarios.
 * **Immutable System State**: The system configuration in Athena OS is treated as immutable. Instead of making changes in-place, a new configuration is generated, and the system transitions to the new state. This helps ensure consistency and reproducibility, and, mostly, ensures that the system remains in a known state, which is helpful for maintaining a secure and consistent testing environment.
 * **Conflicts prevention**: Nix follows functional programming principles. Packages are built with their dependencies explicitly declared, ensuring that they are isolated and don't interfere with each other. This also allows multiple versions of the same software to coexist without conflicts.
@@ -33,11 +50,6 @@ The heritage of Nix impacts positively Athena OS than other pentesting distribut
 * **Lazy Evaluation**: Athena OS employs lazy evaluation for package management. This means that packages are only built when needed, and dependencies are resolved dynamically. This helps in minimizing unnecessary builds and reducing redundancy.
 * **Isolation and Sandboxing**: Packages are isolated from each other to prevent conflicts. Additionally, the Nix package manager provides a form of sandboxing for builds, which enhances security by minimizing the potential impact of a compromised or malicious tool package.
 * **Cross-Platform Support**: Nix systems are designed to be cross-platform. This means that the same Nix expressions can be used to build packages and configurations on different platforms, facilitating portability and flexibility. This can be advantageous if a pentester needs to work in diverse environments or conduct tests on various platforms.
-* **Free**: Athena OS is free and accessible to everyone and it will be forever.
-* **Industry-compliant**: the system is built according to the [Filesystem Hierarchy Standard](https://www.pathname.com/fhs/), [ISO-9660](https://www.iso.org/obp/ui/#iso:std:iso:9660:ed-1:v1:en) and [FAT32 requirements](https://www.keil.com/pack/doc/mw6/FileSystem/html/fat_fs.html#:~:text=Volume%20name,%5B%20%5D%20%22%22%20).
-* **Flexibility**: Athena OS allows deep customization of system configurations, enabling pentesters to tailor the environment to specific testing requirements. The ability to express configurations in a high-level language by Nix allows for more flexibility and adaptability compared to traditional configuration management systems.
-* **Open source model**: all the elements of the system are available on Athena [development tree](https://github.com/Athena-OS) for all users that wish to access or edit according to their needs.
-* **Fully documented**: all the needed information is maintained in this documentation and continues to evolve over time.
 
 <ThemedImage
   alt="Athena OS banner image"

@@ -21,30 +21,39 @@ The installation logs will be saved to `/tmp/aegis.log` and copied to the instal
 
 Open the terminal and run:
 ```shell
-sudo nix-channel --update
 aegis-tui
 ```
-![Aegis TUI](@assets/images/aegis-tui.png)
+![Aegis TUI](@assets/images/aegis-tui-base-system.png)
+
+Choose your favourite base system between Athena Arch or Athena Nix:
+![Aegis TUI](@assets/images/aegis-tui-archnix.png)
+
+:::note
+The choices proposed for the following sections (i.e., Desktop, Theme) can vary according to the chosen base system.
+:::
 
 #### Timezone
 
-1. Select the timezone
+Select the timezone
    ![System Timezone](@assets/images/aegis-tui-timezone.png)
 
-#### Keymap
+#### Console Keymap
+   ![Console Keymap](@assets/images/aegis-tui-console-keymap.png)
 
-2. Select the keymap
-   ![System Keymap](@assets/images/aegis-tui-keymap.png)
+#### X11 Keymap
+
+Select the X11 keymap
+   ![X11 Keymap](@assets/images/aegis-tui-keymap.png)
 
 #### Locale
 
-3. Select the locale
+Select the locale
    ![System Locale](@assets/images/aegis-tui-locale.png)
 
 
 #### Users
 
-4. Set your user account
+Set your user account
    ![User Account](@assets/images/aegis-tui-username.png)
 
    Set your password
@@ -58,61 +67,71 @@ aegis-tui
    ![Root Password](@assets/images/aegis-tui-password-root.png)
    ![Root Verify Password](@assets/images/aegis-tui-password-root-verify.png)
 
+:::tip
+If you don't type any value for username or password, the default credential will be `athena:athena`.
+:::
+
 #### Shell
 
-5. Select your favourite shell
+Select your favourite shell
    ![System Shell](@assets/images/aegis-tui-shell.png)
 
 #### Hostname
 
-6. Set the hostname
+Set the hostname
    ![System Hostname](@assets/images/aegis-tui-hostname.png)
+
+:::tip
+If you don't type any value for hostname, the default value will be `athenaos`.
+:::
 
 #### Partitioning
 
-7. Select your partition according to the installation type you are going to. Check the **Installation** chapter related to your setup and follow there the partition scheme to implement:
+Select your partition according to the installation type you are going to. Check the **Installation** chapter related to your setup and follow there the partition scheme to implement:
    * [Installing as single boot](/en/installation/install-single-boot/#aegis-tui)
    * [Virtual Machine scenario](/en/installation/install-single-boot/#aegis-tui)
    * [Installing as dual boot with Linux or Windows](/en/installation/install-dual-boot/#partitioning)
 
 #### Desktop
 
-8. Select your favourite theme
+Select your favourite theme
    ![System Desktop](@assets/images/aegis-tui-desktop.png)
 
 #### Theme
 
-9. Select your favourite theme
+Select your favourite theme
    ![System Theme](@assets/images/aegis-tui-theme.png)
 
 #### Login Manager
 
-10. Select your favourite display manager for login
-    ![System Login](@assets/images/aegis-tui-dm.png)
+Select your favourite display manager for login
+   ![System Login](@assets/images/aegis-tui-dm.png)
+
+#### Browser
+
+Select your favourite browser
+   ![Browser](@assets/images/aegis-tui-browser.png)
 
 #### Terminal
 
-11. Select your favourite terminal
+Select your favourite terminal
     ![System Terminal](@assets/images/aegis-tui-terminal.png)
 
 #### Miscellaneous Settings
 
-12. Select your favourite settings by using **Space** key button and confirm by **Enter**
+Select your favourite settings by using **Space** key button and confirm by **Enter**
     ![System Settings](@assets/images/aegis-tui-misc.png)
 
     :::note
     **Zram** should be enabled only if a swap partition has not been created.
     :::
 
-13. Review the **Summary** and run the installation.
+Review the **Summary** and run the installation.
     ![Install Summary](@assets/images/aegis-tui-summary.png)
 
-14. Select the install parameters for the installation process
+Select the install parameters for the installation process (**Athena Nix only**)
     ![Install Set Cores](@assets/images/aegis-tui-install-cores.png)
     ![Install Set Jobs](@assets/images/aegis-tui-install-jobs.png)
- 
-    Select if the installation should continue even if the building process of a software can fail
-    ![Install Keep Going](@assets/images/aegis-tui-install-keep.png)
  
     Finally, if you are ready to install, proceed
     ![Install Confirm](@assets/images/aegis-tui-install-confirm.png)
@@ -127,7 +146,7 @@ aegis-tui
     If the screen locks due to user inactivity, unlock the screen by using `athena` as password.
     :::
 
-15. If no errors have been raised during the installation phase, you are ready to use Athena OS!
+If no errors have been raised during the installation phase, you are ready to use Athena OS!
 
     ![Installation Finished](@assets/images/aegis-tui-finish.png)
 

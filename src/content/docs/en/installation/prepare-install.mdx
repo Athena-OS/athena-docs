@@ -1,17 +1,17 @@
 ---
-title: Baremetal installation prepare
-description: How to prepare Athena OS for installation as baremetal.
+title: Installation prepare
+description: How to prepare Athena OS for installation.
 ---
 import ImageComponent from "@components/ImageComponent.astro";
 import ThemedImage from '@components/ThemedImage.astro';
 
-The following section will guide you through the steps to prepare all the elements for installing Athena OS as baremetal.
+The following section will guide you through the steps to prepare all the elements for installing Athena OS.
 
 ## System Requirements
 
-Athena OS is currently supported on amd64 (x86_64/64-bit) platforms.
+Athena OS is currently supported on amd64 (x86_64/64-bit) platforms and can be installed as **Athena Arch** (Arch-based system) or **Athena Nix** (NixOS-based system).
 
-Athena OS requires:
+Athena Arch requires:
 * A minimum of 20GB hard disk space for installation.
 * A minimum of 2GB RAM.
 * A bootable CD-DVD drive or a USB stick.
@@ -21,13 +21,33 @@ The recommended hardware specification for a smooth experience are:
 * At least 4GB of RAM.
 * At least 2 cores.
 
+Athena Nix requires:
+* A minimum of 30GB hard disk space for installation.
+* A minimum of 4GB RAM + 4GB of Swap partition
+* A bootable CD-DVD drive or a USB stick.
+
+The recommended hardware specification for a smooth experience are:
+* 50 GB of hard disk space, SSD preferred.
+* At least 8GB of RAM.
+* At least 2 cores.
+
+:::tip
+During Athena Nix install, if the system freezes for some minutes (just look the frozen system clock), try to increase resources, for example assign more swap space.
+:::
+
+:::tip
+To install Athena Nix with lower resources, just follow [Installing by NixOS](/en/installation/install-nixos/) guide. This method allows you to install first vanilla NixOS, and after system installation, install Athena Nix over it.
+:::
+
 ## Preparing for the Installation
 
 Before installing Athena OS on your endpoint, you need a set of tasks to prepare.
 
-### Download the Image
+## Download the Image
 
 Download Athena OS as described in [Downloading Athena OS](/en/getting-started/download/) chapter.
+
+## Prepare Baremetal Installation
 
 ### Creating a Bootable Athena USB drive
 
@@ -102,5 +122,15 @@ At the end of flash process you will get **READY** status. Close Rufus and reboo
 :::note
 Be sure to have the USB drive **boot priority** over other drives in the BIOS.
 :::
+
+## Prepare Virtual Machine Installation
+
+If you want to deploy Athena OS as virtual machine, refers to:
+   * [Installing as guest in VMware](/en/installation/install-guest-vmware/)
+   * [Installing as guest in VirtualBox](/en/installation/install-guest-virtualbox/)
+   * [Installing as guest in Hyper-V](/en/installation/install-guest-hyperv/)
+   * [Installing as guest in QEMU/KVM](/en/installation/install-guest-qemu/)
+   * [Installing as guest in Parallels](/en/installation/install-guest-parallels/)
+   * [Installing as guest in UTM](/en/installation/install-guest-utm/)
 
 <ImageComponent />
