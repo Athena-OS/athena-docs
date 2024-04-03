@@ -75,7 +75,7 @@ In conclusion, **rsync** is often the more straightforward and bandwidth-friendl
 
 ## Setting up a mirror server
 
-The purpose of this guide is to set a mirror for Athena OS ISO images. In Athena OS there is no need to mirror packages because package mirror system is not used on Nix environment.
+The purpose of this guide is to set a mirror for Athena OS ISO images and Athena Arch packages. In Athena Nix there is no need to mirror packages because package mirror system is not used on Nix environment.
 
 It is assumed that you own a server (i.e., you subscribed a VPS (Virtual Private Server) service) complying the specified requirements.
 
@@ -225,7 +225,7 @@ where:
 
 ### Make HTTP mirror server
 
-It is important to make the mirror server available to the public so that users can retrieve ISO images. It is possible to reach this purpose by making it a HTTP/HTTPS or FTP server.
+It is important to make the mirror server available to the public so that users can retrieve ISO images and packages by the package manager. It is possible to reach this purpose by making it a HTTP/HTTPS or FTP server.
 
 :::note
 Creating a `rsync://` mirror server cannot be used to be exposed to the users because rsync protocol is not supported by libcurl. Rsync protocol is used to synchronize mirrors.
