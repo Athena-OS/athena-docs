@@ -5,6 +5,7 @@ description: How to prepare Athena OS for installation.
 import ImageComponent from "@components/ImageComponent.astro";
 import ThemedImage from '@components/ThemedImage.astro';
 import { Tabs, TabItem } from '@astrojs/starlight/components';
+import { LinkCard, CardGrid } from '@astrojs/starlight/components';
 
 The following section will guide you through the steps to prepare all the elements for installing Athena OS.
 
@@ -131,12 +132,15 @@ Be sure to have the USB drive **boot priority** over other drives in the BIOS.
 
 ## Prepare Virtual Machine Installation
 
-If you want to deploy Athena OS as virtual machine, refers to:
-   * [Installing as guest in VMware](/en/installation/install-guest-vmware/)
-   * [Installing as guest in VirtualBox](/en/installation/install-guest-virtualbox/)
-   * [Installing as guest in Hyper-V](/en/installation/install-guest-hyperv/)
-   * [Installing as guest in QEMU/KVM](/en/installation/install-guest-qemu/)
-   * [Installing as guest in Parallels](/en/installation/install-guest-parallels/)
-   * [Installing as guest in UTM](/en/installation/install-guest-utm/)
+If you want to deploy Athena OS as virtual machine, refers to the related documentation.
+
+<CardGrid>
+  <LinkCard title="Installing as guest in VMware" href="/en/installation/install-guest-vmware/" />
+  <LinkCard title="Installing as guest in VirtualBox" href="/en/installation/install-guest-virtualbox/" />
+  <LinkCard title="Installing as guest in Hyper-V" href="/en/installation/install-guest-hyperv/" />
+  <LinkCard title="Installing as guest in QEMU/KVM" href="/en/installation/install-guest-qemu/" />
+  <LinkCard title="Installing as guest in Parallels" href="/en/installation/install-guest-parallels/" />
+  <LinkCard title="Installing as guest in UTM" href="/en/installation/install-guest-utm/" />
+</CardGrid>
 
 <ImageComponent />
