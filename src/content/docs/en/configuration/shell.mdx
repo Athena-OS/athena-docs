@@ -55,33 +55,33 @@ In Athena OS, PowerShell has been implemented by adding a lot of useful modules 
 
 On Bash, Fish and Zsh are set several shells defined in `~/.bash_aliases`. They can vary between Athena Arch and Athena Nix. The most useful aliases are:
 
-| Keybind | Description |
-| ------- | ----------- |
-| **anycommand \| tb** | Generate a link to a webpage containing the output of the piped command. |
-| **cleanup** | Cleanup orphaned packages. |
-| **cpc filename.txt** | Copy the content of a file in clipboard. |
-| **hw** | Show hardware info. |
-| **iso** | Show ISO release and version information used to install the system. |
-| **jctl** | Get the error messages from journalctl. |
-| **journalctl-upload** | Generate a link to a webpage containing the output of journalctl for troubleshooting purpose. |
-| **lockreset** | Unlock the user account due to multiple failed sudo attempts. |
-| **nb** | Edit `~/.bashrc` by the `EDITOR` defined in `~/.bashrc`. |
-| **nconfgrub** | Edit `/boot/grub/grub.cfg` by the `EDITOR` defined in `~/.bashrc`. |
-| **nf** | Edit `~/.config/fish/config.fish` by the `EDITOR` defined in `~/.bashrc`. |
-| **nfstab** | Edit `/etc/fstab` by the `EDITOR` defined in `~/.bashrc`. |
-| **ngrub** | Edit `/etc/default/grub` by the `EDITOR` defined in `~/.bashrc`. |
-| **nhosts** | Edit `/etc/hosts` by the `EDITOR` defined in `~/.bashrc`. |
-| **nmkinitcpio** | Edit `/etc/mkinitcpio.conf` by the `EDITOR` defined in `~/.bashrc`. |
-| **npacman** | Edit `/etc/pacman.conf` by the `EDITOR` defined in `~/.bashrc`. |
-| **nz** | Edit `~/.zshrc` by the `EDITOR` defined in `~/.bashrc`. |
-| **openports** | Show open ports. |
-| **psa** | Show a detailed list of all processes. |
-| **pyserver** | Initiate a HTTP server instance on the current directory on port 8000. |
-| **sr** | Reboot the system. |
-| **ssn** | Shutdown now. |
-| **unlock** | Remove the packmane lock file `/var/lib/pacman/db.lck`. |
-| **update** | Run pacman package update. |
-| **update-fc** | Update the font cache when a new font is added. |
-| **update-grub** | Update the GRUB. |
+| Keybind | Description | Athena Arch | Athena Nix |
+| ------- | ----------- | ---- | ---- |
+| **anycommand \| tb** | Generate a link to a webpage containing the output of the piped command. | X | X |
+| **cleanup** | Cleanup orphaned packages. | X | X |
+| **cpc filename.txt** | Copy the content of a file in clipboard. | X | X |
+| **hw** | Show hardware info. | X | X |
+| **iso** | Show ISO release and version information used to install the system. | X | X |
+| **jctl** | Get the error messages from journalctl. | X | X |
+| **journalctl-upload** | Generate a link to a webpage containing the output of journalctl for troubleshooting purpose. | X | X |
+| **lockreset** | Unlock the user account due to multiple failed sudo attempts. | X | X |
+| **nb** | Edit `~/.bashrc` by the `EDITOR` defined in `~/.bashrc`. | X | X |
+| **nconfgrub** | Edit `/boot/grub/grub.cfg` by the `EDITOR` defined in `~/.bashrc`. | X | X |
+| **nf** | Edit `~/.config/fish/config.fish` by the `EDITOR` defined in `~/.bashrc`. | X | X |
+| **nfstab** | Edit `/etc/fstab` by the `EDITOR` defined in `~/.bashrc`. | X | X |
+| **ngrub** | Edit `/etc/default/grub` by the `EDITOR` defined in `~/.bashrc`. | X | X |
+| **nhosts** | Edit `/etc/hosts` by the `EDITOR` defined in `~/.bashrc`. | X | X |
+| **nmkinitcpio** | Edit `/etc/mkinitcpio.conf` by the `EDITOR` defined in `~/.bashrc`. | X | X |
+| **npacman** | Edit `/etc/pacman.conf` by the `EDITOR` defined in `~/.bashrc`. | X | |
+| **nz** | Edit `~/.zshrc` by the `EDITOR` defined in `~/.bashrc`. | X | X |
+| **openports** | Show open ports. | X | X |
+| **psa** | Show a detailed list of all processes. | X | X |
+| **pyserver** | Initiate a HTTP server instance on the current directory on port 8000. | X | X |
+| **sr** | Reboot the system. | X | X |
+| **ssn** | Shutdown now. | X | X |
+| **unlock** | Remove the packmane lock file `/var/lib/pacman/db.lck`. | X | |
+| **update** | Run pacman package update. | X | |
+| **update-fc** | Update the font cache when a new font is added. | X | X |
+| **update-grub** | Update the GRUB. | X | X |
 
 <ImageComponent />
