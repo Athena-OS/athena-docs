@@ -4,6 +4,7 @@ description: GNOME environment in Athena OS.
 ---
 import ImageComponent from "@components/ImageComponent.astro";
 import ThemedImage from '@components/ThemedImage.astro';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
 
 [GNOME](https://wiki.archlinux.org/title/GNOME) is a desktop environment that aims to be simple and easy to use.
 
@@ -21,7 +22,7 @@ GNOME top bar is composed of **Logo Menu** extension that provides a menu to acc
 
 ![GNOME Logo Menu](@assets/images/gnome-logomenu.png)
 
-As example, by clicking on **Software Center...** you can access to its application for getting the applications you need. Note that the shown applications are managed by **flatpak** and they are retrieved from **Flathub**, not from Nix repository..
+As example, by clicking on **Software Center...** you can access to its application for getting the applications you need. Note that the shown applications are managed by **flatpak** and they are retrieved from **Flathub**, not from Arch repository or Nix repository. By default, no apps are shown because you need to install `flatpak` and `packagekit` packages.
 
 ![GNOME Software Center](@assets/images/gnome-softwarecenter.png)
 
@@ -96,7 +97,16 @@ GNOME is composed of several resources and we will discuss each one of them in o
 
 ### Background
 
-Backgrounds are stored in `/run/current-system/sw/share/backgrounds/athena/` folder.
+Backgrounds are stored in:
+
+<Tabs>
+<TabItem label="Athena Arch">
+`/usr/share/backgrounds/default/` folder.
+</TabItem>
+<TabItem label="Athena Nix">
+`/run/current-system/sw/share/backgrounds/athena/` folder.
+</TabItem>
+</Tabs>
 
 If you wish to change only the background, you can do it by different ways.
 
@@ -125,9 +135,20 @@ If you are using a dark theme, use **picture-uri-dark**. If you are using a ligh
 
 ### Mouse Cursor
 
-If you wish to customize your **mouse pointer**, you need to setup it in a declarative manner by Nix modules.
+If you wish to customize your **mouse pointer**:
 
-Once set, go to the **App Grid** or press **Super** key two times, and search for **GNOME Tweaks** or **Tweaks**, usually it is inside the **Utilities** group and launch it.
+<Tabs>
+<TabItem label="Athena Arch">
+download one mouse cursor theme. Look at [GNOME Look](https://www.gnome-look.org/) and select **Cursors** category.
+
+Once downloaded, place the cursor folder in `/usr/share/icons/` to apply it at system-wide or `~/.local/share/icons/` to apply only for your user.
+</TabItem>
+<TabItem label="Athena Nix">
+setup it in a declarative manner by Nix modules.
+</TabItem>
+</Tabs>
+
+Then, go to the **App Grid** or press **Super** key two times, and search for **GNOME Tweaks** or **Tweaks**, usually it is inside the **Utilities** group and launch it.
 
 When the GNOME Tweaks is opened, move to **Appearance** tab and select your cursor theme on **Cursor** field.
 
@@ -140,9 +161,20 @@ gsettings set org.gnome.desktop.interface cursor-theme <cursor_theme_foldername>
 
 ### Icons
 
-If you wish to customize the **icon theme**, you need to setup it in a declarative manner by Nix modules.
+If you wish to customize the **icon theme**:
 
-Once set, go to the **App Grid** or press **Super** key two times, and search for **GNOME Tweaks** or **Tweaks**, usually it is inside the **Utilities** group and launch it.
+<Tabs>
+<TabItem label="Athena Arch">
+download one of it. Look at [GNOME Look](https://www.gnome-look.org/) and select **Full Icon Themes** category.
+
+Once downloaded, place the icon folder in `/usr/share/icons/` to apply it at system-wide or `~/.local/share/icons/` to apply only for your user.
+</TabItem>
+<TabItem label="Athena Nix">
+setup it in a declarative manner by Nix modules.
+</TabItem>
+</Tabs>
+
+Then, go to the **App Grid** or press **Super** key two times, and search for **GNOME Tweaks** or **Tweaks**, usually it is inside the **Utilities** group and launch it.
 
 When the GNOME Tweaks is opened, move to **Appearance** tab and select your icon theme on **Icons** field.
 
@@ -155,9 +187,19 @@ gsettings set org.gnome.desktop.interface icon-theme <icon_theme_foldername>
 
 ### Theme
 
-If you wish to change the theme of top bar and the GTK windows, you need to setup it in a declarative manner by Nix modules.
+If you wish to change the theme of top bar and the GTK windows:
+<Tabs>
+<TabItem label="Athena Arch">
+download one of it. Look at [GNOME Look](https://www.gnome-look.org/) and select **GTK3/4 Themes** category. Download only themes that are compatible with the actual installed version of GNOME.
 
-Once set, go to the **App Grid** or press **Super** key two times, and search for **GNOME Tweaks** or **Tweaks**, usually it is inside the **Utilities** group and launch it.
+Once downloaded, place the theme folder in `/usr/share/themes/` to apply it at system-wide or `~/.local/share/themes/` to apply only for your user.
+</TabItem>
+<TabItem label="Athena Nix">
+setup it in a declarative manner by Nix modules.
+</TabItem>
+</Tabs>
+
+Then, go to the **App Grid** or press **Super** key two times, and search for **GNOME Tweaks** or **Tweaks**, usually it is inside the **Utilities** group and launch it.
 
 When the GNOME Tweaks is opened, move to **Appearance** tab and select your theme on **Shell** (for top bar) and **Legacy Applications** (for GTK windows) fields.
 
@@ -170,7 +212,33 @@ gsettings set org.gnome.desktop.wm.preferences theme <theme_foldername>
 gsettings set org.gnome.shell.extensions.user-theme name <theme_foldername>
 ```
 
-If you wish to apply one of the complete themes prebuilt for Athena OS, you can edit `/etc/nixos/configuration.nix` file and set `theme` value as desired.
+If you wish to apply one of the complete themes prebuilt for Athena OS:
+
+<Tabs>
+<TabItem label="Athena Arch">
+the theme folder must always be stored in `/usr/share/themes/` or `~/.local/share/themes/`
+
+If you wish to apply one of the complete themes prebuilt for Athena OS, you can use **athena-theme-tweak** and using the **-t** parameter. Here the output of the help command to show how Athena Theme Tweak must be used:
+```shell
+List of arguments:
+-b, --browser                 set the current browser logo in Red Team menu
+-c, --colored                 let's give some random colored output
+-e, --emulator                specify a terminal emulator to be set [alacritty|cool-retro-term|foot|gnome-terminal|kitty|konsole|urxvt|xterm]
+-h, --help                    show this help message and exit
+-l, --list                    list all available Athena themes
+-t, --theme <theme-name>      specify an Athena theme to be set [AkameGaKill|BlueEyesSamurai|Graphite|CyborgGruvbox|SweetDark|XXE]
+
+Usage Examples:
+athena-theme-tweak -l
+athena-theme-tweak -e alacritty
+athena-theme-tweak -t BlueEyesSamurai
+athena-theme-tweak -b
+```
+</TabItem>
+<TabItem label="Athena Nix">
+edit `/etc/nixos/configuration.nix` file and set `theme` value as desired.
+</TabItem>
+</Tabs>
 
 Once applied the new theme, if you are on Xorg, press **ALT + F2**, then type **r** and press **Enter** for restarting GNOME Shell and close and reopen the terminal. If you are on Wayland, logout or reboot the system.
 
@@ -258,10 +326,28 @@ Here are reported some useful **keybindings** set by default in Athena OS GNOME.
 
 ## Side Installation
 
+<Tabs>
+<TabItem label="Athena Arch">
+To install Athena OS GNOME environment on side of an existing environment, run:
+```
+sudo pacman -S athena-gnome-config
+dconf load /org/gnome/settings-daemon/plugins/media-keys/ < /usr/share/athena-gnome-config/dconf-custom-keybindings.ini
+dconf load /org/gnome/mutter/ < /usr/share/athena-gnome-config/dconf-mutter.ini
+dconf load /org/gnome/desktop/ < /usr/share/athena-gnome-config/dconf-desktop.ini
+dconf load /org/gnome/shell/ < /usr/share/athena-gnome-config/dconf-shell.ini
+```
+Then reboot. On Login Manager, select **GNOME Wayland** or **GNOME Xorg** session and login.
+
+If your theme is not correctly displayed, run `athena-theme-tweak` to set or change the current environment theme.
+</TabItem>
+<TabItem label="Athena Nix">
 To set Athena OS GNOME environment on side of an existing environment, just edit `/etc/nixos/configuration` and change `desktop` variable to `gnome`. Finally, run:
 ```shell
 sudo nixos-rebuild switch
 ```
+</TabItem>
+</Tabs>
+
 If needed, reboot. On Login Manager, select **GNOME Wayland** or **GNOME Xorg** session and login.
 
 <ImageComponent />
