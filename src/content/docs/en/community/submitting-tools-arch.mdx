@@ -57,7 +57,9 @@ Pentesting tools are mainly maintained in Athena repository, so your new pentest
      Another example [here](https://github.com/BlackArch/blackarch/issues/3661#issuecomment-1371499848)
 5. If the test works, you can also try to install the tool by this PKGBUILD directly on your system by `makepkg -si` command.
 6. If all is working well, go on [Athena repository packages](https://github.com/Athena-OS/athena/tree/main/packages), click on **Add file** -> **Create new file**. It will ask to create a fork. Then, as filename, insert `mytoolname/PKGBUILD`. It will create the folder `mytoolname` and inside it an empty `PKGBUILD` folder. Inside this `PKGBUILD` paste the content of the working PKGBUILD tested above and commit the changes. These changes are applied on your fork. Create a **Draft Pull Request** when requested and name it as `<package-name>: added package`.
-// 7. Then go to your forked repository and edit the file `blackarch/lists/to-release` by adding there the name of the tool, for example `mytoolname`. When you apply also these changes, your draft pull request will automatically have also this last change.
+{/*
+7. Then go to your forked repository and edit the file `blackarch/lists/to-release` by adding there the name of the tool, for example `mytoolname`. When you apply also these changes, your draft pull request will automatically have also this last change.
+*/}
 7. Go to your draft pull request and submit it. You need to wait for Athena maintainers that will check your submission and merge your pull request.
 
 :::note
@@ -92,7 +94,9 @@ If you noticed that the repository is not keeping the latest version of a tool:
      Another example [here](https://github.com/BlackArch/blackarch/issues/3661#issuecomment-1371499848)
 7. If the test works, you can also try to install the tool by this PKGBUILD directly on your system by `makepkg -si` command.
 8. If all is working well, go on the web page of the tool PKGBUILD in Athena repository at **https://github.com/Athena-OS/athena/tree/main/packages/pentesting/toolname/PKGBUILD**, click on the **Pen Icon** for editing the file. It will ask to create a fork. Inside this `PKGBUILD` paste the content of the working PKGBUILD tested above and commit the changes. These changes are applied on your fork. Create a **Draft Pull Request** when requested and name it as `<package-name>: updated package`.
-// 7. Then go to your forked repository and edit the file `blackarch/lists/to-release` by adding there the name of the tool, for example `mytoolname`. When you apply also these changes, your draft pull request will automatically have also this last change.
+{/*
+7. Then go to your forked repository and edit the file `blackarch/lists/to-release` by adding there the name of the tool, for example `mytoolname`. When you apply also these changes, your draft pull request will automatically have also this last change.
+*/}
 7. Go to your draft pull request and submit it. You need to wait for Athena maintainers that will check your submission and merge your pull request.
 
 <ImageComponent />
