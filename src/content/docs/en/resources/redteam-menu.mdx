@@ -89,7 +89,11 @@ In details:
   </tr>
 </table>
 
-By Red Team menu, the tools are run in an ephimeral environment by Nix Shell. It means that once the user exits from Nix Shell, the tool is unlinked/removed. To keep a specific tool permanent on the system, you can set a Cyber Role or edit `/etc/nixos/configuration.nix` by adding explicitely the tool you need and run `sudo nixos-rebuild switch`.
+In Athena Arch, in all the environments, it reflects the classic menu layout in Linux. For example:
+
+![Red Team Menu](@assets/images/xfce-well-redmenu.png)
+
+In Athena Nix, by Red Team menu, the tools are run in an ephimeral environment by Nix Shell. It means that once the user exits from Nix Shell, the tool is unlinked/removed. To keep a specific tool permanent on the system, you can set a Cyber Role or edit `/etc/nixos/configuration.nix` by adding explicitely the tool you need and run `sudo nixos-rebuild switch`.
 
 At the beginning, these tools are not installed to avoid that users would store in the disk space installed tools or services that never use. For users that would like to get these main tools, the **Enthusiast Student** role must be chosen on the Welcome App.
 
