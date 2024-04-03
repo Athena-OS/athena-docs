@@ -131,7 +131,8 @@ export default defineConfig({
             { label: 'Setting up a Mirror', link: '/en/community/setting-mirror' },
             { label: 'Submitting Bugs', link: '/en/community/submitting-bugs' },
             { label: 'Submitting Themes', link: '/en/community/submitting-themes' },
-            { label: 'Submitting Tools', link: '/en/community/submitting-tools' },
+            { label: 'Submitting Tools in Nix', link: '/en/community/submitting-tools-nix' },
+            { label: 'Submitting Tools in Arch', link: '/en/community/submitting-tools-arch' },
           ],
         },
         {
