@@ -4,6 +4,7 @@ description: How to install Athena OS by Aegis Installer TUI.
 ---
 import ImageComponent from "@components/ImageComponent.astro";
 import ThemedImage from '@components/ThemedImage.astro';
+import { LinkCard, CardGrid } from '@astrojs/starlight/components';
 
 [Aegis TUI](https://github.com/Athena-OS/aegis-tui) is a terminal user interface frontend of **Aegis**, a tailored installer developed and optimized specifically for Athena OS.
 
@@ -90,9 +91,16 @@ If you don't type any value for hostname, the default value will be `athenaos`.
 #### Partitioning
 
 Select your partition according to the installation type you are going to. Check the **Installation** chapter related to your setup and follow there the partition scheme to implement:
-* [Installing as single boot](/en/installation/install-single-boot/#aegis-tui)
-* [Virtual Machine scenario](/en/installation/install-single-boot/#aegis-tui)
-* [Installing as dual boot with Linux or Windows](/en/installation/install-dual-boot/#partitioning)
+<CardGrid>
+  <LinkCard title="Installing as single boot" href="/en/installation/install-single-boot/#aegis-tui" />
+  <LinkCard title="Installing as dual boot" href="/en/installation/install-dual-boot/#partitioning" />
+</CardGrid>
+
+<LinkCard
+  title="Virtual Machine scenario"
+  description="Install Athena OS in a virtual environment."
+  href="/guides/customization/"
+/>
 
 #### Desktop
 
