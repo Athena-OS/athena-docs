@@ -1,25 +1,25 @@
 ---
-title: Submitting Tools
+title: Submitting Tools in Arch
 description: How to submit pentesting tools.
 ---
 import ImageComponent from "@components/ImageComponent.astro";
 import ThemedImage from '@components/ThemedImage.astro';
 
-If you wish to submit a new pentesting tool that is not in any Arch Linux or BlackArch repository, this section will help you.
+If you wish to submit a new pentesting tool that is not in any Arch Linux or Athena repository, this section will help you.
 
-Pentesting tools are mainly maintained in BlackArch repository, so your new pentesting tools must be stored there.
+Pentesting tools are mainly maintained in Athena repository, so your new pentesting tools must be stored there.
 
 ## Creating a package
 
-1. Create a **PKGBUILD** file containing the rules for compiling and installing `mytoolname`. According to the type of the tool, you must start from one of [these PKGBUILD templates](https://github.com/BlackArch/blackarch-pkgbuilds)
-   * i.e., if it is a bash tool that comes from GitHub or GitLab, you can refer to [PKGBUILD-generic-git]
-   * copy the content of the PKGBUILD template file inside a new file named `PKGBUILD` created in `blackarch/packages/<mytoolname>` folder.
-2. Fill the variable inside PKGBUILD according to the tool information. If you are new on PKGBUILD, give a look to the [official Arch Linux documentation](https://wiki.archlinux.org/title/PKGBUILD). You can check several examples in [BlackArch repository](https://github.com/BlackArch/blackarch/tree/master/packages/)
+1. Create a **PKGBUILD** file containing the rules for compiling and installing `mytoolname`. According to the type of the tool, it can be useful to start by one of [BlackArch PKGBUILD templates](https://github.com/BlackArch/blackarch-pkgbuilds)
+   * i.e., if it is a bash tool that comes from GitHub or GitLab, you can refer to [PKGBUILD-generic-git](https://github.com/BlackArch/blackarch-pkgbuilds/blob/master/PKGBUILD-generic-git)
+   * copy the content of the PKGBUILD template file inside a new file named `PKGBUILD` created in `athena/packages/pentesting/<mytoolname>` folder.
+2. Fill the variable inside PKGBUILD according to the tool information. If you are new on PKGBUILD, give a look to the [official Arch Linux documentation](https://wiki.archlinux.org/title/PKGBUILD). You can check several examples in [Athena repository](https://github.com/Athena-OS/athena/tree/main/packages/pentesting)
    * when you write information inside PKGBUILD, there are several best practices you must follow:
       * Insert [disclaimer comments](https://github.com/BlackArch/blackarch-pkgbuilds/blob/66259a614509ab1f78075bc897d3cb10d832ed13/PKGBUILD-generic#L1-L2)
       * Never put upper case in `pkgname=`
       * AUR packages are written bad. Change them in order to be BlackArch convention compliant
-      * In `groups=`, insert the right BlackArch categories
+      * In `groups=`, insert the right Athena categories
       * Insert empty line before `pkgver()`
       * Add a blank line after `cd $pkgname` inside `pkgver()`
       * When something gets compiled (C, go, rust, etc.), use `arch=('x86_64' 'aarch64')` rather than `arch=('any')`.
@@ -37,7 +37,7 @@ Pentesting tools are mainly maintained in BlackArch repository, so your new pent
       * Add always a new line at the end of the PKGBUILD. If you are editing the PKGBUILD by GitHub WebUI, you need to have at the end two newlines
       * Don't just copy/paste from AUR that are often low quality PKGBUILD, it needs to be adapted to BA standards.
       * Try to do all edits related to one package in the same Pull Request: You know when you edit a file with github webui to prepare your PR (Pull Request) it basically just create a branch patch-X on your fork (i.e., [here](https://github.com/D3vil0p3r/blackarch/tree/patch-8)) based on `BlackArch:master`. So for example here, you can browse `D3vil0p3r:patch-8` and create `python-instagram-private-api` PKGBUILD there so it will be added to the same PR rather than creating a new PR for it. One PR per tool is nice but when it's the dependencies of the tool it's best to have them in the same PR
-      * Add `mytoolname` to lists/to-release file in BlackArch repository
+      // * Add `mytoolname` to lists/to-release file in BlackArch repository
       * Create a Pull Request with title `<package-name>: add package`
       * For Python packages
         * even if the convention is `python-<pythonpkgname>`, respect that even if that makes `python-python-something`
@@ -56,22 +56,22 @@ Pentesting tools are mainly maintained in BlackArch repository, so your new pent
      ```
      Another example [here](https://github.com/BlackArch/blackarch/issues/3661#issuecomment-1371499848)
 5. If the test works, you can also try to install the tool by this PKGBUILD directly on your system by `makepkg -si` command.
-6. If all is working well, go on [BlackArch repository packages](https://github.com/BlackArch/blackarch/tree/master/packages/), click on **Add file** -> **Create new file**. It will ask to create a fork. Then, as filename, insert `mytoolname/PKGBUILD`. It will create the folder `mytoolname` and inside it an empty `PKGBUILD` folder. Inside this `PKGBUILD` paste the content of the working PKGBUILD tested above and commit the changes. These changes are applied on your fork. Create a **Draft Pull Request** when requested and name it as `<package-name>: added package`.
-7. Then go to your forked repository and edit the file `blackarch/lists/to-release` by adding there the name of the tool, for example `mytoolname`. When you apply also these changes, your draft pull request will automatically have also this last change.
-8. Go to your draft pull request and submit it. You need to wait for BlackArch maintainers that will check your submission and merge your pull request.
+6. If all is working well, go on [Athena repository packages](https://github.com/Athena-OS/athena/tree/main/packages), click on **Add file** -> **Create new file**. It will ask to create a fork. Then, as filename, insert `mytoolname/PKGBUILD`. It will create the folder `mytoolname` and inside it an empty `PKGBUILD` folder. Inside this `PKGBUILD` paste the content of the working PKGBUILD tested above and commit the changes. These changes are applied on your fork. Create a **Draft Pull Request** when requested and name it as `<package-name>: added package`.
+// 7. Then go to your forked repository and edit the file `blackarch/lists/to-release` by adding there the name of the tool, for example `mytoolname`. When you apply also these changes, your draft pull request will automatically have also this last change.
+7. Go to your draft pull request and submit it. You need to wait for Athena maintainers that will check your submission and merge your pull request.
 
 :::note
 For Python packages, it is preferred to retrieve the source files from PyPI instead of GitHub repositories because of the integrity check, check for dependency changes at each release, and a [script](https://github.com/BlackArch/blackarch/blob/master/scripts/up-libraries) to auto-bump on new release for PyPI releases.
 :::
 
 :::caution
-If your submitted tool has some dependencies that are not in BlackArch or Arch Linux repositories, you need to create a PKGBUILD dedicated to it in BlackArch repository itself. For example, in your forked repository you should create the PKGBUILD file in another directory as `blackarch/packages/yourdependency/PKGBUILD`. The PKGBUILD related to a depedency of a tool does not need of the field `groups=('blackarch' MORE_BLACKARCH_GROUPS_HERE).`
+If your submitted tool has some dependencies that are not in Athena or Arch Linux repositories, you need to create a PKGBUILD dedicated to it in Athena repository itself. For example, in your forked repository you should create the PKGBUILD file in another directory as `athena/packages/pentesting/<yourdependency>/PKGBUILD`. The PKGBUILD related to a depedency of a tool does not need of the field `groups=('athena' MORE_ATHENA_GROUPS_HERE).`
 :::
 
 ## Updating a package
 
 If you noticed that the repository is not keeping the latest version of a tool:
-1. Access to its PKGBUILD in [BlackArch Repository](https://github.com/BlackArch/blackarch/tree/master/packages/) by visiting its directory by **https://github.com/BlackArch/blackarch/tree/master/packages/toolname** and inside it there should be a PKGBUILD file.
+1. Access to its PKGBUILD in [Athena Repository](https://github.com/Athena-OS/athena/tree/main/packages/pentesting) by visiting its directory by **https://github.com/Athena-OS/athena/tree/main/packages/pentesting/toolname** and inside it there should be a PKGBUILD file.
 2. Open it and copy its content in your local file named PKGBUILD in your computer.
 3. Change it by writing the new version information in **pkgver** and **pkgrel** variables. If you are just fixing only an error on PKGBUILD or other files in the package folder, and no new version of the tool has been released, just update the **pkgrel** variable by **+1**.
 4. From the original source webste of the tool to update, check if there are additional dependencies to consider. If so, add them in:
@@ -91,8 +91,8 @@ If you noticed that the repository is not keeping the latest version of a tool:
      ```
      Another example [here](https://github.com/BlackArch/blackarch/issues/3661#issuecomment-1371499848)
 7. If the test works, you can also try to install the tool by this PKGBUILD directly on your system by `makepkg -si` command.
-8. If all is working well, go on the web page of the tool PKGBUILD in BlackArch repository at **https://github.com/BlackArch/blackarch/tree/master/packages/toolname/PKGBUILD**, click on the **Pen Icon** for editing the file. It will ask to create a fork. Inside this `PKGBUILD` paste the content of the working PKGBUILD tested above and commit the changes. These changes are applied on your fork. Create a **Draft Pull Request** when requested and name it as `<package-name>: updated package`.
-7. Then go to your forked repository and edit the file `blackarch/lists/to-release` by adding there the name of the tool, for example `mytoolname`. When you apply also these changes, your draft pull request will automatically have also this last change.
-8. Go to your draft pull request and submit it. You need to wait for BlackArch maintainers that will check your submission and merge your pull request.
+8. If all is working well, go on the web page of the tool PKGBUILD in Athena repository at **https://github.com/Athena-OS/athena/tree/main/packages/pentesting/toolname/PKGBUILD**, click on the **Pen Icon** for editing the file. It will ask to create a fork. Inside this `PKGBUILD` paste the content of the working PKGBUILD tested above and commit the changes. These changes are applied on your fork. Create a **Draft Pull Request** when requested and name it as `<package-name>: updated package`.
+// 7. Then go to your forked repository and edit the file `blackarch/lists/to-release` by adding there the name of the tool, for example `mytoolname`. When you apply also these changes, your draft pull request will automatically have also this last change.
+7. Go to your draft pull request and submit it. You need to wait for Athena maintainers that will check your submission and merge your pull request.
 
 <ImageComponent />
