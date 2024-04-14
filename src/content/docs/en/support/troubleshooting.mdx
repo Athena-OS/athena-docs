@@ -72,6 +72,13 @@ For example, you should remove GRUB files related to old Linux systems that are 
 If you are in dual boot along Windows, don't delete the `Microsoft` folder inside the boot partition.
 :::
 
+Once reboot, access to your BIOS and be sure that `GRUB` entry has the highest priority on UEFI Boot Priority section.
+
+Finally, in case Windows entry disappeared, land on the installed Athena system, open a terminal and run:
+```
+sudo grub-mkconfig -o /boot/grub/grub.cfg
+```
+
 #### Restore GRUB
 
 For fixing the GRUB, before exiting from the Live Environment, before proceeding, you must detect the existing Linux partition and the EFI partition containing the GRUB entries for Linux and Windows (or other OS). You can do that by running `sudo fdisk -l`.
