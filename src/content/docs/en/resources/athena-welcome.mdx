@@ -7,9 +7,16 @@ import ThemedImage from '@components/ThemedImage.astro';
 
 Athena Welcome is the official Athena OS welcome app aimed to configure the system installation as you wish by allowing you to select any settings and resource you need, and to manage Cyber Security Roles and Hacking Platform tools.
 
-Athena Welcome consists mainly of two views:
+Athena Welcome consists three tabs
+* Welcome
+* Information
+* Credits
+
+and two views:
 * Live Environment
-* Running Environment
+* Post-Install Environment
+
+While **Information** contains useful information to start on Athena, the **Welcome** tab is a little more elaborated. Its contents are discussed in the next sections.
 
 ## Live Environment
 
@@ -17,25 +24,25 @@ Landing on the Live Environment, **Athena Welcome** application is automatically
 
 ![Athena Welcome Install](@assets/images/athena-welcome-install.png)
 
-### Install Buttons
+### Install
 
-You can choose between **Easy Installation (Offline)** and **Advanced Installation (Online)**. The former does not require an Internet connection but it installs all default elements in Athena; the latter requires an Internet connection but you can customize your final environment.
+Currently the installation by TUI (Terminal User Interface) is available by the **Install Athena OS (TUI)** button. In the future the Welcome application will feature also a GUI installation.
 
-The details about the installation process are described in [Calamares Installer](/en/configuration/calamares/).
+The details about the installation process are described in [TUI Installer](/en/configuration/aegis-tui/).
 
 ### Run GParted
 
 You can also run **GParted** for configuring your disks by clicking on **Run GParted** button.
 
-### Update Buttons
+### Update
 
-**Update Calamares Installer** will update the installer and the binaries it uses to the latest version. **Update All Mirrors** will find the fastest mirrors for your connection in order to speed up the retrieve of the packages to install.
+**Package Update** will upgrade all the packages installed iin your system. **Update Mirrors** will find the fastest mirrors for your connection in order to speed up the retrieve of the packages to install for Athena Arch. In case of Athena Nix, it will update all Nix channels.
 
-## Running Environment
+## Post-Install Environment
 
 Once Athena OS is installed, **Athena Welcome** application is automatically run.
 
-![Athena Welcome Running](@assets/images/athena-welcome-running.png)
+![Athena Welcome Post](@assets/images/athena-welcome-post.png)
 
 ### Cyber Security Roles
 
@@ -53,7 +60,7 @@ By clicking on **Choose your Role**, you can select your favourite cyber securit
 * ❤️ Red Teamer ❤️
 * 🕸️ Web Pentester 🕸️
 
-Once selected, click on **Set your Role** button for installing all the tools and resources related to the chosen role.
+Once selected, click on **Set Cyber Role** button for installing all the pentesting tools and resources related to the chosen role.
 
 Some of these roles not only install pentesting tools but also retrieve **payload repositories** like **SecLists**, **PayloadsAllTheThings**, **FuzzDB**, **Auto Wordlists** and **Security Wordlist**. These roles are:
 * 🐞 Bug Bounty Hunter 🐞
@@ -77,6 +84,8 @@ On **Password:** field paste the HTB API token you got above and press Enter. If
 Done. Press Enter to continue...
 ```
 and you are able to play Hack The Box machines in Athena OS.
+
+{/*
 
 ### Tool Recipe
 
@@ -115,5 +124,7 @@ The remaining buttons are common to both of the views and are related to the Ath
 * **Donate** allows you to support the project
 * **Wiki** brings you to the Athena OS official documentation
 * **Quit** will close Athena Welcome app
+
+*/}
 
 <ImageComponent />
