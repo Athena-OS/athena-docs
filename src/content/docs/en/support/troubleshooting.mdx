@@ -45,6 +45,33 @@ just assign more resources (CPU, RAM, Swap space) to your system.
 
 ### Boot
 
+#### Error 24 : Write error : cannot write compressed block
+
+During the installation, if you get the following error messages:
+```
+Error 24 : Write error : cannot write compressed block
+bsdtar: Write error
+```
+your boot partition is full and cannot write the initcpio image of the system. At reboot after the installation, you could still access to the installed OS by the **EFI default loader** entry, but on the desktop, you could get a low space on boot partition message.
+
+To solve this, you need to reboot and land again the the Live ISO environment. Let's guess the boot partition is `/dev/nvme0n1p1`. Open a terminal and mount it:
+```shell
+sudo mount /dev/nvme0n1p1 /mnt/
+```
+replace `/dev/nvme0n1p1` by your actual boot partition block device.
+
+Now, list the files and folders inside the boot partition:
+```shell
+tree /mnt
+```
+and identify which files and folders are old and unused, and remove them.
+
+For example, you should remove GRUB files related to old Linux systems that are not installed anymore on your computer.
+
+:::caution
+If you are in dual boot along Windows, don't delete the `Microsoft` folder inside the boot partition.
+:::
+
 #### Restore GRUB
 
 For fixing the GRUB, before exiting from the Live Environment, before proceeding, you must detect the existing Linux partition and the EFI partition containing the GRUB entries for Linux and Windows (or other OS). You can do that by running `sudo fdisk -l`.
