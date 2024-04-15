@@ -134,8 +134,9 @@ grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
 ```
 If GRUB BIOS/Legacy boot:
 ```shell
-grub-install --force --target=i386-pc --recheck --boot-directory=/boot /dev/nvme0n1p1
+grub-install --force --target=i386-pc --recheck --boot-directory=/boot /dev/nvme0n1
 ```
+Note that, `/dev/nvme0n1` must be the disk containing the boot partition, not the boot partition itself.
 
 Finally, for fixing also the Linux access, burn Athena OS ISO on a USB and follow the steps explained at [Post-installation](/en/installation/install-persistent-usb/#post-installation) section.
 
