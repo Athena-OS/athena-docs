@@ -6,7 +6,7 @@ import ImageComponent from "@components/ImageComponent.astro";
 import ThemedImage from '@components/ThemedImage.astro';
 
 Athena OS leverages on several repositories for accessing to security tools and learning resources in a comfortable manner. They are:
-* [Athena repository](https://athena-os.github.io/athena-repository/) for new tools or packages not stored in other existing repositories
+* [Athena repository](https://github.com/Athena-OS/athena) for new tools or packages not stored in other existing repositories
 * [BlackArch repository](https://blackarch.org/) for retrieving all the security tools
 * [Chaotic repository](https://aur.chaotic.cx/) for accessing to the AUR packages directly by pacman
 * [Arch Linux repositories](https://archlinux.org/packages/) for system and utility packages
@@ -17,7 +17,7 @@ Athena OS leverages on several repositories for accessing to security tools and 
 
 These repositories are set in `/etc/pacman.conf`. Here you can choose to add more repositories or remove the existing ones. Each time you edit this file by adding or removing repositories, run `sudo pacman -Syy` to synchronize the database.
 
-The structure of the Athena OS [repository package source](https://github.com/Athena-OS/package-source) is public and available for any contribution.
+The structure of the Athena OS [repository package source](https://github.com/Athena-OS/athena/tree/main/packages) is public and available for any contribution.
 
 The source files of each single package is inside the `packages` directory. Each package has `PKGBUILD` file for defining the `.pkg.tar.zst` package rules and `build.sh` is used for automating this process by generating the new `.pkg.tar.zst`, signing it, moving it and its signature to `x86_64` folder and delete all the temporary files.
 When all packages are built, they are moved to the actual [Athena Repository](https://github.com/Athena-OS/athena-repository) and `update-database.sh` must be run for calling `update_repo.sh` script in order to update the `athena.db*` files with the new built packages with `.pkg.tar.zst` extension stored in `x86_64` folder.
@@ -47,7 +47,7 @@ Include = /etc/pacman.d/athena-mirrorlist
 ```
 Get the mirrorlist file by running:
 ```shell
-sudo curl https://raw.githubusercontent.com/Athena-OS/package-source/main/packages/athena-mirrorlist/athena-mirrorlist -o /etc/pacman.d/athena-mirrorlist
+sudo curl https://raw.githubusercontent.com/Athena-OS/athena/main/packages/os-specific/athena-mirrorlist/athena-mirrorlist -o /etc/pacman.d/athena-mirrorlist
 ```
 On the terminal, execute:
 ```shell
