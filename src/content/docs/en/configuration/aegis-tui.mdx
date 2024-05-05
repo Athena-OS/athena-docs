@@ -143,9 +143,13 @@ Finally, if you are ready to install, proceed
  
 During the installation, installation logs are saved in `/tmp/aegis.log`. In case the installation gets some issues, run:
 ```shell
-cat /tmp/aegis.log | nc termbin.com 9999
+install-logs
 ```
-to get a link to https://termbin.com where the logs are temporary saved. Communicate this link to Athena OS Team for troubleshooting.
+and
+```shell
+config-logs
+```
+to get the links to https://termbin.com where the logs are temporary saved. Communicate these links to Athena OS Team for troubleshooting.
  
 :::tip
 If the screen locks due to user inactivity, unlock the screen by using `athena` as password.
@@ -154,6 +158,19 @@ If the screen locks due to user inactivity, unlock the screen by using `athena` 
 If no errors have been raised during the installation phase, you are ready to use Athena OS!
 
 ![Installation Finished](@assets/images/aegis-tui-finish.png)
+
+Before rebooting, if you installed Athena OS in dual boot with Windows, as explained in the related section, restore Microsoft bootloader inside the boot partition (i.e., `/dev/nvme0n1p1`):
+```
+sudo mount /dev/nvme0n1p1 /mnt
+cp -rf ~/Microsoft /mnt/EFI/
+sudo umount /mnt
+```
+Once you reboot, and you land on the installed system, open the terminal and run:
+```
+sudo os-prober
+sudo grub-mkconfig -o /boot/grub/grub.cfg
+```
+In this manner, Windows entry should be added in GRUB.
 
 :::note
 At the end of a successful installation in an EFI system, you could get a message like:
