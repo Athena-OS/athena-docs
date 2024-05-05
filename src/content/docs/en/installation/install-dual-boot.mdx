@@ -95,8 +95,8 @@ Now it will be asked you to select what is the EFI partition. Select the existin
 ![Aegis TUI Partitioning Select EFI](@assets/images/aegis-tui-partitioning-manual-select-efi-partition-efi.png)
 
 {/*
-If you want to use the UEFI boot partition used by Windows, as **EFI partition mountpoint**, select **/boot** and as **EFI partition filesystem** select **don't format**.
-Instead, if you created a new separated EFI partition, as **EFI partition mountpoint**, select **/boot** and as **EFI partition filesystem** select **fat** or **vfat**.
+If you want to use the UEFI boot partition used by Windows, as EFI partition mountpoint, select /boot and as EFI partition filesystem select don't format
+Instead, if you created a new separated EFI partition, as EFI partition mountpoint select boot and as EFI partition filesystem select fat or vfat
 */}
 
 As **EFI partition mountpoint**, select **/boot** and as **EFI partition filesystem** select **fat** or **vfat**.
@@ -135,8 +135,8 @@ Afterwards, on the menu, select **"Write"** to apply these changes to your disk.
 Now it will be asked you to select what is the GRUB partition. Select the existing one (usually it should be the one sized 512M). If you use the GRUB inside the boot sector of the root partition, skip this step by pressing **CTRL+C**.
 
 {/*
-If you want to use an already existing GRUB boot partition, as **GRUB partition mountpoint**, select **/boot** and as **GRUB partition filesystem** select **don't format**.
-Instead, if you created a new separated GRUB partition, as **GRUB partition mountpoint**, select **/boot** and as **GRUB partition filesystem** select **ext4**.
+If you want to use an already existing GRUB boot partition, as GRUB partition mountpoint, select /boot and as GRUB partition filesystem select don't format
+Instead, if you created a new separated GRUB partition, as GRUB partition mountpoint, select /boot and as GRUB partition filesystem select ext4
 */}
 
 As **GRUB partition mountpoint**, select **/boot** and as **GRUB partition filesystem** select **ext4**.
