@@ -155,6 +155,19 @@ If no errors have been raised during the installation phase, you are ready to us
 
 ![Installation Finished](@assets/images/aegis-tui-finish.png)
 
+Before rebooting, if you installed Athena OS in dual boot with Windows, as explained in the related section, restore Microsoft bootloader inside the boot partition (i.e., `/dev/nvme0n1p1`):
+```
+sudo mount /dev/nvme0n1p1 /mnt
+cp -rf ~/Microsoft /mnt/EFI/
+sudo umount /mnt
+```
+Once you reboot, and you land on the installed system, open the terminal and run:
+```
+sudo os-prober
+sudo grub-mkconfig -o /boot/grub/grub.cfg
+```
+In this manner, Windows entry should be added in GRUB.
+
 :::note
 At the end of a successful installation in an EFI system, you could get a message like:
 ```
