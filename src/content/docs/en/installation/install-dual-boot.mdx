@@ -23,7 +23,40 @@ for **EFI boot**, select **Athena OS install medium** or:
 
 for **BIOS/Legacy boot**, select **Boot Athena OS (x86_64, BIOS, open source)**.
 
-Once you land on the Live Environment, follow the [Aegis TUI Installer](/en/configuration/aegis-tui/) chapter until the **Partitioning** section.
+## Pre-installation
+
+If you are installing Athena OS along with Windows, you need to preserve the Microsoft bootloader files. We need to face the following scenario:
+* Format the existing boot partition: save Microsoft bootloader folder somewhere, format the boot partitition, and move Microsoft bootloader folder inside it.
+{/*
+* Don't format the existing boot partition: just remove possible conflicting files before running the installation.
+*/}
+
+#### Save Microsoft bootloader
+
+If you will format the boot partition, you need to save Microsoft bootloader files.
+Once you land on the Live Environment, open terminal and mount your existing boot partition (i.e., `/dev/nvme0n1p1`) containing Microsoft bootloader:
+```shell
+sudo mount /dev/nvme0n1p1 /mnt
+cp -rf /mnt/EFI/Microsoft ~/
+sudo umount /mnt
+```
+it will save `Microsoft` folder in the `liveuser` home folder. We will restore it just after the Athena OS installation ends as explained later.
+
+{/*
+#### Remove conflicting files
+
+If you won't format the existing boot partition, some existing files could conflict with the system installation.
+Before running it, once you land on the Live Environment, open terminal and mount your existing boot partition (i.e., `/dev/nvme0n1p1`) and let's remove them:
+```shell
+sudo mount /dev/nvme0n1p1 /mnt
+sudo rm -rf /mnt/memtest86+ /mnt/syslinux /mnt/*-ucode.img /mnt/grub/themes/athena*
+sudo umount /mnt
+```
+*/}
+
+## Installation
+
+Finally, follow the [Aegis TUI Installer](/en/configuration/aegis-tui/) chapter until the **Partitioning** section.
 
 ## Partitioning
 
@@ -60,8 +93,11 @@ Afterwards, on the menu, select **"Write"** to apply these changes to your disk.
 Now it will be asked you to select what is the EFI partition. Select the existing one (usually it should be the one sized 512M):
 ![Aegis TUI Partitioning Select EFI](@assets/images/aegis-tui-partitioning-manual-select-efi-partition-efi.png)
 
+{/*
 If you want to use the UEFI boot partition used by Windows, as **EFI partition mountpoint**, select **/boot** and as **EFI partition filesystem** select **don't format**.
 Instead, if you created a new separated EFI partition, as **EFI partition mountpoint**, select **/boot** and as **EFI partition filesystem** select **fat** or **vfat**.
+*/}
+As **EFI partition mountpoint**, select **/boot** and as **EFI partition filesystem** select **fat** or **vfat**.
 
 Now it will be asked you to select what is the root partition you created. Select it (usually it should be the one sized as you set previously):
 ![Aegis TUI Partitioning Select Root](@assets/images/aegis-tui-partitioning-manual-select-root-partition-efi.png)
@@ -96,8 +132,11 @@ Afterwards, on the menu, select **"Write"** to apply these changes to your disk.
 
 Now it will be asked you to select what is the GRUB partition. Select the existing one (usually it should be the one sized 512M). If you use the GRUB inside the boot sector of the root partition, skip this step by pressing **CTRL+C**.
 
+{/*
 If you want to use an already existing GRUB boot partition, as **GRUB partition mountpoint**, select **/boot** and as **GRUB partition filesystem** select **don't format**.
 Instead, if you created a new separated GRUB partition, as **GRUB partition mountpoint**, select **/boot** and as **GRUB partition filesystem** select **ext4**.
+*/}
+As **GRUB partition mountpoint**, select **/boot** and as **GRUB partition filesystem** select **ext4**.
 
 Now it will be asked you to select what is the root partition you created. Select it (usually it should be the one sized as you set previously):
 ![Aegis TUI Partitioning Select Root Legacy](@assets/images/aegis-tui-partitioning-manual-select-root-partition-legacy.png)
