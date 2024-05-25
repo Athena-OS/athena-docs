@@ -143,9 +143,13 @@ Finally, if you are ready to install, proceed
  
 During the installation, installation logs are saved in `/tmp/aegis.log`. In case the installation gets some issues, run:
 ```shell
-cat /tmp/aegis.log | nc termbin.com 9999
+install-logs
 ```
-to get a link to https://termbin.com where the logs are temporary saved. Communicate this link to Athena OS Team for troubleshooting.
+and
+```shell
+config-logs
+```
+to get the links to https://termbin.com where the logs are temporary saved. Communicate these links to Athena OS Team for troubleshooting.
  
 :::tip
 If the screen locks due to user inactivity, unlock the screen by using `athena` as password.
