@@ -148,7 +148,7 @@ export default defineConfig({
             // Each item here is one entry in the navigation menu.
             { label: 'Athena OS EULA', link: '/en/policy/eula-policy' },
             // { label: 'Athena OS Network Service Policy', link: '/en/policy/network-policy' },
-            { label: 'Athena OS Code of Conduct', link: '/en/community/code-of-conduct' },
+            { label: 'Athena OS Code of Conduct', link: '/en/policy/code-of-conduct' },
             { label: 'Athena OS Collaboration Policy', link: '/en/policy/collaboration-policy' },
             { label: 'Athena OS Open Source Policy', link: '/en/policy/opensource-policy' },
             { label: 'Athena OS Package Policy', link: '/en/policy/package-policy' },
