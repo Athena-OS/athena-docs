@@ -1,0 +1,81 @@
+---
+title: Installing as guest in VMware
+description: How to install Athena OS as as guest in VMware.
+---
+import ImageComponent from "@components/ImageComponent.astro";
+import ThemedImage from '@components/ThemedImage.astro';
+
+This chapter explains how to virtualize Athena OS inside of VMware in order to run Athena OS as virtual machine. This approach could be useful in case you would like to have a separated machine from the host that could also interact with other virtual machines, the host itself and other endpoints on the local network.
+
+:::caution
+In order to use a virtual machine, make sure to enable virtualization in BIOS/UEFI.
+:::
+
+For this guide, VMware Workstation on Linux has been used, but the steps are the same for Windows.
+
+Once you downloaded and installed VMware Workstation, open it and click on **Create a New Virtual Machine**
+
+![VMware Create VM](@assets/images/vmware-create.png)
+
+Then, you can set the same choices that you see on the next images or you can tweak some option you wish
+
+![VMware Configuration VM](@assets/images/vmware-configuration.png)
+![VMware Compatibility](@assets/images/vmware-compatibility.png)
+![VMware Media](@assets/images/vmware-media.png)
+![VMware Guest Type](@assets/images/vmware-guest-type.png)
+![VMware VM Name](@assets/images/vmware-vmname.png)
+![VMware CPU](@assets/images/vmware-cpu.png)
+![VMware RAM](@assets/images/vmware-ram.png)
+![VMware Network](@assets/images/vmware-network.png)
+![VMware I/O Controller](@assets/images/vmware-io.png)
+![VMware Disk Type](@assets/images/vmware-disk-type.png)
+![VMware Virtual Disk](@assets/images/vmware-vdisk.png)
+![VMware Disk Size](@assets/images/vmware-disk-size.png)
+![VMware Disk File](@assets/images/vmware-disk-file.png)
+![VMware Summary](@assets/images/vmware-summary.png)
+![VMware VM Tools](@assets/images/vmware-tools.png)
+
+When you finished to set this initial configuration, we need to tweak some settings.
+
+For first, click on **Edit virtual machine settings** and then click on **Printer** and click on **Remove**
+
+![VMware Printer](@assets/images/vmware-printer.png)
+
+Then you can set the USB as you wish, for example
+
+![VMware USB](@assets/images/vmware-usb.png)
+
+It is suggested on VMware to enable 3D Acceleration and assign some GB on it as the following
+
+![VMware Acceleration](@assets/images/vmware-accel.png)
+
+Move to **Options** tab. Enable the **Report battery information to guests**
+
+![VMware Battery Guest](@assets/images/vmware-battery.png)
+
+It could be useful to enable **Shared Folders** if you need to exchange files between the virtual machine and the host
+
+![VMware Shared Folders](@assets/images/vmware-shared.png)
+
+You can set also the **Synchronize guest time with host** option
+
+![VMware Synchronize Time](@assets/images/vmware-timesync.png)
+
+Finally, go to **Advanced** and enable **UEFI** boot
+![VMware UEFI](@assets/images/vmware-uefi.png)
+
+and save changes.
+
+If you are using VMware client on Linux, open the terminal, and run:
+```shell
+sudo modprobe vmmon
+sudo modprobe vmnet
+sudo modprobe vmw_vmci
+sudo systemctl enable --now vmware-networks
+```
+
+Finally, run the virtual machine and install Athena OS as explained in [Installing as single boot](/en/installation/install-single-boot/) chapter.
+:::note
+Athena OS automatically recognizes if you are using a virtualized environment so you don't need to install VMware Tools because the system will do automatically for you during the OS installation.
+:::
+<ImageComponent />

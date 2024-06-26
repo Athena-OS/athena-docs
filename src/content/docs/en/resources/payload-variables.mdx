@@ -1,0 +1,39 @@
+---
+title: Payload Environment Variables
+description: Access to the payloads in a very quick manner.
+---
+import ImageComponent from "@components/ImageComponent.astro";
+import ThemedImage from '@components/ThemedImage.astro';
+
+For accessing these resources in a **quick** manner, several **environment variables** have been defined:
+
+![Shell Icon](https://user-images.githubusercontent.com/83867734/191123292-b9e9c912-b78c-46af-8c54-3b75c050ee37.png)
+| Environment Variable | Value |
+| -------------------- | ----- |
+| **$PAYLOADS** | **/usr/share/payloads** |
+| **$AUTOWORDLISTS** | **/usr/share/payloads/Auto_Wordlists** |
+| **$FUZZDB** | **/usr/share/payloads/FuzzDB** |
+| **$PAYLOADSALLTHETHINGS** | **/usr/share/payloads/PayloadsAllTheThings** |
+| **$SECLISTS** | **/usr/share/payloads/SecLists** |
+| **$SECURITYWORDLIST** | **/usr/share/payloads/Security-Wordlist** |
+| **$MIMIKATZ** | **/usr/share/windows/mimikatz** |
+| **$POWERSPLOIT** | **/usr/share/windows/powersploit** |
+| **$ROCKYOU** | **/usr/share/payloads/SecLists/Passwords/Leaked-Databases/rockyou.txt** |
+| **$DIRBIG** | **/usr/share/payloads/SecLists/Discovery/Web-Content/directory-list-2.3-big.txt** |
+| **$DIRMEDIUM** | **/usr/share/payloads/SecLists/Discovery/Web-Content/directory-list-2.3-medium.txt** |
+| **$DIRSMALL** | **/usr/share/payloads/SecLists/Discovery/Web-Content/directory-list-2.3-small.txt** |
+| **$WEBAPI_COMMON** | **/usr/share/payloads/SecLists/Discovery/Web-Content/api/api-endpoints.txt** |
+| **$WEBAPI_MAZEN** | **/usr/share/payloads/SecLists/Discovery/Web-Content/common-api-endpoints-mazen160.txt** |
+| **$WEBCOMMON** | **/usr/share/payloads/SecLists/Discovery/Web-Content/common.txt** |
+| **$WEBPARAM** | **/usr/share/payloads/SecLists/Discovery/Web-Content/burp-parameter-names.txt** |
+
+In this manner, you can retrieve the needed **payloads** with **less effort**, for example:
+```shell
+ffuf -u <target_url> -w $DIRSMALL
+```
+or
+```shell
+john file.hash --wordlist=$ROCKYOU
+```
+
+<ImageComponent />

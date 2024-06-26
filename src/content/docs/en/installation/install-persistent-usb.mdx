@@ -1,0 +1,40 @@
+---
+title: Installing as persistent USB
+description: How to install Athena OS as persistent USB.
+---
+import ImageComponent from "@components/ImageComponent.astro";
+import ThemedImage from '@components/ThemedImage.astro';
+
+The following section will guide you through the steps to install Athena OS in a persistent USB by covering all the possible choices you could set.
+
+Before starting, you need two USB drives:
+* **USB-1**: for creating bootable media
+* **USB-2**: on which persistent Athena OS will be installed
+
+Burn Athena OS ISO on USB-1 as described in the [Installation prepare](/en/installation/prepare-install/) guide.
+
+After that, reboot the system while keeping USB-1 plugged in your USB port and, according to your boot mode (EFI or BIOS/Legacy), you will be shown:
+
+![EFI Boot](@assets/images/efi-boot.png)
+
+for **EFI boot**, select **Athena OS install medium** or:
+
+![BIOS/Legacy Boot](@assets/images/bios-boot.png)
+
+for **BIOS/Legacy boot**, select **Boot Athena OS (x86_64, BIOS, open source)**.
+
+Once you land on the Live Environment, attach USB-2 to a different USB port and be sure it is working, and follow the [Aegis TUI Installer](/en/configuration/aegis-tui/) chapter until the **Partitioning** section.
+
+## Partitioning
+
+On **Partitioning** section, follow [Aegis TUI Manual Partitioning](/en/installation/install-dual-boot/#partitioning) EFI or BIOS-Legacy according to your setup, and select the name of the USB-2 device.
+
+:::danger
+By installing the system in a persistent USB, the GRUB installed on the hard disk could be deleted and you would need to reinstall it.
+:::
+
+### Post-installation
+
+In case GRUB is broken, follow the [Restore Grub](/en/support/troubleshooting/#restore-grub) guide.
+
+<ImageComponent />

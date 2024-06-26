@@ -1,0 +1,288 @@
+---
+title: Installing as dual boot with Linux or Windows
+description: How to install Athena OS as dual boot with Linux or Windows.
+---
+import ImageComponent from "@components/ImageComponent.astro";
+import ThemedImage from '@components/ThemedImage.astro';
+
+The following section will guide you through the steps to install Athena OS as dual booth with Linux or Windows by covering all the possible choices you could set.
+
+## Windows pre-settings
+
+In case you are installing Athena OS in dual boot with Windows, make sure that **Fast Startup** is disabled. For doing that on Windows, open **Control Panel** -> **Hardware and Sound** -> **Power Options** -> click on **Choose what the power buttons do** on the left side -> click on **Change Settings that are currently unavailable** on top (This will ask for administrator permissions) -> Unselect the **Turn on fast startup** option and click on **Save Changes** button.
+
+# Install Athena OS as dual boot
+
+Once prepared the setup as described in [Baremetal installation prepare](/en/installation/prepare-baremetal/), and rebooted the system with your plugged USB drive containing the Athena OS installation media, according to your boot mode (EFI or BIOS/Legacy), you will be shown:
+
+![EFI Boot](@assets/images/efi-boot.png)
+
+for **EFI boot**, select **Athena OS install medium** or:
+
+![BIOS/Legacy Boot](@assets/images/bios-boot.png)
+
+for **BIOS/Legacy boot**, select **Boot Athena OS (x86_64, BIOS, open source)**.
+
+## Pre-installation
+
+If you are installing Athena OS along with Windows, you need to preserve the Microsoft bootloader files. We need to face the following scenario:
+* Format the existing boot partition: save Microsoft bootloader folder somewhere, format the boot partitition, and move Microsoft bootloader folder inside it.
+
+{/*
+Don't format the existing boot partition: just remove possible conflicting files before running the installation.
+*/}
+
+#### Save Microsoft bootloader
+
+If you will format the boot partition, you need to save Microsoft bootloader files.
+Once you land on the Live Environment, open terminal and mount your existing boot partition (i.e., `/dev/nvme0n1p1`) containing Microsoft bootloader:
+```shell
+sudo mount /dev/nvme0n1p1 /mnt
+cp -rf /mnt/EFI/Microsoft ~/
+sudo umount /mnt
+```
+it will save `Microsoft` folder in the `liveuser` home folder. We will restore it just after the Athena OS installation ends as explained later.
+
+{/*
+#### Remove conflicting files
+
+If you won't format the existing boot partition, some existing files could conflict with the system installation.
+Before running it, once you land on the Live Environment, open terminal and mount your existing boot partition (i.e., `/dev/nvme0n1p1`) and let's remove them:
+```shell
+sudo mount /dev/nvme0n1p1 /mnt
+sudo rm -rf /mnt/memtest86+ /mnt/syslinux /mnt/*-ucode.img /mnt/grub/themes/athena*
+sudo umount /mnt
+```
+*/}
+
+## Installation
+
+Finally, follow the [Aegis TUI Installer](/en/configuration/aegis-tui/) chapter until the **Partitioning** section.
+
+## Partitioning
+
+## Aegis TUI
+If you are using Aegis TUI, on **Partitioning**, select **Manual**:
+![Aegis TUI Partitioning Manual](@assets/images/aegis-tui-partitioning-mode-manual.png)
+
+If your system is UEFI, follow **EFI** section. If your system is BIOS-Legacy, scroll down and follow **BIOS-Legacy** section below.
+
+### EFI
+
+The example partition will appear like:
+![Aegis TUI Partitioning Example Layout EFI](@assets/images/aegis-tui-partitioning-manual-layout-efi.png)
+
+Select the disk to work on. It is needed now to create the needed partitions for Athena OS. At label selection, select **gpt**.
+
+![Aegis TUI Partitioning Table EFI](@assets/images/aegis-tui-partitioning-manual-table-efi.png)
+
+First, due to Windows installation, a UEFI boot partition should already exist, so we don't need to create an EFI partition.
+
+(Optional) In case you want to install a separated EFI partition, select the free space entry, press **"New"**, otherwise **"Delete"** or **"Resize"** an existing partition to get additional free space. As **Partition Size**, set **"512M"**, select **"Type"** option and select **"EFI System"** as partition type.
+
+(Optional) If you want to set a Swap Partition, if you have enough available free space, press **"New"**, otherwise **"Delete"** or **"Resize"** an existing partition to get additional free space. As Partition Size, set **"1G"** or **"2G"** or **"4G"** or **"8G"** depending on the amount of your RAM or your preference, select **"Type"** option and select **"Linux swap"** as partition type.
+
+:::note
+If you are going to enable **Zram** later, you don't need to create a Swap partition.
+:::
+
+Now, create a root partition for your system. If you have enough available free space, press **"New"**, otherwise **"Delete"** or **"Resize"** an existing partition to get space. As Partition Size, set the remaning free space amount. As **"Type"**, be sure it is set as **"Linux filesystem"**.
+
+Afterwards, on the menu, select **"Write"** to apply these changes to your disk. When asked **"Are you sure you want to write the partition table to disk?"** type **yes** and press **Enter** key. Finally, press **Quit**.
+![Aegis TUI Partitioning Manual Quit EFI](@assets/images/aegis-tui-partitioning-manual-quit-efi.png)
+
+Now it will be asked you to select what is the EFI partition. Select the existing one (usually it should be the one sized 512M):
+![Aegis TUI Partitioning Select EFI](@assets/images/aegis-tui-partitioning-manual-select-efi-partition-efi.png)
+
+{/*
+If you want to use the UEFI boot partition used by Windows, as EFI partition mountpoint, select /boot and as EFI partition filesystem select don't format
+Instead, if you created a new separated EFI partition, as EFI partition mountpoint select boot and as EFI partition filesystem select fat or vfat
+*/}
+
+As **EFI partition mountpoint**, select **/boot** and as **EFI partition filesystem** select **fat** or **vfat**.
+
+Now it will be asked you to select what is the root partition you created. Select it (usually it should be the one sized as you set previously):
+![Aegis TUI Partitioning Select Root](@assets/images/aegis-tui-partitioning-manual-select-root-partition-efi.png)
+
+Then, as **root partition mountpoint**, select **/** and as **root partition filesystem** select one of shown options (i.e., **btrfs**).
+
+Continue to follow the [Partitioning Final Steps](/en/installation/install-dual-boot/#final-steps).
+
+### BIOS Legacy
+
+![Aegis TUI Partitioning Example Layout Legacy](@assets/images/aegis-tui-partitioning-manual-layout-legacy.png)
+
+Select the disk to work on. It is needed now to create the needed partitions for Athena OS. At label selection, select **dos**.
+
+![Aegis TUI Partitioning Table Legacy](@assets/images/aegis-tui-partitioning-manual-table-legacy.png)
+
+In a GRUB-BIOS Legacy system, the creation of a boot partition is not needed because it will be created automatically by MBR (dos) in the boot sector.
+
+But, if you need to create an encrypted root partition, you need to create a separated GRUB-BIOS Legacy boot partition. To do this, select the free space entry, press **"New"**, otherwise **"Delete"** or **"Resize"** an existing partition to get additional free space. As **Partition Size**, set **"512M"**, select **"Type"** option and select **"Linux"** as partition type. Keeping the selection on the created root partition, press on **"Bootable"** option to mark it as bootable partition.
+In case you have already an existing GRUB Legacy partition, and you want to use it, then don't create a new one.
+
+(Optional) If you want to set a Swap Partition, if you have enough available free space, press **"New"**, otherwise **"Delete"** or **"Resize"** an existing partition to get additional free space. As Partition Size, set **"1G"** or **"2G"** or **"4G"** or **"8G"** depending on the amount of your RAM or your preference, set **"primary"** and select **"Type"** option and select **"Linux swap"** as partition type.
+
+:::note
+If you are going to enable **Zram** later, you don't need to create a Swap partition.
+:::
+
+Now, create a root partition for your system. If you have enough available free space, press **"New"**, otherwise **"Delete"** or **"Resize"** an existing partition to get space. As Partition Size, set the remaning free space amountand set it as **"primary"**. As **"Type"**, be sure it is set as **"Linux"**. In case you didn't create any GRUB Legacy partition because you use the one created automatically by MBR (dos) in the boot sector, keeping the selection on the created root partition, press on **"Bootable"** option to mark it as bootable partition.
+
+Afterwards, on the menu, select **"Write"** to apply these changes to your disk. When asked **"Are you sure you want to write the partition table to disk?"** type **yes** and press **Enter** key. Finally, press **Quit**.
+![Aegis TUI Partitioning Manual Quit Legacy](@assets/images/aegis-tui-partitioning-manual-quit-legacy.png)
+
+Now it will be asked you to select what is the GRUB partition. Select the existing one (usually it should be the one sized 512M). If you use the GRUB inside the boot sector of the root partition, skip this step by pressing **CTRL+C**.
+
+{/*
+If you want to use an already existing GRUB boot partition, as GRUB partition mountpoint, select /boot and as GRUB partition filesystem select don't format
+Instead, if you created a new separated GRUB partition, as GRUB partition mountpoint, select /boot and as GRUB partition filesystem select ext4
+*/}
+
+As **GRUB partition mountpoint**, select **/boot** and as **GRUB partition filesystem** select **ext4**.
+
+Now it will be asked you to select what is the root partition you created. Select it (usually it should be the one sized as you set previously):
+![Aegis TUI Partitioning Select Root Legacy](@assets/images/aegis-tui-partitioning-manual-select-root-partition-legacy.png)
+
+Then, as **root partition mountpoint**, select **/** and as **root partition filesystem** select one of shown options (i.e., **btrfs**).
+
+### Final Steps
+
+Next it will be asked if you created a Swap partition. If you didn't create it, press **No**. If you did, press **Yes**. It will be asked you to select what is the swap partition you created. Select it (usually it should be the one sized 1G or 2G or 4G or 8G):
+![Aegis TUI Partitioning Select Swap](@assets/images/aegis-tui-partitioning-manual-select-swap-partition.png)
+
+Finally, it will be asked if you wish to encrypt the root partition:
+![Aegis TUI Partitioning Encryption](@assets/images/aegis-tui-partitioning-encrypt-partition.png)
+
+Then, continue to follow the [Aegis TUI guide](/en/configuration/aegis-tui/#partitioning).
+
+{/*
+## Calamares
+
+You can install Athena OS by three methods for dual boot: Install alongside, Replace a partition, Manual partitioning.
+:::note
+Currently, the default file system that will be set for *Install alongside* and *Replace a partition* methods is BTRFS. BTRFS provides several interesting features as **snapshots** in order to rollback your system in case of fault. For changing default file system, you need to edit `/etc/calamares/modules/partition.conf` and replace the `btrfs` value by one of the available file systems. The value must be replaced in the line containing:
+```
+defaultFileSystemType:  "btrfs"
+```
+The available file systems are defined in the same file.
+:::
+
+### Install alongside
+
+![Install alongside](@assets/images/calamares-partition-alongside.png)
+
+Look on the part with **Current** bar, select the Linux or Windows partition on the related colored bar and drag it until you get the needed disk space for Athena OS.
+
+Select **Encrypt system** checkbox if you wish to encrypt your partition.
+:::caution
+Also `/boot` partition used by GRUB will be encrypted. The default GRUB image file supports only **en_US** keyboard layout, so, if the user sets a different keyboard layout during the installation, the decryption prompt will still work by **en_US** keyboard layout. If you want to avoid this, you must go for [Manual Partitioning](/en/installation/install-dual-boot/#Manual partitioning).
+:::
+
+Click **Next** and proceed to the installation.
+
+### Replace a partition
+
+If you don't like the first method, you can choose to create a partition by GParted.
+
+Once you land on the Live Environment, Athena Welcome will be shown. Click on **Run GParted** button for setting your disk. Depending on your existing setup, the disk structure could consist of:
+* Dedicated partitions for specified directories (i.e., `/home`, `/tmp` and `/var`)
+* Swap partition
+
+Let's guess you have an existing Linux or Windows OS on your endpoint. We need to use the free space of this existing partition to the one we will use for Athena OS.
+
+![GParted](@assets/images/gparted.png)
+
+On GParted, on top-right select the disk to work on. Then, right-click on the existing Linux or Windows partition to shrink for getting our empty space (if we don't already have a disk space to use), click on **Resize/Move** and set the available space we need on **New size (MiB)** field:
+
+![GParted Resize](@assets/images/gparted-resize.png)
+:::note
+The size is measured as **MiB** by default and, when you fill **New size (MiB)** field, the other fields are automatically filled. You can also resize the partition by moving the slider on the top part of the window.
+:::
+
+Click **Resize** button. Once resized your Linux or Windows partition, click **Apply All Operations** icon for applying these changes on your disk.
+
+![GParted Apply](@assets/images/gparted-apply.png)
+
+On the appearing popup window, click on **Apply**.
+
+![GParted Apply Confirmation](@assets/images/gparted-apply-confirm.png)
+
+Go back to Athena Welcome, and select `Offline Install` or `Online Install`, reach the **Partitions** section, check **Replace a partition** and on the **Current** bar, click on the colored partition where you want to install Athena OS.
+
+![Replace a partition](@assets/images/calamares-partition-replace.png)
+
+Select **Encrypt system** checkbox if you wish to encrypt your partition.
+:::caution
+Also `/boot` partition used by GRUB will be encrypted. The default GRUB image file supports only **en_US** keyboard layout, so, if the user sets a different keyboard layout during the installation, the decryption prompt will still work by **en_US** keyboard layout. If you want to avoid this, you must go for [Manual Partitioning](/en/installation/install-dual-boot/#manual-partitioning).
+:::
+
+Click **Next** and proceed to the installation.
+
+### Manual partitioning
+
+![Manual partitioning](@assets/images/calamares-partition-manual.png)
+
+You should:
+* click on **New Partition Table** and select **GUID Partition Table**
+* BIOS-GRUB. Click on **Free Space** and click on **Create** then:
+  * Size: 8 MB
+  * File System: unformatted
+  * Flags: bios-grub
+  * Click OK
+* Boot partition. Click on **Free Space** and click on **Create** then:
+  * Size: 300 MB
+  * File System: ext4 or fat32
+  * Mount Point: /boot/efi
+  * Flags: boot (or boot-efi)
+  * Click OK
+* Data partition. Click on **Free Space** and click on **Create** then:
+  * Size: the remaining size
+  * File System: btrfs (or any file system you wish)
+  * Encrypt: select it if you want to encrypt your data partition
+  * Mount Point: /
+  * Click OK
+
+You should have something like:
+![Manual Partitioning](https://github.com/Athena-OS/athena-iso/assets/83867734/26a729f2-ad8b-4dc7-b7af-9012b7e50464)
+
+or, for encrypted data partition, like
+
+![Manual Partitioning Encryption](https://github.com/Athena-OS/athena-iso/assets/83867734/af97b518-c1ad-4716-b83f-d73f57112b96)
+
+Then click **Next**. You will get some warning messages, just click **OK** and run the installation.
+
+:::note
+We don't create a SWAP space because Athena OS uses [ZRAM](https://wiki.archlinux.org/title/Zram).
+:::
+
+:::tip
+If you would like to disable ZRAM and use ZSWAP, you can create the SWAP partition by:
+* clicking on **Free Space** and clicking on **Create** then
+  * Size: set a suitable size for Swap Space if you would like to set it (it should be a power of 2)
+  * File System: linuxswap
+  * Flags: swap
+  * Click OK
+
+After the OS installation, disable ZRAM by running:
+```shell
+swapoff /dev/zram0
+modprobe -r zram
+echo 1 > /sys/module/zswap/parameters/enabled
+```
+and enable ZSWAP by removing `zswap.enabled=0` from `/etc/default/grub` inside **GRUB_CMDLINE_LINUX_DEFAULT** variable and running:
+```shell
+update-grub
+```
+or
+```shell
+sudo grub-mkconfig -o /boot/grub/grub.cfg
+```
+Reboot your system. Finally, verify if the ZSWAP as been set correctly by running:
+```shell
+swapon -s
+```
+and check if the output corresponds to your swap partition.
+:::
+*/}
+<ImageComponent />

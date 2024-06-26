@@ -1,0 +1,92 @@
+---
+title: NVIDIA GPU
+description: How to manage an NVIDIA GPU in Athena OS.
+---
+import ImageComponent from "@components/ImageComponent.astro";
+import ThemedImage from '@components/ThemedImage.astro';
+
+[NVIDIA's GPUs (Graphics Processing Units)](https://www.nvidia.com/en-gb/graphics-cards/) are a family of microprocessors that provide a unified architecture for both visual and parallel computing. They are high-performance devices that enable powerful graphics rendering and processing.
+
+In general, the real GPU can be used only in baremetal or on virtualization software that support GPU Passthrough (i.e., VMware vSphere). In these two scenarios, the correct setting of NVIDIA GPU has two scenarios:
+1. Client with **integrated GPU** (i.e., Intel GPU) and **dedicated GPU** (i.e., ASUS ROG Strix GeForce RTX 3060)
+2. Client without integrated GPU but only a dedicated GPU (i.e., ASUS ROG Strix GeForce RTX 3060)
+
+Athena OS automatically recognizes the NVIDIA GPU and it is able to retrieve the correct driver according to the NVIDIA GPU family and the installed kernel inside of the sytem.
+
+:::caution
+Some packages (i.e., bumblebee) could disable NVIDIA modules. For checking if NVIDIA modules are disabled, give a look to the files in `/etc/sysctl.d/` directory. 
+:::
+
+## Integrated GPU and Dedicated GPU
+
+During the installation phase in Calamares, Athena will set the NVIDIA drivers **automatically**.
+
+### Xorg
+
+The switch between **Integrated** and **Dedicated GPU** can be managed by [EnvyControl](https://github.com/bayasdev/envycontrol).
+
+There are three working modes:
+* **Integrated**
+  * The integrated Intel or AMD GPU is used exclusively
+  * Nvidia dedicated GPU is turned off to reduce power consumption
+  * External screens cannot be used if the video ports are wired to the dedicated GPU
+* **Hybrid**
+  * Enables PRIME render offloading
+  * RTD3 allows the dGPU to be dynamically turned off when not in use
+    * Available choices for the `--rtd3` flag (based on the [official documentation](http://us.download.nvidia.com/XFree86/Linux-x86_64/530.30.02/README/dynamicpowermanagement.html))
+      * `0` disabled
+      * `1` coarse-grained
+      * `2` fine-grained (default value if you don't provide one)
+      * `3` fine-grained for Ampere and later
+    * Only works in Turing and later
+  * Performance on external screens might be reduced
+* **Nvidia**
+  * The Nvidia dedicated GPU is used exclusively
+  * Higher graphical performance and higher power consumption
+  * Recommended when working with external screens
+    * If facing screen tearing enable ForceCompositionPipeline with the --force-comp flag
+  * Allows overlocking (not recommended) with the `--coolbits` flag
+    * The default value is `28` bits however it can be manually adjusted according to this [guide](https://wiki.archlinux.org/title/NVIDIA/Tips_and_tricks#Overclocking_and_cooling)
+  * Wayland sessions default to hybrid mode
+
+Generally, at the first startup, the system should work in **Integrated** mode. If you wish to switch to a specific mode, here some examples:
+* Query the current graphics mode:
+  ```shell
+  envycontrol --query
+  ```
+* Set graphics mode to integrated:
+  ```shell
+  sudo envycontrol -s integrated
+  ```
+* Set graphics mode to hybrid and enable fine-grained power control:
+  ```shell
+  sudo envycontrol -s hybrid --rtd3
+  ```
+* Set graphics mode to nvidia, enable ForceCompositionPipeline and Coolbits with a value of 24:
+  ```shell
+  sudo envycontrol -s nvidia --force-comp --coolbits 24
+  ```
+* Set current graphics mode to nvidia and specify to setup LightDM display manager:
+  ```shell
+  sudo envycontrol -s nvidia --dm lightdm
+  ```
+* Revert all changes made by EnvyControl:
+  ```shell
+  sudo envycontrol --reset
+  ```
+
+### Wayland
+
+Currently EnvyControl does not work on Wayland. In case you are in this kind of environment and you need to switch to a dedicated NVIDIA GPU scenario, Athena OS offers [nvx](https://github.com/pedro00dk/nvidia-exec).
+
+Just open a terminal and run:
+```shell
+nvx on
+```
+It will turn on the NVIDIA GPU and load the related modules.
+
+## Dedicated GPU only
+
+During the installation phase in Calamares, Athena will set the NVIDIA drivers **automatically** in order to use your dedicated GPU right away.
+
+<ImageComponent />

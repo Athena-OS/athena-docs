@@ -1,0 +1,309 @@
+---
+title: Troubleshooting
+description: Common issues and solutions detected by the users.
+---
+import ImageComponent from "@components/ImageComponent.astro";
+import ThemedImage from '@components/ThemedImage.astro';
+
+This document shows common issues and solutions to any problems a user can meet.
+
+### Installation
+
+#### filesystem `btrfs' doesn't support blocklists
+
+The error during the installation:
+```
+grub-install: warning: this GPT partition label contains no BIOS Boot Partition; embedding won't be possible.
+grub-install: error: filesystem `btrfs' doesn't support blocklists.
+```
+is caused when the partition table is GPT and you are not using EFI boot mode. If you would like to use GPT, remember to use EFI instead of BIOS/Legacy mode.
+
+#### time warp or clock problem
+
+During the installation of Athena, if you get an error like:
+```
+gpg: key <keyid> was created 3474 seconds in the future (time warp or clock problem)
+```
+it can occur when you are installing Athena OS by an ISO that has been released just now. To solve the issue, just wait 30 minutes and boot again by the ISO.
+
+The cause of the issue is due to a key in `/etc/pacman.d/gnupg` that has been generated in a Live Environment that has a different time of the running installer. Since in Live Environment the time changes and fixes to the right time after some minutes, if this change is done during the running of `pacman-key --init`, it causes that error. For example, the Live Environment shows 18:40 and during the install, it switches to 19:40, so the running installer, if creates new key by `pacman-key --init` when the time of Live Environment is switched, it cause the error. If you get this error, boot on Live Environment and, before to run the installer, wait for some minutes that the time clock fixes automatically.
+
+#### Nix install process killed
+
+If Athena Nix installation is killed and the following error is produced:
+```
+[ INFO ] 17:45:48 /nix/store/2ig2gxwx3xzavg43s6x17ym520la6d5w-nixos-install-tools-24.05pre604424.d8fe5e6c92d0/bin/nixos-install: line 178:  6209 Killed                  nix-build --out-link "$outLink" --store "$mountPoint" "${extraBuildFlags[@]}" --extra-substituters "$sub" '<nixpkgs/nixos>' -A system -I "nixos-config=$NIXOS_CONFIG" "${verbosity[@]}"
+
+[ INFO ] 17:45:49 Installation log file copied to /var/log/aegis.log
+[ INFO ] 17:45:49 create /mnt/var/log
+[ INFO ] 17:45:49 Copy /tmp/aegis.log to /mnt/var/log/aegis.log
+[ INFO ] 17:45:49 unmount command processed on /mnt/home
+[ INFO ] 17:45:50 unmount command processed on /mnt
+[ ERROR ] 17:45:50 Installation failed. Exit code: 137
+```
+just assign more resources (CPU, RAM, Swap space) to your system.
+
+### Boot
+
+#### Error 24 : Write error : cannot write compressed block
+
+During the installation, if you get the following error messages:
+```
+Error 24 : Write error : cannot write compressed block
+bsdtar: Write error
+```
+your boot partition is full and cannot write the initcpio image of the system. At reboot after the installation, you could still access to the installed OS by the **EFI default loader** entry, but on the desktop, you could get a low space on boot partition message.
+
+To solve this, you need to reboot and land again the the Live ISO environment. Let's guess the boot partition is `/dev/nvme0n1p1`. Open a terminal and mount it:
+```shell
+sudo mount /dev/nvme0n1p1 /mnt/
+```
+replace `/dev/nvme0n1p1` by your actual boot partition block device.
+
+Now, list the files and folders inside the boot partition:
+```shell
+tree /mnt
+```
+and identify which files and folders are old and unused, and remove them.
+
+For example, you should remove GRUB files related to old Linux systems that are not installed anymore on your computer.
+
+:::caution
+If you are in dual boot along Windows, don't delete the `Microsoft` folder inside the boot partition.
+:::
+
+Once reboot, access to your BIOS and be sure that `GRUB` entry has the highest priority on UEFI Boot Priority section.
+
+Finally, in case Windows entry disappeared, land on the installed Athena system, open a terminal and run:
+```
+sudo grub-mkconfig -o /boot/grub/grub.cfg
+```
+
+#### Restore GRUB
+
+For fixing the GRUB, before exiting from the Live Environment, before proceeding, you must detect the existing Linux partition and the EFI partition containing the GRUB entries for Linux and Windows (or other OS). You can do that by running `sudo fdisk -l`.
+
+Let's guess the existing Linux partition is `/dev/sda3` and the boot efi partition is at `/dev/nvme0n1p1`.
+
+If your existing Linux distribution is based on BTRFS file system, run:
+```shell
+sudo mount -o subvol=@ /dev/sda3 /mnt
+sudo mount -o subvol=@home /dev/sda3 /mnt/home
+sudo mount -o subvol=@log /dev/sda3 /mnt/var/log
+```
+otherwise run:
+```shell
+sudo mount /dev/sda3 /mnt
+sudo mount /dev/sda3 /mnt/home
+sudo mount /dev/sda3 /mnt/var/log
+```
+Then, run:
+```shell
+mkdir /tmp/intermediate
+sudo mount /dev/nvme0n1p1 /tmp/intermediate
+```
+If EFI boot, run:
+```shell
+sudo mount --bind /tmp/intermediate /mnt/boot/efi/
+```
+If GRUB BIOS/Legacy boot:
+```shell
+sudo mount --bind /tmp/intermediate /mnt/boot/
+```
+Finally:
+```shell
+sudo arch-chroot /mnt
+```
+Now, check the directory tree in `/boot/efi` folder and you should have only these files/directories:
+```
+'$RECYCLE.BIN'  EFI  'System Volume Information'
+```
+Check the `EFI`directory and **be sure** that there are not nested further `EFI` directories otherwise your GRUB never work. You must have only the current `EFI` directory with the following files/directories:
+```
+Boot Microsoft
+```
+If you see also another `EFI` directory or other ones containing the file `grubx64.efi` (i.e., `GRUB` directory), delete these folders. Note that in other distros, `GRUB` folder could have a different name. Don't worry to delete `GRUB`folder by:
+```shell
+rm -rf /boot/efi/EFI/GRUB
+```
+The next command will create it again.
+
+Then, if EFI boot, run:
+```shell
+grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
+```
+If GRUB BIOS/Legacy boot:
+```shell
+grub-install --force --target=i386-pc --recheck --boot-directory=/boot /dev/nvme0n1
+```
+Note that, `/dev/nvme0n1` must be the disk containing the boot partition, not the boot partition itself.
+
+Finally, for fixing also the Linux access, burn Athena OS ISO on a USB and follow the steps explained at [Post-installation](/en/installation/install-persistent-usb/#post-installation) section.
+
+#### Several boot entries have been disappeared
+
+In case you are in dual boot and some entries are not shown anymore (i.e., Windows Boot Manager if you have Windows in dual boot), enter in Athena OS and run:
+```shell
+sudo grub-mkconfig -o /boot/grub/grub.cfg
+```
+Then reboot.
+
+#### ERROR kdfontop.c:183 put_font_kdfontop: Unable to load such font with such kernel version
+
+The message:
+```
+setfont: ERROR kdfontop.c:183 put_font_kdfontop: Unable to load such font with such kernel version
+```
+can be fixed by disabling the deferred takeover by adding `fbcon=nodefer` as kernel parameter in the `GRUB_CMDLINE_LINUX_DEFAULT` variable of **/etc/default/grub** file.
+Reference: [#99](https://github.com/legionus/kbd/issues/99)
+
+#### Blinking cursor after boot
+
+After an upgrade of your system, when you boot, after the GRUB choice, if you get only a blinking cursor, the issue could be related to the upgrade of some components that could break your system boot. To solve this issue, mount an Athena ISO to your computer to enter in a Live Environment, mount to `&mnt` the partition where your original system was installed and run:
+```shell
+sudo arch-chroot /mnt
+```
+After that, downgrade the affected components, for example you can try with the kernel. Remove the existing kernel and kernel headers packages and install:
+```shell
+pacman -Rnsd --nodeps <yourkernel> <yourkernel>-headers
+pacman -S linux-lts linux-lts-headers
+```
+If you boot, and you are able to get some output log strings and you reach another different blinking cursor, press `CTRL+ALT+Fx` (where `x` can be 2, 3, 4, and so on) to perform more troubleshooting. 
+
+### Display Managers
+
+#### GDM: login background turned to grey
+
+It should be caused by an update of GDM or GNOME packages that restored the default gresource theme file. To restore the Athena GDM theme, run:
+```shell
+sudo pacman -S athena-gdm-config
+```
+
+### Tools
+
+#### Bloodhound
+
+On Bloodhound, when neo4j database is run by `sudo neo4j console`, we can get some errors like:
+```
+Exception in thread "main" java.lang.LinkageError: Cannot to link java.nio.DirectByteBuffer
+```
+For solving it, just run neo4j server by `systemctl start neo4j`. You can check the proof that the server is correctly running by `systemctl status neo4j`.
+
+#### Conda
+
+`conda activate` continues to show the prompt **(base)** instead of **(test)**.
+
+The issue is related to the usage of `no-repeat-flag` in `.bashrc`. To solve this, add the following code inside `.bashrc`:
+```bash
+if [[ $1 != no-repeat-flag  ]]; then
+    __conda_setup="$('/home/kumquat/miniconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+    if [ $? -eq 0 ]; then
+        eval "$__conda_setup"
+    else
+        if [ -f "/home/kumquat/miniconda3/etc/profile.d/conda.sh" ]; then
+            . "/home/kumquat/miniconda3/etc/profile.d/conda.sh"
+        else
+            export PATH="/home/kumquat/miniconda3/bin:$PATH"
+        fi
+    fi
+    unset __conda_setup
+fi
+# <<< conda initialize <<<
+conda activate $CONDA_DEFAULT_ENV
+```
+
+### WSL
+
+#### Win-Kex ESM Mode 'cannot execute: required file not found'
+This issue affects both Athena OS and Kali Linux. When you run `kex --esm` and you get:
+```
+/usr/bin/kex: line 389: /mnt/c/Windows/system32/cmdkey.exe: cannot execute: required file not found
+/usr/bin/kex: line 490: /mnt/c/Windows/system32/mstsc.exe: cannot execute: required file not found
+```
+it could be due to two reasons:
+1. wine is installed
+2. you are running Athena OS and Kali Linux WSL together
+
+Uninstall wine package, close both the WSL sessions, open CMD in Windows and run `wsl --shutdown`. Run Athena OS and you should not get this error anymore.
+
+#### Win-Kex ESM Mode 'Remote Desktop can't connect'
+In case you get the following error:
+![Kex ESM RDP error](@assets/images/kex-esm-rdp-error.png)
+
+just open a new Windows terminal and run:
+```shell
+wsl --shutdown
+```
+Then, reopen Athena OS WSL and try to run again:
+```shell
+kex --esm --ip -s
+```
+
+### Misc
+
+#### Visual glitch
+
+If you are experiencing virtual glitches like:
+![image](https://github.com/EliverLara/Sweet/assets/83867734/9721ffca-021e-4540-be34-217645445110)
+
+and you are working in a virtual machine, the issue could be caused by a bug on the VM graphic adapter. Just disable 3D Acceleration and glitches should be fixed.
+
+#### Intermittent freezing in VM
+
+If you are experiencing an intermittent freezing on your environment, and you are working in a virtual machine, the issue could be caused by a bug on the VM graphic adapter. Just disable 3D Acceleration and the freezing should be fixed.
+
+#### Browser elements overlap
+
+In case it occurs that browser elements can overlap as the following case:
+![Website Overlapping](@assets/images/website-overlapping.png)
+
+The reason is that the website is using the Athena OS system font instead of using its one.
+
+In case you would like to solve this behavior on the system side, you need to delete the entry `font-name='JetBrains Mono 11'` set in **/org/gnome/desktop/** or changing its font.
+:::caution
+If you remove the **font-name** entry, several elements of the desktop (like the top bar) will use the default font. In case you change the font name, the desktop elements will apply it as well.
+:::
+You can remove it or change the font by:
+```shell
+dconf dump /org/gnome/desktop/ > fix.txt
+```
+Edit **fix.txt** and delete the line containing `font-name='JetBrains Mono 11'` or replace this font name with your preferred, save and close the file, then run:
+```shell
+dconf reset -f /org/gnome/desktop/
+cat fix.txt | dconf load /org/gnome/desktop/
+```
+In case your theme will be reset, just run:
+```shell
+athena-theme-tweak -t <name of your favourite theme>
+```
+Use `athena-theme-tweak -l` to get the list of themes to be chosen.
+
+#### Restore system by snapshots in GRUB
+
+In case you are not able to get in the system due to a broken upgrade or similar events, you can leverage on Grub BTRFS snapshots in order to restore a previous state of your system. To do this, run the system, on the GRUB select **Athena OS Snapshots**
+
+![Athena Snapshots](@assets/images/athena-snapshots.png)
+
+Choose the **snapshot** you want to restore
+
+![Athena Snapshots Selection](@assets/images/athena-snapshots-selection.png)
+
+and select the **Linux Kernel** to run
+
+![Athena Snapshots Run](@assets/images/athena-snapshots-run.png)
+
+#### Cannot store HTB App Token due to secret-tool hanging
+
+When you run `htb-toolkit -k set` and, by entering your App Token in the Password field secret-tool hangs, try to reboot the system. If it does not work, install Brave browser, open it and at first run a popup window asking for the creation of a new password is shown. You can choose to set a password or just press **Enter** two times if you don't want, and finally try again `htb-toolkit -k set`.
+
+### Pentesting tool from menu opening terminal with no output in VirtualBox
+
+When you search for a pentesting tool, like Nmap, in Application Menu or by Red/Blue Team Menu in GNOME, where the terminal is invoked but with no output, just go to the Virtual Machine settings and disable 3D Acceleration.
+
+### Virtual machine freezes randomly after a while in VMware Workstation Pro 17.x
+
+Uninstall VMware Workstation 17 and [download](https://download3.vmware.com/software/WKST-1625-WIN/VMware-workstation-full-16.2.5-20904516.exe) from [VMware website](https://customerconnect.vmware.com/en/downloads/info/slug/desktop_end_user_computing/vmware_workstation_pro/16_0).
+
+Then, open VMware Workstation, right-click on the virtual machine object -> Manage -> Change Hardware Compatibility... and select **Workstation 16.x**, on the next window select **Alter this virtual machine**, apply these changes and run the virtual machine.
+
+<ImageComponent />

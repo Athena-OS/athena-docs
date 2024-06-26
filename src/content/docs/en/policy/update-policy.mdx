@@ -1,0 +1,30 @@
+---
+title: Athena OS Update Policy
+description: Athena OS Update Policy.
+---
+import ImageComponent from "@components/ImageComponent.astro";
+import ThemedImage from '@components/ThemedImage.astro';
+
+As an open-source operating system, Athena OS does not have a specific Update Policy document that governs the update process for the operating system itself. However, Athena OS follows a rolling release model, which means that updates are provided on a continuous basis to keep the system up to date with the latest software versions and security patches.
+
+Athena Arch provides the Pacman package manager as the primary tool for managing software packages and updates. Pacman is designed to handle the installation, removal, and upgrade of packages on the system. It uses a rolling-release approach, which means that updates are typically applied as soon as they become available.
+
+Athena Nix provides the Nix package manager as the primary tool for managing software packages and updates. Nix is designed to handle packages on the system.
+
+The general update process in Athena OS involves running Pacman or Nix with the appropriate command (such as **pacman -Syu** or **nix-channel --update**) to synchronize the package database or the Nix channel in order to get the latest updates.
+
+While there is no formal Update Policy document, it is recommended to follow best practices when updating your Athena OS system:
+
+* Regular Updates: It is important to regularly update your Athena OS system to ensure you have the latest security patches, bug fixes, and software improvements. This helps maintain system stability and security.
+
+* Review Release Notes: Before updating, it is a good practice to review the release notes or changelogs for any significant changes, known issues, or potential impacts that might require additional attention or configuration changes.
+
+* Backup: Prior to performing system updates, it is recommended to create a backup of important data and configuration files to mitigate the risk of potential issues during the update process.
+
+* System Maintenance: Keep your system well-maintained by removing unused packages, resolving package conflicts, and ensuring that your system meets the package dependencies for a smooth update process.
+
+* Community Support: The Athena OS community, including the Athena OS Wiki and forums, provides valuable information and assistance for system updates. Engage with the community to seek support and learn from experienced users.
+
+While Athena OS does not have a specific Update Policy document, it is crucial to stay informed about the latest updates, security advisories, and best practices by regularly visiting the Athena OS website and community resources. By following recommended practices and staying up to date with the latest updates, you can maintain a stable and secure Athena OS system.
+
+<ImageComponent />

@@ -1,0 +1,404 @@
+---
+title: Setting up a Mirror
+description: Setting up a Mirror.
+---
+import ImageComponent from "@components/ImageComponent.astro";
+import ThemedImage from '@components/ThemedImage.astro';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+In the context of Linux package management, a mirror refers to a server or repository that contains a copy of software packages and related metadata from another source, typically an official distribution server. The primary purpose of mirrors is to provide users with alternative, geographically distributed locations from which they can download software packages.
+
+## Definition
+
+There are different mirror synchronization protocols deployed for different purposes and used for different types of content. The following definitions are not related to the protocol used to retrieve and install packages on the endpoint of the user, but they are related to the protocols used to synchronize mirrors each other.
+
+**Rsync**
+
+* Purpose: a rsync mirror is commonly used for mirroring files and directories, such as Linux distribution packages or other large datasets.
+* Setup: the rsync command is used to synchronize files between servers. A basic example is `rsync -a source/ destination/`.
+* Usage: rsync mirrors are often set up to regularly synchronize with the upstream source to ensure the mirror remains up to date.
+
+**Git**
+
+* Purpose: a Git mirror is often used for version control systems, allowing users to clone, fetch, and push changes to a repository.
+* Setup: to create a Git mirror, you can use the `--mirror` option with `git clone`. This option ensures that all remote branches and tags are mirrored.
+* Usage: users can clone from the Git mirror, and the mirror can periodically synchronize with the upstream repository using `git fetch --all --prune`.
+
+**HTTP/HTTPS**
+
+* Purpose: HTTP or HTTPS servers can serve as mirrors for distributing files, packages, or software updates.
+* Setup: configure the server to host the files, and users can download them using a web browser or tools like `wget` or `curl`.
+* Usage: users can download files by navigating to the server's URL using a web browser. Alternatively, they can use command-line tools like `wget` or `curl` to retrieve files.
+
+**FTP**
+
+* Purpose: FTP servers can also be used to mirror files, and users can access them using FTP clients.
+* Setup: similar to HTTP servers, configure the FTP server to host the files for distribution.
+* Usage: users can access the FTP server using FTP clients such as `ftp` or graphical FTP clients.
+
+When creating a mirror, consider the specific needs of the content you are mirroring and choose the appropriate server type accordingly. Additionally, ensure that your mirroring process includes regular synchronization with the upstream source to keep the mirror up to date.
+
+## Athena OS Mirrors
+
+At the beginning, Arch-based Athena OS synchronized mirrors by git protocol but it was not suitable for package mirroring for the nature of git usage. One suitable option to consider has been rsync protocol.
+
+#### Rsync
+1. Efficiency: Rsync is designed for efficient file synchronization. It only transfers the differences between files, making it bandwidth-friendly and quick.
+2. Ease of Use: Rsync is straightforward to set up and use. It's a common choice for mirroring tasks and is widely supported.
+3. Network Usage: Rsync is generally more bandwidth-efficient, as it only transfers the parts of files that have changed.
+4. Incremental Updates:  Rsync excels at incremental updates, ensuring that only the changes are transferred, saving time and resources.
+
+#### Git
+1. Versioning: Git provides versioning, allowing you to track changes over time. This can be beneficial if you need to audit or understand the history of the repository.
+2. Ease of Collaboration: Git is a distributed version control system, which can be advantageous if you have multiple contributors or if you want to collaborate with others on managing the mirrored repository.
+3. Branching and Merging: Git supports branching and merging, enabling you to experiment with changes before applying them to the main repository.
+4. Granular Control: Git provides more granular control over what parts of the repository you want to mirror. You can clone specific branches or tags, which can be useful for selectively mirroring only the components you need.
+
+#### Considerations Rsync vs. Git
+**Type of Repository**
+* Rsync: best for simple mirroring tasks where you just need the latest version of files.
+* Git: useful for scenarios where versioning, collaboration, and granular control are important.
+
+**Bandwidth**
+* Rsync: generally more bandwidth-efficient.
+* Git: can consume more bandwidth, especially if you need the entire version history.
+
+**Complexity**
+* Rsync: simple and effective for basic mirroring tasks.
+* Git: adds complexity, but offers powerful version control features.
+
+**Storage**
+* Rsync: requires less storage space as it only transfers differences.
+* Git: can consume more storage space, especially if you mirror the entire version history.
+
+In conclusion, **rsync** is often the more straightforward and bandwidth-friendly choice. If versioning, collaboration, and granular control are important, **git** may be a better fit. So, for a package repository, **rsync** should be the most suitable choice.
+
+## Setting up a mirror server
+
+The purpose of this guide is to set a mirror for Athena OS ISO images and Athena Arch packages. In Athena Nix there is no need to mirror packages because package mirror system is not used on Nix environment.
+
+It is assumed that you own a server (i.e., you subscribed a VPS (Virtual Private Server) service) complying the specified requirements.
+
+### Requirements
+
+* CPU: >= 4 cores
+* RAM: >= 8 GB
+* Storage: the Athena repository size is around 5 GB, so you can set at least x3 repository size as server storage
+* Bandwidth: >= 1 Gbps
+* Operating System: Arch Linux, Debian, Ubuntu (or any Linux distro you wish)
+* Backup: snapshots at regular interval
+* Performance optimization: CDN, caching, compression
+* Monitoring: centralized monitoring system of mirrors to check server resources and ensure reliability
+* Dependencies: `rsync`, `cron`, `nginx`, `certbot`
+* Protocol used for mirroring: `rsync`
+* Protocol used to expose mirror server to the final users: `HTTP/HTTPS`
+* Mirroring synchronization strategy: Pull
+* Sync Time: \<= 6 hours
+
+### Setting up
+
+Create a dedicated account for mirroring process named, as example, `rsyncuser`.
+```shell
+sudo useradd -m -d /var/lib/rsync -s /usr/sbin/nologin rsyncuser
+```
+The user will be created with disabled password meaning that it cannot be accessed by a password.
+
+Create directories storing mirrored files and set the created user as owner.
+```shell
+sudo mkdir -p /srv/mirrors/athena{,-images}
+sudo chown -R rsyncuser:rsyncuser /srv/mirrors/athena
+sudo chown -R rsyncuser:rsyncuser /srv/mirrors/athena-images
+```
+
+Configure and enable the rsync daemon by:
+```shell
+sudo sed -i -e "s/RSYNC_ENABLE=false/RSYNC_ENABLE=true/" /etc/default/rsync &> /dev/null || echo "RSYNC_ENABLE=true" | sudo tee -a /etc/default/rsync
+```
+Create or edit the `/etc/rsyncd.conf` file by using the following content:
+```
+uid = rsyncuser
+gid = rsyncuser
+use chroot = yes
+max connections = 25
+socket options = SO_KEEPALIVE
+
+[athena]
+path = /srv/mirrors/athena
+comment = The Athena Hub
+read only = true
+
+[athena-images]
+path = /srv/mirrors/athena-images
+comment = The Athena ISO images
+read only = true
+```
+Finally, run the rsync service:
+
+<Tabs>
+<TabItem label="init">
+
+```shell
+sudo service rsync start
+```
+
+</TabItem>
+<TabItem label="systemd">
+
+```shell
+sudo systemctl enable rsyncd
+sudo systemctl start rsyncd
+```
+</TabItem>
+</Tabs>
+
+{/*
+Download the public key of `hub.athenaos.org` and set it among your authorized keys by:
+```shell
+su - rsyncuser
+mkdir -p ~/.ssh/
+chmod 0700 ~/.ssh/
+wget -O - -q https://hub.athenaos.org/mirrorkey.pub >> ~/.ssh/authorized_keys
+chmod 0600 ~/.ssh/authorized_keys
+```
+By this configuration above, and adding:
+```shell
+rsync -avzzlr --delete -e ssh /srv/mirrors/ rsyncuser@your_mirror_domain.com:/srv/mirrors/
+```
+hub.athenaos.org will push and trigger delta changes to the new destination mirror server.
+NOTE: currently we use PULL approach instead of PUSH approach, so it is not the main Athena OS mirror server that pushes changes to your new mirror, but it is the new mirror that pulls changes from main Athena OS mirror server.
+*/}
+
+{/*
+To pull and synchronize Athena OS packages, you must create a SSH keypair and provide the public key to Athena OS Team. In particular, generate a SSH keypair:
+```shell
+su - rsyncuser
+ssh-keygen -t rsa -b 4096
+```
+:::caution
+If you set a passphrase to your SSH keys, ensure that the automated running of rsync by scheduled tasks by cron explained later, won't be stopped by passphrase request popup.
+:::
+NOTE: we commented this part because implementing RSYNC OVER SSH can introduce a security risk because when the mirror server owner is authorized by SSH key to pull data, it can use rsyncuser to enter inside the source server. For this reason, we don't implement this mode and we use a pure rsync synchronization.
+*/}
+
+To keep your mirror up-to-date, you should regularly sync with the Athena OS repositories. First, enable `cron` service:
+
+<Tabs>
+<TabItem label="init">
+
+```shell
+sudo service cron start
+```
+
+</TabItem>
+<TabItem label="systemd">
+
+```shell
+sudo systemctl enable cronie
+sudo systemctl start cronie
+```
+</TabItem>
+</Tabs>
+
+Open your crontab configuration:
+```shell
+sudo crontab -e
+```
+Add a line to run the sync at your preferred interval. For example, to sync every hour:
+{/*
+NOTE: commented because don't use SSH anymore. Read reasons in the comment above.
+```
+0 *\/1 * * * rsync -avzzlr --delete -e ssh rsyncuser@hub.athenaos.org:/srv/mirrors/ /srv/mirrors/
+```
+*/}
+```
+0 */1 * * * rsync -avzzlr --delete rsync://hub.athenaos.org/athena /srv/mirrors/athena
+0 */1 * * * rsync -avzzlr --delete rsync://hub.athenaos.org/athena-images /srv/mirrors/athena-images
+```
+
+where:
+* -a: preserve attributes like file permissions, timestamps, and others.
+* -v: verbose mode.
+* -zz: enable compression during data transfer.
+* -l: copy symlinks instead of copying files they refer to.
+* -r: copy contents of the source directory recursively.
+* --delete: delete any files or directories in the destination that do not exist in the source. It ensures that the destination is an exact mirror of the source.
+
+### Make HTTP mirror server
+
+It is important to make the mirror server available to the public so that users can retrieve ISO images and packages by the package manager. It is possible to reach this purpose by making it a HTTP/HTTPS or FTP server.
+
+:::note
+Creating a `rsync://` mirror server cannot be used to be exposed to the users because rsync protocol is not supported by libcurl. Rsync protocol is used to synchronize mirrors.
+:::
+
+To expose the mirror server by HTTP, you can use Nginx.
+
+Create `/etc/nginx/sites-available/athenamirror` with the following content:
+```
+server {
+    listen 80;
+    server_name your_mirror_domain.com;
+
+    location / {
+        root   /srv/mirrors;
+        index  index.html;
+        autoindex on;
+    }
+}
+```
+Note that there is no need to create a `index.html` file.
+
+Replace `your_mirror_domain.com` by your mirror domain.
+
+Create the following symbolic link:
+```shell
+sudo ln -s /etc/nginx/sites-available/athenamirror /etc/nginx/sites-enabled/
+```
+and remove the Nginx configuration:
+```shell
+sudo rm /etc/nginx/sites-enabled/default
+```
+Test the Nginx configuration:
+```shell
+sudo nginx -t
+```
+If you don't get any error, start nginx service:
+
+<Tabs>
+<TabItem label="init">
+
+```shell
+sudo service nginx start
+```
+
+</TabItem>
+<TabItem label="systemd">
+
+```shell
+sudo systemctl enable nginx
+sudo systemctl start nginx
+```
+</TabItem>
+</Tabs>
+
+Finally, on your Athena OS or Arch Linux environment, you can test it on your test Athena OS client by adding your mirror in `/etc/pacman.d/athena-mirrorlist` by:
+```
+Server = http://your_mirror_domain.com/$repo/$arch
+```
+
+### Make HTTPS mirror server
+
+Make sure to have completed all the steps in the previous section.
+
+A SSL certificate is needed and it can be obtained by a free service like Let's Encrypt.
+
+Install the certbot plugin for Nginx:
+
+<Tabs>
+<TabItem label="Arch Linux">
+
+```shell
+sudo pacman -S certbot-nginx
+```
+
+</TabItem>
+<TabItem label="Debian">
+
+```shell
+sudo apt install python3-certbot-nginx
+```
+</TabItem>
+</Tabs>
+
+Run Certbot to obtain a certificate. Replace `your_mirror_domain.com` by your actual domain:
+```shell
+sudo certbot --nginx -d your_mirror_domain.com
+```
+Follow the prompts to complete the certificate installation. Certbot will automatically configure Nginx to use the obtained certificate.
+
+After obtaining the certificate, Certbot will automatically update your Nginx configuration to use HTTPS. If, for any reason, this doesn't happen, you can manually edit `/etc/nginx/sites-available/athenamirror` by:
+```
+server {
+    server_name your_mirror_domain.com;
+
+    location / {
+        root   /srv/mirrors;
+        index  index.html;
+        autoindex on;
+    }
+
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/your_mirror_domain.com/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/your_mirror_domain.com/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+}
+server {
+    if ($host = your_mirror_domain.com) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+    listen 80;
+    server_name your_mirror_domain.com;
+    return 404; # managed by Certbot
+}
+```
+Make sure to replace `your_mirror_domain.com` with your actual domain. Save the file.
+
+Test the Nginx configuration:
+```shell
+sudo nginx -t
+```
+If you don't get any error, start nginx service:
+
+<Tabs>
+<TabItem label="init">
+
+```shell
+sudo service nginx start
+```
+
+</TabItem>
+<TabItem label="systemd">
+
+```shell
+sudo systemctl enable nginx
+sudo systemctl start nginx
+```
+</TabItem>
+</Tabs>
+
+Certbot will automatically renew your SSL certificate before it expires. You can test the renewal process with:
+```shell
+sudo certbot renew --dry-run
+```
+Finally, on your Athena OS or Arch Linux environment, you can test it on your test Athena OS client by adding your mirror in `/etc/pacman.d/athena-mirrorlist` by:
+```
+Server = https://your_mirror_domain.com/$repo/os/$arch
+```
+
+### Firewall Setting
+
+If your network is restricted, ensure that the following connections are allowed:
+
+| Protocol | Port | Domain Name | IP Address |
+| -------- | ---- | ----------- | ---------- |
+| Rsync | 873/TCP | hub.athenaos.org | 89.116.236.99 |
+
+### Publish
+
+{/*
+At this point the new mirror server cannot still retrieve information from the main Athena OS mirror. To do that, get the content of the previously created SSH public key by:
+```shell
+su -s rsyncuser
+cat ~/.ssh/id_rsa.pub
+```
+*/}
+Finally, to be deployed to all users, your mirror must be added communicated to Athena OS Team in order to be added in the official Athena OS mirrorlist.
+
+Send the following information to **keeper@athenaos.org**:
+* public hostname
+* scheduled sync time
+* email to inform you in case we make changes on mirroring design
+
+Once Athena OS Team accepts your request, you will be informed your mirror has been added on Athena OS mirrorlist.

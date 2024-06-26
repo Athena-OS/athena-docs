@@ -1,0 +1,29 @@
+---
+title: Payload to Dock
+description: Access to the main payload repositories.
+---
+import ImageComponent from "@components/ImageComponent.astro";
+import ThemedImage from '@components/ThemedImage.astro';
+
+Several Athena OS environments offer the so called **Payload to Dock**. It is deployed in GNOME and XFCE refined environments.
+
+Payload to Dock in GNOME is based on [Dash 2 Dock](https://github.com/micheleg/dash-to-dock) while the on in XFCE comes from the standard XFCE panel. Payload to Dock keeps access to the most famous payload repositories and retrieves the latest version of payloads and lands to their path directly by the shell. It provides:
+* [Auto Wordlists](https://github.com/carlospolop/Auto_Wordlists)
+* [FuzzDB](https://github.com/fuzzdb-project/fuzzdb)
+* [PayloadAllTheThings](https://github.com/swisskyrepo/PayloadsAllTheThings)
+* [SecLists](https://github.com/danielmiessler/SecLists)
+* [Security Wordlist](https://github.com/DragonJAR/Security-Wordlist)
+
+The Dock contains also links to **Mimikatz** and **Powersploit** resources, and allows to run the **current shell** and **PowerShell**. Furthermore, it offers **CyberChef** access directly on your desktop.
+
+In GNOME:
+
+![GNOME Payload to Dock](@assets/images/payload-dock.png)
+
+In XFCE Refined:
+
+![XFCE Payload to Dock](@assets/images/xfce-well-menudock.png)
+
+At the beginning, these repositories are not installed, to avoid that users would store in the disk space payload repositories that never use. If you would like to get these repositories, click on the button of the repositories you want to retrieve, or set a [Cyber Security role](/en/resources/athena-welcome/#cyber-security-roles) compliant with these resources.
+
+<ImageComponent />

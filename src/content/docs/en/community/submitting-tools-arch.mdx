@@ -1,0 +1,98 @@
+---
+title: Submitting Tools in Arch
+description: How to submit pentesting tools.
+---
+import ImageComponent from "@components/ImageComponent.astro";
+import ThemedImage from '@components/ThemedImage.astro';
+
+If you wish to submit a new pentesting tool that is not in any Arch Linux or Athena repository, this section will help you.
+
+Pentesting tools are mainly maintained in Athena repository, so your new pentesting tools must be stored there.
+
+## Creating a package
+
+1. Create a **PKGBUILD** file containing the rules for compiling and installing `mytoolname`. According to the type of the tool, it can be useful to start by one of [BlackArch PKGBUILD templates](https://github.com/BlackArch/blackarch-pkgbuilds)
+   * i.e., if it is a bash tool that comes from GitHub or GitLab, you can refer to [PKGBUILD-generic-git](https://github.com/BlackArch/blackarch-pkgbuilds/blob/master/PKGBUILD-generic-git)
+   * copy the content of the PKGBUILD template file inside a new file named `PKGBUILD` created in `athena/packages/pentesting/<mytoolname>` folder.
+2. Fill the variable inside PKGBUILD according to the tool information. If you are new on PKGBUILD, give a look to the [official Arch Linux documentation](https://wiki.archlinux.org/title/PKGBUILD). You can check several examples in [Athena repository](https://github.com/Athena-OS/athena/tree/main/packages/pentesting)
+   * when you write information inside PKGBUILD, there are several best practices you must follow:
+      * Insert [disclaimer comments](https://github.com/BlackArch/blackarch-pkgbuilds/blob/66259a614509ab1f78075bc897d3cb10d832ed13/PKGBUILD-generic#L1-L2)
+      * Never put upper case in `pkgname=`
+      * AUR packages are written bad. Change them in order to be BlackArch convention compliant
+      * In `groups=`, insert the right Athena categories
+      * Insert empty line before `pkgver()`
+      * Add a blank line after `cd $pkgname` inside `pkgver()`
+      * When something gets compiled (C, go, rust, etc.), use `arch=('x86_64' 'aarch64')` rather than `arch=('any')`.
+      * On SHA sums, SKIP is only for git
+      * If the project use tags `https://github.com/<owner>/<repo-name>/tags`, inside of `pkgver()` use `git describe --long --tags | sed 's/\([^-]*-g\)/r\1/;s/-/./g'` instead of `echo $(git rev-list --count HEAD).$(git rev-parse --short HEAD)`
+      * Remove [useless dependencies](https://github.com/BlackArch/blackarch/pull/3883)
+      * Don't use a virtual environment (like `python -m venv venv` command), we use those only for very complex cases
+      * Usually don't add `pip install -r requirements.txt` command. It should be used only for Python virtualenv installs that we absolutely try to avoid. Instead, we need to insert those dependencies in `depends=` as packages
+      * Add `cd $pkgname` as first line in `package()`
+      * Use `$variable` and not `${variable}`
+      * For Python Setup template, in URL insert the GitHub project URL if it exists, but, by source variable, retrieve the package from pypi website
+      * Use `install -dm 755 "<directory>"` instead of `mkdir -p` (`-d` is used for creating directories), for example `install -dm 755 "$pkgdir/usr/bin"`
+      * If needed, for avoiding the repetition of a path to different files, use `cd <path-to-files>`
+      * Remove all template comments
+      * Add always a new line at the end of the PKGBUILD. If you are editing the PKGBUILD by GitHub WebUI, you need to have at the end two newlines
+      * Don't just copy/paste from AUR that are often low quality PKGBUILD, it needs to be adapted to BA standards.
+      * Try to do all edits related to one package in the same Pull Request: You know when you edit a file with github webui to prepare your PR (Pull Request) it basically just create a branch patch-X on your fork (i.e., [here](https://github.com/D3vil0p3r/blackarch/tree/patch-8)) based on `BlackArch:master`. So for example here, you can browse `D3vil0p3r:patch-8` and create `python-instagram-private-api` PKGBUILD there so it will be added to the same PR rather than creating a new PR for it. One PR per tool is nice but when it's the dependencies of the tool it's best to have them in the same PR
+      // * Add `mytoolname` to lists/to-release file in BlackArch repository
+      * Create a Pull Request with title `<package-name>: add package`
+      * For Python packages
+        * even if the convention is `python-<pythonpkgname>`, respect that even if that makes `python-python-something`
+        * if you have both `setup.py` and `pyproject.toml` in Python source files, use always the [PKGBUILD-python-lib-PEP517](https://github.com/BlackArch/blackarch-pkgbuilds/blob/master/PKGBUILD-python-lib-PEP517) template
+3. If your tool does not come from git source, you can compute the `sha512sum` easily by running `updpkgsums` in the same folder of PKGBUILD.
+4. Test if the PKGBUILD compiles and installs the tool correctly
+   * You can test your PKGBUILD in a clean sandbox by **ba-dev** as described [here](https://gist.github.com/noraj/5045be32490f1161161e16fc5820066c#testing), for example:
+     ```
+     $ sudo pacman -S blackarch-devtools
+     $ ba-dev -b
+     $ ba-dev -e 'python' -p python-instagram-private-api-1.6.0.0-1-any.pkg.tar.zst
+     Package python-instagram-private-api-1.6.0.0-1-any.pkg.tar.zst installed correctly! Testing it now...
+     Python 3.10.9 (main, Dec 19 2022, 17:35:49) [GCC 12.2.0] on linux
+     Type "help", "copyright", "credits" or "license" for more information.
+     >>> from instagram_private_api import Client, ClientCompatPatch
+     ```
+     Another example [here](https://github.com/BlackArch/blackarch/issues/3661#issuecomment-1371499848)
+5. If the test works, you can also try to install the tool by this PKGBUILD directly on your system by `makepkg -si` command.
+6. If all is working well, go on [Athena repository packages](https://github.com/Athena-OS/athena/tree/main/packages), click on **Add file** -> **Create new file**. It will ask to create a fork. Then, as filename, insert `mytoolname/PKGBUILD`. It will create the folder `mytoolname` and inside it an empty `PKGBUILD` folder. Inside this `PKGBUILD` paste the content of the working PKGBUILD tested above and commit the changes. These changes are applied on your fork. Create a **Draft Pull Request** when requested and name it as `<package-name>: added package`.
+/*7. Then go to your forked repository and edit the file `blackarch/lists/to-release` by adding there the name of the tool, for example `mytoolname`. When you apply also these changes, your draft pull request will automatically have also this last change.*/
+7. Go to your draft pull request and submit it. You need to wait for Athena maintainers that will check your submission and merge your pull request.
+
+:::note
+For Python packages, it is preferred to retrieve the source files from PyPI instead of GitHub repositories because of the integrity check, check for dependency changes at each release, and a [script](https://github.com/BlackArch/blackarch/blob/master/scripts/up-libraries) to auto-bump on new release for PyPI releases.
+:::
+
+:::caution
+If your submitted tool has some dependencies that are not in Athena or Arch Linux repositories, you need to create a PKGBUILD dedicated to it in Athena repository itself. For example, in your forked repository you should create the PKGBUILD file in another directory as `athena/packages/pentesting/<yourdependency>/PKGBUILD`. The PKGBUILD related to a depedency of a tool does not need of the field `groups=('athena' MORE_ATHENA_GROUPS_HERE).`
+:::
+
+## Updating a package
+
+If you noticed that the repository is not keeping the latest version of a tool:
+1. Access to its PKGBUILD in [Athena Repository](https://github.com/Athena-OS/athena/tree/main/packages/pentesting) by visiting its directory by **https://github.com/Athena-OS/athena/tree/main/packages/pentesting/toolname** and inside it there should be a PKGBUILD file.
+2. Open it and copy its content in your local file named PKGBUILD in your computer.
+3. Change it by writing the new version information in **pkgver** and **pkgrel** variables. If you are just fixing only an error on PKGBUILD or other files in the package folder, and no new version of the tool has been released, just update the **pkgrel** variable by **+1**.
+4. From the original source webste of the tool to update, check if there are additional dependencies to consider. If so, add them in:
+  * **depends** variable if the dependency is needed at application runtime
+  * **makedepends** variable if the dependency is needed only at building time.
+5. If the **source** variable does not contain **git**, run **updpkgsums** command in your terminal in the same folder of your PKGBUILD in order to automatically calculate the hash sums. For packages sourcing by git it is not needed, indeed the hash sum must be set as **SKIP**.
+6. Once all the updated information is in your local PKGBUILD, you need to test it.
+   * You can test your PKGBUILD in a clean sandbox by **ba-dev** as described [here](https://gist.github.com/noraj/5045be32490f1161161e16fc5820066c#testing), for example:
+     ```
+     $ sudo pacman -S blackarch-devtools
+     $ ba-dev -b
+     $ ba-dev -e 'python' -p python-instagram-private-api-1.6.0.0-1-any.pkg.tar.zst
+     Package python-instagram-private-api-1.6.0.0-1-any.pkg.tar.zst installed correctly! Testing it now...
+     Python 3.10.9 (main, Dec 19 2022, 17:35:49) [GCC 12.2.0] on linux
+     Type "help", "copyright", "credits" or "license" for more information.
+     >>> from instagram_private_api import Client, ClientCompatPatch
+     ```
+     Another example [here](https://github.com/BlackArch/blackarch/issues/3661#issuecomment-1371499848)
+7. If the test works, you can also try to install the tool by this PKGBUILD directly on your system by `makepkg -si` command.
+8. If all is working well, go on the web page of the tool PKGBUILD in Athena repository at **https://github.com/Athena-OS/athena/tree/main/packages/pentesting/toolname/PKGBUILD**, click on the **Pen Icon** for editing the file. It will ask to create a fork. Inside this `PKGBUILD` paste the content of the working PKGBUILD tested above and commit the changes. These changes are applied on your fork. Create a **Draft Pull Request** when requested and name it as `<package-name>: updated package`.
+/*7. Then go to your forked repository and edit the file `blackarch/lists/to-release` by adding there the name of the tool, for example `mytoolname`. When you apply also these changes, your draft pull request will automatically have also this last change.*/
+7. Go to your draft pull request and submit it. You need to wait for Athena maintainers that will check your submission and merge your pull request.
+
+<ImageComponent />

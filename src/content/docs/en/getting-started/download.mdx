@@ -1,0 +1,82 @@
+---
+title: Downloading Athena OS
+description: Instructions for downloading Athena OS.
+---
+import ImageComponent from "@components/ImageComponent.astro";
+import ThemedImage from '@components/ThemedImage.astro';
+
+## Getting Athena OS ISO Image
+
+Athena OS can be installed by an ISO file downloaded from the [official website](https://github.com/Athena-OS/athena/releases) and currently available for **x86_64** architectures. A single ISO allows you to install Athena Arch (Arch-based) or Athena Nix (NixOS-based). Athena Nix can potentially work also on different architectures.
+
+Are you not sure about your architecture?
+* If you are on a Linux or macOS, run:
+  ```shell
+  uname -m
+  ```
+* If you are on a Windows, follow the procedure described on [Microsoft documentation](http://windows.microsoft.com/en-us/windows7/find-out-32-or-64-bit).
+
+## Integrity and Authenticity
+
+To be sure that the downloaded ISO is the Athena OS original one, and not a tampered version, you can check the integrity and the authenticity of the ISO file to guarantee that the system is trustworthy.
+
+The **integrity** of a file is generally guaranteed by using **hash functions** (i.e., MD5, SHA-1, SHA-256, SHA-512). A hash function is any function that can be used to map data of arbitrary size to fixed-size values. Usually, it is highly probable that for each file is associated a unique hash value, unless of collision events. It means that, if the file content changes, also the hash value will accordingly change.
+
+Similarly, each Athena OS Image is associated to a unique hash value that is published on Athena website.
+
+In addition of the integrity, it is possible to check also the **authenticity** of the ISO file. Athena OS ISO file is **digitally signed** by the maintainers, so, it proves you that the ISO has been actually created by Athena OS developers.
+
+### Verify ISO Image Integrity
+
+To verify the integrity of the ISO file, download it and:
+* if you are on Linux or macOS, run the following command (by replacing `athena-<file-version>-<arch>.iso` with the actual ISO filename):
+  ```shell
+  shasum -a 256 athena-<file-version>-<arch>.iso
+  ```
+* if you are on Windows, run the following command (by replacing `athena-<file-version>-<arch>.iso` with the actual ISO filename):
+  ```shell
+  certutil -hashfile athena-<file-version>-<arch>.iso sha256
+  ```
+  :::note
+  Be sure to have `certutil` installed on Windows, otherwise you could use other tools such as [Microsoft File Checksum Integrity Verifier](http://www.microsoft.com/en-us/download/details.aspx?id=11533).
+  :::
+
+and check if the output is equal to the **SHA-256** hash value shown on the [official website](https://github.com/Athena-OS/athena-nix/releases).
+
+Assuming that the official website has not been tampered, if the values are equal, the ISO image is current and trusted.
+
+### Verify ISO Image Authenticity
+
+To verify the authenticity of the ISO file to be sure that the actual one has been released by the official Athena OS development team:
+1. Import the GPG key for verifying the authenticity:
+   ```shell
+   gpg --keyserver hkps://keys.openpgp.org --recv-key A3F78B994C2171D5
+   ```
+   and you should get the following output:
+   ```
+   gpg: key A3F78B994C2171D5: "Antonio Voza <vozaanthony@gmail.com>" imported
+   gpg: Total number processed: 1
+   gpg:               imported: 1  (RSA: 1)
+   ```
+
+2. Download the ISO file and its `.sig` signature file and run the following commmand (by replacing `athena-<file-version>-<arch>.iso` with the actual ISO filename):
+   ```shell
+   gpg --verify athena-<file-version>-<arch>.iso.sig athena-<file-version>-<arch>.iso
+   ```
+   If you get a **Good signature** output, the ISO file is genuine:
+   ```
+   gpg: Signature made Tue 11 Jul 2023 07:38:02 PM CEST
+   gpg:                using RSA key 5A34EB551197A065F8A401AFA3F78B994C2171D5
+   gpg: Good signature from "Antonio Voza <vozaanthony@gmail.com>" [unknown]
+   gpg: WARNING: This key is not certified with a trusted signature!
+   gpg:          There is no indication that the signature belongs to the owner.
+   Primary key fingerprint: 5A34 EB55 1197 A065 F8A4  01AF A3F7 8B99 4C21 71D5
+   ```
+:::danger
+If the output does not return **Good signature** string or the key ID does not match, don't use the ISO image and check if you downloaded the image from a legitimate Athena OS source. It could suggest that your image has been tampered.
+
+:::
+
+Once you’ve verified your image, you can proceed to install Athena OS.
+
+<ImageComponent />

@@ -1,0 +1,186 @@
+---
+title: Hyprland
+description: Hyprland environment in Athena OS.
+---
+import ImageComponent from "@components/ImageComponent.astro";
+import ThemedImage from '@components/ThemedImage.astro';
+
+[Hyprland](https://wiki.archlinux.org/title/Hyprland) is a dynamic tiling Wayland compositor based on wlroots that doesn't sacrifice on its looks. Note: it's in beta.
+
+In Athena OS, Hyprland has been been set up to make the user experience smoother in a window manager environment.
+
+It doesn't work [in virtual machines](https://wiki.hyprland.org/Getting-Started/Master-Tutorial/#vm) out of the box, so it is suggested to use it on bare metal.
+
+Athena's Hyprland config is based on the wonderful [dotfiles from @end-4](https://github.com/end-4/dots-hyprland).
+
+![Hyprland](@assets/images/hyprland-example.png)
+
+The environment consists of several applications distributed between the top bar and the desktop environment.
+
+:::note
+If you have problems with shell elements, press **Ctrl+Super+R** to reload them
+:::
+
+## Top Bar
+
+![Hyprland Top Bar](@assets/images/hyprland-topbar.png)
+From left to right, we have
+- **Focused window title**
+- **RAM usage** (Swap and CPU will be shown when there's no playing media)
+- **Media title**
+- **Workspace indicator**: Displays focused and occupied workspaces. Scroll to switch between them.
+- **Time & date**
+- **Utility buttons + battery indicator** (on a desktop with no battery, these two widgets are replaced with a weather widget)
+- **Other status indicators**: System tray, Network, Bluetooth (and connected Bluetooth devices)
+
+The media controls in the middle can be opened by clicking the media title on the bar or hitting **Super+M**
+
+## Sidebars
+
+![Sidebars](@assets/images/hyprland-sidebars.png)
+
+While they're pretty self-explanatory, we have:
+- Left sidebar: AI assistants: Gemini and ChatGPT (and other bots with compatible API) (API key required, but it'll guide you)
+- Right sidebar:
+  - Quick settings, like wifi/bluetooth toggles
+  - Notifications
+  - Calendar and To-Do list
+
+## Desktop
+
+A clean desktop view looks like this:
+
+![Hyprland Desktop](@assets/images/hyprland-sweetdark.png)
+
+Typically, you launch apps either using the terminal or the launcher. With default keybindings:
+- Hit **Super+Enter** to spawn a terminal
+- Hit **Super** for the overview/launcher
+  - This shows you open apps across workspaces
+  - To search for apps, simply start typing. Use arrow keys to pick your desired app and hit **Enter**
+
+![Hyprland Activity Overview](@assets/images/hyprland-activity-overview.png)
+
+![Hyprland App Search](@assets/images/hyprland-search.png)
+
+## Settings
+
+### Power Settings
+
+You can change the inactivity duration after which the system will be locked by editing `~/.config/hypr/hypridle.conf`
+Edit the lines that say timeout=NUMBER. The number is in seconds. 
+
+For example, if you want your device to sleep after 15 minutes, the `listener` entry for it should look like this:
+```ini
+listener {
+    timeout = 900  # = 15 × 60 seconds
+    on-timeout = $suspend_cmd
+}
+```
+
+## Customization
+
+### Changing wallpaper
+
+- Hit **Super** to open the launcher and type in `>img`. A popup will show up, allowing you to select an image.
+  - The color of shell elements will change according to the chosen wallpaper
+
+### Environment
+
+To configure your environment, take a look at these directories:
+* **~/.config/hypr**: Config files for Hyprland and its utilities
+    * **hyprland**
+        * **env.conf**: Environment variables
+        * **execs.conf**: Programs to run at startup
+        * **keybinds.conf**: Keybinds
+        * **general.conf**: General behavior
+    * **hypridle.conf**: Power settings, as mentioned above
+    * **hyprlock.conf**: Lock screen
+* **~/.config/ags**: AGS stands for "Aylur's Gtk Shell". This folder contains the config of shell elements like bars and sidebars. Normal users would want to edit `user_options.js`, while advanced users might want to edit the code in there.
+* **~/.local/bin**: Contains scripts and possibly binaries
+
+Resources:
+- [Hyprland Wiki](https://wiki.hyprland.org/)
+- [AGS Wiki](https://aylur.github.io/ags-docs/): for tinkerers who would like to thoroughly edit that `ags` folder
+- [end-4's dotfiles wiki](https://end-4.github.io/dots-hyprland-wiki/en/i-i/02usage/): useful tips specifically for the provided configs
+
+## Keybindings
+
+To view them any time, hit **Super + /**. Here are some common ones:
+
+#### Applications
+
+| Keybind | Description |
+| ------- | ----------- |
+| **Super + C** | Open VSCodium (editor) |
+| **Super + Enter** | Open the Terminal |
+| **Super + T** | Open Foot (terminal) |
+| **Super + E** | Open the File Manager |
+| **Super + W** | Open the Browser |
+
+#### Actions
+
+| Keybind | Description |
+| ------- | ----------- |
+| **Super + Q** | Close the active window |
+| **Super + Ctrl + V** | Open pavucontrol |
+| **Ctrl + Shift + Escape** | Open GNOME System Monitor |
+| **Super + Shift + Alt + S** | Take screenshot and open the image editor. Files will be saved in Desktop |
+| **Print** | Take screenshot and copy it in clipboard |
+| **Super + Shift + S** | Take screenshot and copy it in clipboard |
+| **Super + Alt + R** | Toggle recording desktop |
+| **Ctrl + Alt + R** | Toggle recording desktop with audio |
+| **Super + Shift + Alt + R** | Toggle recording desktop on fullscreen |
+| **Super + V** | Show clipboard content |
+| **Super + Shift + C** | Run Hyprpicker |
+| **Super + Ctrl + T** | Switch wallpaper |
+| **Super + K** | Show virtual keyboard |
+| **Super + L** | Lock screen |
+| **Super + Ctrl + R** | Reset AGS |
+| **Super + Tab** | Toggle View |
+| **Super + M** | Toggle Music Popup |
+| **Super + N** | Toggle Sidebar |
+| **Ctrl + Alt + Delete** | Power menu |
+| **Ctrl + Shift + Alt + Delete** | Logout |
+| **Super + Ctrl + Shift + Alt + Delete** | Power off |
+
+#### Windows and Workspaces
+
+| Keybind | Description |
+| ------- | ----------- |
+| **Super + D** | Maximize active window |
+| **Super + Shift + Alt + Space** | Toggle floating |
+| **Super + Shift + Left** | Move window to left |
+| **Super + Shift + Right** | Move window to right |
+| **Super + Shift + Up** | Move window to up |
+| **Super + Shift + Down** | Move window to down |
+| **Super + Left** | Move focus to left |
+| **Super + Right** | Move focus to right |
+| **Super + Up** | Move focus to up |
+| **Super + Down** | Move focus to down |
+| **Super + Ctrl + Left** | Move to the previous workspace |
+| **Super + Ctrl + Right** | Move to the next workspace |
+| **Super + Ctrl + Shift + Left** | Move the active window to the previous workspace |
+| **Super + Ctrl + Shift + Right** | Move the active window to the next workspace |
+| **Super + ScrollDown** | Move to the previous workspace |
+| **Super + ScrollUp** | Move to the next workspace |
+| **Super + Ctrl + Shift + ScrollDown** | Move the active window to the previous workspace |
+| **Super + Ctrl + Shift + ScrollUp** | Move the active window to the next workspace |
+| **Super + F** | Switch active window to fullscreen |
+| **Super + \<N\>** | Switch to the workspace \<N\>  where N is a number (Super+0 switches to workspace 10) |
+| **Alt + Tab** | Switch focus among windows |
+| **Super + LeftMouseButton** | Drag the window |
+
+Other keybindings can be found in **~/.config/hypr/keybindings.conf**
+
+## Side Installation
+
+To install Athena OS Hyprland environment on side of an existing environment, run:
+```shell
+sudo pacman -S athena-hyprland-config
+dconf load /org/gnome/desktop/ < /usr/share/athena-hyprland-config/dconf-desktop.ini
+```
+Then reboot. On Login Manager, select **Hyprland** session and login.
+
+If your theme is not correctly displayed, run `athena-theme-tweak` to set or change the current environment theme.
+
+<ImageComponent />

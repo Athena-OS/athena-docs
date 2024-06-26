@@ -1,0 +1,62 @@
+---
+title: Blue Team Menu
+description: Details about Blue Team Menu in Athena OS.
+---
+import ImageComponent from "@components/ImageComponent.astro";
+import ThemedImage from '@components/ThemedImage.astro';
+
+Blue Team Menu is born for organizing in pretty manner the main security defensive tools that users need to start their Blue Team activity. It is deployed in different manner according to the installed environment.
+
+In GNOME, it consists of two levels:
+* 1st level containing the [NIST Cybersecurity Framework](https://www.nist.gov/cyberframework) phases
+* 2nd level consisting of defensive tools deployed for each NIST category
+
+![Blue Team Menu](@assets/images/blueteam-menu.png)
+
+Blue Team menu can be accessed by `CTRL+ALT+A`.
+
+In details:
+<table>
+  <tr>
+    <th>Identify</th>
+    <td>Spiderfoot</td>
+    <td>Wapiti</td>
+    <td>Maltego</td>
+    <td>OWASP ZAP</td>
+    <td>Searchsploit</td>
+  </tr>
+  <tr>
+    <th>Protect</th>
+    <td>ClamAV</td>
+    <td>Firewall Builder</td>
+  </tr>
+  <tr>
+    <th>Detect</th>
+    <td>SentryPeer</td>
+  </tr>
+  <tr>
+    <th>Respond</th>
+    <td>Foremost</td>
+    <td>Wireshark</td>
+    <td>OllyDbg</td>
+    <td>netsniff-ng</td>
+    <td>Mactime</td>
+    <td>ILS</td>
+    <td>ICAT</td>
+    <td>Guymager</td>
+    <td>Ghidra</td>
+    <td>Galleta</td>
+  </tr>
+  <tr>
+    <th>Recover</th>
+    <td>Scrounge NTFS</td>
+  </tr>
+</table>
+
+In other environments, it reflects the classic menu layout in Linux. For example:
+
+![Blue Team Menu](@assets/images/xfce-well-bluemenu.png)
+
+At the beginning, these tools are not installed to avoid that users would store in the disk space installed tools or services that never use. For users that would like to get these main tools, the **Blue Teamer** role must be chosen on the Welcome App.
+
+<ImageComponent />

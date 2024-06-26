@@ -1,0 +1,87 @@
+---
+title: Shell
+description: Athena OS Shells.
+---
+import ImageComponent from "@components/ImageComponent.astro";
+import ThemedImage from '@components/ThemedImage.astro';
+
+In Athena OS, four shells are mainly used: **Bash**, **Fish**, **Zsh** and **PowerShell**. For Bash, Fish, Zsh the same prompt pattern has been used.
+
+At installation time, the user can choose between Bash, Fish and Zsh. However, Bash and PowerShell are installed by default.
+
+## Bash
+
+[Bash](https://wiki.archlinux.org/title/bash) (Bourne-again Shell) is a command-line shell/programming language by the GNU Project. Bash is the default command-line shell on Athena OS. Here, Bash implements **autosuggestion** and **autocompletion** features in order to increase the user experience.
+
+Generally, Bash is not able to retrieve the new configuration on `.bashrc` automatically. For example, if the shell prompt changes due to a command, this change is not applied on the current shell session. Athena solved this, by adding the following line on `.bashrc`:
+```
+export PROMPT_COMMAND='source ~/.bashrc no-repeat-flag'
+```
+
+## Fish
+
+[Fish](https://wiki.archlinux.org/title/fish) (Friendly interactive shell), is a command-line shell intended to be interactive and user-friendly. Fish is intentionally not fully POSIX compliant, it aims at addressing POSIX inconsistencies with a simplified or a different syntax.
+
+The implementation of Fish shell has been decided according to some characteristics as:
+* Extensive UI: syntax highlighting, autosuggestion, tab completion and selection lists that can be navigated and filtered.
+* No configuration needed: Fish is designed to be ready to use immediately, without requiring extensive configuration.
+* Easy scripting: new functions can be added on the fly. The syntax is easy to learn and use.
+
+Since Fish and Bash use different statements, at the beginning of the session, the user is associated with Bash because several bash scripts must be sourced at the login (i.e., `/etc/profile.d/` scripts). When the user opens a terminal, `.bashrc` is sourced for setting configuration and variables and at the end it executes FISH.
+
+Finally, for [keeping FISH as shell](https://wiki.archlinux.org/title/fish#Modify_.bashrc_to_drop_into_fish) even if in the terminal we open new tabs and preventing that it switches to BASH, the following code has been added at the end of `.bashrc` and delete each `alias ps` in your `.bashrc` or `.bash_aliases` file for avoding conflicting errors:
+```
+[[ $(ps --no-header --pid=$PPID --format=comm) != "${SHELL#/usr/bin/}" && -z ${BASH_EXECUTION_STRING} && ${SHELL} != "/usr/bin/bash" ]] && exec $SHELL
+```
+
+## Zsh
+
+[Zsh](https://wiki.archlinux.org/title/zsh) is a powerful shell that operates as both an interactive shell and as a scripting language interpreter. While being compatible with the POSIX sh (not by default, only if issuing emulate sh), it offers advantages such as improved tab completion and globbing.
+
+In general, Zsh is not able to retrieve the new configuration on `.zshrc` automatically. For example, if the shell prompt changes due to a command, this change is not applied on the current shell session. For solving this, on `.zshrc` the following lines have been added:
+```
+precmd() { eval "$PROMPT_COMMAND" }
+export PROMPT_COMMAND='source ~/.zshrc no-repeat-flag'
+```
+
+In Athena OS, Zsh implements **autosuggestion**, **globbing** and **autocompletion** features in order to increase the user experience.
+
+## PowerShell
+[PowerShell](https://learn.microsoft.com/en-us/powershell/scripting/overview) is a cross-platform task automation solution made up of a command-line shell, a scripting language, and a configuration management framework.
+
+In Athena OS, PowerShell has been implemented by adding a lot of useful modules that can improve the efficiency of the user activity.
+
+## Aliases
+
+On Bash, Fish and Zsh are set several shells defined in `~/.bash_aliases`. They can vary between Athena Arch and Athena Nix. The most useful aliases are:
+
+| Keybind | Description | Athena Arch | Athena Nix |
+| ------- | ----------- | ---- | ---- |
+| **anycommand \| tb** | Generate a link to a webpage containing the output of the piped command. | X | X |
+| **cleanup** | Cleanup orphaned packages. | X | X |
+| **cpc filename.txt** | Copy the content of a file in clipboard. | X | X |
+| **hw** | Show hardware info. | X | X |
+| **iso** | Show ISO release and version information used to install the system. | X | X |
+| **jctl** | Get the error messages from journalctl. | X | X |
+| **journalctl-upload** | Generate a link to a webpage containing the output of journalctl for troubleshooting purpose. | X | X |
+| **lockreset** | Unlock the user account due to multiple failed sudo attempts. | X | X |
+| **nb** | Edit `~/.bashrc` by the `EDITOR` defined in `~/.bashrc`. | X | X |
+| **nconfgrub** | Edit `/boot/grub/grub.cfg` by the `EDITOR` defined in `~/.bashrc`. | X | X |
+| **nf** | Edit `~/.config/fish/config.fish` by the `EDITOR` defined in `~/.bashrc`. | X | X |
+| **nfstab** | Edit `/etc/fstab` by the `EDITOR` defined in `~/.bashrc`. | X | X |
+| **ngrub** | Edit `/etc/default/grub` by the `EDITOR` defined in `~/.bashrc`. | X | X |
+| **nhosts** | Edit `/etc/hosts` by the `EDITOR` defined in `~/.bashrc`. | X | X |
+| **nmkinitcpio** | Edit `/etc/mkinitcpio.conf` by the `EDITOR` defined in `~/.bashrc`. | X | X |
+| **npacman** | Edit `/etc/pacman.conf` by the `EDITOR` defined in `~/.bashrc`. | X | |
+| **nz** | Edit `~/.zshrc` by the `EDITOR` defined in `~/.bashrc`. | X | X |
+| **openports** | Show open ports. | X | X |
+| **psa** | Show a detailed list of all processes. | X | X |
+| **pyserver** | Initiate a HTTP server instance on the current directory on port 8000. | X | X |
+| **sr** | Reboot the system. | X | X |
+| **ssn** | Shutdown now. | X | X |
+| **unlock** | Remove the packmane lock file `/var/lib/pacman/db.lck`. | X | |
+| **update** | Run pacman package update. | X | |
+| **update-fc** | Update the font cache when a new font is added. | X | X |
+| **update-grub** | Update the GRUB. | X | X |
+
+<ImageComponent />

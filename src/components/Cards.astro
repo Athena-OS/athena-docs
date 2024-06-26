@@ -1,0 +1,433 @@
+---
+import { data } from "src/javascript/downloadsData";
+---
+
+<div class="container">
+  {
+    data.map((item, index) => (
+      <>
+        <div data-modal-target={`#modal-${index}`} id={`model-${index}`} style="margin-inline: 12px;">
+          <img src="src/assets/athena-light.svg" alt="" width="64" />
+        </div>
+        <div class="modal"  id={`modal-${index}`}>
+          <div
+            class="card "
+           
+            data-hashes={JSON.stringify(item.hashes)}
+          >
+            <div class="modal-header">
+              <button data-close-button class="close-button">
+                &times;
+              </button>
+            </div>
+            <div class="content card-content">
+              <div class="front">
+                <div class="icon">
+                  <img src="src/assets/light-card-img.svg" alt="" />
+                </div>
+                <div>
+                  <h2>{item.title}</h2>
+                  <p>{item.description}</p>
+                </div>
+              </div>
+              <div class="back">
+                <div class="" style="width: 100%;">
+                  <div style="padding-inline: 12px;">
+                    <div class="tabs">
+                      <button class="tab-btn active" data-hash="MD5">
+                        MD5
+                      </button>
+                      <button class="tab-btn" data-hash="SHA1">
+                        SHA1
+                      </button>
+                      <button class="tab-btn" data-hash="SHA256">
+                        SHA256
+                      </button>
+                      <button class="tab-btn" data-hash="SHA512">
+                        SHA512
+                      </button>
+                    </div>
+                    <div class="hash-display">
+                      <h4 class="hash-type">MD5</h4>
+                      <p class="hash-value">{item.hashes.MD5}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="btn-wrapper">
+                  <button class="btn">
+                    Download
+                    <div class="downlode-icon">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="17"
+                        height="17"
+                        viewBox="0 0 17 17"
+                        fill="none"
+                      >
+                        <path
+                          d="M8.59375 12.23L3.59375 7.22998L4.99375 5.77998L7.59375 8.37998V0.22998H9.59375V8.37998L12.1938 5.77998L13.5938 7.22998L8.59375 12.23ZM2.59375 16.23C2.04375 16.23 1.57308 16.0343 1.18175 15.643C0.790416 15.2516 0.594417 14.7806 0.59375 14.23V11.23H2.59375V14.23H14.5938V11.23H16.5938V14.23C16.5938 14.78 16.3981 15.251 16.0068 15.643C15.6154 16.035 15.1444 16.2306 14.5938 16.23H2.59375Z"
+                          fill="#23262F"
+                        />
+                      </svg>
+                    </div>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </>
+    ))
+  }
+</div>
+<div id="overlay"></div>
+
+<style>
+  .container {
+    padding-top: 1rem !important;
+    padding-bottom: 5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .card {
+    position: relative;
+    width: 100%;
+    perspective: 500px;
+    min-height: 300px;
+  }
+  h2 {
+    font-size: 19px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    margin-bottom: 8px;
+    margin-top: 0;
+  }
+  .content {
+    min-height: 19rem;
+    width: 100%;
+    height: 100%;
+    transition: transform 1s;
+    transform-style: preserve-3d;
+    padding: 36px 41px 40px 41px;
+  }
+
+  :global([data-theme="light"]) .content {
+    border-radius: 8px;
+    border: 1px solid #ffbf00;
+    background: rgba(255, 255, 255);
+    box-shadow: 0px 0px 12px 0px rgba(255, 191, 0, 0.8) inset;
+  }
+  :global([data-theme="dark"]) .content {
+    border-radius: 8px;
+    border: 1px solid var(--athenaos-org-buddha-gold, #9e9eff);
+    background: #17181c;
+    box-shadow: 0px 0px 12px 0px #9e9eff inset;
+  }
+  .card:hover .content {
+    transform: rotateY(180deg);
+    transition: transform 0.5s;
+  }
+  .icon {
+    min-width: 64px;
+    min-height: 64px;
+  }
+  .front
+  {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    backface-visibility: hidden;
+    gap: 24px;
+    height: 100%;
+    margin-top: 0 !important;
+  }
+  p {
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px;
+  }
+  .back {
+    transform: rotateY(180deg);
+    position: absolute;
+    top: 0;
+    backface-visibility: hidden;
+
+    left: 0;
+    width: 100%;
+    height: 100%;
+padding-top: 12px;
+    flex-direction: column;
+  }
+  .back h4 {
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    text-align: center;
+  }
+  .back h4,
+  p {
+    max-width: 400px;
+  }
+  .btn {
+    background: transparent;
+    padding: 8px 8px 8px 18px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #23262f;
+    border: none;
+    outline: none;
+    gap: 18px;
+    border-radius: 8px;
+  }
+  :global([data-theme="light"]) .btn {
+    color: #ffbf00;
+  }
+  :global([data-theme="dark"]) .btn {
+    color: #9e9eff;
+  }
+  :global([data-theme="light"]) .downlode-icon {
+    border-radius: 4px;
+    background: #ffbf00;
+    padding: 8px;
+  }
+  :global([data-theme="dark"]) .downlode-icon {
+    border-radius: 4px;
+    background: #9e9eff;
+    padding: 8px;
+  }
+  .btn-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 0 !important;
+  }
+  .btn-wrapper .btn {
+    margin-top: 9px;
+  }
+
+  :global([data-theme="light"]) .btn-wrapper {
+    border-top: 1px solid #ffbf00;
+  }
+  :global([data-theme="dark"]) .btn-wrapper {
+    border-top: 1px solid #9e9eff;
+  }
+  #model-0{
+    margin-top: 1rem;
+  }
+  .modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    transition: 200ms ease-in-out;
+    border-radius: 10px;
+    z-index: 10;
+    background-color: transparent;
+    width: 500px;
+    max-width: 80%;
+    margin-top: 0 !important;
+  }
+
+  .modal.active {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  .modal-header {
+    display: none !important;
+    padding: 0px 0px 0px;
+    display: flex;
+    justify-content: end;
+    align-items: center;
+  }
+
+  .modal-header .title {
+    font-size: 1.25rem;
+    font-weight: bold;
+  }
+  #model {
+    display: flex;
+    justify-content: center;
+    padding: 8px;
+    margin-inline: 20px;
+    align-items: center;
+    margin-top: 0px !important;
+  }
+  #model img {
+    cursor: pointer;
+    scale: 1;
+    transition: 0.4s;
+  }
+  #model:hover img {
+    scale: 1.4;
+  }
+  .modal-header .close-button {
+    cursor: pointer;
+    border: none;
+    outline: none;
+    background: none;
+    font-size: 1.25rem;
+    font-weight: bold;
+  }
+
+  .modal-body {
+    padding: 10px 15px;
+  }
+
+  #overlay {
+    position: fixed;
+    opacity: 0;
+    transition: 200ms ease-in-out;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    pointer-events: none;
+    z-index: 9;
+  }
+
+  #overlay.active {
+    opacity: 1;
+    pointer-events: all;
+  }
+  .card-content {
+    margin: 0px !important;
+  }
+
+  .tab-btn {
+    background: transparent;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.3s;
+    margin-top: 0 !important;
+  }
+
+  .tab-btn.active {
+    opacity: 1;
+    border-bottom: 2px solid var(--active-color);
+  }
+
+  .hash-display {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+    margin-top: 0 !important;
+  }
+
+  :global([data-theme="light"]) {
+    --active-color: #ffbf00;
+  }
+
+  :global([data-theme="dark"]) {
+    --active-color: #9e9eff;
+  }
+
+  .tabs {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    margin-bottom: 10px;
+
+  }
+  .hash-value{
+    min-height: 110px;
+  }
+  @media (max-width: 756px) {
+    .front {
+      flex-direction: column;
+    }
+    .tabs {
+      height: fit-content;
+      flex-direction: column;
+    }
+    .tabs .tab-btn {
+      width: fit-content;
+    }
+    .back {
+      justify-content: space-between;
+      padding-top: 8px;
+      flex-direction: row;
+    }
+    .container {
+      flex-direction: column;
+    }
+    .content {
+      padding: 20px;
+      min-height: 27rem;
+    }
+  }
+</style>
+
+<script>
+  const openModalButtons = document.querySelectorAll("[data-modal-target]");
+  const closeModalButtons = document.querySelectorAll("[data-close-button]");
+  const overlay = document.getElementById("overlay");
+
+  openModalButtons.forEach((button: any) => {
+    button.addEventListener("click", () => {
+      const modal = document.querySelector(button.dataset.modalTarget);
+      openModal(modal);
+    });
+  });
+
+  overlay?.addEventListener("click", () => {
+    const modals = document.querySelectorAll(".modal.active");
+    modals.forEach((modal) => {
+      closeModal(modal);
+    });
+  });
+
+  closeModalButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const modal = button.closest(".modal");
+      closeModal(modal);
+    });
+  });
+
+  function openModal(modal: any) {
+    if (modal == null) return;
+    modal.classList.add("active");
+    overlay?.classList.add("active");
+  }
+
+  function closeModal(modal: any) {
+    if (modal == null) return;
+    modal.classList.remove("active");
+    overlay?.classList.remove("active");
+  }
+
+  function setupTabs(card) {
+    const tabBtns = card.querySelectorAll(".tab-btn");
+    const hashType = card.querySelector(".hash-type");
+    const hashValue = card.querySelector(".hash-value");
+    const hashes = JSON.parse(card.dataset.hashes);
+
+    tabBtns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        tabBtns.forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        const hashName = btn.dataset.hash;
+        hashType.textContent = hashName;
+        hashValue.textContent = hashes[hashName];
+      });
+    });
+
+    // Set initial hash value
+    hashValue.textContent = hashes.MD5;
+  }
+
+  document.querySelectorAll(".card").forEach((card) => {
+    setupTabs(card);
+  });
+</script>

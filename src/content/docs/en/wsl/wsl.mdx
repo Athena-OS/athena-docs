@@ -1,0 +1,72 @@
+---
+title: Athena OS WSL Image
+description: Official Athena OS WSL image.
+---
+import ImageComponent from "@components/ImageComponent.astro";
+import ThemedImage from '@components/ThemedImage.astro';
+
+## Installation
+
+Make sure WSL is enabled in you system by following [Microsoft documentation](https://learn.microsoft.com/en-us/windows/wsl/install). You can install Athena OS WSL from Microsoft Store.
+
+<p align="center">
+  <a href="https://apps.microsoft.com/store/detail/athena-os/9N1M7Q4F1KQF?hl=en-us&gl=us"><img src="https://upload.wikimedia.org/wikipedia/commons/f/f7/Get_it_from_Microsoft_Badge.svg" width="250" height="90" /></a>
+</p>
+<h5 align="center">
+Click the icon above to explore Athena OS WSL in Microsoft Store App!
+</h5>
+
+After installation is complete from Microsoft Store, when you open the app, you will be presented with a screen to create a user account. Go ahead with it and complete the account creation to finish installation.
+:::note
+The password entering field does not display your password but it still records it.
+:::
+
+![WSL-Installed](https://user-images.githubusercontent.com/83867734/226213006-fdedffa1-1ea2-466e-bd08-cdab423e68a2.png)
+
+## Win-KeX
+
+**Win-KeX** allows you to enjoy a GUI experience on Athena OS. It is based on Kali Linux Win-KeX adapted for systemd. You can work in three modes:
+* **Window mode**: start a Athena OS desktop in a dedicated window
+* **Enhanced session mode**: use RDP for a more feature rich experience
+* **Seamless mode**: share the Windows desktop between Windows and Athena XFCE application and menus
+
+### Window Mode
+
+![WSL Window Mode](@assets/images/wsl-win.png)
+
+It sets a VNC server and run a VNC client in order to get a fullscreen GUI environment of Athena OS directly on your Windows.
+
+You can run KeX in Window Mode by running inside of Athena WSL:
+```shell
+kex --win -s
+```
+
+Kali docs has a well documented page about Win-Kex Window Mode. Visit [Win-KeX Window Mode usage documentation](https://www.kali.org/docs/wsl/win-kex-win/) for further information.
+
+### Enhanced Session Mode
+
+![WSL Enhanced Session Mode](@assets/images/wsl-esm.png)
+
+It sets a RDP server and run a RDP client in order to get a fullscreen GUI environment of Athena OS directly on your Windows.
+
+You can run KeX in Enhanced Session Mode by running inside of Athena WSL:
+```shell
+kex --esm --ip -s
+```
+
+Kali docs has a well documented page about Win-Kex Enhanced Session Mode. Visit [Win-KeX Enhanced Session Mode usage documentation](https://www.kali.org/docs/wsl/win-kex-esm/) for further information.
+
+### Seamless Mode
+
+![WSL Enhanced Session Mode](@assets/images/wsl-sl.png)
+
+It sets a VNC server and places in Windows desktop applications and elements of Athena OS XFCE environment.
+
+You can run KeX in Seamless Mode by running inside of Athena WSL:
+```shell
+kex --sl -s
+```
+
+Kali docs has a well documented page about Win-Kex Seamless Mode. Visit [Win-KeX Seamless Mode usage documentation](https://www.kali.org/docs/wsl/win-kex-sl/) for further information.
+
+<ImageComponent />

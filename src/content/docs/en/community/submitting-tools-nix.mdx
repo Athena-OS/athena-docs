@@ -1,0 +1,50 @@
+---
+title: Submitting Tools in Nix
+description: How to submit pentesting tools.
+---
+import ImageComponent from "@components/ImageComponent.astro";
+import ThemedImage from '@components/ThemedImage.astro';
+
+If you wish to submit a new pentesting tool that does not exist in Nix repository, this section will help you.
+
+First you need to check if a tool exists or not in Nix repository. You can search it in [Nix Search](https://search.nixos.org/packages) and clicking on the latest stable repository button (showing month/year) and unstable repository button.
+
+If the tool is not existing on either of them, you can proceed with the creation of the package. If it exists in unstable but not in the latest stable repository, you can search its last Pull Request in [Nixpkgs repository](https://github.com/NixOS/nixpkgs/pulls) and ask for a backporting to the latest stable release.
+
+## Creating a package
+
+If you never submitted a resource in Nix repository, you would need to submit a Pull Request to add yourself as maintainer. You should add yourself in the [maintainer-list.nix](https://github.com/NixOS/nixpkgs/blob/master/maintainers/maintainer-list.nix) by following the file structure.
+
+At the beginning, the creation of a package could seem complicated, but the practice will make you a super Nix package deliver and you will see how much it could be easy and fun!
+
+The best way to learn how to package in Nix is to look examples and use the search function in [Nix repository](https://github.com/NixOS/nixpkgs).
+
+Nix derivatives (`.nix` files) use different functions according to the language used to develop the tool to submit, because these functions are able to automate the compiling of a tool with no additional code. So, the first step, is to detect what is the language of the tool you want to submit (i.e., C/C++, Rust, Python, Ruby, and so on). Then, take on your side the building instruction docs of the tool from the upstream project repository. It can be useful in case you need to write manually the Nix file to build the tool.
+
+Then, according to the language used to develop a tool, you can use, as example but not limited to, the following functions that provide the environment for building the tool:
+* stdenv.mkDerivation
+* buildRustPackage
+* buildPythonApplication and buildPythonPackage
+* buildGoModule
+
+To fetch the tool source files from the upstream repository, you need to use **fetchers**. There are different fetchers according to the source, for example but not limited to:
+* fetchurl
+* fetchzip
+* fetchFromGitHub
+* fetchFromGitLab
+
+The Nix file is divided in different phases that can be used or not based on the need, for example **prePatch**, **patchPhase**, **postPatch**, **buildPhase**, **installPhase**, **postInstall**, and so on.
+
+Give a look to Nix example files to understand better their structure. You can find them in [Nix repository](https://github.com/NixOS/nixpkgs/tree/master/pkgs/by-name).
+
+The creation of a Nix package must follow the [Nix guidelines](https://github.com/nixpkgs-architecture/rfc-140/blob/master/rfcs/0140-simple-package-paths.md) and [conventions](https://github.com/NixOS/nixpkgs/blob/master/pkgs/README.md#package-naming).
+
+## Updating a package
+
+If you noticed that the repository is not keeping the latest version of a tool, you can retrieve the tool package Nix file from Nix repository, update it, test it and, if no issues are produced, submit a Pull Request with the latest version by following the [Nix guidelines](https://github.com/nixpkgs-architecture/rfc-140/blob/master/rfcs/0140-simple-package-paths.md).
+
+## Submit tool to a Cyber Role
+
+If you would like to ask to implement a specific tool inside a Cyber Role, [open a request](https://github.com/Athena-OS/athena-nix/issues/new/choose) and it will be evaluated.
+
+<ImageComponent />

@@ -1,0 +1,52 @@
+---
+title: Customizing Terminal-based Tools
+description: How to customize terminal-based tools.
+---
+import ImageComponent from "@components/ImageComponent.astro";
+import ThemedImage from '@components/ThemedImage.astro';
+
+## VIM
+
+The [Ultimate vimrc](https://github.com/amix/vimrc) configuration has been used on Athena OS for Vim. It implements smart and useful [plugins](https://github.com/amix/vimrc#included-plugins), [color schemes](https://github.com/amix/vimrc#included-color-schemes) and [modes](https://github.com/amix/vimrc#included-modes). If you would like to customize it, you can search for similar projects on GitHub or GitLab.
+
+## Neofetch
+
+Settings of [Neofetch](https://github.com/dylanaraps/neofetch) can be accessed on `.config/neofetch/config.conf`. You can change the shown ASCII logo and the output system information. For example, for changing logo, open `config.conf` file and search for `ascii_distro` string. There, you can change its value with one of the list above that file section.
+
+## Tmux
+
+[Tmux](https://github.com/tmux/tmux) is implemented with several plugins retrieved from [Tmux Powerline Theme](https://github.com/wfxr/tmux-power). [Tmux Plugin Manager](https://github.com/tmux-plugins/tpm) is used to manage the plugins.
+
+| Keybind | Description |
+| ------- | ----------- |
+| **CTRL + s**| Super/Mod Key |
+| **Mod_Key + \*** | Split Panel Vertically |
+| **Mod_Key + -** | Split Panel Horizontal |
+| **Mod_Key + r** | Reload tmux |
+| **Mod_Key + SHIFT + i** | Install Plugins | 
+| **Mod_Key + SHIFT + u** | Update Plugins |
+| **Mod_Key + c** | New Tab |
+| **SHIFT + Right/Left Arrow Key` or `Modkey + n** | Switch Between Tabs |
+| **Mod_Key + Right/Left/Up/Down Arrow Key** | Switch Between Splitted Panels |
+| **Mod_Key + w** | List All Windows and Panels |
+| **Mod_Key + x** | Kill Tab or Panel |
+| **Mod_Key + &** | Kill Window |
+| **Mod_key + q** | Show Panel or Tab Number |
+| **Mod_Key + t** | Clock |
+| **Mod_Key + y** | Copy Selected Text to Clipboard |
+| **Mod_Key + SHIFT + y** | Copy Working Directory (install `xclip` package) |
+| **Mod_Key + p** | Paste |
+| **Mod_Key + d** | Detach Terminal |
+| **Mod_Key + f** | Find |
+| **Mod_Key + z** | Make Panel Full Window |
+| **Mod_Key + m** | Start Monitoring Panel |
+| **Mod_key + $** | Rename Session |
+| **Mod_key + Esc** | Enter in vim mode|
+
+If you wish to customize Tmux keybindings, give a look to `~/.tmux.conf`.
+
+## Bfetch
+
+[Bfetch](https://github.com/NNBnh/bfetch) is implemented with several textarts. It can be customized by editing your shell configuration file (i.e., `~/.bashrc` for Bash or `~/.config/fish/config.fish` for Fish) by uncommenting `BFETCH` lines and commenting the enabled ones.
+
+<ImageComponent />

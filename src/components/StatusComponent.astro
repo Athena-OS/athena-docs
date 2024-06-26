@@ -1,0 +1,41 @@
+---
+import "../styles/bulletin.scss";
+import { Icon } from '@astrojs/starlight/components';
+---
+
+<div class="container not-content" id="notificationContainer">
+	<div class="rectangle">
+		<div class="notification-content">
+			<div class="icon-title">
+				<div class="info-group">
+					<Icon name="information" />
+					<h4>Bulletin</h4>
+				</div>
+				<Icon class="close-icon" name="close" />
+			</div>
+			<ul class="notification-list">
+				<li>
+					🟠 Athena OS has been revamped and is currently available under both Arch and Nix/NixOS as a pre-release.</br>
+					Please report bug(s) if encoutered, via GitHub Issues or our
+					<a
+						style="text-decoration: none; cursor: pointer;"
+						href="https://discord.gg/athena-os-977645785170714644"
+					>
+						discord server
+					</a>
+					.
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+<script>
+const closeIcon = document.querySelector('.close-icon');
+
+closeIcon.addEventListener('click', function(event) {
+    notificationContainer.style.display = 'none';
+    event.stopPropagation(); // Prevent triggering the container's click event
+});
+
+</script>

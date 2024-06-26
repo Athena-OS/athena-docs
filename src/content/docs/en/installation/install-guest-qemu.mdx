@@ -1,0 +1,134 @@
+---
+title: Installing as guest in QEMU/KVM
+description: How to install Athena OS as as guest in QEMU/KVM.
+---
+import ImageComponent from "@components/ImageComponent.astro";
+import ThemedImage from '@components/ThemedImage.astro';
+
+This guide shows you how to run Athena OS inside of **QEMU** and **KVM** as hypervisor both for Linux and Windows hosts.
+
+## Linux Host - QEMU/KVM with Virt-Manager
+
+First, you need to prepare your environment for running Virt-Manager (LibVirt GUI client) that will allow you to run Athena OS in QEMU. In an Arch-based Linux environment as host to use Athena OS as guest, install Virt-Manager by:
+```shell
+sudo pacman -S virt-manager qemu-full dnsmasq
+sudo systemctl enable libvirtd
+sudo systemctl start libvirtd
+sudo systemctl enable dnsmasq
+sudo systemctl start dnsmasq
+```
+Run `virt-manager`. At first run, in case there is only `LXC` connection but not `QEMU/KVM` connection, click on **File** -> **Add Connection...**, be sure that **Hypervisor** field is set to **QEMU/KVM** and click on **Connect**
+
+![Virt-Manager Connecting to QEMU/KVM](@assets/images/virtmanager-connect.png)
+
+Once connected, click on **QEMU/KVM** entry and click on **Create a new virtual machine** icon button and set the several settings in the following manner
+
+![Virt-Manager VM Creation](@assets/images/virtmanager-create.png)
+
+On the next step, click on **Browse...** and on the popup window click on **Browse Local** button at bottom side and select the Athena ISO image file
+
+![Virt-Manager Locate ISO](@assets/images/virtmanager-locate.png)
+
+Deselect **Automatically detect from the installation media / source** checkbox and the current step should appear as
+![Virt-Manager Set Media](@assets/images/virtmanager-media.png)
+
+Then, set your resources as CPU and RAM
+
+![Virt-Manager Set Resources](@assets/images/virtmanager-resources.png)
+
+Set the disk size of the virtual machine
+
+![Virt-Manager Set Disk Size](@assets/images/virtmanager-disk.png)
+
+On the final summary window, check **Customize configuration before install** checkbox, assign a VM name, expand the network selection for checking if it is set on NAT and click on **Finish**
+
+![Virt-Manager VM Summary](@assets/images/virtmanager-summary.png)
+
+You could get a message related to the activation of the Virtual Network, press **Yes**
+
+![Virt-Manager Virtual Network](@assets/images/virtmanager-network.png)
+
+Afterwards, the VM settings window is opened. You should move to **CPUs** tab and expand **Topology** section and increment **Sockets** and **Cores** at least to 2
+
+![Virt-Manager VM CPU Settings](@assets/images/virtmanager-processor.png)
+
+Move to **Display Spice** tab, set **Listen type** to **None** and check **OpenGL** in order to use it
+
+![Virt-Manager VM Display Settings](@assets/images/virtmanager-display.png)
+
+Finally, make sure that the 3D Acceleration is enabled on **Video Virtio** tab
+
+![Virt-Manager VM 3D Acceleration](@assets/images/virtmanager-accel.png)
+
+At the end, apply all the changes and click on **Begin Installation** button on the top-left side of the settings window.
+
+When the VM is run, install Athena OS as explained in [Installing as single boot](/en/installation/install-single-boot/) chapter.
+
+:::note
+Athena OS automatically recognizes if you are using a virtualized environment so you don't need to install QEMU Guest Agent because the system will do automatically for you during the OS installation.
+:::
+
+## Windows Host - QEMU
+
+For using QEMU on Windows Host, it is important to enable Virtualization by the BIOS and have Hyper-V enabled in order to use WHPX as accelerator.
+
+First, reboot and access to your BIOS, select the Virtualization Technology, Intel Virtual Technology, or SVM Mode option (the feature name will depend on your manufacturer). Enable the virtualization feature. Save configuration and reboot.
+
+After reboot, when landed on Windows, create a file called `hyperv-home.bat` with the following content:
+```
+pushd "%~dp0"
+dir /b %SystemRoot%\servicing\Packages\*Hyper-V*.mum >hv-home.txt
+for /f %%i in ('findstr /i . hv-home.txt 2^>nul') do dism /online /norestart /add-package:"%SystemRoot%\servicing\Packages\%%i"
+del hv-home.txt
+Dism /online /enable-feature /featurename:Microsoft-Hyper-V -All /LimitAccess /ALL
+pause
+```
+Run it. This script will download and install Hyper-V feature if your Windows does not have it.
+
+Then, by Windows search bar reach `Turn Windows features on or off` and check for `Hyper-V`, `Virtual Machine Platform` and `Windows Hypervisor Platform`. Click OK and reboot.
+
+Open PowerShell as Administrator and run `bcdedit /enum` and be sure that `hypervisorlaunchtype` is set to `Auto` (that means "ON"). If not, run `bcdedit /set hypervisorlaunchtype auto`.
+
+Now install QEMU for Windows from the official website. After the installation, go to the Windows search bar and reach `Edit the system environment variables`. Click on `Environment Variables...`, go to `Path`, click on `Edit...`, click on `New` and add the QEMU installation path (by default is: `C:\Program Files\qemu`). Click OK on all opened windows.
+
+Since it could be very useful running our Athena OS by UEFI, we need to retrieve UEFI libraries for allowing QEMU to work in UEFI mode. For doing this, from https://www.kraxel.org/repos/jenkins/edk2/ download the latest version of `edk2.git-ovmf-x64-0-20220719.209.gf0064ac3af.EOL.no.nore.updates.noarch.rpm` file, then by 7zip, extract the content in a new folder. You will get a `.cpio` file. Again, by 7zip, extract the content of this `.cpio` file in a folder. It will contain our `.fd` file for allowing QEMU to run in UEFI mode. We will use the path to this file in the final QEMU command.
+
+Now it is all set for running Athena OS on QEMU!
+
+Open PowerShell. For first we need to create a disk where we must install Athena OS. Do it by running:
+```shell
+qemu-img create -f qcow2 athena30.img 30G 
+```
+`30G` is the disk space we would like to assign to the disk. `athena30.img` will be created in the current directory but if you wish, you can type the entire path you would like to store it.
+
+Now, we can run Athena OS by QEMU:
+```shell
+qemu-system-x86_64.exe -boot order=dc -hda .\athena30.img -cdrom .\VirtualShare\athena-2023.01.23-x86_64.iso -m 4G -accel whpx,kernel-irqchip=off -smp 2 -device VGA -device qemu-xhci -bios C:\Users\<USERNAME>\Downloads\edk2.git-ovmf-x64-0-20220719.209.gf0064ac3af.EOL.no.nore.updates.noarch\usr\share\edk2.git\ovmf-x64\OVMF_CODE-pure-efi.fd -cpu Nehalem -chardev socket,id=qga0,server=on,wait=off -device virtio-serial-pci,id=virtio-serial0 -device virtserialport,bus=virtio-serial0.0,nr=1,chardev=qga0,id=channel0,name=org.qemu.guest_agent.0
+```
+By this command, QEMU will boot the Athena OS ISO that we use for installing Athena OS as explained in [Installing as single boot](/en/installation/install-single-boot/) chapter.
+
+After the installation, turn off the virtual machine and, for booting directly to the Athena OS disk, just remove `-cdrom <path-to-iso>` argument. The final QEMU command to call should be:
+```shell
+qemu-system-x86_64.exe -boot order=c -hda .\athena30.img -m 4G -accel whpx,kernel-irqchip=off -smp 2 -device VGA -device qemu-xhci -bios 'C:\Users\Username\Downloads\edk2.git-ovmf-x64-0-20220719.209.gf0064ac3af.EOL.no.nore.updates.noarch\usr\share\edk2.git\ovmf-x64\OVMF_CODE-pure-efi.fd' -cpu Nehalem -chardev socket,id=qga0,server=on,wait=off -device virtio-serial-pci,id=virtio-serial0 -device virtserialport,bus=virtio-serial0.0,nr=1,chardev=qga0,id=channel0,name=org.qemu.guest_agent.0
+```
+The command above enables the virtual machine to use QEMU Guest Agent. In general, a Linux distro that would like to use it, need to install `qemu-guest-agent` package, then run `sudo systemctl restart qemu-guest-agent`. At the end, just verify it is active by running `sudo systemctl status qemu-guest-agent`.
+
+### QEMU Parameters
+
+| Parameter | Description |
+| --------- | ----------- |
+| `-boot order=dc` | Set the boot order. `d` refers to the `-cdrom` entry and `c` to the `-hda` entry. |
+| `-hda <path-to-img>` | Specify the disk to boot. |
+| `-cdrom <path-to-iso>` | Specify the ISO to boot. |
+| `-m <size>` | Set the RAM size. |
+| `-accel <accelerator>` | Specify the accelerator to use. |
+| `-smp <core-number>` | Set the number of cores to use. |
+| `-bios <path-to-bios-mode-file>` | Specify the BIOS mode to use (i.e., UEFI). |
+| `-cpu <CPU type>` | Set the CPU type to use. |
+| `-chardev socket,id=qga0,server=on,wait=off -device virtio-serial-pci,id=virtio-serial0 -device virtserialport,bus=virtio-serial0.0,nr=1,chardev=qga0,id=channel0,name=org.qemu.guest_agent.0` | Enable the usage of QEMU Guest Agent. |
+
+### Limitations
+
+The main disadvantage of using QEMU on a Windows host does not allow to perform a GPU Passthrough, it means that all virtual machines running there will work by Software Rendering as graphics. Furthermore, currently it is not clear how to enable 3D Acceleration.
+
+<ImageComponent />

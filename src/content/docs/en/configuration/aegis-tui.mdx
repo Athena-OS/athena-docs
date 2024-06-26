@@ -1,0 +1,184 @@
+---
+title: Aegis Installer TUI
+description: How to install Athena OS by Aegis Installer TUI.
+---
+import ImageComponent from "@components/ImageComponent.astro";
+import ThemedImage from '@components/ThemedImage.astro';
+import { LinkCard, CardGrid } from '@astrojs/starlight/components';
+
+[Aegis TUI](https://github.com/Athena-OS/aegis-tui) is a terminal user interface frontend of **Aegis**, a tailored installer developed and optimized specifically for Athena OS.
+
+To provide more accessible resources to the users, Aegis TUI provides a terminal interface to configure and install your systems according to your preferences.
+
+Aegis will improve over time in order to detect automatically your hardware. It means that the installer is able to detect your environment (baremetal or virtualized), your CPU and your GPU. According to this information, all the needed drivers are automatically installed with no any actions by your side.
+
+Aegis TUI can be run by running `aegis-tui` command and requires a working Internet connection.
+
+Its purpose is to create a JSON configuration file containing all the user choices that is used to feed the Aegis backend, the real brain of the installer. The JSON configuration file will be saved as `/tmp/config.json`.
+
+The installation logs will be saved to `/tmp/aegis.log` and copied to the installed system to `/var/log/aegis.log`.
+
+### Installation
+
+Open the terminal and run:
+```shell
+aegis-tui
+```
+![Aegis TUI](@assets/images/aegis-tui-base-system.png)
+
+Choose your favourite base system between Athena Arch or Athena Nix
+![Aegis TUI](@assets/images/aegis-tui-archnix.png)
+
+:::note
+The choices proposed for the following sections (i.e., Desktop, Theme) can vary according to the chosen base system.
+:::
+
+#### Timezone
+
+Select the timezone
+![System Timezone](@assets/images/aegis-tui-timezone.png)
+
+#### Console Keymap
+
+Select the console keymap
+![Console Keymap](@assets/images/aegis-tui-console-keymap.png)
+
+#### X11 Keymap
+
+Select the X11 keymap
+![X11 Keymap](@assets/images/aegis-tui-keymap.png)
+
+#### Locale
+
+Select the locale
+![System Locale](@assets/images/aegis-tui-locale.png)
+
+
+#### Users
+
+Set your user account
+![User Account](@assets/images/aegis-tui-username.png)
+
+Set your password
+![User Password](@assets/images/aegis-tui-password.png)
+![User Verify Password](@assets/images/aegis-tui-password-verify.png)
+
+Choose if the inserted password should be the same for the root account too
+![User Same Root Password](@assets/images/aegis-tui-password-root-same.png)
+
+If choose **No**, set a password for the root account
+![Root Password](@assets/images/aegis-tui-password-root.png)
+![Root Verify Password](@assets/images/aegis-tui-password-root-verify.png)
+
+:::tip
+If you don't type any value for username or password, the default credential will be `athena:athena`.
+:::
+
+#### Shell
+
+Select your favourite shell
+![System Shell](@assets/images/aegis-tui-shell.png)
+
+#### Hostname
+
+Set the hostname
+![System Hostname](@assets/images/aegis-tui-hostname.png)
+
+:::tip
+If you don't type any value for hostname, the default value will be `athenaos`.
+:::
+
+#### Partitioning
+
+Select your partition according to the installation type you are going to. Check the **Installation** chapter related to your setup and follow there the partition scheme to implement:
+<CardGrid>
+  <LinkCard title="Installing as single boot" href="/en/installation/install-single-boot/#aegis-tui" />
+  <LinkCard title="Installing as dual boot" href="/en/installation/install-dual-boot/#pre-installation" />
+  <LinkCard title="Virtual Machine scenario" href="/en/installation/install-single-boot/#aegis-tui" />
+</CardGrid>
+
+#### Desktop
+
+Select your favourite theme
+![System Desktop](@assets/images/aegis-tui-desktop.png)
+
+#### Theme
+
+Select your favourite theme
+![System Theme](@assets/images/aegis-tui-theme.png)
+
+#### Login Manager
+
+Select your favourite display manager for login
+![System Login](@assets/images/aegis-tui-dm.png)
+
+#### Browser
+
+Select your favourite browser
+![Browser](@assets/images/aegis-tui-browser.png)
+
+#### Terminal
+
+Select your favourite terminal
+![System Terminal](@assets/images/aegis-tui-terminal.png)
+
+#### Miscellaneous Settings
+
+Select your favourite settings by using **Space** key button and confirm by **Enter**
+![System Settings](@assets/images/aegis-tui-misc.png)
+
+:::note
+**Zram** should be enabled only if a swap partition has not been created.
+:::
+
+Review the **Summary** and run the installation.
+![Install Summary](@assets/images/aegis-tui-summary.png)
+
+Select the install parameters for the installation process (**Athena Nix only**)
+![Install Set Cores](@assets/images/aegis-tui-install-cores.png)
+![Install Set Jobs](@assets/images/aegis-tui-install-jobs.png)
+ 
+Finally, if you are ready to install, proceed
+![Install Confirm](@assets/images/aegis-tui-install-confirm.png)
+ 
+During the installation, installation logs are saved in `/tmp/aegis.log`. In case the installation gets some issues, run:
+```shell
+install-logs
+```
+and
+```shell
+config-logs
+```
+to get the links to https://termbin.com where the logs are temporary saved. Communicate these links to Athena OS Team for troubleshooting.
+ 
+:::tip
+If the screen locks due to user inactivity, unlock the screen by using `athena` as password.
+:::
+
+If no errors have been raised during the installation phase, you are ready to use Athena OS!
+
+![Installation Finished](@assets/images/aegis-tui-finish.png)
+
+Before rebooting, if you installed Athena OS in dual boot with Windows, as explained in the related section, restore Microsoft bootloader inside the boot partition (i.e., `/dev/nvme0n1p1`):
+```
+sudo mount /dev/nvme0n1p1 /mnt
+cp -rf ~/Microsoft /mnt/EFI/
+sudo umount /mnt
+```
+Once you reboot, and you land on the installed system, open the terminal and run:
+```
+sudo os-prober
+sudo grub-mkconfig -o /boot/grub/grub.cfg
+```
+In this manner, Windows entry should be added in GRUB.
+
+:::note
+At the end of a successful installation in an EFI system, you could get a message like:
+```
+⚠ Mount point '/boot' which backs the random seed file is world accessible, which is a security hole! ⚠
+⚠ Random seed file '/boot/loader/.#bootctlrandom-seedc5706ea22f8895b0' is world accessible, which is a security hole! ⚠
+Random seed file /boot/loader/random-seed successfully written (32 bytes).
+```
+It is related to all Linux systems, but it should be mitigated by using encrypted partitions. To get more details about this warning, refer to [this resource](https://discourse.nixos.org/t/security-warning-when-installing-nixos-23-11/37636).
+:::
+<ImageComponent />

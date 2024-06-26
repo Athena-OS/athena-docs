@@ -1,0 +1,36 @@
+---
+title: PWNage Menu
+description: Details about PWNage Menu in Athena OS.
+---
+import ImageComponent from "@components/ImageComponent.astro";
+import ThemedImage from '@components/ThemedImage.astro';
+
+**PWNage Menu** allows users to access instantly to the main hacking platforms for learning purposes and to join the main Discord InfoSec Communities:
+* 1st shell deploys all quick links to the main **hacking platforms**
+* 2nd shell can be accessed by the **Discurity** icon on top where the user can join several Discord InfoSec servers or open [ArmCord](https://github.com/ArmCord/ArmCord) App
+
+![PWNage Menu](@assets/images/pwnage-menu.png)
+
+PWNage menu can be accessed by `CTRL+SHIFT+SPACE` in GNOME environment.
+
+One of the most interesting features of Athena is the deep **integration** with [Hack The Box](https://app.hackthebox.com) platform, accessible by PWNage menu. Athena gives the possibility to play Hack The Box machines directly on the OS environment in a **quick** and **comfortable** manner. It offers:
+* **Connect/Disconnect** to/from Hack The Box VPN servers
+* **Play** any active free machine you wish
+* **Reset** the active machine
+* **Stop** any active machine
+* **Submit** a flag and write a **review** about your hacking experience!
+* ... and access to the Hack The Box **website**
+
+It can be done by accessing to the Hack The Box icon in PWNage menu.
+
+![Hack The Box Menu](@assets/images/hackthebox.png)
+
+The menu is updated by a cronjob in order to call Hack The Box APIs and retrieve the last free active machines.
+
+Playing with one of these machines will edit the PROMPT of the shell by showing the name of the laboratory, the target IP address, the attacker IP address, the Hack The Box username of the user and the prize points.
+
+![Hack The Box Machine](@assets/images/htb-spawn.png)
+
+The set of tools that manages the Hack The Box environment needs of the App Token of the Hack The Box user that can be set as described in [Athena Welcome section](/en/resources/athena-welcome/#htb-update) or by calling `htb-update` command.
+
+<ImageComponent />

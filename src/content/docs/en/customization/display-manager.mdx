@@ -1,0 +1,158 @@
+---
+title: Customizing Display Managers
+description: How to customize display managers.
+---
+import ImageComponent from "@components/ImageComponent.astro";
+import ThemedImage from '@components/ThemedImage.astro';
+
+## GDM
+
+### Customize Background
+
+If you wish to change the GDM background, you need to extract the existing `gnome-shell-theme.gresource`, edit and compile it. For doing this, create a file name `gdm-theme-script.sh` and paste the following code inside it:
+```bash
+#!/bin/sh
+
+workdir=${HOME}/shell-theme
+if [ ! -d ${workdir}/theme ]; then
+    mkdir -p ${workdir}/theme
+fi
+gst=/usr/share/gnome-shell/gnome-shell-theme.gresource
+
+for r in `gresource list $gst`; do
+    gresource extract $gst $r >$workdir/${r#\/org\/gnome\/shell/}
+done
+```
+and give executable permissions by running `chmod 755 gdm-theme-script.sh`.
+
+Once this script is run, it creates a `shell-theme/theme` folder in your home directory where it extracted the content of the current `gnome-shell-theme.gresource` file. So, go to this directory by running `cd $HOME/shell-theme/theme`. Inside it, create a file named `gnome-shell-theme.gresource.xml` if not existing and paste the following code inside it while `imagefilename` must be replaced with the only filename of your background image you want to apply:
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/org/gnome/shell/theme">
+
+    <file>imagefilename</file>
+
+    <file>calendar-arrow-left.svg</file>
+    <file>calendar-arrow-right.svg</file>
+    <file>calendar-today.svg</file>
+    <file>checkbox-focused.svg</file>
+    <file>checkbox-off-focused.svg</file>
+    <file>checkbox-off.svg</file>
+    <file>checkbox.svg</file>
+    <file>close-window.svg</file>
+    <file>close.svg</file>
+    <file>corner-ripple-ltr.png</file>
+    <file>corner-ripple-rtl.png</file>
+    <file>dash-placeholder.svg</file>
+    <file>filter-selected-ltr.svg</file>
+    <file>filter-selected-rtl.svg</file>
+    <file>gnome-shell.css</file>
+    <file>gnome-shell-high-contrast.css</file>
+    <file>logged-in-indicator.svg</file>
+    <file>more-results.svg</file>
+    <file>no-events.svg</file>
+    <file>no-notifications.svg</file>
+    <file>noise-texture.png</file>
+    <file>page-indicator-active.svg</file>
+    <file>page-indicator-inactive.svg</file>
+    <file>page-indicator-checked.svg</file>
+    <file>page-indicator-hover.svg</file>
+    <file>process-working.svg</file>
+    <file>running-indicator.svg</file>
+    <file>source-button-border.svg</file>
+    <file>summary-counter.svg</file>
+    <file>toggle-off-us.svg</file>
+    <file>toggle-off-intl.svg</file>
+    <file>toggle-on-hc.svg</file>
+    <file>toggle-on-us.svg</file>
+    <file>toggle-on-intl.svg</file>
+    <file>ws-switch-arrow-up.png</file>
+    <file>ws-switch-arrow-down.png</file>
+  </gresource>
+</gresources>
+```
+Now, open the `gnome-shell.css` file in the directory, search for `#lockDialogGroup` and change its definition as follows:
+```css
+#lockDialogGroup {
+  background: url(imagefilename);
+  background-size: cover;;
+  background-repeat: no-repeat;
+}
+```
+while `imagefilename` must be replaced with the only filename of your background image you want to apply.
+
+Store your background image file inside the `$HOME/shell-theme/theme`, and, finally, compile the theme using the following command:
+```shell
+glib-compile-resources gnome-shell-theme.gresource.xml
+```
+Copy the resulting `gnome-shell-theme.gresource` to the `/usr/share/gnome-shell` directory. Before copying it, just for safety, we create a backup file of the old one:
+```shell
+sudo cp -rf /usr/share/gnome-shell/gnome-shell-theme.gresource /usr/share/gnome-shell/gnome-shell-theme.gresource.bak
+sudo cp -rf gnome-shell-theme.gresource /usr/share/gnome-shell/
+```
+Reboot the system or logout and your new GDM background should appear.
+
+## LightDM
+
+### Customize Background
+
+LightDM in Athena OS uses **lightdm-webkit-theme-aether** theme package that is based on the **WebKit2 Greeter** that are the components that give you the current LightDM rice on Athena.
+
+In case you would like to keep that style but changing only the background, you can store your background file by replacing `/usr/share/lightdm-webkit/themes/lightdm-webkit-theme-aether/src/img/wallpapers/space-1.jpg`.
+
+:::caution
+It is important that your background is named as `space-1.jpg` and that is a JPG file because, currently, we don't know the location of the code where the LightDM background in this theme is defined.
+:::
+
+All images in `/usr/share/lightdm-webkit/themes/lightdm-webkit-theme-aether/src/img/wallpapers/` folder will be the wallpapers that will be shown on LightDM when you click on the OS logo on the LightDM login window, for example:
+
+![LightDM Background](@assets/images/lightdm-penguin-background.png)
+
+Finally, reboot the system and your new background should be applied.
+
+### Customize WebKit Theme
+
+In case you want to try a theme different from **lightdm-webkit-theme-aether** theme package that is still based on the **WebKit2 Greeter**, you need only to detect a package or a GitHub or GitLab project, and install it by following the provided instructions.
+
+Generally, WebKit Theme packages are distributed by AUR (Arch User Repository) and they can be installed mainly by package managers like `paru` instead of `pacman`. For example, if you search for [webkit theme in AUR]([package](https://aur.archlinux.org/packages?O=0&SeB=nd&K=webkit+theme&outdated=&SB=p&SO=d&PP=50&submit=Go)), check one that you like, install it by `paru -S <pkg-name>`.
+
+Once installed, it will be placed in `/usr/share/lightdm-webkit/themes/` folder. From there, take note of the name of the folder of your installed theme, then edit `/etc/lightdm/lightdm-webkit2-greeter.conf` by replacing `webkit_theme = lightdm-webkit-theme-aether` line by:
+```
+webkit_theme = <your-theme>
+```
+save the file and close it. Reboot the system and your theme should be applied.
+
+### Customize Greeter
+
+In case you wish to change the WebKit Theme with a different greeter, you must search for greeter packages on AUR or Arch Linux repositories. Once installed, edit `/etc/lightdm/lightdm.conf` by replacing `greeter-session = lightdm-webkit2-greeter` line by:
+```
+greeter-session = <your-greeter>
+```
+save the file and close it. Reboot the system and your theme should be applied.
+
+## SDDM
+
+### Customize Background
+
+Usually, SDDM theme packages are preset themes with a specific style and background. Of course you can use a package for keeping its style and change only the background.
+
+For doing this, you need to go to the system SDDM theme folder, locate the current used theme, locate the wallpaper folder and store your new background there.
+
+Athena OS uses SDDM Astronaut theme. If you like the dark style but you want to change the background, store your new background in `/usr/share/sddm/themes/astronaut/Assets/Wallpapers/` folder, then edit `Background=` variable in `/usr/share/sddm/themes/astronaut/theme.conf` and set your background image filename as:
+```
+# [General]
+Background="Assets/Wallpapers/myfavourite.png"
+```
+Reboot the system and your new background should be applied.
+
+### Customize Theme
+
+If you wish to change completely the theme with a new style, you must search for a SDDM theme package on AUR or Arch Linux repositories. Once installed, go on `/usr/share/sddm/themes/` folder and check the folder name of the installed theme, for example, let's guess the folder of your theme is named `dinosaur`. Then, edit `/etc/sddm.conf` and replace `Current=astronaut` by:
+```
+[Theme]
+Current=dinosaur
+```
+Reboot the system and your theme should be applied.
+
+<ImageComponent />

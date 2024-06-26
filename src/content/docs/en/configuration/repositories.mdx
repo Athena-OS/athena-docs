@@ -1,0 +1,85 @@
+---
+title: Repositories
+description: A description of repositories used by Athena OS.
+---
+import ImageComponent from "@components/ImageComponent.astro";
+import ThemedImage from '@components/ThemedImage.astro';
+
+Athena OS leverages on several repositories for accessing to security tools and learning resources in a comfortable manner.
+
+## Athena Arch
+* [Athena repository](https://github.com/Athena-OS/athena) for Athena tools or pentesting packages
+* [Chaotic repository](https://aur.chaotic.cx/) for accessing to the AUR packages directly by pacman
+* [Arch Linux repositories](https://archlinux.org/packages/) for system and utility packages
+  * core
+  * extra
+  * community
+  * multilib
+
+These repositories are set in `/etc/pacman.conf`. Here you can choose to add more repositories or remove the existing ones. Each time you edit this file by adding or removing repositories, run `sudo pacman -Syy` to synchronize the database.
+
+The structure of the Athena OS [repository package source](https://github.com/Athena-OS/athena/packages) is public and available for any contribution.
+
+The source files of each single package is inside the related `packages` sub-directory. Each package has `PKGBUILD` file for defining the `.pkg.tar.zst` package rules and some packages have `build.sh` file that is used for automating this process by generating the new `.pkg.tar.zst`, signing it, moving it and its signature to `x86_64` folder and delete all the temporary files.
+The building process is mainly managed by **Hephaestus** container.
+
+The declaration of Athena repository is defined inside `/etc/pacman.conf` as:
+```
+[athena]
+SigLevel = Optional TrustedOnly
+Include = /etc/pacman.d/athena-mirrorlist
+```
+In Athena, the repository keys and related files, `athena.gpg`, `athena-trusted`, `athena-revoked`, `chaotic.gpg`, `chaotic-trusted` and `chaotic-revoked` files are stored in `/usr/share/pacman/keyrings/` folder. `athena.gpg` file is the public key needed to be imported in order to access to Athena repository, `athena-trusted` contains the keys to trust, and `athena-revoked` contains the list of revoked keys in long format.
+This operation is managed by the installer that will initialize all the keys stored in `/usr/share/pacman/keyrings/` folder.
+
+### Installation
+
+If you wish to use Athena repository in a different operating system, you can do this by adding the following to your **/etc/pacman.conf**:
+```
+[athena]
+SigLevel = Optional TrustedOnly
+Include = /etc/pacman.d/athena-mirrorlist
+```
+Get the mirrorlist file by running:
+```
+sudo curl https://raw.githubusercontent.com/Athena-OS/athena/main/packages/os-specific/athena-mirrorlist/athena-mirrorlist -o /etc/pacman.d/athena-mirrorlist
+```
+On the terminal, execute:
+```
+sudo pacman-key --recv-keys A3F78B994C2171D5 --keyserver keys.openpgp.org
+```
+:::tip
+If it is not working, try:
+```
+sudo pacman-key --recv-keys A3F78B994C2171D5 --keyserver keyserver.ubuntu.com
+```
+:::
+Finally, trust the imported key by:
+```
+sudo pacman-key --lsign A3F78B994C2171D5
+```
+
+## Athena Nix
+
+* [Athena Nix repository](https://github.com/Athena-OS/athena-nix) for all the modules designed specifically for Athena OS
+* [Nixpkgs repository](https://github.com/NixOS/nixpkgs/) to retrieve all packages and security tools
+
+Athena uses stable version of Nixpks repository and it is managed by Nix Channels. To keep the nix channel of the stable version updated, in order to retrieve always the most updated stable packages, run:
+```shell
+sudo nix-channel --update
+```
+
+Athena Nix repository can be used also by flakes. In this manner an host can retrieve a specific configuration set in Athena Nix remotely with minimum effort. The usage of flakes is specified in the main page of Athena Nix repository. To keep update flakes in order to retrieve always the latest updated packages, run:
+```shell
+sudo nix flake update
+```
+
+{/*
+## Automation
+
+Athena repository automates the update of its packages, indeed, mostly for git packages, when a developer updates its tool, the implemented automation is able to detect it, update the package and deploy it to the repository. This automated check runs periodically.
+
+It has been implemented by a GitHub Actions workflow that contains a bash script for checking all directories containing a PKGBUILD file and running the build script inside each package source.
+*/}
+
+<ImageComponent />

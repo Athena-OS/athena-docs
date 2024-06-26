@@ -1,0 +1,134 @@
+---
+import "/src/styles/timeline.scss";
+---
+<div class="swiper-container not-content">
+  <div class="swiper-wrapper timeline">
+    <div class="swiper-slide">
+        <div class="timestamp">
+          <span>Milestone Q1</span>
+        </div>
+        <div class="status completed">
+          <span>
+            <a
+              style="text-decoration:none;"
+              href="https://github.com/Athena-OS/athena-nix/"
+            >
+              Nix-based system integration
+            </a>
+          </span>
+        </div>
+    </div>
+    <div class="swiper-slide">
+      <div class="timestamp">
+        <span>Milestone Q2</span>
+      </div>
+      <div class="status">
+        <span>Aegis Installer</span>
+      </div>
+    </div>
+    <div class="swiper-slide">
+      <div class="timestamp">
+        <span>Milestone Q3</span>
+      </div>
+      <div class="status">
+        <span>Addition of more custom tools and features</span>
+      </div>
+    </div>
+    <div class="swiper-slide">
+      <div class="timestamp">
+        <span>Milestone Q4</span>
+      </div>
+      <div class="status">
+        <span>ARM architecture support?</span>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="swiper-mobile-container">
+  <ul class="timeline">
+    <li>
+      <div class="direction-r completed">
+        <div class="flag-wrapper">
+          <span class="flag">
+            <a
+              style="text-decoration:none"
+              href='https://github.com/Athena-OS/athena-nix/'
+            >
+              Nix-based system integration
+            </a>
+          </span>
+          <span class="time-wrapper"><span class="time">Milestone Q1</span></span>
+        </div>
+      </div>
+    </li>
+    <li>
+      <div class="direction-r">
+        <div class="flag-wrapper">
+          <span class="flag">
+            Aegis Installer
+          </span>
+          <span class="time-wrapper"><span class="time">Milestone Q2</span></span>
+        </div>
+      </div>
+    </li>
+    <li>
+      <div class="direction-r">
+        <div class="flag-wrapper">
+          <span class="flag">
+            Addition of more custom tools and features
+          </span>
+          <span class="time-wrapper"><span class="time">Milestone Q3</span></span>
+        </div>
+      </div>
+    </li>
+    <li>
+      <div class="direction-r">
+        <div class="flag-wrapper">
+          <span class="flag">
+            ARM architecture support?
+          </span>
+          <span class="time-wrapper"><span class="time">Milestone Q4</span></span>
+        </div>
+      </div>
+    </li>
+  </ul>
+</div>
+
+<style>
+  :global([data-theme='light']) .completed span:before  {
+      border: 3px solid rgb(245, 199, 61) !important;
+  }
+
+  :global([data-theme='light']) .timeline:before {
+    background:rgba(52, 56, 65, 0.671) !important;
+    background: -moz-linear-gradient(top, rgba(52, 56, 65,0) 0%, rgba(52, 56, 65, 0.671) 8%, rgba(52, 56, 65, 0.671) 92%, rgba(52, 56, 65,0) 100%) !important;
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(30,87,153,1)), color-stop(100%,rgba(125,185,232,1))) !important;
+    background: -webkit-linear-gradient(top, rgba(52, 56, 65,0) 0%, rgba(52, 56, 65, 0.671) 8%, rgba(52, 56, 65, 0.671) 92%, rgba(52, 56, 65,0) 100%) !important;
+    background: -o-linear-gradient(top, rgba(52, 56, 65,0) 0%, rgba(52, 56, 65, 0.671) 8%, rgba(52, 56, 65, 0.671) 92%, rgba(52, 56, 65,0) 100%) !important;
+    background: -ms-linear-gradient(top, rgba(52, 56, 65,0) 0%, rgba(52, 56, 65, 0.671) 8%, rgba(52, 56, 65, 0.671) 92%, rgba(52, 56, 65,0) 100%) !important;
+    background: linear-gradient(to bottom, rgba(52, 56, 65,0) 0%, rgba(52, 56, 65, 0.671) 8%, rgba(52, 56, 65, 0.671) 92%, rgba(52, 56, 65,0) 100%) !important;
+  }
+
+  :global([data-theme='light']) .flag {
+    background:rgb(52, 56, 65) !important;
+    color:rgb(83, 88, 100) !important;
+  }
+
+  :global([data-theme='light']) .completed .flag:before {
+    border: 3px solid rgb(245, 199, 61) !important;
+  }
+
+  :global([data-theme='dark']) .completed span a {
+      color: hsl( 234 , 100%, 87%) !important;
+  }
+
+  :global([data-theme='light']) .completed span a {
+    color: rgb(245, 199, 61) !important;
+  }
+
+  :global([data-theme='light']) .flag:after {
+    border-bottom-color: rgb(52, 56, 65) !important;
+  }
+
+
+</style>

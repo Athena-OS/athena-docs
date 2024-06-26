@@ -1,0 +1,114 @@
+html, body {
+	height: 100%;
+	margin: 0; /* Ensure no default browser margin */
+}
+
+.rectangle {
+	position: absolute;
+	top: 5rem; 
+	right: 1rem;
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	width: 2em;
+	max-height: 12em;
+    background: #17181c5b; /* Semi-transparent white background */
+	backdrop-filter: blur(10px); /* Apply blur effect */
+	border: 1px solid #353841; /* Optional: add a subtle border for more glassy effect */
+	transform: scale(0);
+	border-radius: 50%;
+	animation: scale-in .3s ease-out forwards,
+		expand .35s .25s ease-out forwards;
+}
+
+.notification-content {
+	display: flex;
+	flex-direction: column;
+	padding: 0.5rem;
+	animation: fade-in .65s ease-in forwards;
+	height: 100%;
+
+    .icon-title {
+        display: flex;
+        align-items: center;
+		justify-content: space-between;
+        gap:0.3rem;
+        font-size: 1.2em;
+		margin-bottom: 0.4rem;
+
+		.info-group {
+			display: flex;
+			align-items: center;
+			gap: 0.3rem;
+		}
+		
+		h4 {
+			font-size: 1em;
+		}
+
+		.close-icon {
+			cursor: pointer;
+		}
+    }
+
+	.notification-list {
+		margin: 0 !important;
+		padding: 0 !important;
+		margin-right: 0.15rem !important;
+		display: flex;
+		flex-direction: column;
+		gap:0.2rem;
+		list-style-type: none;
+		max-height: 8em;
+		overflow-y: scroll;
+		overflow-x: hidden;
+		font-size: 0.9em;
+
+		&::-webkit-scrollbar {
+			width: 0.3em;
+		}
+
+		&::-webkit-scrollbar-track {
+			background: transparent;
+		}
+		
+		&::-webkit-scrollbar-thumb {
+			background: #353841;
+			border-radius: 0.2em;
+		}
+	}
+}
+
+@keyframes scale-in {
+	100% {
+		transform: scale(1);
+		opacity: 1;
+	}
+}
+
+@keyframes expand {
+	50% {
+		width: 350px;
+		border-radius: 6px;
+	}
+	100% {
+		width: 300px;
+		border-radius: 8px;
+	}
+}
+
+@keyframes fade-in {
+	0% {
+		opacity: 0;
+	}
+	100% {
+		opacity: .8;
+	}
+}
+
+@media only screen and (max-device-width: 541px) {
+	.container {
+		display:none;
+	}
+  }
+  

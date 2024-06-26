@@ -1,0 +1,30 @@
+---
+title: Updating Athena OS
+description: How to update Athena OS.
+---
+import ImageComponent from "@components/ImageComponent.astro";
+import ThemedImage from '@components/ThemedImage.astro';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+<Tabs>
+<TabItem label="Athena Arch">
+To upgrade the system and all the packages, run:
+```shell
+sudo pacman -Syyu
+```
+and reboot.
+</TabItem>
+<TabItem label="Athena Nix">
+The update process requires the update of nix channel by:
+```shell
+sudo nix-channel --update
+```
+This command allows the system to retrieve all the latest information about the Nix packages from Nix repository. Finally, run:
+```shell
+sudo nixos-rebuild switch
+```
+to update the system.
+</TabItem>
+</Tabs>
+
+<ImageComponent />

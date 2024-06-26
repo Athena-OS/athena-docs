@@ -1,0 +1,68 @@
+---
+title: NIST Feed
+description: NIST NVD feed and popup notifications.
+---
+import ImageComponent from "@components/ImageComponent.astro";
+import ThemedImage from '@components/ThemedImage.astro';
+
+[NIST Feed](https://github.com/D3vil0p3r/NIST-Feed) is a special tool able to retrieve information about **existing CVE (Common Vulnerabilities and Exposures)** and **inform** you about a **new published** or **updated CVE** by a popup notification by connecting to the [NIST National Vulnerability Database (NVD)](https://nvd.nist.gov/)!
+
+The notification contains a description of the CVE. When the popup notification is shown, users can left-click on it for accessing to the NIST NVD page with all detailed information, or right-click for closing it.
+
+A sample of enabled popup notification is the following
+
+![image](https://user-images.githubusercontent.com/83867734/197344676-172a4916-65e3-4f02-9f9c-c6a21ba21100.png)
+
+An output sample on retrieving information about an existing CVE by terminal is the following:
+```
+CVE-2023-2268
+
+Plane version 0.7.1 allows an unauthenticated attacker to view all stored server files of all users.
+
+References:
+https://fluidattacks.com/advisories/giardino/
+https://github.com/makeplane/plane
+
+Published Date: 2023-07-15T19:15Z
+Last Modified Date: 2023-07-15T19:15Z
+
+Attack Vector: To Be Evaluated
+Attack Complexity: To Be Evaluated
+Privileges Required: To Be Evaluated
+User Interaction: To Be Evaluated
+Scope: To Be Evaluated
+CIA Impacts: Confidentiality -> To Be Evaluated; Integrity -> To Be Evaluated; Availability -> To Be Evaluated
+Severity: Score -> To Be Evaluated (To Be Evaluated)
+
+URL: https://nvd.nist.gov/vuln/detail/CVE-2023-2268
+```
+
+NIST Feed can be configured according to the parameters shown by `nist-feed -h` command. Users can decide which kind of CVE they wish to be informed about, for instance CVEs with a high impact on the confidentiality and integrity, or CRITICAL CVEs. Some examples:
+* Set Desktop Notifications for latest or updated CVE with CRITICAL severity:
+  ```shell
+  nist-feed -n -l -s CRITICAL
+  ```
+* Show details about the last three CVEs. No Desktop Notifications:
+  ```shell
+  nist-feed -r 3
+  ```
+* Show details about the last twenty CVEs with PHYSICAL as attack vector and MEDIUM severity. No Desktop Notifications:
+  ```shell
+  nist-feed -V AV:P -s MEDIUM
+  ```
+* Set Desktop Notifications for latest or updated CVE having high Confidentiality, Integrity and Availability impact:
+  ```shell
+  nist-feed -n -l -m C:H/I:H/A:H
+  ```
+  or
+  ```shell
+  nist-feed -n -l -c C:H -i I:H -a A:H
+  ```
+* Set Desktop Notifications for latest or updated CVE with HIGH attack complexity and NETWORK as attack vector:
+  ```shell
+  nist-feed -n -l -A AC:H -V AV:N
+  ```
+
+The `-s` argument is used for setting a scheduled popup notification on crontab according to the specified filters.
+
+<ImageComponent />

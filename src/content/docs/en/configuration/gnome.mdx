@@ -1,0 +1,353 @@
+---
+title: GNOME
+description: GNOME environment in Athena OS.
+---
+import ImageComponent from "@components/ImageComponent.astro";
+import ThemedImage from '@components/ThemedImage.astro';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+[GNOME](https://wiki.archlinux.org/title/GNOME) is a desktop environment that aims to be simple and easy to use.
+
+In Athena OS, GNOME has been configured in order to decrease the usage complexity and to improve the user desktop experience.
+
+![GNOME Environment](@assets/images/gnome-sweetdark.png)
+
+The environment consists of several applications that will shown in this chapter.
+
+## Desktop
+
+The desktop is pretty simple in terms of elements.
+
+GNOME top bar is composed of **Logo Menu** extension that provides a menu to access to several resources as settings, software center and application list.
+
+![GNOME Logo Menu](@assets/images/gnome-logomenu.png)
+
+As example, by clicking on **Software Center...** you can access to its application for getting the applications you need. Note that the shown applications are managed by **flatpak** and they are retrieved from **Flathub**, not from Arch repository or Nix repository. By default, no apps are shown because you need to install `flatpak` and `packagekit` packages.
+
+![GNOME Software Center](@assets/images/gnome-softwarecenter.png)
+
+One of main menus in GNOME is **Arc Menu** that allows you to quickly access to **Blue** and **Red Team** tools, as well as usual application and system instruments
+
+![GNOME Arc Menu](@assets/images/gnome-arcmenu.png)
+
+Next to Arc Menu, a **calendar** is placed along with an incoming notifications view
+
+![GNOME Calendar](@assets/images/gnome-calendar.png)
+
+{/*
+At the center of the top bar, several **workspaces** have been set. They have been conceived to be used for different activities, for example:
+* 🕵️ Cyber Security
+* 📖 Coding
+* 🍒 Note Taking
+* 🎸 Music
+* 🎮 Recreation
+* 🐝 Misc
+
+![GNOME Workspaces](@assets/images/gnome-workspaces.png)
+
+By clicking on one of them, you will be switched to the related workspace.
+
+On the right side of the top bar, by clicking on the statement **Athena is Great!**, a set of widgets appears.
+
+![GNOME Widget](@assets/images/gnome-widget.png)
+![GNOME Dashboard](@assets/images/gnome-dashboard.png)
+
+Here, you can access to several resources.
+*/} 
+
+On the right side of the top bar, you can find some metrics about the system resource consumption.
+
+![GNOME Vitals](@assets/images/gnome-vitals.png)
+
+It gives you also information about physical metrics as Temperature, Voltage and Fan. Furthermore, by the buttons on the bottom side, you can access to other resources as **GNOME Monitor**.
+
+![GNOME Monitor](@assets/images/gnome-monitor.png)
+
+Going forward, the **Pop Shell** extension allows you to change some settings and mainly to switch between stacked windows and tiling windows.
+
+![GNOME Pop Shell](@assets/images/gnome-pop.png)
+
+At the end there is the power and settings menu that could be used for using power options (shutdown, reboot, logout), accessing system settings or taking screenshots.
+
+![GNOME Power Menu](@assets/images/gnome-power.png)
+
+At the bottom side of the desktop, a **Menu Dock** has been implemented showing the pinned applications of the system and the active ones.
+
+![GNOME Menu Dock](@assets/images/gnome-dock.png)
+
+{/*
+GNOME in Athena offers also the **Gestures Improvement** extension that allow you to improve touchpad gestures. It can be managed by accessing to the Extensions, finding this extension and clicking on **Settings**.
+
+![GNOME Gestures](@assets/images/gnome-gestures.png)
+*/} 
+
+By pressing `Super` key (i.e., `Windows` key), or by the Menu Dock on **Show Apps** or Logo Menu on **App Grid** button, you can access to the installed applications.
+
+![GNOME Application Grid](@assets/images/gnome-applications.png)
+
+Default GNOME usually does not show desktop icons. Here, you can have them.
+
+![GNOME Desktop Icons](@assets/images/gnome-desktop.png)
+
+## Customization
+
+I you wish to change some GNOME elements in Athena OS, you can follow this guide to get the right steps and transform Athena according to your taste.
+
+GNOME is composed of several resources and we will discuss each one of them in order to tweak it as possible.
+
+### Background
+
+Backgrounds are stored in:
+
+<Tabs>
+<TabItem label="Athena Arch">
+`/usr/share/backgrounds/default/` folder.
+</TabItem>
+<TabItem label="Athena Nix">
+`/run/current-system/sw/share/backgrounds/athena/` folder.
+</TabItem>
+</Tabs>
+
+If you wish to change only the background, you can do it by different ways.
+
+The first one is to go to the top-right **power button** -> **gear icon** -> the Settings window appears -> **Appearance** -> click on **Add Picture...** and select your favourite background.
+
+![GNOME Settings Background](@assets/images/gnome-custom-background.png)
+
+Here you can change also if applying a light or dark theme.
+
+Another method is to use **GNOME Tweaks**. Go to the **App Grid** or press **Super** key two times, and search for **GNOME Tweaks** or **Tweaks**, usually it is inside the **Utilities** group and launch it.
+
+When the GNOME Tweaks is opened, move to **Appearance** tab and tweak your image and its adjustment under the **Background** section.
+
+![GNOME Tweaks Background](@assets/images/gnome-custom-tweaks-background.png)
+
+An additional method is by terminal. Run:
+```shell
+gsettings set org.gnome.desktop.background picture-uri-dark background.png
+gsettings set org.gnome.desktop.background picture-options stretched
+```
+**stretched** is used to adjust the image in order to fill the entire screen.
+
+:::tip
+If you are using a dark theme, use **picture-uri-dark**. If you are using a light theme, replace **picture-uri-dark** by **picture-uri** parameter.
+:::
+
+### Mouse Cursor
+
+If you wish to customize your **mouse pointer**:
+
+<Tabs>
+<TabItem label="Athena Arch">
+download one mouse cursor theme. Look at [GNOME Look](https://www.gnome-look.org/) and select **Cursors** category.
+
+Once downloaded, place the cursor folder in `/usr/share/icons/` to apply it at system-wide or `~/.local/share/icons/` to apply only for your user.
+</TabItem>
+<TabItem label="Athena Nix">
+setup it in a declarative manner by Nix modules.
+</TabItem>
+</Tabs>
+
+Then, go to the **App Grid** or press **Super** key two times, and search for **GNOME Tweaks** or **Tweaks**, usually it is inside the **Utilities** group and launch it.
+
+When the GNOME Tweaks is opened, move to **Appearance** tab and select your cursor theme on **Cursor** field.
+
+![GNOME Tweaks Cursor](@assets/images/gnome-custom-cursor.png)
+
+You can apply a cursor theme also by terminal by running:
+```shell
+gsettings set org.gnome.desktop.interface cursor-theme <cursor_theme_foldername>
+```
+
+### Icons
+
+If you wish to customize the **icon theme**:
+
+<Tabs>
+<TabItem label="Athena Arch">
+download one of it. Look at [GNOME Look](https://www.gnome-look.org/) and select **Full Icon Themes** category.
+
+Once downloaded, place the icon folder in `/usr/share/icons/` to apply it at system-wide or `~/.local/share/icons/` to apply only for your user.
+</TabItem>
+<TabItem label="Athena Nix">
+setup it in a declarative manner by Nix modules.
+</TabItem>
+</Tabs>
+
+Then, go to the **App Grid** or press **Super** key two times, and search for **GNOME Tweaks** or **Tweaks**, usually it is inside the **Utilities** group and launch it.
+
+When the GNOME Tweaks is opened, move to **Appearance** tab and select your icon theme on **Icons** field.
+
+![GNOME Tweaks Icons](@assets/images/gnome-custom-icons.png)
+
+You can apply an icon theme also by terminal by running:
+```shell
+gsettings set org.gnome.desktop.interface icon-theme <icon_theme_foldername>
+```
+
+### Theme
+
+If you wish to change the theme of top bar and the GTK windows:
+<Tabs>
+<TabItem label="Athena Arch">
+download one of it. Look at [GNOME Look](https://www.gnome-look.org/) and select **GTK3/4 Themes** category. Download only themes that are compatible with the actual installed version of GNOME.
+
+Once downloaded, place the theme folder in `/usr/share/themes/` to apply it at system-wide or `~/.local/share/themes/` to apply only for your user.
+</TabItem>
+<TabItem label="Athena Nix">
+setup it in a declarative manner by Nix modules.
+</TabItem>
+</Tabs>
+
+Then, go to the **App Grid** or press **Super** key two times, and search for **GNOME Tweaks** or **Tweaks**, usually it is inside the **Utilities** group and launch it.
+
+When the GNOME Tweaks is opened, move to **Appearance** tab and select your theme on **Shell** (for top bar) and **Legacy Applications** (for GTK windows) fields.
+
+![GNOME Tweaks GTK](@assets/images/gnome-custom-theme.png)
+
+You can apply an theme also by terminal by running:
+```shell
+gsettings set org.gnome.desktop.interface gtk-theme <theme_foldername>
+gsettings set org.gnome.desktop.wm.preferences theme <theme_foldername>
+gsettings set org.gnome.shell.extensions.user-theme name <theme_foldername>
+```
+
+If you wish to apply one of the complete themes prebuilt for Athena OS:
+
+<Tabs>
+<TabItem label="Athena Arch">
+the theme folder must always be stored in `/usr/share/themes/` or `~/.local/share/themes/`
+
+If you wish to apply one of the complete themes prebuilt for Athena OS, you can use **athena-theme-tweak** and using the **-t** parameter. Here the output of the help command to show how Athena Theme Tweak must be used:
+```shell
+List of arguments:
+-b, --browser                 set the current browser logo in Red Team menu
+-c, --colored                 let's give some random colored output
+-e, --emulator                specify a terminal emulator to be set [alacritty|cool-retro-term|foot|gnome-terminal|kitty|konsole|urxvt|xterm]
+-h, --help                    show this help message and exit
+-l, --list                    list all available Athena themes
+-t, --theme <theme-name>      specify an Athena theme to be set [AkameGaKill|BlueEyesSamurai|Graphite|CyborgGruvbox|SweetDark|XXE]
+
+Usage Examples:
+athena-theme-tweak -l
+athena-theme-tweak -e alacritty
+athena-theme-tweak -t BlueEyesSamurai
+athena-theme-tweak -b
+```
+</TabItem>
+<TabItem label="Athena Nix">
+edit `/etc/nixos/configuration.nix` file and set `theme` value as desired.
+</TabItem>
+</Tabs>
+
+Once applied the new theme, if you are on Xorg, press **ALT + F2**, then type **r** and press **Enter** for restarting GNOME Shell and close and reopen the terminal. If you are on Wayland, logout or reboot the system.
+
+### Fonts
+
+Usually the customization of fonts could be application-specific (for example for a terminal). By GNOME Tweaks, you can try to set your preferred font. Open GNOME Tweaks and move to **Fonts** section.
+
+![GNOME Fonts](@assets/images/gnome-custom-fonts.png)
+
+### GNOME Extensions
+
+In Athena OS, GNOME leverages on different GNOME Extensions that can be customized as you wish. Their settings can be accessed by clicking on **Logo Menu** on top-left in the top bar and then on **Extensions** or by the **App Grid** and search for **Extensions**. The Extensions window will list all the enabled and disabled GNOME extensions, and their settings can be managed by clicking on the related **Settings** button.
+
+![GNOME Extensions](@assets/images/gnome-custom-extensions.png)
+
+#### AppIndicator
+
+It shows tray icons on the top bar for supported running applications.
+
+![AppIndicator Settings](@assets/images/gnome-custom-appindicator.png)
+
+#### Arc Menu
+
+A highly-customizable application menu.
+
+![GNOME Arc Menu](@assets/images/gnome-arcmenu.png)
+
+By its settings, you can set several tweaks and change menu layout to make it like KDE, GNOME, XFCE menus and others.
+
+#### Desktop NG Icons
+
+This extension shows icons on desktop. You can customize its settings as you prefer.
+
+![Desktop NG Icons Settings](@assets/images/gnome-custom-desktopicons.png)
+
+#### Fly-Pie
+
+It is the base of [PWNage Menu](/en/resources/pwnage-menu/), [Blue Team Menu](/en/resources/blueteam-menu/) and [Red Team Menu](/en/resources/redteam-menu/).
+
+![Red Team Menu](@assets/images/redteam-menu.png)
+
+You can customize them or adding a new circular menu by accessing to its settings.
+
+![FlyPie Settings](@assets/images/gnome-custom-flypie.png)
+
+#### Logo Menu
+
+The top bar is characterized by a Linux logo icon on its left side.
+
+![GNOME Logo Menu](@assets/images/gnome-logomenu.png)
+
+You can customize it by accessing to its settings.
+
+![GNOME Logo Menu Settings](@assets/images/gnome-custom-logomenu.png)
+
+#### Top Bar Organizer
+
+It allows you to organize the position of the elements on the top bar. If you would like to change their position, just access to its settings.
+
+![Top Bar Organizer Settings](@assets/images/gnome-custom-topbarorganizer.png)
+
+#### Ubuntu Dock
+
+It is the base of [Payload to Dock](en/resources/payload-dock/). You can customize it by pinning and unpinning applications or changing its style by its settings.
+
+![Ubuntu Dock Settings](@assets/images/gnome-custom-dock.png)
+
+#### Vitals
+
+It monitors the physical parameters and resources of your system in a dynamic manner. You are free to customize it as you wish by its settings.
+
+![Vitals Settings](@assets/images/gnome-custom-vitals.png)
+
+## Keybindings
+
+Here are reported some useful **keybindings** set by default in Athena OS GNOME.
+
+| Keybind | Description |
+| ------- | ----------- |
+| **CTRL + ALT + T** | Open the Terminal |
+| **Super** | Multi-desktop environment |
+| **Super + Super** | Switch between desktop and application grid |
+| **Super + E** | Open the File Manager |
+| **Super + L** | Lock the screen |
+
+## Side Installation
+
+<Tabs>
+<TabItem label="Athena Arch">
+To install Athena OS GNOME environment on side of an existing environment, run:
+```
+sudo pacman -S athena-gnome-config
+dconf load /org/gnome/settings-daemon/plugins/media-keys/ < /usr/share/athena-gnome-config/dconf-custom-keybindings.ini
+dconf load /org/gnome/mutter/ < /usr/share/athena-gnome-config/dconf-mutter.ini
+dconf load /org/gnome/desktop/ < /usr/share/athena-gnome-config/dconf-desktop.ini
+dconf load /org/gnome/shell/ < /usr/share/athena-gnome-config/dconf-shell.ini
+```
+Then reboot. On Login Manager, select **GNOME Wayland** or **GNOME Xorg** session and login.
+
+If your theme is not correctly displayed, run `athena-theme-tweak` to set or change the current environment theme.
+</TabItem>
+<TabItem label="Athena Nix">
+To set Athena OS GNOME environment on side of an existing environment, just edit `/etc/nixos/configuration` and change `desktop` variable to `gnome`. Finally, run:
+```shell
+sudo nixos-rebuild switch
+```
+</TabItem>
+</Tabs>
+
+If needed, reboot. On Login Manager, select **GNOME Wayland** or **GNOME Xorg** session and login.
+
+<ImageComponent />

@@ -1,0 +1,116 @@
+---
+title: Athena Cyber Hub
+description: Running vulnerable labs and Cyber Security platforms.
+---
+import ImageComponent from "@components/ImageComponent.astro";
+import ThemedImage from '@components/ThemedImage.astro';
+
+[Athena Cyber Hub (ACH)](https://github.com/Athena-OS/athena-cyber-hub) is a forked version of [Vanilla Control Center](https://github.com/Vanilla-OS/vanilla-control-center) with several differences in order to fit the needs of Cyber Security users on Athena OS.
+It is intended to run vulnerable laboratories for learning purposes and cyber security platforms for offensive and defensive activities.
+
+![Cyber Hub](@assets/images/cyber-hub.png)
+
+## Usage
+**Athena OS Cyber Hub** can be run by clicking its icon in the Application List or running `athena-cyber-hub` in the terminal.
+
+It provides three sections:
+* Cyber Platform Center
+* Vulnerability Lab
+* Cyber Lab
+
+#### Cyber Platform Center
+It offers a set of **Cyber Security platforms** used for several purposes (i.e., defensive), as [DefectDojo](https://github.com/DefectDojo/django-DefectDojo), [GreenBone](https://github.com/greenbone/) and [Wazuh](https://wazuh.com/).
+
+##### Configure Wazuh
+
+Wazuh is an open source security platform that provides an **unified XDR and SIEM protection** for workloads across on-premises, virtualized, containerized, and cloud-based environments. It is used for **threat prevention**, **detection**, and **response**.
+
+It consists of an **endpoint security agent**, deployed to the monitored systems, and a **management server**, which collects and analyzes data gathered by the agents.
+
+Athena Cyber Hub makes Athena OS to be the **Wazuh Management Server** to collect **centrally** all information about **threats** and **vulnerabilities** through all endpoints where you deployed Wazuh agents.
+
+Wazuh Management Server can be initiated easily on Athena OS by starting its container in Athena Cyber Hub.
+If you wish to monitor a particular system, as a Windows, MacOS or a Linux distribution system, and taking their threat and vulnerability information, how can you do it?
+
+You need to deploy the Wazuh agent on the interested machines. You can deploy it in different manner, based on the OS of the target endpoint. For several OS, like Debian, Alpine, Windows and MacOS, Wazuh, by the Management Server, already provides **agent files** to deploy to the target machine.
+
+For other systems not listed there, like Arch-based distros, the agent can be **built from source** directly on the target machine.
+
+To monitor Athena OS itself, deploy the Wazuh agent as follows:
+```shell
+sudo pacman --needed --noconfirm -Syu curl gcc make sudo wget expect gnupg perl-base perl fakeroot python brotli automake autoconf libtool gawk libsigsegv nodejs base-devel inetutils cmake
+curl -Ls https://github.com/wazuh/wazuh/archive/v4.5.2.tar.gz | tar zx
+cd wazuh-4.5.2
+sudo ./install.sh
+```
+You will be asked to initialize Wazuh agent:
+* Choose your preferred language or press **Enter** to select **English** as default language
+* What kind of installation do you want? **agent**
+* Choose where to install Wazuh: press **Enter** to select the default directory **/var/ossec**
+* What's the IP Address or hostname of the Wazuh server? **localhost**
+  :::tip
+  **localhost** because we are deploying the agent on Athena OS itself that works also as Wazuh Management Server (so as SIEM/XDR). If you are setting it to a different machine, type IP address of the target machine itself
+  :::
+* For the remaining options, you can answer as you wish or press **Enter** to select the default choice
+
+The build process will start and after some minutes, if everything is fine, you should get a message like:
+```
+Done building agent
+
+Wait for success...
+success
+```
+and press **Enter** when asked to back to the shell. Finally, run:
+```shell
+sudo /var/ossec/bin/wazuh-control start
+```
+and you should get:
+```
+Starting Wazuh v4.5.2...
+Started wazuh-execd...
+Started wazuh-agentd...
+Started wazuh-syscheckd...
+Started wazuh-logcollector...
+Started wazuh-modulesd...
+Completed.
+```
+If Wazuh is still not started on Athena Cyber Hub, start it and wait for 2-3 minutes for its initialization. After that, open the browser and navigate to `https://localhost`. You should get Wazuh login page where to type the default access credentials `admin:SecretPassword` and, once landed on Wazuh dashboard, you should see the **Active agents** number to 1, that is the Wazuh agent just installed.
+
+Unleash **Athena OS** to be your **Blue Team OS**! Monitor your OS and your infrastructure for vulnerabilities and threats in order to be always aware of your security posture!
+
+![Cyber Hub](@assets/images/wazuh-dashboard.png)
+
+:::tip
+ You can reset your admin password by going on your user icon on the top-right side of the Wazuh dashboard and clicking on **Reset password**.
+:::
+:::note
+ If you need to reinstall the agent, remember to uninstall first the previous one by:
+ ```shell
+ sudo /var/ossec/bin/wazuh-control stop
+ sudo rm -rf /var/ossec
+ ```
+ For a complete uninstall, follow the [official documentation](https://documentation.wazuh.com/current/deployment-options/wazuh-from-sources/wazuh-agent/index.html).
+:::
+
+#### Vulnerability Lab
+It contains several **CVE laboratories** from [Vulhub](https://github.com/vulhub/vulhub) where you can train on **real CVEs** to exploit technologies and services. Furthermore, it provides also several OWASP machines to enjoy with. Run your favourite vulnerable environment and get your CVE!
+
+#### Cyber Lab
+Set your **custom containers** and manage them in a centralized manner! When ACH is run for the first time, it will create `~/.config/athena-cyber-hub/cyberlab.toml` configuration file. Edit it by inserting the required information about your container, and then run ACH. Your containers will be collected in Cyber Lab section.
+
+Example configuration file:
+```toml
+[[environment]]
+id = "vulhub/activemq"
+name = "ActiveHello"
+path_docker = "/usr/share/athena-platform-center/vulhub/activemq/CVE-2015-5254/docker-compose.yml"
+path_readme = "/usr/share/athena-platform-center/vulhub/activemq/CVE-2015-5254/README.md"
+
+[[environment]]
+id = "well-hub/yourlab"
+name = "Container 2"
+path_docker = "/path/to/docker-compose.yml"
+path_readme = "/path/to/README.md"
+```
+
+<ImageComponent />
