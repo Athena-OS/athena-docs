@@ -27,11 +27,11 @@ import { Card, CardGrid } from '@astrojs/starlight/components';
 import ScriptWorkaround from "/src/components/ScriptWorkaround.astro";
 import TimelineComponent from "/src/components/TimelineComponent.astro";
 import StatusComponent from "/src/components/StatusComponent.astro";
-import Cards from "/src/components/Cards.astro"
+import DownloadCards from "/src/components/DownloadCards.jsx"
 
 <StatusComponent />
 <TimelineComponent />
-<Cards/>
+<DownloadCards client:load/>
 
 <CardGrid stagger>
   <Card title="Pentesting" icon="add-document">

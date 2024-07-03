@@ -2,23 +2,24 @@
 import TableOfContents from "@astrojs/starlight/components/TableOfContents.astro";
 import type { Props } from "@astrojs/starlight/props";
 import Logo from "./Logo.astro";
+import { Image } from "astro:assets";
 
 const logoData = [
-  { img: "/src/assets/stackBlitz.svg", link: "https://stackblitz.com" },
-  { img: "/src/assets/Labs.svg", link: "https://labs.com" },
-  { img: "/src/assets/Astro logo.svg", link: "https://astro.com" },
-  { img: "/src/assets/storyblok.png", link: "https://storyblok.com" },
-  { img: "/src/assets/bit.svg", link: "https://bit.dev" },
-  { img: "/src/assets/Tailwind Labs.svg", link: "https://tailwindcss.com" },
-  { img: "/src/assets/divriots.png", link: "https://divriots.com" },
-  { img: "/src/assets/Prefect IO logo.svg", link: "https://prefect.io" },
-  { img: "/src/assets/JetBrains logo.svg", link: "https://jetbrains.com" },
-  { img: "/src/assets/Mux.svg", link: "https://mux.com" },
-  { img: "/src/assets/remix.svg", link: "https://remix.run" },
-  { img: "/src/assets/Nx.svg", link: "https://nx.dev" },
-  { img: "/src/assets/transloadit.svg", link: "https://transloadit.com" },
-  { img: "/src/assets/huly.svg", link: "https://huly.com" },
-  { img: "/src/assets/Handsontable.svg", link: "https://handsontable.com" },
+  { img: "/stackBlitz.svg", link: "https://stackblitz.com" },
+  { img: "/Labs.svg", link: "https://labs.com" },
+  { img: "/Astro logo.svg", link: "https://astro.com" },
+  { img: "/storyblok.png", link: "https://storyblok.com" },
+  { img: "/bit.svg", link: "https://bit.dev" },
+  { img: "/Tailwind Labs.svg", link: "https://tailwindcss.com" },
+  { img: "/divriots.png", link: "https://divriots.com" },
+  { img: "/Prefect IO logo.svg", link: "https://prefect.io" },
+  { img: "/JetBrains logo.svg", link: "https://jetbrains.com" },
+  { img: "/Mux.svg", link: "https://mux.com" },
+  { img: "/remix.svg", link: "https://remix.run" },
+  { img: "/Nx.svg", link: "https://nx.dev" },
+  { img: "/transloadit.svg", link: "https://transloadit.com" },
+  { img: "/huly.svg", link: "https://huly.com" },
+  { img: "/Handsontable.svg", link: "https://handsontable.com" },
 ];
 ---
 
@@ -44,7 +45,7 @@ const logoData = [
           rel="noopener noreferrer"
           class={index <= 4 ? "first-column" : ""}
         >
-          <img src={logo.img} alt={`Logo ${index + 1}`} class="img" />
+          <Image width={123} height={31} src={logo.img} alt={`Logo ${index + 1}`} class="img" />
         </a>
       ))
     }
