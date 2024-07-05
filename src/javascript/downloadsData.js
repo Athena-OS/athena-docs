@@ -3,7 +3,7 @@ export const data = [
       title: "Installer",
       description:
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed luctus velit ac rutrum iaculis. Aliquam imperdiet, ipsum sed tempor accumsan, enim nisi blandit arcu, eu scelerisque erat lacus vitae ante.",
-        image: "/donwload-logo/ISO.svg",
+        image: "/src/assets/ISO.svg",
       hashes: {
         MD5: "7HFEJeGYbuXwkfMGy3yXAJhARt08gyzxCOgtDAJKiDpHNhnX2VA9LQ7O99a36734",
         SHA1: "hg9qMB4356v24ERAn7Bx5dZoHuHNsQ57ibxlG0OH1JJUcBWbojA4aRNEuAFUvMmi",
@@ -17,7 +17,7 @@ export const data = [
       title: "Installer",
       description:
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed luctus velit ac rutrum iaculis. Aliquam imperdiet, ipsum sed tempor accumsan, enim nisi blandit arcu, eu scelerisque erat lacus vitae ante.",
-        image: "/donwload-logo/ISO.svg",
+        image: "/src/assets/vmware.svg",
       hashes: {
         MD5: "7HFEJeGYbuXwkfMGy3yXAJhARt08gyzxCOgtDAJKiDpHNhnX2VA9LQ7O99a36734",
         SHA1: "hg9qMB4356v24ERAn7Bx5dZoHuHNsQ57ibxlG0OH1JJUcBWbojA4aRNEuAFUvMmi",
@@ -31,7 +31,7 @@ export const data = [
       title: "Installer",
       description:
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed luctus velit ac rutrum iaculis. Aliquam imperdiet, ipsum sed tempor accumsan, enim nisi blandit arcu, eu scelerisque erat lacus vitae ante.",
-        image: "/donwload-logo/ISO.svg",
+        image: "/src/assets/vbox.svg",
         hashes: {
         MD5: "7HFEJeGYbuXwkfMGy3yXAJhARt08gyzxCOgtDAJKiDpHNhnX2VA9LQ7O99a36734",
         SHA1: "hg9qMB4356v24ERAn7Bx5dZoHuHNsQ57ibxlG0OH1JJUcBWbojA4aRNEuAFUvMmi",
@@ -45,7 +45,7 @@ export const data = [
       title: "Installer",
       description:
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed luctus velit ac rutrum iaculis. Aliquam imperdiet, ipsum sed tempor accumsan, enim nisi blandit arcu, eu scelerisque erat lacus vitae ante.",
-        image: "/donwload-logo/ISO.svg",
+        image: "/src/assets/docker.svg",
         hashes: {
         MD5: "7HFEJeGYbuXwkfMGy3yXAJhARt08gyzxCOgtDAJKiDpHNhnX2VA9LQ7O99a36734",
         SHA1: "hg9qMB4356v24ERAn7Bx5dZoHuHNsQ57ibxlG0OH1JJUcBWbojA4aRNEuAFUvMmi",
@@ -59,7 +59,7 @@ export const data = [
       title: "Installer",
       description:
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed luctus velit ac rutrum iaculis. Aliquam imperdiet, ipsum sed tempor accumsan, enim nisi blandit arcu, eu scelerisque erat lacus vitae ante.",
-        image: "/donwload-logo/ISO.svg",
+        image: "/src/assets/wsl.svg",
         hashes: {
         MD5: "7HFEJeGYbuXwkfMGy3yXAJhARt08gyzxCOgtDAJKiDpHNhnX2VA9LQ7O99a36734",
         SHA1: "hg9qMB4356v24ERAn7Bx5dZoHuHNsQ57ibxlG0OH1JJUcBWbojA4aRNEuAFUvMmi",
