@@ -4,6 +4,7 @@ description: Common issues and solutions detected by the users.
 ---
 import ImageComponent from "@components/ImageComponent.astro";
 import ThemedImage from '@components/ThemedImage.astro';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
 
 This document shows common issues and solutions to any problems a user can meet.
 
@@ -44,6 +45,42 @@ If Athena Nix installation is killed and the following error is produced:
 just assign more resources (CPU, RAM, Swap space) to your system.
 
 ### Boot
+
+#### Error: file '/vmlinuz-linux-lts' not found
+
+If, after a system update, you get the following error at boot:
+![Athena Snapshots Run](@assets/images/error-boot-missing-vmlinuz.png)
+
+it is probably caused by a wrong update of the Linux kernel or the boot partition was not correctly mounted during this process.
+
+To fix it, boot in a Live Environment by Athena ISO, open the terminal and run the following commands:
+
+<Tabs>
+<TabItem label="Btrfs">
+
+```shell
+sudo mount -o subvol=@ /dev/<root-partition-device> /mnt
+```
+
+</TabItem>
+<TabItem label="Others">
+
+```shell
+sudo mount /dev/<boot-partition-device> /mnt/boot
+```
+</TabItem>
+</Tabs>
+
+Chroot inside the mounted root partition by:
+```shell
+sudo arch-chroot /mnt/
+```
+Finally, run:
+```shell
+sudo pacman -Syyu linux-lts linux-lts-headers
+exit
+```
+Then, remove the ISO file and reboot the system.
 
 #### Error 24 : Write error : cannot write compressed block
 
