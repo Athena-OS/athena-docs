@@ -56,14 +56,14 @@ it is probably caused by a wrong update of the Linux kernel or the boot partitio
 To fix it, boot in a Live Environment by Athena ISO, open the terminal and run the following commands:
 
 <Tabs>
-<TabItem label="Btrfs">
+<TabItem label="Btrfs root filesystem">
 
 ```shell
 sudo mount -o subvol=@ /dev/<root-partition-device> /mnt
 ```
 
 </TabItem>
-<TabItem label="Others">
+<TabItem label="No-Btrfs root filesystem">
 
 ```shell
 sudo mount /dev/<boot-partition-device> /mnt/boot
@@ -80,7 +80,9 @@ Finally, run:
 sudo pacman -Syyu linux-lts linux-lts-headers
 exit
 ```
-Then, remove the ISO file and reboot the system.
+If needed, persist that `/boot` partition in your fstab with a [persistent identifier](https://wiki.archlinux.org/index.php/Persistent_block_device_naming) so that you won't have to unnecessarily do this again the next time the kernel updates.
+
+At the end, remove the ISO file and reboot the system.
 
 #### Error 24 : Write error : cannot write compressed block
 
