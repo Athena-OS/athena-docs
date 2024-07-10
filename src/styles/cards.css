@@ -17,6 +17,10 @@
   scale: 1;
   transition: all 0.3s ease-in-out;
 }
+.logo img {
+  height:64px !important;
+  width:auto !important;
+}
 
 .logo:hover {
   scale: 1.4;

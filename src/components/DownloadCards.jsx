@@ -45,10 +45,10 @@ const DownloadCards = () => {
         <React.Fragment key={index}>
           <div 
             onClick={() => openModal(index)} 
-            style={{ marginInline: '12px', cursor: 'pointer', }}
+            style={{ margin: '24px', cursor: 'pointer', }}
             className='logo'
           >
-            <img src={item.image} alt={item.title} width="64" height="64" />
+            <img src={item.image} alt={item.title} />
           </div>
           {activeModal === index && (
             <div className="download-modal active">
