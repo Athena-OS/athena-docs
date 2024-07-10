@@ -45,7 +45,7 @@ const DownloadCards = () => {
         <React.Fragment key={index}>
           <div 
             onClick={() => openModal(index)} 
-            style={{ margin: '24px', cursor: 'pointer', }}
+            style={{ margin: '48px', cursor: 'pointer', }}
             className='logo'
           >
             <img src={item.image} alt={item.title} />

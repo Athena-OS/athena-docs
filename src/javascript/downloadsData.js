@@ -1,8 +1,8 @@
 export const data = [
     {
-      title: "Installer",
+      title: "ISO Image",
       description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed luctus velit ac rutrum iaculis. Aliquam imperdiet, ipsum sed tempor accumsan, enim nisi blandit arcu, eu scelerisque erat lacus vitae ante.",
+        "Get the full capabilities of your hardware! Achieve unparalleled performance and seamless integration with your hardware, ensuring a smooth and efficient computing experience.",
         image: "/src/assets/ISO.svg",
       hashes: {
         MD5: "7HFEJeGYbuXwkfMGy3yXAJhARt08gyzxCOgtDAJKiDpHNhnX2VA9LQ7O99a36734",
@@ -14,9 +14,9 @@ export const data = [
       },
     },
     {
-      title: "Installer",
+      title: "VMware Image",
       description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed luctus velit ac rutrum iaculis. Aliquam imperdiet, ipsum sed tempor accumsan, enim nisi blandit arcu, eu scelerisque erat lacus vitae ante.",
+        "Experience effortlessly! Ensure optimal performance and seamless integration. Take advantage of full feature set without modifying your primary system, providing a robust and efficient solution for your virtualization needs.",
         image: "/src/assets/vmware.svg",
       hashes: {
         MD5: "7HFEJeGYbuXwkfMGy3yXAJhARt08gyzxCOgtDAJKiDpHNhnX2VA9LQ7O99a36734",
@@ -28,9 +28,9 @@ export const data = [
       },
     },
     {
-      title: "Installer",
+      title: "VirtualBox Image",
       description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed luctus velit ac rutrum iaculis. Aliquam imperdiet, ipsum sed tempor accumsan, enim nisi blandit arcu, eu scelerisque erat lacus vitae ante.",
+        "Run seamlessly! Designed for smooth performance and full compatibility. Enjoy all the features without altering your main system, providing a flexible and efficient virtualization solution.",
         image: "/src/assets/vbox.svg",
         hashes: {
         MD5: "7HFEJeGYbuXwkfMGy3yXAJhARt08gyzxCOgtDAJKiDpHNhnX2VA9LQ7O99a36734",
@@ -42,9 +42,9 @@ export const data = [
       },
     },
     {
-      title: "Installer",
+      title: "Docker Images",
       description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed luctus velit ac rutrum iaculis. Aliquam imperdiet, ipsum sed tempor accumsan, enim nisi blandit arcu, eu scelerisque erat lacus vitae ante.",
+        "Ideal for containerized environments! Ensure lightweight and efficient performance. Utilize the full potential across various platforms without the need for complex setups, providing a scalable and consistent solution for your development and deployment needs.",
         image: "/src/assets/docker.svg",
         hashes: {
         MD5: "7HFEJeGYbuXwkfMGy3yXAJhARt08gyzxCOgtDAJKiDpHNhnX2VA9LQ7O99a36734",
@@ -56,9 +56,9 @@ export const data = [
       },
     },
     {
-      title: "Installer",
+      title: "WSL Image",
       description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed luctus velit ac rutrum iaculis. Aliquam imperdiet, ipsum sed tempor accumsan, enim nisi blandit arcu, eu scelerisque erat lacus vitae ante.",
+        "Integrate seamlessly into your Windows environment! Enjoy the full power directly from Windows, offering a smooth and efficient Linux experience. Enhance your productivity with the flexibility and compatibility alongside your native Windows applications.",
         image: "/src/assets/wsl.svg",
         hashes: {
         MD5: "7HFEJeGYbuXwkfMGy3yXAJhARt08gyzxCOgtDAJKiDpHNhnX2VA9LQ7O99a36734",
