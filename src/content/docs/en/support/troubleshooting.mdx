@@ -51,7 +51,7 @@ just assign more resources (CPU, RAM, Swap space) to your system.
 If, after a system update, you get the following error at boot:
 ![Athena Snapshots Run](@assets/images/error-boot-missing-vmlinuz.png)
 
-it is probably caused by a wrong update of the Linux kernel or the boot partition was not correctly mounted during this process.
+it is probably caused by a wrong update of the Linux kernel or the boot partition was not correctly mounted during this process, or due to an interruption (freeze, reboot or shutdown) during the upgrade of the system (in particular, during the generation of the image at kernel upgrade process time).
 
 To fix it, boot in a Live Environment by Athena ISO, open the terminal and run the following commands:
 
