@@ -82,9 +82,22 @@ sudo arch-chroot /mnt/
 ```
 Finally, run:
 ```shell
-sudo pacman -Syyu linux-lts linux-lts-headers
+sudo pacman -Syyu
+sudo pacman -S linux-lts linux-lts-headers
 exit
 ```
+:::note
+If you get an error like:
+```
+:: Synchronizing package databases...
+error: failed to synchronize all databases (unable to lock database)
+```
+just run:
+```shell
+sudo rm /var/lib/pacman/db.lck
+```
+and retry the system upgrade as described above.
+:::
 If needed, persist that `/boot` partition in your fstab with a [persistent identifier](https://wiki.archlinux.org/index.php/Persistent_block_device_naming) so that you won't have to unnecessarily do this again the next time the kernel updates.
 
 At the end, remove the ISO file and reboot the system.
