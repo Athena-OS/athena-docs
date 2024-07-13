@@ -55,7 +55,7 @@ export default defineConfig({
           label: 'Configuration',
           items: [
             // Each item here is one entry in the navigation menu.
-            { label: 'Nix', link: '/en/configuration/nix-config' },
+            { label: 'Athena Nix', link: '/en/configuration/nix-config' },
             // { label: 'Calamares Installer', link: '/en/configuration/calamares' },
             { label: 'Kernel', link: '/en/configuration/kernel' },
             { label: 'Shell', link: '/en/configuration/shell' },
