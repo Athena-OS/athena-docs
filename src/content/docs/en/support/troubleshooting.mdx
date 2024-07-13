@@ -97,6 +97,18 @@ just run:
 sudo rm /var/lib/pacman/db.lck
 ```
 and retry the system upgrade as described above.
+
+If you get an error like:
+```
+error: could not open file /var/lib/pacman/local/linux-lts-6.6.39-1/desc: No such file or directory
+warning: could not fully load metadata for package linux-lts-6.6.39-1
+error: failed to prepare transaction (invalid or corrupted package)
+```
+run
+```
+sudo rm -rf /var/lib/pacman/local/linux-lts-6.6.39-1
+sudo pacman -S linux-lts linux-lts-headers --overwrite \*
+```
 :::
 If needed, persist that `/boot` partition in your fstab with a [persistent identifier](https://wiki.archlinux.org/index.php/Persistent_block_device_naming) so that you won't have to unnecessarily do this again the next time the kernel updates.
 
