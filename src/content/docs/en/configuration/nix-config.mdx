@@ -1,11 +1,11 @@
 ---
-title: Nix
+title: Athena Nix Configuration
 description: How to manage Nix configuration in Athena OS.
 ---
 import ImageComponent from "@components/ImageComponent.astro";
 import ThemedImage from '@components/ThemedImage.astro';
 
-## Athena Nix Tree
+## Tree Structure
 
 The macrostructure of Athena Nix configuration elements is the following:
 ```
@@ -238,6 +238,8 @@ For example, if you wish to edit the Athena Firefox configuration, just access t
 If you need to integrate additional software in your system, add them in `/etc/nixos/hosts/software/default.nix`.
 
 If you are in a virtualized environment, tweak the related settings in `/etc/nixos/modules/hardware/virtualization/guest.nix`
+
+All the files in `/etc/nixos/home-manager` are related to the configuration impacting the home directory or the user profile.
 
 They are just few examples. Familiarize with the Athena Nix configuration macrostructure to unlock the full potential of your environment!
 
