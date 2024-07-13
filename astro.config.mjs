@@ -48,13 +48,14 @@ export default defineConfig({
             { label: 'Installing as guest in Parallels', link: '/en/installation/install-guest-parallels' },
             { label: 'Installing as guest in UTM', link: '/en/installation/install-guest-utm' },
             { label: 'Updating Athena OS', link: '/en/installation/update-athena' },
+            { label: 'Aegis Installer TUI', link: '/en/installation/aegis-tui' },
           ],
         },
         {
           label: 'Configuration',
           items: [
             // Each item here is one entry in the navigation menu.
-            { label: 'Aegis Installer TUI', link: '/en/configuration/aegis-tui' },
+            { label: 'Nix', link: '/en/configuration/nix-config' },
             // { label: 'Calamares Installer', link: '/en/configuration/calamares' },
             { label: 'Kernel', link: '/en/configuration/kernel' },
             { label: 'Shell', link: '/en/configuration/shell' },
@@ -101,15 +102,15 @@ export default defineConfig({
           label: 'Containers',
           items: [
             // Each item here is one entry in the navigation menu.
-            { label: 'Athena OS Core Image', link: '/en/containers/core-image' },
-            { label: 'Athena OS RDP Image', link: '/en/containers/rdp-image' },
+            { label: 'Core Image', link: '/en/containers/core-image' },
+            { label: 'RDP Image', link: '/en/containers/rdp-image' },
           ],
         },
         {
           label: 'Windows Subsystem for Linux',
           items: [
             // Each item here is one entry in the navigation menu.
-            { label: 'Athena OS WSL', link: '/en/wsl/wsl' },
+            { label: 'WSL Image', link: '/en/wsl/wsl' },
             { label: 'Win-KeX', link: '/en/wsl/win-kex' },
           ],
         },
