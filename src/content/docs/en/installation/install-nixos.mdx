@@ -15,6 +15,9 @@ Once the installation has been ended, reboot the system and land in your NixOS e
 
 Open terminal and run:
 ```shell
+sudo nix-channel --remove nixos
+sudo nix-channel --add https://nixos.org/channels/nixos-unstable nixpkgs
+sudo nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
 sudo nix-channel --update
 nix-shell -p git
 git clone https://github.com/Athena-OS/athena-nix
@@ -35,9 +38,6 @@ Then, edit the file `/etc/nixos/configuration.nix` to set your favourite choices
   browser = "firefox"; # Only firefox is available
   bootloader = "systemd";
 ```
-:::note
-If you are using BIOS-Legacy instead of GRUB, edit `bootloader = "systemd";` to `bootloader = "grub";` in `/etc/nixos/configuration.nix`, then edit `/etc/nixos/modules/boot/grub/default.nix` and replace `sda` by your actual disk device. To list your disk devices, run `lsblk -d` (check `TYPE` as `disk`).
-:::
 
 Save `configuration.nix` and run:
 ```nix
