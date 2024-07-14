@@ -44,5 +44,11 @@ sudo nixos-rebuild switch
 ```
 If you get a black screen with blanking cursor, it could occur due to the switching to a different display manager. In this case, reboot your computer and run again `sudo nixos-rebuild switch`.
 
+Instead, if you get at the end an error like `Failed to start Home Manager environment for athena`, run:
+```
+journalctl -xeu home-manager-athena.service
+```
+You will access to the journalctl logs where you can find a string containing `Existing file...`. Remove the mentioned files and finally run again `sudo nixos-rebuild switch`.
+
 After the switch command is successfully ended, reboot your system.
 <ImageComponent />
