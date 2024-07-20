@@ -1,5 +1,6 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
+import react from "@astrojs/react";
 
 // https://astro.build/config
 export default defineConfig({
@@ -8,6 +9,10 @@ export default defineConfig({
     starlight({
       title: 'Athena OS',
       description: 'Athena OS, a new pentesting/cybersecurity linux distribution.',
+      components: {
+        TableOfContents: "./src/components/TOC.astro",
+        PageTitle: "./src/components/CustomPageTitle.astro"
+      },
       logo: {
         light: '/src/assets/athena-light.svg',
         dark: '/src/assets/athena-dark.svg',
@@ -162,6 +167,7 @@ export default defineConfig({
         },
       ],
     }),
+    react()
   ],
 
   // Process images with sharp: https://docs.astro.build/en/guides/assets/#using-sharp

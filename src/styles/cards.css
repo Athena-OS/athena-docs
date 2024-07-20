@@ -1,0 +1,355 @@
+.download-container {
+  padding-top: 1rem !important;
+  padding-bottom: 5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card-logo {
+  max-width: 80px;
+  min-width: 80px;
+  object-fit: contain;
+}
+
+.logo {
+  margin-top: 0rem !important;
+  scale: 1;
+  transition: all 0.3s ease-in-out;
+}
+.logo img {
+  height:112px !important;
+  width:auto !important;
+}
+
+.logo:hover {
+  scale: 1.4;
+}
+
+.download-card {
+  position: relative;
+  width: 100%;
+  perspective: 1000px;
+  min-height: 300px;
+}
+
+.download-content {
+  min-height: 19rem;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+  padding: 36px 41px 40px 41px;
+}
+
+.download-card.flipped .download-content {
+  transform: rotateY(180deg);
+}
+
+.download-front,
+.download-back {
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden !important;
+  backface-visibility: hidden !imp;
+}
+
+.download-front {
+  z-index: 2;
+}
+
+.download-back {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: rotateY(180deg);
+}
+/* Firefox-specific styles */
+@-moz-document url-prefix() {
+  .download-front,
+  .download-back {
+    backface-visibility: hidden;
+    transform-style: preserve-3d;
+  }
+  
+  .download-back {
+    transform: rotateY(180deg) translateZ(1px);
+  }
+}
+
+[data-theme="light"] .download-content {
+  border-radius: 8px;
+  border: 1px solid #ffbf00;
+  background: rgba(255, 255, 255);
+  box-shadow: 0px 0px 12px 0px rgba(255, 191, 0, 0.8) inset;
+}
+
+[data-theme="dark"] .download-content {
+  border-radius: 8px;
+  border: 1px solid var(--athenaos-org-buddha-gold, #9e9eff);
+  background: #17181c;
+  box-shadow: 0px 0px 12px 0px #9e9eff inset;
+}
+.download-title {
+  font-size: 19px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  margin-bottom: 8px;
+  margin-top: 0;
+}
+
+.download-icon {
+  min-width: 96px;
+  min-height: 64px;
+}
+
+.download-front {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  gap: 24px;
+  height: 100%;
+  margin-top: 0 !important;
+}
+
+.download-description {
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px;
+}
+
+.download-back {
+  padding-top: 12px;
+  flex-direction: column;
+}
+
+.download-back-title {
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  text-align: center;
+}
+
+.download-back-title,
+.download-description {
+  max-width: 400px;
+}
+
+.download-btn {
+  background: transparent;
+  padding: 8px 8px 8px 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #23262f;
+  border: none;
+  outline: none;
+  gap: 18px;
+  border-radius: 8px;
+}
+
+[data-theme="light"] .download-btn {
+  color: #ffbf00;
+}
+
+[data-theme="dark"] .download-btn {
+  color: #9e9eff;
+}
+
+[data-theme="light"] .download-icon-container {
+  border-radius: 4px;
+  background: #ffbf00;
+  padding: 8px;
+}
+
+[data-theme="dark"] .download-icon-container {
+  border-radius: 4px;
+  background: #9e9eff;
+  padding: 8px;
+}
+
+.download-btn-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 0 !important;
+}
+
+.download-btn-wrapper .download-btn {
+  margin-top: 9px;
+}
+
+[data-theme="light"] .download-btn-wrapper {
+  border-top: 1px solid #ffbf00;
+}
+
+[data-theme="dark"] .download-btn-wrapper {
+  border-top: 1px solid #9e9eff;
+}
+
+#download-model-0 {
+  margin-top: 1rem;
+}
+
+.download-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  transition: 200ms ease-in-out;
+  border-radius: 10px;
+  z-index: 10;
+  background-color: transparent;
+  width: 500px;
+  max-width: 80%;
+  margin-top: 0 !important;
+}
+
+.download-modal.active {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.download-modal-header {
+  display: none !important;
+  padding: 0px 0px 0px;
+  display: flex;
+  justify-content: end;
+  align-items: center;
+}
+
+.download-modal-header .download-modal-title {
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+#download-model {
+  display: flex;
+  justify-content: center;
+  padding: 8px;
+  margin-inline: 20px;
+  align-items: center;
+  margin-top: 0px !important;
+  
+}
+
+#download-model img {
+  cursor: pointer;
+  scale: 1;
+  transition: 0.4s;
+}
+
+#download-model:hover img {
+  scale: 1.4;
+}
+
+.download-modal-header .close-button {
+  cursor: pointer;
+  border: none;
+  outline: none;
+  background: none;
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.download-modal-body {
+  padding: 10px 15px;
+}
+
+#download-overlay {
+  position: fixed;
+  opacity: 0;
+  transition: 200ms ease-in-out;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+  z-index: 9;
+}
+
+#download-overlay.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.download-card-content {
+  margin: 0px !important;
+}
+
+.download-tab-btn {
+  background: transparent;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.3s;
+  margin-top: 0 !important;
+}
+
+.download-tab-btn.active {
+  opacity: 1;
+  border-bottom: 2px solid var(--active-color);
+}
+
+.download-hash-display {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+  margin-top: 0 !important;
+}
+
+[data-theme="light"] {
+  --active-color: #ffbf00;
+}
+
+[data-theme="dark"] {
+  --active-color: #9e9eff;
+}
+
+.download-tabs {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.download-hash-value {
+  min-height: 110px;
+}
+
+@media (max-width: 756px) {
+  .download-front {
+    flex-direction: column;
+  }
+  .download-tabs {
+    height: fit-content;
+    flex-direction: column;
+  }
+  .download-tabs .download-tab-btn {
+    width: fit-content;
+  }
+  .download-back {
+    justify-content: space-between;
+    padding-top: 8px;
+    flex-direction: row;
+  }
+  .download-container {
+    flex-direction: column;
+  }
+  .download-content {
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 27rem;
+  }
+}
+
