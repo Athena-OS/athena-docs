@@ -1,0 +1,9 @@
+---
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+import PackageTabel from '@components/package-tabel.astro';
+
+---
+
+<StarlightPage frontmatter={{ title: 'Packages',tableOfContents: false}}   hasSidebar={false} >
+  <PackageTabel/>
+</StarlightPage>

@@ -1,0 +1,186 @@
+---
+import {packagesdata} from "src/javascript/packages-data"
+
+const itemsPerPage = 40;
+const totalPages = Math.ceil(packagesdata.length / itemsPerPage);
+---
+
+<div style={{ width: "100%", overflowX: "auto" }}>
+  <table id="dataTable">
+    <thead>
+      <tr>
+        <th>Package</th>
+        <th>Version</th>
+        <th>Category</th>
+        <th>Description</th>
+        <th>Repository</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        packagesdata.map((row, index) => (
+          <tr>
+            <td class="package">{row.package}</td>
+            <td>{row.version}</td>
+            <td>{row.category}</td>
+            <td>{row.description}</td>
+            <td>{row.repository}</td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+  <div class="pagination" id="pagination"></div>
+</div>
+
+<script define:vars={{ data: JSON.stringify(packagesdata) }}>
+  const tableData = JSON.parse(data);
+  const itemsPerPage = 40;
+
+  function showPage(pageNumber) {
+    const table = document.getElementById("dataTable");
+    const tbody = table.querySelector("tbody");
+    const startIndex = (pageNumber - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+
+    tbody.innerHTML = "";
+
+    for (let i = startIndex; i < endIndex && i < tableData.length; i++) {
+      const row = tableData[i];
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td class="package">${row.package}</td>
+        <td>${row.version}</td>
+        <td>${row.category}</td>
+        <td>${row.description}</td>
+        <td>${row.repository}</td>
+      `;
+      tbody.appendChild(tr);
+    }
+  }
+
+  function setupPagination() {
+    const paginationElement = document.getElementById("pagination");
+    const pageCount = Math.ceil(tableData.length / itemsPerPage);
+
+    for (let i = 1; i <= pageCount; i++) {
+      const link = document.createElement("a");
+      link.href = "#";
+      link.innerText = i;
+
+      link.addEventListener("click", (e) => {
+        e.preventDefault();
+        showPage(i);
+        const currentActive = paginationElement.querySelector(".active");
+        if (currentActive) {
+          currentActive.classList.remove("active");
+        }
+        link.classList.add("active");
+      });
+
+      paginationElement.appendChild(link);
+    }
+
+    // Show the first page by default
+    showPage(1);
+    paginationElement.querySelector("a").classList.add("active");
+  }
+
+  // Call the setup function when the DOM is loaded
+  document.addEventListener("DOMContentLoaded", setupPagination);
+</script>
+
+<style>
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 1em;
+    display: inline-table !important;
+    margin-bottom: 0 !important;
+  }
+
+  thead tr {
+    color: white;
+    text-align: left;
+  }
+
+  :global([data-theme="light"]) thead tr {
+    background-color: #f4c542;
+  }
+
+  :global([data-theme="dark"]) thead tr {
+    background-color: #9e9eff;
+  }
+
+  th,
+  td {
+    padding: 12px 15px;
+  }
+
+  :global([data-theme="dark"]) .completed span a {
+    color: hsl(234, 100%, 87%) !important;
+  }
+
+  :global([data-theme="light"]) .package {
+    color: #f4c542 !important;
+  }
+
+  :global([data-theme="dark"]) .package {
+    color: #9e9eff !important;
+  }
+
+
+  /* Your existing table styles here */
+
+  .pagination {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 0 !important;
+    padding-block: 16px;
+  }
+
+  :global([data-theme="light"]) .pagination {
+    background: transparent;
+    border-block: 1px solid;
+  }
+
+  :global([data-theme="dark"]) .pagination {
+    background: rgba(52, 56, 65, 0.2);
+  }
+
+  .pagination a {
+    float: left;
+    padding: 8px 12px;
+    text-decoration: none !important;
+    border: none;
+    margin: 0 2px;
+    transition:
+      background-color 0.3s,
+      color 0.3s;
+  }
+
+  /* Corrected active state selector */
+  .pagination a.active {
+    color: #fff !important;
+    text-decoration: none !important;
+    background-color: #333; /* You can adjust this color */
+  }
+
+  .pagination a:hover:not(.active) {
+    background-color: #333;
+    color: #fff;
+  }
+
+  /* Add these styles for light and dark theme active states */
+  :global([data-theme="light"]) .pagination a.active {
+    background-color: #f4c542;
+    color: #fff !important;
+  }
+
+  :global([data-theme="dark"]) .pagination a.active {
+    background-color: #9e9eff;
+    color: #000 !important;
+  }
+</style>
