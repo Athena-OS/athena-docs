@@ -1,0 +1,181 @@
+---
+import TableOfContents from "@astrojs/starlight/components/TableOfContents.astro";
+import type { Props } from "@astrojs/starlight/props";
+import Logo from "./Logo.astro";
+import { Image } from "astro:assets";
+
+const logoData = [
+  { img: "/stackBlitz.svg", link: "https://stackblitz.com" },
+  { img: "/Labs.svg", link: "https://labs.com" },
+  { img: "/Astro logo.svg", link: "https://astro.com" },
+  { img: "/storyblok.png", link: "https://storyblok.com" },
+  { img: "/bit.svg", link: "https://bit.dev" },
+  { img: "/Tailwind Labs.svg", link: "https://tailwindcss.com" },
+  { img: "/divriots.png", link: "https://divriots.com" },
+  { img: "/Prefect IO logo.svg", link: "https://prefect.io" },
+  { img: "/JetBrains logo.svg", link: "https://jetbrains.com" },
+  { img: "/Mux.svg", link: "https://mux.com" },
+  { img: "/remix.svg", link: "https://remix.run" },
+  { img: "/Nx.svg", link: "https://nx.dev" },
+  { img: "/transloadit.svg", link: "https://transloadit.com" },
+  { img: "/huly.svg", link: "https://huly.com" },
+  { img: "/Handsontable.svg", link: "https://handsontable.com" },
+];
+---
+
+<div>
+  <TableOfContents {...Astro.props} />
+  <a class="athena-card" target="_blank">
+    <Logo {...Astro.props}/>
+    <span
+      ><p class="extra-info">Beyond Fast</p><p class="heading">Athena 2023</p><p
+        class="extra-info"
+      >
+        Watch the replay!
+      </p></span
+    ></a
+  >
+
+  <div class="logo-grid">
+    {
+      logoData.map((logo, index) => (
+        <a
+          href={logo.link}
+          target="_blank"
+          rel="noopener noreferrer"
+          class={index <= 4 ? "first-column" : ""}
+        >
+          <Image width={123} height={31} src={logo.img} alt={`Logo ${index + 1}`} class="img" />
+        </a>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  .logo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    margin-block: 20px;
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  :global([data-theme="light"]) .logo-grid {
+    background: #f6f6f7 !important;
+  }
+
+  :global([data-theme="dark"]) .logo-grid {
+    background: #202127 !important;
+  }
+  .logo-grid a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    transition: transform 0.3s;
+  }
+  :global([data-theme="light"]) .logo-grid a {
+    border: 2px solid white;
+  }
+
+  :global([data-theme="dark"]) .logo-grid a {
+    border: 2px solid #161618;
+  }
+  .logo-grid a:hover {
+    transform: scale(1.05);
+  }
+
+  .logo-grid .img {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: filter 0.25s;
+    max-width: 64px;
+    max-height: 22px;
+  }
+  :global([data-theme="light"]) .logo-grid .img {
+    filter: grayscale(1);
+  }
+
+  :global([data-theme="dark"]) .logo-grid .img {
+    filter: grayscale(1) invert(1);
+  }
+
+  .logo-grid a:hover .img {
+    filter: grayscale(0) invert(0);
+  }
+  :global([data-theme="light"]) .logo-grid a:hover {
+    background: #8e96aa24;
+  }
+
+  :global([data-theme="dark"]) .logo-grid a:hover {
+    background-color: white;
+  }
+  .first-column {
+    grid-column: span 2;
+  }
+  .first-column .img {
+    max-width: 124px;
+    max-height: 48px;
+  }
+  .athena-card {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 14px;
+    padding-top: 0.4rem;
+    padding-bottom: 0.4rem;
+    position: relative;
+    font-size: 0.9rem;
+    font-weight: 700;
+    line-height: 1.1rem;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    gap: 1rem !important;
+   
+    transition: border-color 0.5s;
+  }
+  :global([data-theme="light"]) .athena-card {
+    background-color: #f6f6f7;
+    border: 2px solid #f6f6f7;
+  }
+
+  :global([data-theme="dark"]) .athena-card {
+    background-color: #161618;
+    border: 2px solid #161618;
+  }
+  .athena-card:hover {
+    border: 2px solid #747bff;
+  }
+  .athena-card:hover img {
+    transform: scale(1.75);
+  }
+  .athena-card img {
+    transition: transform 0.5s;
+    transform: scale(1.25);
+  }
+  .athena-card:hover .extra-info {
+    opacity: 0.9;
+  }
+  .athena-card .extra-info {
+   
+    opacity: 0;
+    font-size: 0.7rem;
+    padding-left: 0.1rem;
+    transition: opacity 0.5s;
+  }
+  :global([data-theme="light"]) .athena-card {
+    color: #161618;
+  }
+
+  :global([data-theme="dark"]) .athena-card {
+    color: #fffff5db;
+  }
+  .athena-card .heading {
+    background-image: linear-gradient(120deg, #b047ff 16%, #9499ff, #9499ff);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+</style>
