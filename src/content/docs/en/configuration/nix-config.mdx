@@ -1,0 +1,254 @@
+---
+title: Athena Nix Configuration
+description: How to manage Nix configuration in Athena OS.
+---
+import ImageComponent from "@components/ImageComponent.astro";
+import ThemedImage from '@components/ThemedImage.astro';
+
+## Tree Structure
+
+The macrostructure of Athena Nix configuration elements is the following:
+```
+[ 198]  /etc/nixos/
+├── [  92]  home-manager/
+│   ├── [  40]  browsers/
+│   ├── [  94]  desktops/
+│   ├── [  34]  home/
+│   ├── [  88]  shells/
+│   ├── [  28]  terminals/
+├── [  50]  hosts/
+│   ├── [  22]  locale/
+│   ├── [  52]  software/
+├── [  88]  modules/
+│   ├── [  22]  boot/
+│   │   ├── [  22]  grub/
+│   │   └── [  22]  systemd/
+│   ├── [  74]  dev/
+│   ├── [  20]  dms/
+│   │   ├── [  22]  gdm/
+│   │   └── [  22]  lightdm/
+│   ├── [ 104]  hardware/
+│   │   ├── [  22]  bluetooth/
+│   │   ├── [  22]  kernel/
+│   │   ├── [  22]  network/
+│   │   ├── [  22]  sound/
+│   │   ├── [  56]  virtualization/
+│   ├── [  50]  misc/
+│   ├── [ 138]  roles/
+│   ├── [ 106]  themes/
+├── [ 176]  pkgs/
+│   ├── [ 222]  themes/
+├── [  22]  users/
+├── [2.1K]  configuration.nix
+├── [ 236]  default.nix
+└── [1.5K]  hardware-configuration.nix
+```
+
+The main file that centrally manages the entire configuration is `/etc/nixos/configuration.nix`.
+
+## configuration.nix
+
+Athena Nix can be tailored to your needs. By `/etc/nixos/configuration.nix`, you can configure your entire system according to your need.
+
+It looks like:
+```nix
+# Edit this configuration file to define what should be installed on
+# your system.  Help is available in the configuration.nix(5) man page
+# and in the NixOS manual (accessible by running 'nixos-help').
+
+{ config, pkgs, ... }:
+let
+  # These variable names are used by Aegis backend
+  version = "unstable"; #or 24.05
+  username = "athena";
+  hashed = "$6$zjvJDfGSC93t8SIW$AHhNB.vDDPMoiZEG3Mv6UYvgUY6eya2UY5E2XA1lF7mOg6nHXUaaBmJYAMMQhvQcA54HJSLdkJ/zdy8UKX3xL1";
+  hashedRoot = "$6$zjvJDfGSC93t8SIW$AHhNB.vDDPMoiZEG3Mv6UYvgUY6eya2UY5E2XA1lF7mOg6nHXUaaBmJYAMMQhvQcA54HJSLdkJ/zdy8UKX3xL1";
+  hostname = "athenaos";
+  theme = "temple";
+  desktop = "gnome";
+  dmanager = "gdm";
+  shell = "fish";
+  terminal = "kitty";
+  browser = "firefox";
+  bootloader = "systemd";
+  hm-version = if version == "unstable" then "master" else "release-"version; # "master" or "release-24.05"; # Correspond to home-manager GitHub branches
+  home-manager = builtins.fetchTarball "https://github.com/nix-community/home-manager/archive/${hm-version}.tar.gz";
+in
+{
+  imports =
+    [ # Include the results of the hardware scan.
+      {
+        _module.args.version = version;
+        _module.args.username = username;
+        _module.args.hashed = hashed;
+        _module.args.hashedRoot = hashedRoot;
+        _module.args.hostname = hostname;
+        _module.args.theme = theme;
+        _module.args.desktop = desktop;
+        _module.args.dmanager = dmanager;
+        _module.args.shell = shell;
+        _module.args.terminal = terminal;
+        _module.args.browser = browser;
+        _module.args.bootloader = bootloader;
+      }
+      (import "${home-manager}/nixos")
+      /etc/nixos/hardware-configuration.nix
+      ./modules/boot/${bootloader}
+      ./modules/dms/${dmanager}
+      ./modules/themes/${theme}
+      ./home-manager/desktops/${desktop}
+      ./home-manager/terminals/${terminal}
+      ./home-manager/browsers/${browser}
+      ./home-manager/shells/${shell}
+      ./hosts/software
+      ./.
+
+    ];
+  networking.enableIPv6 = false;
+  services.flatpak.enable = true;
+  networking.extraHosts =
+  ''
+  '';
+}
+```
+It is important to understand how it can be manipulated. Let's break it.
+
+### Version
+
+```nix
+version = "unstable"; #or 24.05
+```
+You can change the Nixpkgs repository to use, for example `unstable` or `24.05`. Look that if you use a repository different from `unstable`, new or updated applications could not be available.
+
+If you wish to switch to another version, for example `24.05`, edit the configuration file as:
+```nix
+version = "24.05";
+```
+### Username
+
+```nix
+username = "athena";
+```
+You can change the username of your account as you prefer by editing the `username` value.
+
+### Password
+
+```nix
+  hashed = "$6$zjvJDfGSC93t8SIW$AHhNB.vDDPMoiZEG3Mv6UYvgUY6eya2UY5E2XA1lF7mOg6nHXUaaBmJYAMMQhvQcA54HJSLdkJ/zdy8UKX3xL1";
+  hashedRoot = "$6$zjvJDfGSC93t8SIW$AHhNB.vDDPMoiZEG3Mv6UYvgUY6eya2UY5E2XA1lF7mOg6nHXUaaBmJYAMMQhvQcA54HJSLdkJ/zdy8UKX3xL1";
+```
+
+`hashed` and `hashedRoot` are respectively the SHA-512 hash of your user account and the root one.
+:::caution
+Be careful when you play with these values. You could make your system inaccessible if storing a wrong hash value that does not correspond to your desired password.
+:::
+
+### Hostname
+
+```nix
+hostname = "athenaos";
+```
+You can change the hostname of your system as you prefer by editing the `hostname` value.
+
+### Theme
+
+```nix
+theme = "temple";
+```
+This variable is used to set the Athena theme on your environment. Athena offers several themes you can choose:
+```
+akame
+anunna
+cyborg
+graphite
+hackthebox
+samurai
+sweet
+temple
+```
+Change the `theme` variable value and discover all of them!
+
+### Desktop
+
+```nix
+desktop = "gnome";
+```
+This variable is used to set your desktop environment. Athena Nix the current available environments are:
+```
+gnome
+cinnamon
+mate
+```
+Change the `desktop` variable value and set your favourite desktop environment!
+
+### Display Manager
+
+```nix
+dmanager = "gdm";
+```
+This variable is used to set your display manager. Athena Nix the current available display managers are:
+```
+gdm
+lightdm neon
+```
+Change the `dmanager` variable value and set your favourite display manager!
+
+### Shell
+
+```nix
+shell = "fish";
+```
+This variable is used to set the shell to be used. You can choose among:
+```
+bash
+fish
+zsh
+```
+Change the `shell` variable value and set your favourite shell!
+
+### Terminal
+
+```nix
+terminal = "kitty";
+```
+This variable is used to set your favourite terminal. You can choose among:
+```
+alacritty
+kitty
+```
+Change the `terminal` variable value and the terminal you wish!
+
+### Browser
+
+```nix
+browser = "firefox";
+```
+This variable is used to set the browser application. Currently, only Firefox is supported in Athena Nix.
+
+### System values
+
+The other variable values should not be edited because they are set at installation time according to your hardware.
+
+## Advanced Configuration
+
+You can still deeply configure your Athena environment by acting on elements of its Nix macrostructure by adding or editing the related `default.nix` file.
+
+For example, if you wish to edit the Athena Firefox configuration, just access to `/etc/nixos/home-manager/browsers/firefox/default.nix`.
+
+If you need to integrate additional software in your system, add them in `/etc/nixos/hosts/software/default.nix`.
+
+If you are in a virtualized environment, tweak the related settings in `/etc/nixos/modules/hardware/virtualization/guest.nix`
+
+All the files in `/etc/nixos/home-manager` are related to the configuration impacting the home directory or the user profile.
+
+They are just few examples. Familiarize with the Athena Nix configuration macrostructure to unlock the full potential of your environment!
+
+## Error Handling
+
+In case you get errors during the `nixos-rebuild switch` process:
+* if it is caused by a tool in a specific cyber role you are setting to, you can access to `/etc/nixos/modules/roles/<your-role>/default.nix` and comment the line related to the tool that is broken;
+* if it is caused by a generic software in Athena, you can access to `/etc/nixos/hosts/software/default.nix` and comment the line related to the tool that is broken;
+
+Finally, save the file and run again `nixos-rebuild switch`.
+
+<ImageComponent />

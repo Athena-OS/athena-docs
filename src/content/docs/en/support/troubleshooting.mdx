@@ -51,7 +51,7 @@ just assign more resources (CPU, RAM, Swap space) to your system.
 If, after a system update, you get the following error at boot:
 ![Athena Snapshots Run](@assets/images/error-boot-missing-vmlinuz.png)
 
-it is probably caused by a wrong update of the Linux kernel or the boot partition was not correctly mounted during this process.
+it is probably caused by a wrong update of the Linux kernel or the boot partition was not correctly mounted during this process, or due to an interruption (freeze, reboot or shutdown) during the upgrade of the system (in particular, during the generation of the image at kernel upgrade process time).
 
 To fix it, boot in a Live Environment by Athena ISO, open the terminal and run the following commands:
 
@@ -82,9 +82,34 @@ sudo arch-chroot /mnt/
 ```
 Finally, run:
 ```shell
-sudo pacman -Syyu linux-lts linux-lts-headers
+sudo pacman -Syyu
+sudo pacman -S linux-lts linux-lts-headers
 exit
 ```
+:::note
+If you get an error like:
+```
+:: Synchronizing package databases...
+error: failed to synchronize all databases (unable to lock database)
+```
+just run:
+```shell
+sudo rm /var/lib/pacman/db.lck
+```
+and retry the system upgrade as described above.
+
+If you get an error like:
+```
+error: could not open file /var/lib/pacman/local/linux-lts-6.6.39-1/desc: No such file or directory
+warning: could not fully load metadata for package linux-lts-6.6.39-1
+error: failed to prepare transaction (invalid or corrupted package)
+```
+run
+```
+sudo rm -rf /var/lib/pacman/local/linux-lts-6.6.39-1
+sudo pacman -S linux-lts linux-lts-headers --overwrite \*
+```
+:::
 If needed, persist that `/boot` partition in your fstab with a [persistent identifier](https://wiki.archlinux.org/index.php/Persistent_block_device_naming) so that you won't have to unnecessarily do this again the next time the kernel updates.
 
 At the end, remove the ISO file and reboot the system.
