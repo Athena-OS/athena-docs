@@ -73,6 +73,7 @@ export default defineConfig({
             { label: 'XFCE', link: '/en/configuration/xfce' },
             { label: 'Hyprland', link: '/en/configuration/hyprland' },
             { label: 'NVIDIA GPU', link: '/en/configuration/nvidia' },
+            { label: 'RDP', link: '/en/configuration/rdp' },
             { label: 'Repositories', link: '/en/configuration/repositories' },
             { label: 'Utilities', link: '/en/configuration/utilities' },
           ],
