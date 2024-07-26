@@ -17,7 +17,7 @@ Then, enable the xrdp service:
 ```shell
 sudo systemctl enable xrdp
 ```
-Create the `~./.xinitrc` file with the following content:
+Create the `~/.xinitrc` file with the following content:
 ```
 #!/usr/bin/env bash
 #
@@ -70,6 +70,6 @@ Replace `gnome-session` by the related session executable of your desktop enviro
 
 Finally, reboot the system and don't login inside the system otherwise you cannot login by RDP. Only one user session is allowed at time.
 
-Open your RDP client, and login by your user account.
+Open your RDP client, retrieve the IP address of your system and login by your user account credentials.
 
 <ImageComponent />
