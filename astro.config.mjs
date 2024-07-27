@@ -117,7 +117,6 @@ export default defineConfig({
           items: [
             // Each item here is one entry in the navigation menu.
             { label: 'WSL Image', link: '/en/wsl/wsl' },
-            { label: 'Win-KeX', link: '/en/wsl/win-kex' },
           ],
         },
         {
