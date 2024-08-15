@@ -1,0 +1,62 @@
+---
+title: Themes
+description: Athena OS Themes.
+---
+import ImageComponent from "@components/ImageComponent.astro";
+import ThemedImage from '@components/ThemedImage.astro';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+In Athena OS, you can select among several themed environments for all tastes. These themes set several elements of your environment. A theme can be set by:
+<Tabs>
+<TabItem label="Athena Arch">
+```
+athena-theme-tweak -t <theme-name>
+```
+</TabItem>
+<TabItem label="Athena Nix">
+editing `theme` variable in `/etc/nixos/configuration.nix` by typing the theme name you wish. Click [here](https://athenaos.org/en/configuration/nix-config/#theme) to see the list of valid theme name values.
+</TabItem>
+</Tabs>
+
+Some themes have more wallpapers stored in `/usr/share/backgrounds/athena`.
+
+The following sections show the look and feel of themed environments offered by Athena OS. GNOME is shown as sample environment.
+
+### Temple
+
+![Temple Wallpaper](@assets/images/theme-temple.png)
+
+This theme provides two additional wallpapers:
+
+![Temple Wallpaper](@assets/images/theme-nike-holo.png)
+![Temple Wallpaper](@assets/images/theme-nike.png)
+
+### Sweet Dark
+
+![Neon Circle Wallpaper](@assets/images/theme-neoncircle.png)
+![Nix Neon Circle Wallpaper](@assets/images/theme-nixneoncircle.png)
+
+### Samurai Girl
+
+![Samurai Wallpaper](@assets/images/theme-samurai.png)
+
+### Hack The Box
+
+![Hack The Box Wallpaper](@assets/images/theme-hackthebox.png)
+![Nix Hack The Box Wallpaper](@assets/images/theme-nixhackthebox.png)
+
+### Graphite
+
+![Arch ASCII Wallpaper](@assets/images/theme-archascii.png)
+![Nix Behind Wallpaper](@assets/images/theme-nixbehind.png)
+
+### Cyborg
+
+![Cyborg Wallpaper](@assets/images/theme-cyborg.png)
+
+### Akame
+
+![Akame Wallpaper](@assets/images/theme-akame.png)
+![Red Moon Wallpaper](@assets/images/theme-redmoon.png)
+
+<ImageComponent />
