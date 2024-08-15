@@ -75,6 +75,7 @@ export default defineConfig({
             { label: 'NVIDIA GPU', link: '/en/configuration/nvidia' },
             { label: 'RDP', link: '/en/configuration/rdp' },
             { label: 'Repositories', link: '/en/configuration/repositories' },
+            { label: 'Themes', link: '/en/configuration/themes' },
             { label: 'Utilities', link: '/en/configuration/utilities' },
           ],
         },
