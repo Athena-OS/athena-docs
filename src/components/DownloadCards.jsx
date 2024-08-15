@@ -5,7 +5,7 @@ const DownloadCards = () => {
   const [activeModal, setActiveModal] = useState(null);
   const [flippedCards, setFlippedCards] = useState({});
   const [activeHashes, setActiveHashes] = useState({});
-/*
+
   useEffect(() => {
     const initialHashes = {};
     data.forEach((_, index) => {
@@ -120,7 +120,6 @@ const DownloadCards = () => {
       {activeModal !== null && <div id="download-overlay" className="active" onClick={closeModal} />}
     </div>
   );
-  */
 };
 
 export default DownloadCards;
