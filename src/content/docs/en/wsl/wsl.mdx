@@ -7,6 +7,8 @@ import ThemedImage from '@components/ThemedImage.astro';
 
 ## Installation
 
+Athena OS WSL image is based on Athena Arch and uses **pacman** as package manager.
+
 Make sure WSL is enabled in you system by following [Microsoft documentation](https://learn.microsoft.com/en-us/windows/wsl/install). You can install Athena OS WSL from Microsoft Store.
 
 <p align="center">
@@ -68,5 +70,18 @@ kex --sl -s
 ```
 
 Kali docs has a well documented page about Win-Kex Seamless Mode. Visit [Win-KeX Seamless Mode usage documentation](https://www.kali.org/docs/wsl/win-kex-sl/) for further information.
+
+## Getting Started
+
+When you start Athena OS WSL, it is a best practice to use the fastest mirrors for your location and update all the packages. To do this, run:
+```
+mirrorxx
+sudo rate-mirrors --concurrency 40 --allow-root --disable-comments --save /etc/pacman.d/chaotic-mirrorlist chaotic-aur
+init-keys
+sudo pacman -Syyu
+```
+:::note
+If you get messages like `WARNING: failed to rate http(s) download (https://mirror.theash.xyz/arch/extra/os/x86_64/extra.db): HTTP Error 403: Forbidden`, you can ignore them.
+:::
 
 <ImageComponent />
