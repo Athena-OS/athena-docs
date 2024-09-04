@@ -4,6 +4,7 @@ description: How to install Athena OS by Aegis Installer TUI.
 ---
 import ImageComponent from "@components/ImageComponent.astro";
 import ThemedImage from '@components/ThemedImage.astro';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
 import { LinkCard, CardGrid } from '@astrojs/starlight/components';
 
 [Aegis TUI](https://github.com/Athena-OS/aegis-tui) is a terminal user interface frontend of **Aegis**, a tailored installer developed and optimized specifically for Athena OS.
@@ -14,7 +15,120 @@ Aegis will improve over time in order to detect automatically your hardware. It 
 
 Aegis TUI can be run by running `aegis-tui` command and requires a working Internet connection.
 
-Its purpose is to create a JSON configuration file containing all the user choices that is used to feed the Aegis backend, the real brain of the installer. The JSON configuration file will be saved as `/tmp/config.json`.
+Its purpose is to create a JSON configuration file containing all the user choices that is used to feed the Aegis backend, the real brain of the installer. The JSON configuration file will be saved as `/tmp/config.json`. This file has the following structure:
+<Tabs>
+<TabItem label="Athena Arch">
+```json
+{
+    "partition": {
+        "device": "/dev/sda",
+        "mode": "Auto",
+        "encrypt_check": false,
+        "efi": true,
+        "swap": false,
+        "swap_size": "",
+        "partitions": []
+    },
+    "bootloader": {
+        "type": "grub-efi",
+        "location": "/boot"
+    },
+    "locale": {
+        "locale": [
+            "en_US.UTF-8 UTF-8"
+        ],
+        "virtkeymap": "en",
+        "x11keymap": "us",
+        "timezone": "Europe/Zurich"
+    },
+    "networking": {
+        "hostname": "athenaos",
+        "ipv6": false
+    },
+    "users": [
+        {
+            "name": "athena",
+            "password": "$6$99BF/Qo0T3QNKTVr$8PNNp8EkjhM./XeFUeW1hIBrbh9ev74HI73idhhQMUWVyGTzba85zl7tzhkDL27OUVJYzybnFNgNwYNaf3LiJ0",
+            "hasroot": true,
+            "shell": "fish"
+        }
+    ],
+    "rootpass": "$6$bFPyjuoCYjXVLoHy$c9oEzhS6gDj/icOsb2kPh43ML7V6FMeybNB6ZGu7deFKbhzTrOhr2loW/8WrrMbO1l1DTfe1E2SA46zt7tJKI1",
+    "desktop": "gnome",
+    "theme": "temple",
+    "displaymanager": "gdm",
+    "browser": "firefox",
+    "terminal": "kitty",
+    "extra_packages": [
+
+    ],
+    "flatpak": true,
+    "zramd": true,
+    "kernel": "linux-lts",
+    "params": {
+        "cores": "",
+        "jobs": ""
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Athena Nix">
+```json
+{
+    "partition": {
+        "device": "/dev/sda",
+        "mode": "Auto",
+        "encrypt_check": false,
+        "efi": true,
+        "swap": false,
+        "swap_size": "",
+        "partitions": []
+    },
+    "bootloader": {
+        "type": "grub-efi",
+        "location": "/boot"
+    },
+    "locale": {
+        "locale": [
+            "en_US.UTF-8 UTF-8"
+        ],
+        "virtkeymap": "en",
+        "x11keymap": "us",
+        "timezone": "Europe/Zurich"
+    },
+    "networking": {
+        "hostname": "athenaos",
+        "ipv6": false
+    },
+    "users": [
+        {
+            "name": "athena",
+            "password": "$6$eYaiImALQl2MYniY$6isIzrmojOfrtbZ0ijttiFEo8jyYnCYlQYzz7fUqJE0pxLRSdsYAMBg0zKCNb0dhURW/G1APNG3vonA1KcPJu1",
+            "hasroot": true,
+            "shell": "fish"
+        }
+    ],
+    "rootpass": "$6$rIcLQOrbvMlmnIIg$NdUdh7D7jtvuwpl2N78snjVQvHoYR4Nq1jheWLND/BKAGkODIs0ceTNgd9u4z926zbYfAwjgbtOqjqGy6KtWi0",
+    "desktop": "gnome",
+    "theme": "temple",
+    "displaymanager": "gdm",
+    "browser": "firefox",
+    "terminal": "kitty",
+    "extra_packages": [
+
+    ],
+    "flatpak": true,
+    "zramd": true,
+    "kernel": "linux-lts",
+    "params": {
+        "cores": "0",
+        "jobs": "32"
+    }
+}
+```
+</TabItem>
+</Tabs>
 
 The installation logs will be saved to `/tmp/aegis.log` and copied to the installed system to `/var/log/aegis.log`.
 
