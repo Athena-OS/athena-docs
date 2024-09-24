@@ -22,7 +22,7 @@ sudo nix-channel --update
 nix-shell -p git
 git clone https://github.com/Athena-OS/athena-nix
 cd athena-nix/nixos
-sudo cp -rf home-manager hosts modules pkgs users configuration.nix default.nix /etc/nixos/
+sudo cp -rf home-manager hosts modules pkgs configuration.nix default.nix /etc/nixos/
 ```
 Then, edit the file `/etc/nixos/configuration.nix` to set your favourite choices for Athena configuration, for example:
 ```nix
