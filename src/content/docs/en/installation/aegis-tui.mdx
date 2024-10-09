@@ -276,7 +276,7 @@ If no errors have been raised during the installation phase, you are ready to us
 Before rebooting, if you installed Athena OS in dual boot with Windows, as explained in the related section, restore Microsoft bootloader inside the boot partition (i.e., `/dev/nvme0n1p1`):
 ```shell
 sudo mount /dev/nvme0n1p1 /mnt
-cp -rf ~/Microsoft /mnt/EFI/
+sudo cp -rf ~/Microsoft /mnt/EFI/
 sudo umount /mnt
 ```
 Once you reboot, and you land on the installed system, open the terminal and run:
