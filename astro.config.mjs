@@ -95,6 +95,7 @@ export default defineConfig({
             { label: 'Payload Environment Variables', link: '/en/resources/payload-variables' },
             { label: 'Browser Pentesting Resources', link: '/en/resources/browser-pentesting' },
             { label: 'NIST Feed', link: '/en/resources/nist-feed' },
+            { label: 'Devotio', link: '/en/resources/devotio' },
           ],
         },
         //{

@@ -1,0 +1,94 @@
+---
+title: Devotio
+description: Secure erasing of the environment.
+---
+import ImageComponent from "@components/ImageComponent.astro";
+import ThemedImage from '@components/ThemedImage.astro';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+[Devotio](https://github.com/Athena-OS/devotio) is a secure disk erasure tool based on **DoD 5220.22 M**, **ATA Secure Erase** and **encryption-based destruction**.
+
+It allows to select the specific device to erase or every disk on your system. It involves:
+* HDD
+* SSD
+* LUKS
+* USB
+* RAM
+* Zram
+* Swap
+
+## Usage
+
+Devotio is included in Athena OS Live ISO. You can use Devotio to erase devices also on other operating systems.
+
+You can burn it on a device and land on Athena OS Live Environment. Then, run:
+```shell
+sudo devotio
+```
+and choose secure erasing between a specific disk or all devices.
+
+A test on a virtual machine HDD sized of 50 GB needed 19 minutes for secure erasing.
+
+## Specification
+
+Devotio automatically recognizes the type of devices connected to your system and erases them properly.
+
+### HDD
+
+To erase a HDD device, Devotio executes:
+* File system formatting
+* 3-pass overwriting
+* Writing all zeroes
+* Writing all ones
+* Writing all random data
+* multiple-pass overwriting
+* LUKS encryption
+* LUKS header destruction
+
+### SDD
+
+To erase a SSD device, Devotio executes:
+* File system formatting
+* TRIM command issuing
+* ATA Secure Erase running
+* LUKS encryption
+* LUKS header destruction
+
+### LUKS
+
+To erase a LUKS device, Devotio executes:
+* Writing all random data
+* 3-pass overwriting
+* LUKS encryption
+* LUKS header destruction
+
+### Flash Drive
+
+To erase a Flash device, Devotio executes:
+* File system formatting
+* 3-pass overwriting
+* Writing all zeroes
+* Writing all ones
+* Writing all random data
+* LUKS encryption
+* LUKS header destruction
+
+### Zram
+
+To erase a zram device, Devotio executes:
+* Turning off zram device
+* Writing all random data
+* zram device reset
+
+### Swap
+
+To erase a swap device, Devotio executes:
+* Turning off swap device
+* Writing all zeroes
+
+### RAM
+
+To erase RAM, Devotio executes:
+* Cache drop
+
+All data on volatile memories will be deleted at reboot.
