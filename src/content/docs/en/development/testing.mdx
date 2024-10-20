@@ -67,7 +67,7 @@ INFO[0000] Using docker host 'unix:///run/user/1000/podman/podman.sock', and dae
 Stage  Job ID                Job name                                 Workflow name                Workflow file  Events                    
 0      installation-testing  ${{ matrix.config_installer.job_name }}  System Installation Testing  install.yml    workflow_dispatch,schedule
 ```
-To validate only workflow correctness, run the command by dryrun argument:
+To validate only workflow correctness, run the command by `-n/--dryrun` argument:
 ```shell
 act -n -j docker-publish
 ```
