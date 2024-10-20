@@ -9,6 +9,82 @@ import { Tabs, TabItem } from '@astrojs/starlight/components';
 
 This document shows a list of test cases that can be used to check the correctness of the environment.
 
+### Testing GitHub workflow locally
+Purpose of this chapter is to test a GitHub workflow of Athena repository in a local machine.
+
+Install [act](https://archlinux.org/packages/extra/x86_64/act/) by:
+```shell
+sudo pacman -S act
+```
+
+Clone Athena repository:
+```shell
+git clone https://github.com/Athena-OS/athena
+cd athena
+```
+Be sure the workflow `.yml` file to test is in `.github/workflows` folder:
+```shell
+tree -a .github/workflows
+```
+```
+[ 132]  .github/workflows/
+├── [4.2K]  archiso.yml
+├── [ 675]  builder-container.yml
+├── [1.5K]  hephaestus.yml
+├── [6.3K]  install.yml
+└── [4.7K]  roles.yml
+```
+First, let's list the available workflows. Start `podman` and run the listing:
+```shell
+systemctl start --user podman
+act -l
+```
+The output would be similar to:
+```
+INFO[0000] Using docker host 'unix:///run/user/1000/podman/podman.sock', and daemon socket 'unix:///run/user/1000/podman/podman.sock' 
+Stage  Job ID                Job name                                    Workflow name                Workflow file          Events                    
+0      build                 build                                       Build ArchISO Stable         archiso.yml            workflow_dispatch,schedule
+0      docker-publish        docker-publish                              Scheduled Container Publish  builder-container.yml  schedule,workflow_dispatch
+0      installation-testing  ${{ matrix.config_installer.job_name }}     System Installation Testing  install.yml            workflow_dispatch,schedule
+0      arch-role-testing     ${{ matrix.role_installer.job_name }} Test  Cyber Roles Testing          roles.yml              workflow_dispatch,schedule
+0      nix-role-testing      ${{ matrix.role_installer.job_name }} Test  Cyber Roles Testing          roles.yml              workflow_dispatch,schedule
+1      notify-result         notify-result                               System Installation Testing  install.yml            workflow_dispatch,schedule
+1      notify-result         notify-result                               Cyber Roles Testing          roles.yml              workflow_dispatch,schedule
+
+Detected multiple jobs with the same job name, use `-W` to specify the path to the specific workflow.
+```
+To get information about a specific job, you can specify its job ID by running:
+```shell
+act -l -j installation-testing
+```
+or you can pass the workflow path:
+```shell
+act -l -W .github/workflows/install.yml
+```
+The output should be:
+```
+INFO[0000] Using docker host 'unix:///run/user/1000/podman/podman.sock', and daemon socket 'unix:///run/user/1000/podman/podman.sock' 
+Stage  Job ID                Job name                                 Workflow name                Workflow file  Events                    
+0      installation-testing  ${{ matrix.config_installer.job_name }}  System Installation Testing  install.yml    workflow_dispatch,schedule
+```
+To validate only workflow correctness, run the command by dryrun argument:
+```shell
+act -n -j docker-publish
+```
+:::note
+It won't create a container.
+:::
+
+To actual run a workflow locally, run:
+```shell
+act --rm -j docker-publish
+```
+:::note
+If your workflow uses variables or secrets set on GitHub, it will fail because cannot get this information unless you manage it by using proper `act` arguments.
+
+`--rm` argument removes container if the process fails. To not fill your disk space, remember to remove periodically containers created by successful running `act` processes.
+:::
+
 ### Manual environment installation
 Boot into Athena Live Environment by using Athena ISO.
 
