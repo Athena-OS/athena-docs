@@ -1,0 +1,114 @@
+---
+
+const itemsPerPage = 25; 
+
+// Fetch all data from Strapi API
+async function fetchAllData() {
+  try {
+    const response = await fetch(`${import.meta.env.STRAPI_API_URL}/api/packages`, {
+      headers: {
+        'Authorization': `Bearer ${import.meta.env.STRAPI_API_TOKEN}`,
+        'Content-Type': 'application/json'
+      }
+    });
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    return { data: [], meta: { pagination: { total: 0 } } };
+  }
+}
+
+const apiResponse = await fetchAllData();
+const packagesdata = apiResponse.data;
+const totalItems = apiResponse.meta.pagination.total;
+const totalPages = Math.ceil(totalItems / itemsPerPage);
+---
+
+<div class="w-full overflow-x-auto">
+  <table id="dataTable" class="w-full table-auto border-collapse my-5 text-base">
+    <thead>
+      <tr class="text-white text-left bg-accent-600 dark:bg-accent-200">
+        <th class="!py-3 !px-2 w-1/4">Package</th>
+        <th class="!py-3 !px-2 w-1/6">Version</th>
+        <th class="!py-3 !px-2 w-1/2">Description</th>
+        <th class="!py-3 !px-2 w-1/6">Repository</th>
+      </tr>
+    </thead>
+    <tbody>
+      {packagesdata.slice(0, itemsPerPage).map((row) => (
+        <tr>
+          <td class="!py-3 !px-2 text-accent-600 dark:text-accent-200">{row.package_name}</td>
+          <td class="!py-3 !px-2">{row.version}</td>
+          <td class="!py-3 !px-2">{row.description}</td>
+          <td class="!py-3 !px-2">{row.repository}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+  <div id="pagination" class="flex justify-center gap-5 mt-0 py-4 bg-transparent border-y border-gray-300 dark:bg-gray-800/20"></div>
+</div>
+
+<script define:vars={{ data: JSON.stringify(packagesdata), itemsPerPage, totalPages }}>
+  const tableData = JSON.parse(data);
+
+  function renderTableRows(startIndex, endIndex) {
+    const tbody = document.querySelector("#dataTable tbody");
+    tbody.innerHTML = "";
+    for (let i = startIndex; i < endIndex && i < tableData.length; i++) {
+      const row = tableData[i];
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td class="!py-3 !px-2 text-accent-600 dark:text-accent-200 w-1/4">${row.package_name}</td>
+        <td class="!py-3 !px-2 w-1/6">${row.version}</td>
+        <td class="!py-3 !px-2 w-1/2">${row.description}</td>
+        <td class="!py-3 !px-2 w-1/6">${row.repository}</td>
+      `;
+      tbody.appendChild(tr);
+    }
+  }
+
+  function showPage(pageNumber) {
+    const startIndex = (pageNumber - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    renderTableRows(startIndex, endIndex);
+    updateActivePaginationLink(pageNumber);
+  }
+
+  function updateActivePaginationLink(pageNumber) {
+    const paginationElement = document.getElementById("pagination");
+    const links = paginationElement.querySelectorAll("a");
+    links.forEach((link) => {
+      if (parseInt(link.textContent) === pageNumber) {
+        link.classList.add("active", "bg-accent-600", "text-white", "dark:bg-accent-200", "dark:text-gray-900");
+        link.classList.remove("hover:bg-gray-700", "hover:text-white");
+      } else {
+        link.classList.remove("active", "bg-accent-600", "text-white", "dark:bg-accent-200", "dark:text-gray-900");
+        link.classList.add("hover:bg-gray-700", "hover:text-white");
+      }
+    });
+  }
+
+  function setupPagination() {
+    const paginationElement = document.getElementById("pagination");
+
+    for (let i = 1; i <= totalPages; i++) {
+      const link = document.createElement("a");
+      link.href = "#";
+      link.innerText = i;
+      link.className = "px-3 py-2 no-underline transition-colors hover:bg-gray-700 hover:text-white";
+
+      link.addEventListener("click", (e) => {
+        e.preventDefault();
+        showPage(i);
+      });
+
+      paginationElement.appendChild(link);
+    }
+
+    // Show the first page by default
+    showPage(1);
+  }
+
+  // Call the setup function when the DOM is loaded
+  document.addEventListener("DOMContentLoaded", setupPagination);
+</script>

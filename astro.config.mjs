@@ -3,6 +3,8 @@ import starlight from '@astrojs/starlight';
 
 import react from "@astrojs/react";
 
+import tailwind from "@astrojs/tailwind";
+
 // https://astro.build/config
 export default defineConfig({
   site: 'https://athenaos.org/',
@@ -17,7 +19,7 @@ export default defineConfig({
       light: '/src/assets/athena-light.svg',
       dark: '/src/assets/athena-dark.svg'
     },
-    customCss: process.env.NO_GRADIENTS ? ['./src/styles/_global.css'] : ['./src/styles/landing.css', './src/styles/_global.css'],
+    customCss: ['./src/styles/tailwind.css'],
     social: {
       github: 'https://github.com/Athena-OS',
       instagram: 'https://www.instagram.com/athenaos_sec',
@@ -73,6 +75,9 @@ export default defineConfig({
         label: 'Installing as guest in QEMU/KVM',
         link: '/en/installation/install-guest-qemu'
       }, {
+        label: 'Installing as guest in Quickemu',
+        link: '/en/installation/install-guest-quickemu'
+      }, {
         label: 'Installing as guest in Parallels',
         link: '/en/installation/install-guest-parallels'
       }, {
@@ -81,14 +86,17 @@ export default defineConfig({
       }, {
         label: 'Updating Athena OS',
         link: '/en/installation/update-athena'
+      }, {
+        label: 'Aegis Installer TUI',
+        link: '/en/installation/aegis-tui'
       }]
     }, {
       label: 'Configuration',
       items: [
       // Each item here is one entry in the navigation menu.
       {
-        label: 'Aegis Installer TUI',
-        link: '/en/configuration/aegis-tui'
+        label: 'Athena Nix',
+        link: '/en/configuration/nix-config'
       },
       // { label: 'Calamares Installer', link: '/en/configuration/calamares' },
       {
@@ -125,8 +133,14 @@ export default defineConfig({
         label: 'NVIDIA GPU',
         link: '/en/configuration/nvidia'
       }, {
+        label: 'RDP',
+        link: '/en/configuration/rdp'
+      }, {
         label: 'Repositories',
         link: '/en/configuration/repositories'
+      }, {
+        label: 'Themes',
+        link: '/en/configuration/themes'
       }, {
         label: 'Utilities',
         link: '/en/configuration/utilities'
@@ -184,10 +198,10 @@ export default defineConfig({
       items: [
       // Each item here is one entry in the navigation menu.
       {
-        label: 'Athena OS Core Image',
+        label: 'Core Image',
         link: '/en/containers/core-image'
       }, {
-        label: 'Athena OS RDP Image',
+        label: 'RDP Image',
         link: '/en/containers/rdp-image'
       }]
     }, {
@@ -195,11 +209,8 @@ export default defineConfig({
       items: [
       // Each item here is one entry in the navigation menu.
       {
-        label: 'Athena OS WSL',
+        label: 'WSL Image',
         link: '/en/wsl/wsl'
-      }, {
-        label: 'Win-KeX',
-        link: '/en/wsl/win-kex'
       }]
     }, {
       label: 'Support',
@@ -285,7 +296,7 @@ export default defineConfig({
       // { label: 'Cookie Policy', link: '/en/policy/cookie-policy' },
       ]
     }]
-  }), react()],
+  }), react(), tailwind({ applyBaseStyles: false,})],
   // Process images with sharp: https://docs.astro.build/en/guides/assets/#using-sharp
   image: {
     service: {

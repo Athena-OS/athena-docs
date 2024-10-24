@@ -1,13 +1,16 @@
 ---
-import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
-import BuilderTabel from '@components/builder-tabel.astro';
+import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+import BuilderTable from "@components/builder-table.astro";
 ---
 
-<StarlightPage frontmatter={{ title: 'Builder',tableOfContents: false}}   hasSidebar={false}>
-  <BuilderTabel/>
+<StarlightPage
+  frontmatter={{ title: "Builder", tableOfContents: false }}
+  hasSidebar={false}
+>
+  <BuilderTable />
 </StarlightPage>
 <style is:inline>
-    .sl-container{
-        max-width: 80rem !important;
-    }
+  .sl-container {
+    max-width: 80rem !important;
+  }
 </style>
