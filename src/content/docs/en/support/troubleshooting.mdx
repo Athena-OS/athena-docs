@@ -46,6 +46,10 @@ just assign more resources (CPU, RAM, Swap space) to your system.
 
 ### Boot
 
+#### Login freeze at ISO Live boot
+
+By running ISO, at boot, if login prompt freezes, reboot and select the boot entry called **"Athena OS install medium (%ARCH%, UEFI, safe graphics, nomodeset)"**. The problem was caused by `nouveau.modeset=1` for some specific NVIDIA hardware.
+
 #### Error: file '/vmlinuz-linux-lts' not found
 
 If, after a system update, you get the following error at boot:
@@ -365,11 +369,11 @@ and select the **Linux Kernel** to run
 
 When you run `htb-toolkit -k set` and, by entering your App Token in the Password field secret-tool hangs, try to reboot the system. If it does not work, install Brave browser, open it and at first run a popup window asking for the creation of a new password is shown. You can choose to set a password or just press **Enter** two times if you don't want, and finally try again `htb-toolkit -k set`.
 
-### Pentesting tool from menu opening terminal with no output in VirtualBox
+#### Pentesting tool from menu opening terminal with no output in VirtualBox
 
 When you search for a pentesting tool, like Nmap, in Application Menu or by Red/Blue Team Menu in GNOME, where the terminal is invoked but with no output, just go to the Virtual Machine settings and disable 3D Acceleration.
 
-### Virtual machine freezes randomly after a while in VMware Workstation Pro 17.x
+#### Virtual machine freezes randomly after a while in VMware Workstation Pro 17.x
 
 Uninstall VMware Workstation 17 and [download](https://download3.vmware.com/software/WKST-1625-WIN/VMware-workstation-full-16.2.5-20904516.exe) from [VMware website](https://customerconnect.vmware.com/en/downloads/info/slug/desktop_end_user_computing/vmware_workstation_pro/16_0).
 
