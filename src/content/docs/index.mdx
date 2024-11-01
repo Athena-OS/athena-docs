@@ -22,30 +22,34 @@ hero:
       icon: external
 ---
 
-import { Card, CardGrid } from '@astrojs/starlight/components';
+import { Card, CardGrid } from "@astrojs/starlight/components";
 import ScriptWorkaround from "/src/components/ScriptWorkaround.astro";
 import TimelineComponent from "/src/components/TimelineComponent.astro";
 import StatusComponent from "/src/components/StatusComponent.astro";
-import DownloadCards from "/src/components/DownloadCards.jsx"
+import DownloadCards from "/src/components/DownloadCards.jsx";
 
 <StatusComponent />
 <TimelineComponent />
-<DownloadCards client:load/>
+<DownloadCards client:load />
 
 <CardGrid stagger>
   <Card title="Pentesting" icon="add-document">
-    Linked to the **Nixpkgs Repository**, the **biggest and most updated repository ever**!
-    Packages are fully maintained and have always the latest updates.
+    Linked to the **Nixpkgs Repository**, the **biggest and most updated
+    repository ever**! Packages are fully maintained and have always the latest
+    updates.
   </Card>
   <Card title="User-oriented" icon="star">
-    Conceived for **decreasing complexity** coming from Nix-OS nature and **improving user experience**.
+    Conceived for **decreasing complexity** coming from Nix-OS nature and
+    **improving user experience**.
   </Card>
   <Card title="Performance" icon="rocket">
-    **Optimized resource consumption** by retrieving the tools you need only when you use them.
-    Configured to load the **bare minimum** for its purpose. **No useless services** or **modules** consuming your resources.
+    **Optimized resource consumption** by retrieving the tools you need only
+    when you use them. Configured to load the **bare minimum** for its purpose.
+    **No useless services** or **modules** consuming your resources.
   </Card>
   <Card title="Flexibilty" icon="puzzle">
-    Being **flexible** as possible, leading to a unique user experience with the power to change **every aspect** of the distribution.
+    Being **flexible** as possible, leading to a unique user experience with the
+    power to change **every aspect** of the distribution.
   </Card>
 </CardGrid>
 

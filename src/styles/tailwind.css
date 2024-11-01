@@ -185,7 +185,7 @@
     text-align: center;
 }
 .swiper-mobile-container .flag {
-    position: relative;
+    /*position: relative;*/
     display: inline;
     background: #f8f8f8;
     padding: 6px 10px;
@@ -456,4 +456,7 @@
 		display:none;
 	}
   }
-  
+
+.downloadButtonImage {
+    margin-top:0!important;
+}
