@@ -1,139 +1,184 @@
 ---
-const itemsPerPage = 25;
+// const itemsPerPage = 25;
 
-// Fetch all data from Strapi API
-async function fetchAllData() {
-  try {
-    const response = await fetch(`https://cms.athenaos.org/api/packages`, {
-      headers: {
-        Authorization: `Bearer f09f7250dc0a0113ec6bbfa5961e74da677d4454b0277a5074410e40e1fda4aadf37e82c52d7eeb811765427bd3306ac5a16cfb3850b99770630e45561f755c8fc3d543690368f7a2ba99d392e6fad63e5871186d28fdbec25d0372a988d84f21b5261c2bf74f8718d08589e78b9287e39e3a242d66b653baa68f8a9001f2dcb`,
-        "Content-Type": "application/json",
-      },
-    });
-    return await response.json();
-  } catch (error) {
-    console.error("Error fetching data:", error);
-    return { data: [], meta: { pagination: { total: 0 } } };
-  }
-}
+// // Fetch all data from Strapi API
+// async function fetchAllData() {
+//   try {
+//     const response = await fetch(`https://cms.athenaos.org/api/packages`, {
+//       headers: {
+//         Authorization: `Bearer f09f7250dc0a0113ec6bbfa5961e74da677d4454b0277a5074410e40e1fda4aadf37e82c52d7eeb811765427bd3306ac5a16cfb3850b99770630e45561f755c8fc3d543690368f7a2ba99d392e6fad63e5871186d28fdbec25d0372a988d84f21b5261c2bf74f8718d08589e78b9287e39e3a242d66b653baa68f8a9001f2dcb`,
+//         "Content-Type": "application/json",
+//       },
+//     });
+//     return await response.json();
+//   } catch (error) {
+//     console.error("Error fetching data:", error);
+//     return { data: [], meta: { pagination: { total: 0 } } };
+//   }
+// }
 
-const apiResponse = await fetchAllData();
-const packagesdata = apiResponse.data;
-const totalItems = apiResponse.meta.pagination.total;
-const totalPages = Math.ceil(totalItems / itemsPerPage);
+// const apiResponse = await fetchAllData();
+// const packagesdata = apiResponse.data;
+// const totalItems = apiResponse.meta.pagination.total;
+// const totalPages = Math.ceil(totalItems / itemsPerPage);
 ---
 
 <div class="w-full overflow-x-auto">
-  <table
-    id="dataTable"
-    class="w-full table-auto border-collapse my-5 text-base"
-  >
-    <thead>
-      <tr class="text-black text-left bg-accent-600 dark:bg-accent-200">
-        <th class="!py-3 !px-2 w-1/4">Package</th>
-        <th class="!py-3 !px-2 w-1/6">Version</th>
-        <th class="!py-3 !px-2 w-1/2">Description</th>
-        <th class="!py-3 !px-2 w-1/6">Repository</th>
-      </tr>
-    </thead>
-    <tbody>
-      {
-        packagesdata.slice(0, itemsPerPage).map((row) => (
-          <tr>
-            <td class="!py-3 !px-2 text-accent-600 dark:text-accent-200">
-              {row.package_name}
-            </td>
-            <td class="!py-3 !px-2">{row.version}</td>
-            <td class="!py-3 !px-2">{row.description}</td>
-            <td class="!py-3 !px-2">{row.repository}</td>
-          </tr>
-        ))
-      }
-    </tbody>
-  </table>
-  <div
-    id="pagination"
-    class="flex justify-center gap-5 mt-0 py-4 bg-transparent border-y border-gray-300 dark:bg-gray-800/20"
-  >
+  <div role="status" id="loadingSpinner" style="overflow:hidden;">
+    <svg
+      aria-hidden="true"
+      class="inline w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-yellow-400 mx-auto"
+      viewBox="0 0 100 101"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+        fill="currentColor"></path>
+      <path
+        d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+        fill="currentFill"></path>
+    </svg>
+    <span class="sr-only">Loading...</span>
+  </div>
+  <div id="tableContent" class="hidden">
+    <table
+      id="dataTable"
+      class="w-full table-auto border-collapse my-5 text-base"
+    >
+      <thead>
+        <tr class="text-black text-left bg-accent-600 dark:bg-accent-200">
+          <th class="!py-3 !px-2 w-1/4">Package</th>
+          <th class="!py-3 !px-2 w-1/6">Version</th>
+          <th class="!py-3 !px-2 w-1/2">Description</th>
+          <th class="!py-3 !px-2 w-1/6">Repository</th>
+        </tr>
+      </thead>
+      <!-- Table body will be populated dynamically -->
+      <tbody></tbody>
+    </table>
+
+    <!-- Pagination links will be populated dynamically -->
+    <div
+      id="pagination"
+      class="flex justify-center gap-5 mt-0 py-4 bg-transparent border-y border-gray-300 dark:bg-gray-800/20"
+    >
+    </div>
   </div>
 </div>
 
-<script
-  define:vars={{ data: JSON.stringify(packagesdata), itemsPerPage, totalPages }}
->
-  const tableData = JSON.parse(data);
+<script>
+  const itemsPerPage = 25;
 
-  function renderTableRows(startIndex, endIndex) {
-    const tbody = document.querySelector("#dataTable tbody");
-    tbody.innerHTML = "";
-    for (let i = startIndex; i < endIndex && i < tableData.length; i++) {
-      const row = tableData[i];
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td class="!py-3 !px-2 text-accent-600 dark:text-accent-200 w-1/4">${row.package_name}</td>
-        <td class="!py-3 !px-2 w-1/6">${row.version}</td>
-        <td class="!py-3 !px-2 w-1/2">${row.description}</td>
-        <td class="!py-3 !px-2 w-1/6">${row.repository}</td>
-      `;
-      tbody.appendChild(tr);
+  // Fetch all data from Strapi API
+  async function fetchAllData() {
+    try {
+      const response = await fetch(
+        `https://cms.athenaos.org/api/packages?pagination[pageSize]=1000`,
+        {
+          headers: {
+            Authorization: `Bearer f09f7250dc0a0113ec6bbfa5961e74da677d4454b0277a5074410e40e1fda4aadf37e82c52d7eeb811765427bd3306ac5a16cfb3850b99770630e45561f755c8fc3d543690368f7a2ba99d392e6fad63e5871186d28fdbec25d0372a988d84f21b5261c2bf74f8718d08589e78b9287e39e3a242d66b653baa68f8a9001f2dcb`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const apiResponse = await response.json();
+      return apiResponse;
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      return { data: [], meta: { pagination: { total: 0 } } };
     }
   }
 
-  function showPage(pageNumber) {
-    const startIndex = (pageNumber - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    renderTableRows(startIndex, endIndex);
-    updateActivePaginationLink(pageNumber);
-  }
+  // Main function to handle data fetching and pagination setup
+  async function initializeTable() {
+    const apiResponse = await fetchAllData();
+    const tableData = apiResponse.data || [];
+    const totalItems = apiResponse.meta.pagination.total || 0;
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
 
-  function updateActivePaginationLink(pageNumber) {
-    const paginationElement = document.getElementById("pagination");
-    const links = paginationElement.querySelectorAll("a");
-    links.forEach((link) => {
-      if (parseInt(link.textContent) === pageNumber) {
-        link.classList.add(
-          "active",
-          "bg-accent-600",
-          "text-white",
-          "dark:bg-accent-200",
-          "dark:text-gray-900"
-        );
-        link.classList.remove("hover:bg-gray-700", "hover:text-white");
-      } else {
-        link.classList.remove(
-          "active",
-          "bg-accent-600",
-          "text-white",
-          "dark:bg-accent-200",
-          "dark:text-gray-900"
-        );
-        link.classList.add("hover:bg-gray-700", "hover:text-white");
+    // Render table rows based on pagination
+    function renderTableRows(startIndex, endIndex) {
+      const tbody = document.querySelector("#dataTable tbody");
+      tbody.innerHTML = "";
+      for (let i = startIndex; i < endIndex && i < tableData.length; i++) {
+        const row = tableData[i];
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td class="!py-3 !px-2 text-accent-600 dark:text-accent-200 w-1/4">${row.package_name}</td>
+          <td class="!py-3 !px-2 w-1/6">${row.version}</td>
+          <td class="!py-3 !px-2 w-1/2">${row.description}</td>
+          <td class="!py-3 !px-2 w-1/6">${row.repository}</td>
+        `;
+        tbody.appendChild(tr);
       }
-    });
-  }
-
-  function setupPagination() {
-    const paginationElement = document.getElementById("pagination");
-
-    for (let i = 1; i <= totalPages; i++) {
-      const link = document.createElement("a");
-      link.href = "#";
-      link.innerText = i;
-      link.className =
-        "px-3 py-2 no-underline transition-colors hover:bg-gray-700 !text-black hover:text-white";
-
-      link.addEventListener("click", (e) => {
-        e.preventDefault();
-        showPage(i);
-      });
-
-      paginationElement.appendChild(link);
     }
 
-    // Show the first page by default
-    showPage(1);
+    // Show data for a specific page number
+    function showPage(pageNumber) {
+      const startIndex = (pageNumber - 1) * itemsPerPage;
+      const endIndex = startIndex + itemsPerPage;
+      renderTableRows(startIndex, endIndex);
+      updateActivePaginationLink(pageNumber);
+    }
+
+    // Update pagination link styles based on active page
+    function updateActivePaginationLink(pageNumber) {
+      const paginationElement = document.getElementById("pagination");
+      const links = paginationElement.querySelectorAll("a");
+      links.forEach((link) => {
+        if (parseInt(link.textContent) === pageNumber) {
+          link.classList.add(
+            "active",
+            "bg-accent-600",
+            "text-white",
+            "dark:bg-accent-200",
+            "dark:text-gray-900"
+          );
+          link.classList.remove("hover:bg-gray-700", "hover:text-white");
+        } else {
+          link.classList.remove(
+            "active",
+            "bg-accent-600",
+            "text-white",
+            "dark:bg-accent-200",
+            "dark:text-gray-900"
+          );
+          link.classList.add("hover:bg-gray-700", "hover:text-white");
+        }
+      });
+    }
+
+    // Setup pagination links
+    function setupPagination() {
+      const paginationElement = document.getElementById("pagination");
+      paginationElement.innerHTML = ""; // Clear existing pagination links
+
+      for (let i = 1; i <= totalPages; i++) {
+        const link = document.createElement("a");
+        link.href = "#";
+        link.innerText = i;
+        link.className =
+          "px-3 py-2 no-underline transition-colors hover:bg-gray-700 !text-black hover:text-white";
+
+        link.addEventListener("click", (e) => {
+          e.preventDefault();
+          showPage(i);
+        });
+
+        paginationElement.appendChild(link);
+      }
+
+      // Show the first page by default
+      showPage(1);
+    }
+
+    // Initialize pagination setup
+    setupPagination();
+    document.getElementById("tableContent")?.classList.remove("hidden");
+    document.getElementById("loadingSpinner")?.classList.add("hidden");
   }
 
-  // Call the setup function when the DOM is loaded
-  document.addEventListener("DOMContentLoaded", setupPagination);
+  // Start data fetching and table initialization on DOM content load
+  document.addEventListener("DOMContentLoaded", initializeTable);
 </script>
