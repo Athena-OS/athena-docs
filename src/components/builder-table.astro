@@ -4,15 +4,12 @@ const itemsPerPage = 25; // Matching the pageSize from the API response
 // Fetch data from Strapi API
 async function fetchData() {
   try {
-    const response = await fetch(
-      `${import.meta.env.STRAPI_API_URL}/api/builders`,
-      {
-        headers: {
-          Authorization: `Bearer ${import.meta.env.STRAPI_API_TOKEN}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const response = await fetch(`https://cms.athenaos.org/api/builders`, {
+      headers: {
+        Authorization: `Bearer f09f7250dc0a0113ec6bbfa5961e74da677d4454b0277a5074410e40e1fda4aadf37e82c52d7eeb811765427bd3306ac5a16cfb3850b99770630e45561f755c8fc3d543690368f7a2ba99d392e6fad63e5871186d28fdbec25d0372a988d84f21b5261c2bf74f8718d08589e78b9287e39e3a242d66b653baa68f8a9001f2dcb`,
+        "Content-Type": "application/json",
+      },
+    });
     return await response.json();
   } catch (error) {
     console.error("Error fetching data:", error);
