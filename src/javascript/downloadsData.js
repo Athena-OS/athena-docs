@@ -12,6 +12,9 @@ export const data = [
         SHA512:
           "abs118c0267216830b4214dcd2a2d2a3891a97dab6cf2aa5cd398262c0343d89a6beea759b9052a5cd37edccfdab855174a4ef0f56100177548d7c6f91bc0ab414d",
       },
+      downloadURL: "https://cms.athenaos.org/api/downloads/11",
+      enableDownloadCounter: true,
+      downloadsCount: null,
     },
     {
       title: "VMware Image",
@@ -26,6 +29,9 @@ export const data = [
         SHA512:
           "kFJrYlvyVlnqBMGpjRFNWskHzr1Bdv9VTOrqV9HogAspOWpCAzRDEsPiOMMJ1qle",
       },
+      downloadURL: "https://cms.athenaos.org/api/downloads/14",
+      enableDownloadCounter: true,
+      downloadsCount: null,
     },
     {
       title: "VirtualBox Image",
@@ -40,6 +46,9 @@ export const data = [
         SHA512:
           "kFJrYlvyVlnqBMGpjRFNWskHzr1Bdv9VTOrqV9HogAspOWpCAzRDEsPiOMMJ1qle",
       },
+      downloadURL: "https://cms.athenaos.org/api/downloads/16",
+      enableDownloadCounter: true,
+      downloadsCount: null,
     },
     {
       title: "Docker Images",
@@ -54,6 +63,9 @@ export const data = [
         SHA512:
           "kFJrYlvyVlnqBMGpjRFNWskHzr1Bdv9VTOrqV9HogAspOWpCAzRDEsPiOMMJ1qle",
       },
+      downloadURL: "https://hub.docker.com/u/athenaos",
+      enableDownloadCounter: false,
+      downloadsCount: null,
     },
     {
       title: "WSL Image",
@@ -68,6 +80,10 @@ export const data = [
         SHA512:
           "kFJrYlvyVlnqBMGpjRFNWskHzr1Bdv9VTOrqV9HogAspOWpCAzRDEsPiOMMJ1qle",
       },
+      downloadURL:
+        "https://www.microsoft.com/store/productId/9N1M7Q4F1KQF?ocid=pdpshare",
+      enableDownloadCounter: false,
+      downloadsCount: null,
     },
     // ... other items (you can repeat this structure for multiple installers)
   ];
