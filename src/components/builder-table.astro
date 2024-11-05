@@ -1,141 +1,74 @@
----
-const itemsPerPage = 25; // Matching the pageSize from the API response
-
-// Fetch data from Strapi API
-async function fetchData() {
-  try {
-    const response = await fetch(`https://cms.athenaos.org/api/builders`, {
-      headers: {
-        Authorization: `Bearer f09f7250dc0a0113ec6bbfa5961e74da677d4454b0277a5074410e40e1fda4aadf37e82c52d7eeb811765427bd3306ac5a16cfb3850b99770630e45561f755c8fc3d543690368f7a2ba99d392e6fad63e5871186d28fdbec25d0372a988d84f21b5261c2bf74f8718d08589e78b9287e39e3a242d66b653baa68f8a9001f2dcb`,
-        "Content-Type": "application/json",
-      },
-    });
-    return await response.json();
-  } catch (error) {
-    console.error("Error fetching data:", error);
-    return { data: [], meta: { pagination: { total: 0 } } };
-  }
-}
-
-const apiResponse = await fetchData();
-const packagesData = apiResponse.data;
-const totalItems = apiResponse.meta.pagination.total;
-const totalPages = apiResponse.meta.pagination.pageCount;
----
-
 <style>
-  .text-xs {
-    line-height: 1.3rem !important;
+  #loadingSpinner {
+    justify-content: center;
+    align-items: center;
   }
 </style>
-<div class="w-full overflow-x-auto">
+
+<!-- Loading spinner -->
+<div id="loadingSpinner">
+  <div style="overflow:hidden;">
+    <svg
+      aria-hidden="true"
+      class="inline w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-yellow-400 mx-auto"
+      viewBox="0 0 100 101"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+        fill="currentColor"></path>
+      <path
+        d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+        fill="currentFill"></path>
+    </svg>
+    <span class="sr-only">Loading...</span>
+  </div>
+</div>
+<div id="tableContent" class="hidden">
   <table class="w-full border-collapse mb-0 text-sm">
     <thead>
       <tr
         class="text-left text-white bg-accent-600 dark:bg-accent-200 dark:text-gray-900"
       >
-        <th class="!p-2 w-1/6"
-          ><div class="h-full flex items-center whitespace-nowrap">
+        <th class="!p-2 w-1/6">
+          <div class="h-full flex items-center whitespace-nowrap">
             Package Name
-          </div></th
-        >
-        <th class="!p-2 w-1/12"
-          ><div class="h-full flex items-center whitespace-nowrap">
+          </div>
+        </th>
+        <th class="!p-2 w-1/12">
+          <div class="h-full flex items-center whitespace-nowrap">
             Repository
-          </div></th
-        >
-        <th class="!p-2 w-1/6"
-          ><div class="h-full flex items-center whitespace-nowrap">
+          </div>
+        </th>
+        <th class="!p-2 w-1/6">
+          <div class="h-full flex items-center whitespace-nowrap">
             Status x86_64
-          </div></th
-        >
-        <th class="!p-2 w-1/6"
-          ><div class="h-full flex items-center whitespace-nowrap">
+          </div>
+        </th>
+        <th class="!p-2 w-1/6">
+          <div class="h-full flex items-center whitespace-nowrap">
             Status i686
-          </div></th
-        >
-        <th class="!p-2 w-1/6"
-          ><div class="h-full flex items-center whitespace-nowrap">
+          </div>
+        </th>
+        <th class="!p-2 w-1/6">
+          <div class="h-full flex items-center whitespace-nowrap">
             Status ARMv6h
-          </div></th
-        >
-        <th class="!p-2 w-1/6"
-          ><div class="h-full flex items-center whitespace-nowrap">
+          </div>
+        </th>
+        <th class="!p-2 w-1/6">
+          <div class="h-full flex items-center whitespace-nowrap">
             Status ARMv7h
-          </div></th
-        >
-        <th class="!p-2 w-1/6"
-          ><div class="h-full flex items-center whitespace-nowrap">
+          </div>
+        </th>
+        <th class="!p-2 w-1/6">
+          <div class="h-full flex items-center whitespace-nowrap">
             Status AArch64
-          </div></th
-        >
+          </div>
+        </th>
       </tr>
     </thead>
-    <tbody>
-      {
-        packagesData.map((row) => (
-          <tr class="border-b border-gray-200 dark:border-gray-700">
-            <td class="!p-2 text-accent-600 dark:text-accent-200 !align-middle">
-              <div class="flex justify-between">
-                <span class="font-medium">{row.package_name}</span>
-                <span class="text-xs text-gray-500">{row.version}</span>
-              </div>
-            </td>
-            <td class="!p-2 !align-middle">{row.repository}</td>
-            <td class="!p-2 !align-middle">
-              <div class="flex justify-between">
-                <span class="status" data-status={row.status_x86_64}>
-                  {row.status_x86_64}
-                </span>
-                <span class="text-xs text-gray-500">
-                  {row.status_x86_64_version}
-                </span>
-              </div>
-            </td>
-            <td class="!p-2 !align-middle">
-              <div class="flex justify-between">
-                <span class="status" data-status={row.status_i686}>
-                  {row.status_i686}
-                </span>
-                <span class="text-xs text-gray-500">
-                  {row.status_i686_version}
-                </span>
-              </div>
-            </td>
-            <td class="!p-2 !align-middle">
-              <div class="flex justify-between">
-                <span class="status" data-status={row.status_ARMv6h}>
-                  {row.status_ARMv6h}
-                </span>
-                <span class="text-xs text-gray-500">
-                  {row.status_ARMv6h_version}
-                </span>
-              </div>
-            </td>
-            <td class="!p-2 !align-middle">
-              <div class="flex justify-between">
-                <span class="status" data-status={row.Status_ARMv7h}>
-                  {row.Status_ARMv7h}
-                </span>
-                <span class="text-xs text-gray-500">
-                  {row.status_ARMv7h_version}
-                </span>
-              </div>
-            </td>
-            <td class="!p-2 !align-middle">
-              <div class="flex justify-between">
-                <span class="status" data-status={row.status_AArch64}>
-                  {row.status_AArch64}
-                </span>
-                <span class="text-xs text-gray-500">
-                  {row.status_AArch64_version}
-                </span>
-              </div>
-            </td>
-          </tr>
-        ))
-      }
-    </tbody>
+    <tbody id="dataRows"></tbody>
   </table>
   <div
     class="flex justify-center gap-5 mt-0 py-4 bg-transparent border-y border-gray-300 dark:bg-gray-800/20"
@@ -144,10 +77,52 @@ const totalPages = apiResponse.meta.pagination.pageCount;
   </div>
 </div>
 
-<script define:vars={{ totalPages, itemsPerPage }}>
+<script>
+  const itemsPerPage = 25; // Matching the pageSize from the API response
+  let packagesData = [];
+  let totalPages = 0;
+
+  async function fetchData() {
+    try {
+      const response = await fetch(
+        `https://cms.athenaos.org/api/builders?pagination[pageSize]=1000`,
+        {
+          headers: {
+            Authorization: `Bearer f09f7250dc0a0113ec6bbfa5961e74da677d4454b0277a5074410e40e1fda4aadf37e82c52d7eeb811765427bd3306ac5a16cfb3850b99770630e45561f755c8fc3d543690368f7a2ba99d392e6fad63e5871186d28fdbec25d0372a988d84f21b5261c2bf74f8718d08589e78b9287e39e3a242d66b653baa68f8a9001f2dcb`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const apiResponse = await response.json();
+      packagesData = apiResponse.data;
+      totalPages = apiResponse.meta.pagination.pageCount;
+      return true; // Data fetch successful
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      return false; // Data fetch failed
+    }
+  }
+
+  function applyStatusStyles() {
+    const statusElements = document.querySelectorAll(".status");
+    statusElements.forEach((element) => {
+      let status = element.getAttribute("data-status");
+      if (status) {
+        status = status.toLowerCase();
+        if (status === "done") {
+          element.classList.add("text-green-500");
+        } else if (status === "fail") {
+          element.classList.add("text-red-600");
+        } else if (status === "incomplete") {
+          element.classList.add("text-yellow-500");
+        } else if (status === "skip") {
+          element.classList.add("text-gray-400");
+        }
+      }
+    });
+  }
+
   function showPage(pageNumber) {
-    // In a real-world scenario, you would fetch the data for the specific page here
-    // For now, we'll just hide/show rows as a placeholder
     const table = document.querySelector("tbody");
     const rows = table.querySelectorAll("tr");
     const startIndex = (pageNumber - 1) * itemsPerPage;
@@ -208,27 +183,68 @@ const totalPages = apiResponse.meta.pagination.pageCount;
     showPage(1);
   }
 
-  function applyStatusStyles() {
-    const statusElements = document.querySelectorAll(".status");
-    statusElements.forEach((element) => {
-      let status = element.getAttribute("data-status");
-      if (status) {
-        status = status.toLowerCase();
-        if (status === "done") {
-          element.classList.add("text-green-500");
-        } else if (status === "fail") {
-          element.classList.add("text-red-600");
-        } else if (status === "incomplete") {
-          element.classList.add("text-yellow-500");
-        } else if (status === "skip") {
-          element.classList.add("text-gray-400");
-        }
-      }
+  function renderTable() {
+    const dataRows = document.getElementById("dataRows");
+    dataRows.innerHTML = ""; // Clear previous rows
+
+    packagesData.forEach((row) => {
+      const tr = document.createElement("tr");
+      tr.classList.add("border-b", "border-gray-200", "dark:border-gray-700");
+      tr.innerHTML = `
+        <td class="!p-2 text-accent-600 dark:text-accent-200 !align-middle">
+          <div class="flex justify-between">
+            <span class="font-medium">${row.package_name ?? ""}</span>
+            <span class="text-xs text-gray-500" style="line-height:1.3rem!important">${row.version ?? ""}</span>
+          </div>
+        </td>
+        <td class="!p-2 !align-middle">${row.repository ?? ""}</td>
+        <td class="!p-2 !align-middle">
+          <div class="flex justify-between">
+            <span class="status" data-status="${row.status_x86_64 ?? ""}">${row.status_x86_64 ?? ""}</span>
+            <span class="text-xs text-gray-500" style="line-height:1.3rem!important">${row.status_x86_64_version ?? ""}</span>
+          </div>
+        </td>
+        <td class="!p-2 !align-middle">
+          <div class="flex justify-between">
+            <span class="status" data-status="${row.status_i686 ?? ""}">${row.status_i686 ?? ""}</span>
+            <span class="text-xs text-gray-500" style="line-height:1.3rem!important">${row.status_i686_version ?? ""}</span>
+          </div>
+        </td>
+        <td class="!p-2 !align-middle">
+          <div class="flex justify-between">
+            <span class="status" data-status="${row.status_ARMv6h ?? ""}">${row.status_ARMv6h ?? ""}</span>
+            <span class="text-xs text-gray-500 style="line-height:1.3rem!important"">${row.status_ARMv6h_version ?? ""}</span>
+          </div>
+        </td>
+        <td class="!p-2 !align-middle">
+          <div class="flex justify-between">
+            <span class="status" data-status="${row.Status_ARMv7h ?? ""}">${row.Status_ARMv7h ?? ""}</span>
+            <span class="text-xs text-gray-500" style="line-height:1.3rem!important">${row.status_ARMv7h_version ?? ""}</span>
+          </div>
+        </td>
+        <td class="!p-2 !align-middle">
+          <div class="flex justify-between">
+            <span class="status" data-status="${row.status_AArch64 ?? ""}">${row.status_AArch64 ?? ""}</span>
+            <span class="text-xs text-gray-500" style="line-height:1.3rem!important">${row.status_AArch64_version ?? ""}</span>
+          </div>
+        </td>
+      `;
+      dataRows.appendChild(tr);
     });
+    applyStatusStyles();
+    setupPagination();
+
+    // Show the table after rendering rows
+    document.getElementById("tableContent")?.classList.remove("hidden");
+    document.getElementById("loadingSpinner")?.classList.add("hidden");
   }
 
-  document.addEventListener("DOMContentLoaded", () => {
-    setupPagination();
-    applyStatusStyles();
-  });
+  async function initialize() {
+    const success = await fetchData();
+    if (success) {
+      renderTable();
+    }
+  }
+
+  initialize();
 </script>
