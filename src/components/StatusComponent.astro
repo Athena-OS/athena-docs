@@ -1,5 +1,4 @@
 ---
-import "../styles/bulletin.scss";
 import { Icon } from '@astrojs/starlight/components';
 ---
 
@@ -16,7 +15,7 @@ import { Icon } from '@astrojs/starlight/components';
 			<ul class="notification-list">
 				<li>
 					🟠 Athena OS has been revamped and is currently available under both Arch and Nix/NixOS as a pre-release.</br>
-					Please report bug(s) if encoutered, via GitHub Issues or our
+					Please report bug(s) via GitHub Issues or our
 					<a
 						style="text-decoration: none; cursor: pointer;"
 						href="https://discord.gg/athena-os-977645785170714644"
@@ -32,9 +31,11 @@ import { Icon } from '@astrojs/starlight/components';
 
 <script>
 const closeIcon = document.querySelector('.close-icon');
-
-closeIcon.addEventListener('click', function(event) {
-    notificationContainer.style.display = 'none';
+const notificationContainer: any = document.querySelector(
+  "#notificationContainer"
+);
+closeIcon.addEventListener("click", function (event: any) {
+    notificationContainer.style.display = "none";
     event.stopPropagation(); // Prevent triggering the container's click event
 });
 

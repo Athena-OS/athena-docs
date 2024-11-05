@@ -1,0 +1,237 @@
+---
+const itemsPerPage = 25; // Matching the pageSize from the API response
+
+// Fetch data from Strapi API
+async function fetchData() {
+  try {
+    const response = await fetch(
+      `${import.meta.env.STRAPI_API_URL}/api/builders`,
+      {
+        headers: {
+          Authorization: `Bearer ${import.meta.env.STRAPI_API_TOKEN}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return { data: [], meta: { pagination: { total: 0 } } };
+  }
+}
+
+const apiResponse = await fetchData();
+const packagesData = apiResponse.data;
+const totalItems = apiResponse.meta.pagination.total;
+const totalPages = apiResponse.meta.pagination.pageCount;
+---
+
+<style>
+  .text-xs {
+    line-height: 1.3rem !important;
+  }
+</style>
+<div class="w-full overflow-x-auto">
+  <table class="w-full border-collapse mb-0 text-sm">
+    <thead>
+      <tr
+        class="text-left text-white bg-accent-600 dark:bg-accent-200 dark:text-gray-900"
+      >
+        <th class="!p-2 w-1/6"
+          ><div class="h-full flex items-center whitespace-nowrap">
+            Package Name
+          </div></th
+        >
+        <th class="!p-2 w-1/12"
+          ><div class="h-full flex items-center whitespace-nowrap">
+            Repository
+          </div></th
+        >
+        <th class="!p-2 w-1/6"
+          ><div class="h-full flex items-center whitespace-nowrap">
+            Status x86_64
+          </div></th
+        >
+        <th class="!p-2 w-1/6"
+          ><div class="h-full flex items-center whitespace-nowrap">
+            Status i686
+          </div></th
+        >
+        <th class="!p-2 w-1/6"
+          ><div class="h-full flex items-center whitespace-nowrap">
+            Status ARMv6h
+          </div></th
+        >
+        <th class="!p-2 w-1/6"
+          ><div class="h-full flex items-center whitespace-nowrap">
+            Status ARMv7h
+          </div></th
+        >
+        <th class="!p-2 w-1/6"
+          ><div class="h-full flex items-center whitespace-nowrap">
+            Status AArch64
+          </div></th
+        >
+      </tr>
+    </thead>
+    <tbody>
+      {
+        packagesData.map((row) => (
+          <tr class="border-b border-gray-200 dark:border-gray-700">
+            <td class="!p-2 text-accent-600 dark:text-accent-200 !align-middle">
+              <div class="flex justify-between">
+                <span class="font-medium">{row.package_name}</span>
+                <span class="text-xs text-gray-500">{row.version}</span>
+              </div>
+            </td>
+            <td class="!p-2 !align-middle">{row.repository}</td>
+            <td class="!p-2 !align-middle">
+              <div class="flex justify-between">
+                <span class="status" data-status={row.status_x86_64}>
+                  {row.status_x86_64}
+                </span>
+                <span class="text-xs text-gray-500">
+                  {row.status_x86_64_version}
+                </span>
+              </div>
+            </td>
+            <td class="!p-2 !align-middle">
+              <div class="flex justify-between">
+                <span class="status" data-status={row.status_i686}>
+                  {row.status_i686}
+                </span>
+                <span class="text-xs text-gray-500">
+                  {row.status_i686_version}
+                </span>
+              </div>
+            </td>
+            <td class="!p-2 !align-middle">
+              <div class="flex justify-between">
+                <span class="status" data-status={row.status_ARMv6h}>
+                  {row.status_ARMv6h}
+                </span>
+                <span class="text-xs text-gray-500">
+                  {row.status_ARMv6h_version}
+                </span>
+              </div>
+            </td>
+            <td class="!p-2 !align-middle">
+              <div class="flex justify-between">
+                <span class="status" data-status={row.Status_ARMv7h}>
+                  {row.Status_ARMv7h}
+                </span>
+                <span class="text-xs text-gray-500">
+                  {row.status_ARMv7h_version}
+                </span>
+              </div>
+            </td>
+            <td class="!p-2 !align-middle">
+              <div class="flex justify-between">
+                <span class="status" data-status={row.status_AArch64}>
+                  {row.status_AArch64}
+                </span>
+                <span class="text-xs text-gray-500">
+                  {row.status_AArch64_version}
+                </span>
+              </div>
+            </td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+  <div
+    class="flex justify-center gap-5 mt-0 py-4 bg-transparent border-y border-gray-300 dark:bg-gray-800/20"
+    id="pagination"
+  >
+  </div>
+</div>
+
+<script define:vars={{ totalPages, itemsPerPage }}>
+  function showPage(pageNumber) {
+    // In a real-world scenario, you would fetch the data for the specific page here
+    // For now, we'll just hide/show rows as a placeholder
+    const table = document.querySelector("tbody");
+    const rows = table.querySelectorAll("tr");
+    const startIndex = (pageNumber - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+
+    rows.forEach((row, index) => {
+      if (index >= startIndex && index < endIndex) {
+        row.classList.remove("hidden");
+      } else {
+        row.classList.add("hidden");
+      }
+    });
+
+    updateActivePaginationLink(pageNumber);
+  }
+
+  function updateActivePaginationLink(activePage) {
+    const paginationLinks = document.querySelectorAll("#pagination a");
+    paginationLinks.forEach((link, index) => {
+      if (index + 1 === activePage) {
+        link.classList.add(
+          "bg-accent-600",
+          "text-white",
+          "dark:bg-accent-200",
+          "dark:text-gray-900"
+        );
+        link.classList.remove("hover:bg-gray-700", "hover:text-white");
+      } else {
+        link.classList.remove(
+          "bg-accent-600",
+          "text-white",
+          "dark:bg-accent-200",
+          "dark:text-gray-900"
+        );
+        link.classList.add("hover:bg-gray-700", "hover:text-white");
+      }
+    });
+  }
+
+  function setupPagination() {
+    const paginationElement = document.getElementById("pagination");
+
+    for (let i = 1; i <= totalPages; i++) {
+      const link = document.createElement("a");
+      link.href = "#";
+      link.textContent = i;
+      link.className =
+        "px-3 py-2 no-underline transition-colors hover:bg-gray-700 !text-black hover:text-white";
+
+      link.addEventListener("click", (e) => {
+        e.preventDefault();
+        showPage(i);
+      });
+
+      paginationElement.appendChild(link);
+    }
+
+    showPage(1);
+  }
+
+  function applyStatusStyles() {
+    const statusElements = document.querySelectorAll(".status");
+    statusElements.forEach((element) => {
+      let status = element.getAttribute("data-status");
+      if (status) {
+        status = status.toLowerCase();
+        if (status === "done") {
+          element.classList.add("text-green-500");
+        } else if (status === "fail") {
+          element.classList.add("text-red-600");
+        } else if (status === "incomplete") {
+          element.classList.add("text-yellow-500");
+        } else if (status === "skip") {
+          element.classList.add("text-gray-400");
+        }
+      }
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    setupPagination();
+    applyStatusStyles();
+  });
+</script>
