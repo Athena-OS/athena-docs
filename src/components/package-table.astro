@@ -68,13 +68,13 @@
 </div>
 
 <script>
-  const itemsPerPage = 1000;
+  const itemsPerPage = 3000;
 
   // Fetch all data from Strapi API
   async function fetchAllData() {
     try {
       const response = await fetch(
-        `https://cms.athenaos.org/api/packages?pagination[pageSize]=1000`,
+        `https://cms.athenaos.org/api/packages?pagination[pageSize]=3000`,
         {
           headers: {
             Authorization: `Bearer f09f7250dc0a0113ec6bbfa5961e74da677d4454b0277a5074410e40e1fda4aadf37e82c52d7eeb811765427bd3306ac5a16cfb3850b99770630e45561f755c8fc3d543690368f7a2ba99d392e6fad63e5871186d28fdbec25d0372a988d84f21b5261c2bf74f8718d08589e78b9287e39e3a242d66b653baa68f8a9001f2dcb`,
