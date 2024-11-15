@@ -1,14 +1,15 @@
 ---
 import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
-import PackageTable from "@components/package-table.astro";
+import BuilderTable from "@components/builder-table.astro";
 ---
 
 <StarlightPage
-  frontmatter={{ title: "Packages", tableOfContents: false }}
+  frontmatter={{ title: "Builder", tableOfContents: false }}
   hasSidebar={false}
 >
-  <PackageTable />
+  <BuilderTable currentPage={1} />
 </StarlightPage>
+
 <style is:inline>
   .sl-container {
     max-width: 80rem !important;

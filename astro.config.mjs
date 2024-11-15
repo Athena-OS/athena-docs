@@ -35,27 +35,72 @@ export default defineConfig({
             // Each item here is one entry in the navigation menu.
             { label: "Manifesto", link: "/en/getting-started/manifesto" },
             { label: "Why Athena OS?", link: "/en/getting-started/athenaos" },
-            { label: "Downloading Athena OS", link: "/en/getting-started/download" },
+            {
+              label: "Downloading Athena OS",
+              link: "/en/getting-started/download",
+            },
           ],
         },
         {
           label: "Installation",
           items: [
             // Each item here is one entry in the navigation menu.
-            { label: "Installation prepare", link: "/en/installation/prepare-install" },
-            { label: "Installing as single boot", link: "/en/installation/install-single-boot" },
-            { label: "Installing as dual boot with Linux or Windows", link: "/en/installation/install-dual-boot" },
-            { label: "Installing by NixOS", link: "/en/installation/install-nixos" },
-            { label: "Installing as persistent USB", link: "/en/installation/install-persistent-usb" },
-            { label: "Installing as guest in VMware", link: "/en/installation/install-guest-vmware" },
-            { label: "Installing as guest in VirtualBox", link: "/en/installation/install-guest-virtualbox" },
-            { label: "Installing as guest in Hyper-V", link: "/en/installation/install-guest-hyperv" },
-            { label: "Installing as guest in QEMU/KVM", link: "/en/installation/install-guest-qemu" },
-            { label: "Installing as guest in Quickemu", link: "/en/installation/install-guest-quickemu" },
-            { label: "Installing as guest in Parallels", link: "/en/installation/install-guest-parallels" },
-            { label: "Installing as guest in UTM", link: "/en/installation/install-guest-utm" },
-            { label: "Updating Athena OS", link: "/en/installation/update-athena" },
-            { label: "Aegis Installer TUI", link: "/en/installation/aegis-tui" },
+            {
+              label: "Installation prepare",
+              link: "/en/installation/prepare-install",
+            },
+            {
+              label: "Installing as single boot",
+              link: "/en/installation/install-single-boot",
+            },
+            {
+              label: "Installing as dual boot with Linux or Windows",
+              link: "/en/installation/install-dual-boot",
+            },
+            {
+              label: "Installing by NixOS",
+              link: "/en/installation/install-nixos",
+            },
+            {
+              label: "Installing as persistent USB",
+              link: "/en/installation/install-persistent-usb",
+            },
+            {
+              label: "Installing as guest in VMware",
+              link: "/en/installation/install-guest-vmware",
+            },
+            {
+              label: "Installing as guest in VirtualBox",
+              link: "/en/installation/install-guest-virtualbox",
+            },
+            {
+              label: "Installing as guest in Hyper-V",
+              link: "/en/installation/install-guest-hyperv",
+            },
+            {
+              label: "Installing as guest in QEMU/KVM",
+              link: "/en/installation/install-guest-qemu",
+            },
+            {
+              label: "Installing as guest in Quickemu",
+              link: "/en/installation/install-guest-quickemu",
+            },
+            {
+              label: "Installing as guest in Parallels",
+              link: "/en/installation/install-guest-parallels",
+            },
+            {
+              label: "Installing as guest in UTM",
+              link: "/en/installation/install-guest-utm",
+            },
+            {
+              label: "Updating Athena OS",
+              link: "/en/installation/update-athena",
+            },
+            {
+              label: "Aegis Installer TUI",
+              link: "/en/installation/aegis-tui",
+            },
           ],
         },
         {
@@ -66,7 +111,10 @@ export default defineConfig({
             // { label: "Calamares Installer", link: "/en/configuration/calamares" },
             { label: "Kernel", link: "/en/configuration/kernel" },
             { label: "Shell", link: "/en/configuration/shell" },
-            { label: "Display Manager", link: "/en/configuration/display-manager" },
+            {
+              label: "Display Manager",
+              link: "/en/configuration/display-manager",
+            },
             { label: "GNOME", link: "/en/configuration/gnome" },
             { label: "Bspwm", link: "/en/configuration/bspwm" },
             { label: "KDE Plasma", link: "/en/configuration/kde" },
@@ -86,15 +134,27 @@ export default defineConfig({
           items: [
             // Each item here is one entry in the navigation menu.
             { label: "Athena Welcome", link: "/en/resources/athena-welcome" },
-            { label: "Pentesting Tools", link: "/en/resources/pentesting-tools" },
+            {
+              label: "Pentesting Tools",
+              link: "/en/resources/pentesting-tools",
+            },
             { label: "Athena Cyber Hub", link: "/en/resources/cyber-hub" },
-            { label: "Hack The Box Toolkit", link: "/en/resources/htb-toolkit" },
+            {
+              label: "Hack The Box Toolkit",
+              link: "/en/resources/htb-toolkit",
+            },
             { label: "PWNage Menu", link: "/en/resources/pwnage-menu" },
             { label: "Blue Team Menu", link: "/en/resources/blueteam-menu" },
             { label: "Red Team Menu", link: "/en/resources/redteam-menu" },
             { label: "Payload to Dock", link: "/en/resources/payload-dock" },
-            { label: "Payload Environment Variables", link: "/en/resources/payload-variables" },
-            { label: "Browser Pentesting Resources", link: "/en/resources/browser-pentesting" },
+            {
+              label: "Payload Environment Variables",
+              link: "/en/resources/payload-variables",
+            },
+            {
+              label: "Browser Pentesting Resources",
+              link: "/en/resources/browser-pentesting",
+            },
             { label: "NIST Feed", link: "/en/resources/nist-feed" },
             { label: "Devotio", link: "/en/resources/devotio" },
           ],
@@ -138,11 +198,23 @@ export default defineConfig({
             { label: "Getting Help", link: "/en/community/getting-help" },
             //{ label: "Official Athena OS Mirrors", link: "/en/community/mirrors" },
             { label: "Style Guide", link: "/en/community/style-guide" },
-            { label: "Setting up a Mirror", link: "/en/community/setting-mirror" },
+            {
+              label: "Setting up a Mirror",
+              link: "/en/community/setting-mirror",
+            },
             { label: "Submitting Bugs", link: "/en/community/submitting-bugs" },
-            { label: "Submitting Themes", link: "/en/community/submitting-themes" },
-            { label: "Submitting Tools in Nix", link: "/en/community/submitting-tools-nix" },
-            { label: "Submitting Tools in Arch", link: "/en/community/submitting-tools-arch" },
+            {
+              label: "Submitting Themes",
+              link: "/en/community/submitting-themes",
+            },
+            {
+              label: "Submitting Tools in Nix",
+              link: "/en/community/submitting-tools-nix",
+            },
+            {
+              label: "Submitting Tools in Arch",
+              link: "/en/community/submitting-tools-arch",
+            },
           ],
         },
         {
@@ -158,13 +230,34 @@ export default defineConfig({
             // Each item here is one entry in the navigation menu.
             { label: "Athena OS EULA", link: "/en/policy/eula-policy" },
             // { label: "Athena OS Network Service Policy", link: "/en/policy/network-policy" },
-            { label: "Athena OS Code of Conduct", link: "/en/policy/code-of-conduct" },
-            { label: "Athena OS Collaboration Policy", link: "/en/policy/collaboration-policy" },
-            { label: "Athena OS Open Source Policy", link: "/en/policy/opensource-policy" },
-            { label: "Athena OS Package Policy", link: "/en/policy/package-policy" },
-            { label: "Athena OS Pentesting Tools Policy", link: "/en/policy/tools-policy" },
-            { label: "Athena OS Privacy Policy", link: "/en/policy/privacy-policy" },
-            { label: "Athena OS Update Policy", link: "/en/policy/update-policy" },
+            {
+              label: "Athena OS Code of Conduct",
+              link: "/en/policy/code-of-conduct",
+            },
+            {
+              label: "Athena OS Collaboration Policy",
+              link: "/en/policy/collaboration-policy",
+            },
+            {
+              label: "Athena OS Open Source Policy",
+              link: "/en/policy/opensource-policy",
+            },
+            {
+              label: "Athena OS Package Policy",
+              link: "/en/policy/package-policy",
+            },
+            {
+              label: "Athena OS Pentesting Tools Policy",
+              link: "/en/policy/tools-policy",
+            },
+            {
+              label: "Athena OS Privacy Policy",
+              link: "/en/policy/privacy-policy",
+            },
+            {
+              label: "Athena OS Update Policy",
+              link: "/en/policy/update-policy",
+            },
             { label: "Athena OS User Policy", link: "/en/policy/user-policy" },
             // { label: "Cookie Policy", link: "/en/policy/cookie-policy" },
           ],

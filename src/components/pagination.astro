@@ -1,0 +1,130 @@
+---
+let { currentPage, totalPages, totalItems, itemsPerPage, resourceName } =
+  Astro.props;
+
+function paginate(array: Number[], pageSize = 1) {
+  const length = array.length;
+
+  if (length <= 9) {
+    return array;
+  }
+
+  const start = Math.max(0, currentPage - 4);
+  const end = Math.min(length, currentPage + 4 + pageSize);
+
+  const result = [];
+
+  if (start > 0) {
+    result.push(...array.slice(0, 1), "...");
+  }
+
+  result.push(...array.slice(start, end));
+
+  if (end < length) {
+    result.push("...", ...array.slice(-1));
+  }
+
+  return result;
+}
+
+let items = Array.from({ length: totalPages }).map((_, i) => i + 1);
+const paginatedItems = paginate(items);
+---
+
+<div>
+  <p class="text-xs text-gray-700 dark:text-gray-400 font-mono mt-2 text-right">
+    Showing
+    <span class="font-medium"
+      >{currentPage - 1 === 0 ? 1 : (currentPage - 1) * itemsPerPage}</span
+    >
+    to
+    <span class="font-medium"
+      >{
+        currentPage * itemsPerPage > totalItems
+          ? totalItems
+          : currentPage * itemsPerPage
+      }</span
+    >
+    of
+    <span class="font-medium">{totalItems}</span>
+    results
+  </p>
+</div>
+
+<nav
+  class="flex items-center justify-between border-t border-gray-200 px-4 sm:px-0"
+>
+  <div class="-mt-px flex w-0 flex-1">
+    {
+      currentPage === 0 || currentPage === 1 ? null : (
+        <a
+          href={`/${resourceName}/${currentPage - 1}`}
+          class="inline-flex items-center border-t-2 border-transparent pr-1 pt-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700"
+          style="text-decoration-line: none; font-size: 0.875rem; line-height: 1.25rem;"
+        >
+          <svg
+            class="mr-3 h-5 w-5 text-gray-400"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+            aria-hidden="true"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M18 10a.75.75 0 01-.75.75H4.66l2.1 1.95a.75.75 0 11-1.02 1.1l-3.5-3.25a.75.75 0 010-1.1l3.5-3.25a.75.75 0 111.02 1.1l-2.1 1.95h12.59A.75.75 0 0118 10z"
+              clip-rule="evenodd"
+            />
+          </svg>
+          Previous
+        </a>
+      )
+    }
+  </div>
+  <div class="hidden md:-mt-px md:flex">
+    {
+      paginatedItems.map((page: Number | string) => {
+        return page === "..." ? (
+          <span
+            style={`font-size: 0.875rem; line-height: 1.25rem;`}
+            class="inline-flex items-center border-t-2 border-transparent px-4 pt-4 text-sm font-medium text-gray-500 select-none"
+          >
+            ...
+          </span>
+        ) : (
+          <a
+            href={`/${resourceName}/${page}`}
+            class={`inline-flex items-center border-t-2 border-transparent px-4 pt-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700 ${+currentPage === +page ? "border-indigo-500 text-indigo-600" : "border-transparent text-gray-500 dark:text-fuchsia-50 hover:text-gray-700 hover:border-gray-300"}`}
+            style={`${+currentPage === +page ? "border-color: #6366f1; color:#6366f1; text-decoration-line: none;" : "text-decoration-line: none;"} font-size: 0.875rem; line-height: 1.25rem;`}
+          >
+            {page}
+          </a>
+        );
+      })
+    }
+  </div>
+
+  {
+    currentPage === +totalPages ? null : (
+      <div class="-mt-px flex w-0 flex-1 justify-end">
+        <a
+          href={`/${resourceName}/${currentPage + 1}`}
+          class="inline-flex items-center border-t-2 border-transparent pl-1 pt-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700"
+          style="text-decoration-line: none; font-size: 0.875rem; line-height: 1.25rem;"
+        >
+          Next
+          <svg
+            class="ml-3 h-5 w-5 text-gray-400"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+            aria-hidden="true"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M2 10a.75.75 0 01.75-.75h12.59l-2.1-1.95a.75.75 0 111.02-1.1l3.5 3.25a.75.75 0 010 1.1l-3.5 3.25a.75.75 0 11-1.02-1.1l2.1-1.95H2.75A.75.75 0 012 10z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </a>
+      </div>
+    )
+  }
+</nav>

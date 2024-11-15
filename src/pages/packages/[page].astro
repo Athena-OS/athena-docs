@@ -1,0 +1,43 @@
+---
+import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+import PackageTable from "@components/package-table.astro";
+
+export async function getStaticPaths() {
+  const itemsPerPage = 100;
+  let currentPage = 1;
+  const response = await fetch(
+    `${import.meta.env.STRAPI_URL}/api/packages?pagination[page]=${currentPage}&pagination[pageSize]=${itemsPerPage}&sort[1]=package_name:asc`,
+    {
+      headers: {
+        Authorization: `Bearer ${import.meta.env.STRAPI_READONLY_TOKEN}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  const apiResponse = await response.json();
+
+  let totalPages = apiResponse.meta.pagination.pageCount;
+  let params = Array.from({
+    length: +totalPages,
+  }).map((_, page) => {
+    return { params: { page: page + 1 } };
+  });
+
+  return params;
+}
+
+let { page } = Astro.params;
+---
+
+<StarlightPage
+  frontmatter={{ title: "Packages", tableOfContents: false }}
+  hasSidebar={false}
+>
+  <PackageTable currentPage={page} />
+</StarlightPage>
+
+<style is:inline>
+  .sl-container {
+    max-width: 80rem !important;
+  }
+</style>
