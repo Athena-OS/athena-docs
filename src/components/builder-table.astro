@@ -1,5 +1,4 @@
 ---
-import { getLogURL } from "src/lib/getLogURL";
 import Pagination from "./pagination.astro";
 import SearchPackages from "./search-packages.astro";
 
@@ -21,7 +20,11 @@ type Package = {
   updatedAt: Date;
   publishedAt: Date;
   locale: string;
-  log_link: string;
+  status_x86_64_logs: null | string;
+  status_i686_logs: null | string;
+  status_ARMv6h_logs: null | string;
+  status_ARMv7h_logs: null | string;
+  status_AArch64_logs: null | string;
 };
 
 let { currentPage } = Astro.props;
@@ -40,15 +43,7 @@ const response = await fetch(
 );
 const apiResponse = await response.json();
 
-let logURL = "https://logs.athenaos.org/";
-const logResponse = await fetch(logURL);
-const logHtml = await logResponse.text();
-
-let builderData = apiResponse.data.map((p: Package) => ({
-  ...p,
-  log_link: logURL + getLogURL(logHtml, p.package_name) + ".log",
-}));
-
+let builderData = apiResponse.data;
 let totalPages = apiResponse.meta.pagination.pageCount;
 let totalPackages = apiResponse.meta.pagination.total;
 ---
@@ -113,70 +108,174 @@ let totalPackages = apiResponse.meta.pagination.total;
                   </div>
                 </td>
                 <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-900">
-                  <a
-                    href={row.log_link}
-                    style="text-decoration-line: none; font-size: 0.875rem; line-height: 1.25rem;"
-                    class="flex justify-between hover:opacity-80"
-                  >
-                    <span class="status" data-status={row.status_x86_64 ?? ""}>
-                      {row.status_x86_64 ?? ""}
-                    </span>
-                    <span
-                      class="text-xs text-gray-500 dark:text-gray-400"
-                      style="line-height:1.3rem!important"
+                  {row?.status_x86_64_logs ? (
+                    <a
+                      href={row.status_x86_64_logs}
+                      style="text-decoration-line: none; font-size: 0.875rem; line-height: 1.25rem;"
+                      class="flex justify-between gap-x-2 hover:opacity-80"
                     >
-                      {row.status_x86_64_version ?? ""}
-                    </span>
-                  </a>
+                      <span
+                        class="status"
+                        data-status={row.status_x86_64 ?? ""}
+                      >
+                        {row.status_x86_64 ?? ""}
+                      </span>
+                      <span
+                        class="text-xs text-gray-500 dark:text-gray-400"
+                        style="line-height:1.3rem!important"
+                      >
+                        {row.status_x86_64_version ?? ""}
+                      </span>
+                    </a>
+                  ) : (
+                    <div class="flex justify-between gap-x-2">
+                      <span
+                        class="status"
+                        data-status={row.status_x86_64 ?? ""}
+                      >
+                        {row.status_x86_64 ?? ""}
+                      </span>
+                      <span
+                        class="text-xs text-gray-500 dark:text-gray-400"
+                        style="line-height:1.3rem!important"
+                      >
+                        {row.status_x86_64_version ?? ""}
+                      </span>
+                    </div>
+                  )}
                 </td>
                 <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
-                  <div class="flex items-center justify-between ">
-                    <span class="status" data-status={row.status_i686 ?? ""}>
-                      {row.status_i686 ?? ""}
-                    </span>
-                    <span
-                      class="text-xs text-gray-500 dark:text-gray-400"
-                      style="line-height:1.3rem!important"
+                  {row?.status_i686_logs ? (
+                    <a
+                      href={row?.status_i686_logs}
+                      style="text-decoration-line: none; font-size: 0.875rem; line-height: 1.25rem;"
+                      class="flex justify-between gap-x-2 hover:opacity-80"
                     >
-                      {row.status_i686_version ?? ""}
-                    </span>
-                  </div>
+                      <span class="status" data-status={row.status_i686 ?? ""}>
+                        {row.status_i686 ?? ""}
+                      </span>
+                      <span
+                        class="text-xs text-gray-500 dark:text-gray-400"
+                        style="line-height:1.3rem!important"
+                      >
+                        {row.status_i686_version ?? ""}
+                      </span>
+                    </a>
+                  ) : (
+                    <div class="flex justify-between gap-x-2">
+                      <span class="status" data-status={row.status_i686 ?? ""}>
+                        {row.status_i686 ?? ""}
+                      </span>
+                      <span
+                        class="text-xs text-gray-500 dark:text-gray-400"
+                        style="line-height:1.3rem!important"
+                      >
+                        {row.status_i686_version ?? ""}
+                      </span>
+                    </div>
+                  )}
                 </td>
                 <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
-                  <div class="flex items-center justify-between ">
-                    <span class="status" data-status={row.status_ARMv6h ?? ""}>
-                      {row.status_ARMv6h ?? ""}
-                    </span>
-                    <span
-                      class="text-xs text-gray-500 dark:text-gray-400"
-                      style="line-height:1.3rem !important"
+                  {row?.status_ARMv6h_logs ? (
+                    <a
+                      href={row.status_ARMv6h_logs}
+                      class="flex items-center justify-between "
                     >
-                      {row.status_ARMv6h_version ?? ""}
-                    </span>
-                  </div>
+                      <span
+                        class="status"
+                        data-status={row.status_ARMv6h ?? ""}
+                      >
+                        {row.status_ARMv6h ?? ""}
+                      </span>
+                      <span
+                        class="text-xs text-gray-500 dark:text-gray-400"
+                        style="line-height:1.3rem !important"
+                      >
+                        {row.status_ARMv6h_version ?? ""}
+                      </span>
+                    </a>
+                  ) : (
+                    <div class="flex items-center justify-between ">
+                      <span
+                        class="status"
+                        data-status={row.status_ARMv6h ?? ""}
+                      >
+                        {row.status_ARMv6h ?? ""}
+                      </span>
+                      <span
+                        class="text-xs text-gray-500 dark:text-gray-400"
+                        style="line-height:1.3rem !important"
+                      >
+                        {row.status_ARMv6h_version ?? ""}
+                      </span>
+                    </div>
+                  )}
                 </td>
                 <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
-                  <div class="flex items-center justify-between ">
-                    <span class="status" data-status={row.Status_ARMv7h ?? ""}>
-                      {row.Status_ARMv7h ?? ""}
-                    </span>
-                    <span
-                      class="text-xs text-gray-500 dark:text-gray-400"
-                      style="line-height:1.3rem!important"
+                  {row?.status_ARMv7h_logs ? (
+                    <a
+                      href={row.status_ARMv7h_logs}
+                      class="flex items-center justify-between "
                     >
-                      {row.status_ARMv7h_version ?? ""}
-                    </span>
-                  </div>
+                      <span
+                        class="status"
+                        data-status={row.Status_ARMv7h ?? ""}
+                      >
+                        {row.Status_ARMv7h ?? ""}
+                      </span>
+                      <span
+                        class="text-xs text-gray-500 dark:text-gray-400"
+                        style="line-height:1.3rem!important"
+                      >
+                        {row.status_ARMv7h_version ?? ""}
+                      </span>
+                    </a>
+                  ) : (
+                    <div class="flex items-center justify-between ">
+                      <span
+                        class="status"
+                        data-status={row.Status_ARMv7h ?? ""}
+                      >
+                        {row.Status_ARMv7h ?? ""}
+                      </span>
+                      <span
+                        class="text-xs text-gray-500 dark:text-gray-400"
+                        style="line-height:1.3rem!important"
+                      >
+                        {row.status_ARMv7h_version ?? ""}
+                      </span>
+                    </div>
+                  )}
                 </td>
                 <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
-                  <div class="flex items-center justify-between ">
-                    <span class="status" data-status={row.status_AArch64 ?? ""}>
-                      {row.status_AArch64 ?? ""}
-                    </span>
-                    <span class="relative whitespace-nowrap py-2 pl-3 pr-4 text-right sm:pr-0 text-xs text-gray-500 dark:text-gray-400">
-                      {row.status_AArch64_version ?? ""}
-                    </span>
-                  </div>
+                  {row?.status_AArch64_logs ? (
+                    <a
+                      href={row.status_AArch64_logs}
+                      class="flex items-center justify-between "
+                    >
+                      <span
+                        class="status"
+                        data-status={row.status_AArch64 ?? ""}
+                      >
+                        {row.status_AArch64 ?? ""}
+                      </span>
+                      <span class="relative whitespace-nowrap py-2 pl-3 pr-4 text-right sm:pr-0 text-xs text-gray-500 dark:text-gray-400">
+                        {row.status_AArch64_version ?? ""}
+                      </span>
+                    </a>
+                  ) : (
+                    <div class="flex items-center justify-between ">
+                      <span
+                        class="status"
+                        data-status={row.status_AArch64 ?? ""}
+                      >
+                        {row.status_AArch64 ?? ""}
+                      </span>
+                      <span class="relative whitespace-nowrap py-2 pl-3 pr-4 text-right sm:pr-0 text-xs text-gray-500 dark:text-gray-400">
+                        {row.status_AArch64_version ?? ""}
+                      </span>
+                    </div>
+                  )}
                 </td>
               </tr>
             ))
@@ -195,7 +294,7 @@ let totalPackages = apiResponse.meta.pagination.total;
   resourceName="builder"
 />
 
-<script define:vars={{ strapiURL, bearerToken, logHtml }}>
+<script define:vars={{ strapiURL, bearerToken }}>
   const originalData = document.getElementById("dataRows").innerHTML;
 
   function applyStatusStyles() {
@@ -222,24 +321,8 @@ let totalPackages = apiResponse.meta.pagination.total;
   async function renderTable(packagesData) {
     const dataRows = document.getElementById("dataRows");
     dataRows.innerHTML = "";
-    let logURL = "https://logs.athenaos.org/";
 
-    function getLogURL(inputString, searchWord) {
-      try {
-        let word = searchWord.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-        const regex = new RegExp(`\\b${word}-[\\w_]+`, "g");
-        const match = inputString.match(regex);
-        return match ? match[0] : null;
-      } catch (e) {
-        console.log("Error in getLogURL happened with " + searchWord, e);
-        return null;
-      }
-    }
-
-    let data = packagesData.data.map((p) => ({
-      ...p,
-      log_link: logURL + getLogURL(logHtml, p.package_name) + ".log",
-    }));
+    let data = packagesData.data;
 
     data.map((row) => {
       const tr = document.createElement("tr");
@@ -253,70 +336,101 @@ let totalPackages = apiResponse.meta.pagination.total;
                   </div>
                 </td>
                 <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-900">
-                  <a
-                    href=${row.log_link}
-                    style="text-decoration-line: none; font-size: 0.875rem; line-height: 1.25rem;"
-                    class="flex justify-between hover:opacity-80"
-                  >
-                    <span class="status" data-status=${row.status_x86_64 ?? ""}>
-                      ${row.status_x86_64 ?? ""}
-                    </span>
-                    <span
-                      class="text-xs text-gray-500 dark:text-gray-400"
-                      style="line-height:1.3rem!important"
+                    <a
+                      href=${row.status_x86_64_logs}
+                      style="${row.status_x86_64_logs === null ? "pointer-events: none;text-decoration-line: none; font-size: 0.875rem; line-height: 1.25rem; " : "text-decoration-line: none; font-size: 0.875rem; line-height: 1.25rem; "}"
+                      class="flex justify-between gap-x-2 hover:opacity-80"
                     >
-                      ${row.status_x86_64_version ?? ""}
-                    </span>
-                  </a>
+                      <span
+                        class="status"
+                        data-status=${row.status_x86_64 ?? ""}
+                      >
+                        ${row.status_x86_64 ?? ""}
+                      </span>
+                      <span
+                        class="text-xs text-gray-500 dark:text-gray-400"
+                        style="line-height:1.3rem!important"
+                      >
+                        ${row.status_x86_64_version ?? ""}
+                      </span>
+                    </a>
+                    
                 </td>
                 <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
-                  <div class="flex items-center justify-between ">
-                    <span class="status" data-status=${row.status_i686 ?? ""}>
-                      ${row.status_i686 ?? ""}
-                    </span>
-                    <span
-                      class="text-xs text-gray-500 dark:text-gray-400"
-                      style="line-height:1.3rem!important"
+                    <a
+                      href=${row?.status_i686_logs}
+                      style="${row.status_i686_logs === null ? "pointer-events: none;text-decoration-line: none; font-size: 0.875rem; line-height: 1.25rem; " : "text-decoration-line: none; font-size: 0.875rem; line-height: 1.25rem; "}"
+                      class="flex justify-between gap-x-2 hover:opacity-80"
                     >
-                      ${row.status_i686_version ?? ""}
-                    </span>
-                  </div>
+                      <span class="status" data-status=${row.status_i686 ?? ""}>
+                        ${row.status_i686 ?? ""}
+                      </span>
+                      <span
+                        class="text-xs text-gray-500 dark:text-gray-400"
+                        style="line-height:1.3rem!important"
+                      >
+                        ${row.status_i686_version ?? ""}
+                      </span>
+                    </a>
                 </td>
                 <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
-                  <div class="flex items-center justify-between ">
-                    <span class="status" data-status=${row.status_ARMv6h ?? ""}>
-                      ${row.status_ARMv6h ?? ""}
-                    </span>
-                    <span
-                      class="text-xs text-gray-500 dark:text-gray-400"
-                      style="line-height:1.3rem !important"
+                    <a
+                      href=${row.status_ARMv6h_logs}
+                      style="${row.status_ARMv6h_logs === null ? "pointer-events: none;text-decoration-line: none; font-size: 0.875rem; line-height: 1.25rem; " : "text-decoration-line: none; font-size: 0.875rem; line-height: 1.25rem; "}"
+                      class="flex items-center justify-between "
                     >
-                      ${row.status_ARMv6h_version ?? ""}
-                    </span>
-                  </div>
+                      <span
+                        class="status"
+                        data-status=${row.status_ARMv6h ?? ""}
+                      >
+                        ${row.status_ARMv6h ?? ""}
+                      </span>
+                      <span
+                        class="text-xs text-gray-500 dark:text-gray-400"
+                        style="line-height:1.3rem !important"
+                      >
+                        ${row.status_ARMv6h_version ?? ""}
+                      </span>
+                    </a>
+                    
                 </td>
                 <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
-                  <div class="flex items-center justify-between ">
-                    <span class="status" data-status=${row.Status_ARMv7h ?? ""}>
-                      ${row.Status_ARMv7h ?? ""}
-                    </span>
-                    <span
-                      class="text-xs text-gray-500 dark:text-gray-400"
-                      style="line-height:1.3rem!important"
+                    <a
+                      href=${row.status_ARMv7h_logs}
+                      style="${row.status_ARMv7h_logs === null ? "pointer-events: none;text-decoration-line: none; font-size: 0.875rem; line-height: 1.25rem; " : "text-decoration-line: none; font-size: 0.875rem; line-height: 1.25rem; "}"
+                      class="flex items-center justify-between "
                     >
-                      ${row.status_ARMv7h_version ?? ""}
-                    </span>
-                  </div>
+                      <span
+                        class="status"
+                        data-status=${row.Status_ARMv7h ?? ""}
+                      >
+                        ${row.Status_ARMv7h ?? ""}
+                      </span>
+                      <span
+                        class="text-xs text-gray-500 dark:text-gray-400"
+                        style="line-height:1.3rem!important"
+                      >
+                        ${row.status_ARMv7h_version ?? ""}
+                      </span>
+                    </a>
+                    
                 </td>
                 <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
-                  <div class="flex items-center justify-between ">
-                    <span class="status" data-status=${row.status_AArch64 ?? ""}>
-                      ${row.status_AArch64 ?? ""}
-                    </span>
-                    <span class="relative whitespace-nowrap py-2 pl-3 pr-4 text-right sm:pr-0 text-xs text-gray-500 dark:text-gray-400">
-                      ${row.status_AArch64_version ?? ""}
-                    </span>
-                  </div>
+                    <a
+                      href=${row.status_AArch64_logs}
+                      style="${row.status_AArch64_logs === null ? "pointer-events: none;text-decoration-line: none; font-size: 0.875rem; line-height: 1.25rem; " : "text-decoration-line: none; font-size: 0.875rem; line-height: 1.25rem; "}"
+                      class="flex items-center justify-between "
+                    >
+                      <span
+                        class="status"
+                        data-status=${row.status_AArch64 ?? ""}
+                      >
+                        ${row.status_AArch64 ?? ""}
+                      </span>
+                      <span class="relative whitespace-nowrap py-2 pl-3 pr-4 text-right sm:pr-0 text-xs text-gray-500 dark:text-gray-400">
+                        ${row.status_AArch64_version ?? ""}
+                      </span>
+                    </a>
                 </td>
       `;
       dataRows.appendChild(tr);
@@ -367,8 +481,10 @@ let totalPackages = apiResponse.meta.pagination.total;
     document.getElementById("search-input").addEventListener("input", (e) => {
       clearTimeout(debounceTimeout);
       let userInput = e.target.value;
-      if (!userInput)
+      if (!userInput) {
         document.getElementById("dataRows").innerHTML = originalData;
+        applyStatusStyles();
+      }
 
       debounceTimeout = setTimeout(() => {
         if (userInput) getBuilderTables(userInput);
