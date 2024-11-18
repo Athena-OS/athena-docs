@@ -32,7 +32,9 @@ const paginatedItems = paginate(items);
 ---
 
 <div>
-  <p class="text-xs text-gray-700 dark:text-gray-400 font-mono mt-2 text-right">
+  <p
+    class="text-xs text-gray-700 dark:text-gray-400 font-mono mt-2 text-right mr-4"
+  >
     Showing
     <span class="font-medium"
       >{currentPage - 1 === 0 ? 1 : (currentPage - 1) * itemsPerPage}</span
