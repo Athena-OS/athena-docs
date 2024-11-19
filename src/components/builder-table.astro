@@ -63,6 +63,9 @@ let logURL = "https://logs.athenaos.org/";
 ---
 
 <SearchPackages placeholder="Search Builder" />
+
+<p id="search-status"></p>
+
 <div class="mt-8 flow-root">
   <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6">
     <div class="inline-block min-w-full py-2 align-middle px-4 sm:px-6 lg:px-8">
@@ -479,7 +482,7 @@ let logURL = "https://logs.athenaos.org/";
     try {
       const apiResponse = await response.json();
       if (apiResponse) document.getElementById("search-status").innerHTML = "";
-      let builderData = apiResponse.data.map((builder) => ({
+      builderData = apiResponse.data.map((builder) => ({
         ...builder,
         status_x86_64_logs:
           builder.status_x86_64_logs === "-"
@@ -526,4 +529,11 @@ let logURL = "https://logs.athenaos.org/";
   }
 
   getSearchQuery();
+</script>
+
+<script defer>
+  document.addEventListener("DOMContentLoaded", () => {
+    const searchInput = document.getElementById("search-input");
+    searchInput.value = "";
+  });
 </script>
