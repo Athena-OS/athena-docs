@@ -43,9 +43,23 @@ const response = await fetch(
 );
 const apiResponse = await response.json();
 
-let builderData = apiResponse.data;
+let builderData = apiResponse.data.map((builder: Package) => ({
+  ...builder,
+  status_x86_64_logs:
+    builder.status_x86_64_logs === "-" ? null : builder.status_x86_64_logs,
+  status_i686_logs:
+    builder.status_i686_logs === "-" ? null : builder.status_i686_logs,
+  status_ARMv6h_logs:
+    builder.status_ARMv6h_logs === "-" ? null : builder.status_ARMv6h_logs,
+  status_ARMv7h_logs:
+    builder.status_ARMv7h_logs === "-" ? null : builder.status_ARMv7h_logs,
+  status_AArch64_logs:
+    builder.status_AArch64_logs === "-" ? null : builder.status_AArch64_logs,
+}));
 let totalPages = apiResponse.meta.pagination.pageCount;
 let totalPackages = apiResponse.meta.pagination.total;
+
+let logURL = "https://logs.athenaos.org/";
 ---
 
 <SearchPackages placeholder="Search Builder" />
@@ -110,7 +124,7 @@ let totalPackages = apiResponse.meta.pagination.total;
                 <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-900">
                   {row?.status_x86_64_logs ? (
                     <a
-                      href={row.status_x86_64_logs}
+                      href={logURL + row.status_x86_64_logs}
                       style="text-decoration-line: none; font-size: 0.875rem; line-height: 1.25rem;"
                       class="flex justify-between gap-x-2 hover:opacity-80"
                     >
@@ -147,7 +161,7 @@ let totalPackages = apiResponse.meta.pagination.total;
                 <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
                   {row?.status_i686_logs ? (
                     <a
-                      href={row?.status_i686_logs}
+                      href={logURL + row?.status_i686_logs}
                       style="text-decoration-line: none; font-size: 0.875rem; line-height: 1.25rem;"
                       class="flex justify-between gap-x-2 hover:opacity-80"
                     >
@@ -178,7 +192,7 @@ let totalPackages = apiResponse.meta.pagination.total;
                 <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
                   {row?.status_ARMv6h_logs ? (
                     <a
-                      href={row.status_ARMv6h_logs}
+                      href={logURL + row.status_ARMv6h_logs}
                       class="flex items-center justify-between "
                     >
                       <span
@@ -214,7 +228,7 @@ let totalPackages = apiResponse.meta.pagination.total;
                 <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
                   {row?.status_ARMv7h_logs ? (
                     <a
-                      href={row.status_ARMv7h_logs}
+                      href={logURL + row.status_ARMv7h_logs}
                       class="flex items-center justify-between "
                     >
                       <span
@@ -250,7 +264,7 @@ let totalPackages = apiResponse.meta.pagination.total;
                 <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
                   {row?.status_AArch64_logs ? (
                     <a
-                      href={row.status_AArch64_logs}
+                      href={logURL + row.status_AArch64_logs}
                       class="flex items-center justify-between "
                     >
                       <span
@@ -294,7 +308,7 @@ let totalPackages = apiResponse.meta.pagination.total;
   resourceName="builder"
 />
 
-<script define:vars={{ strapiURL, bearerToken }}>
+<script define:vars={{ strapiURL, bearerToken, logURL }}>
   const originalData = document.getElementById("dataRows").innerHTML;
 
   function applyStatusStyles() {
@@ -322,9 +336,7 @@ let totalPackages = apiResponse.meta.pagination.total;
     const dataRows = document.getElementById("dataRows");
     dataRows.innerHTML = "";
 
-    let data = packagesData.data;
-
-    data.map((row) => {
+    packagesData.map((row) => {
       const tr = document.createElement("tr");
       tr.innerHTML = `
                 <td
@@ -337,7 +349,7 @@ let totalPackages = apiResponse.meta.pagination.total;
                 </td>
                 <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-900">
                     <a
-                      href=${row.status_x86_64_logs}
+                      href=${logURL + row.status_x86_64_logs}
                       style="${row.status_x86_64_logs === null ? "pointer-events: none;text-decoration-line: none; font-size: 0.875rem; line-height: 1.25rem; " : "text-decoration-line: none; font-size: 0.875rem; line-height: 1.25rem; "}"
                       class="flex justify-between gap-x-2 hover:opacity-80"
                     >
@@ -358,7 +370,7 @@ let totalPackages = apiResponse.meta.pagination.total;
                 </td>
                 <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
                     <a
-                      href=${row?.status_i686_logs}
+                      href=${logURL + row?.status_i686_logs}
                       style="${row.status_i686_logs === null ? "pointer-events: none;text-decoration-line: none; font-size: 0.875rem; line-height: 1.25rem; " : "text-decoration-line: none; font-size: 0.875rem; line-height: 1.25rem; "}"
                       class="flex justify-between gap-x-2 hover:opacity-80"
                     >
@@ -375,7 +387,7 @@ let totalPackages = apiResponse.meta.pagination.total;
                 </td>
                 <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
                     <a
-                      href=${row.status_ARMv6h_logs}
+                      href=${logURL + row.status_ARMv6h_logs}
                       style="${row.status_ARMv6h_logs === null ? "pointer-events: none;text-decoration-line: none; font-size: 0.875rem; line-height: 1.25rem; " : "text-decoration-line: none; font-size: 0.875rem; line-height: 1.25rem; "}"
                       class="flex items-center justify-between "
                     >
@@ -396,7 +408,7 @@ let totalPackages = apiResponse.meta.pagination.total;
                 </td>
                 <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
                     <a
-                      href=${row.status_ARMv7h_logs}
+                      href=${logURL + row.status_ARMv7h_logs}
                       style="${row.status_ARMv7h_logs === null ? "pointer-events: none;text-decoration-line: none; font-size: 0.875rem; line-height: 1.25rem; " : "text-decoration-line: none; font-size: 0.875rem; line-height: 1.25rem; "}"
                       class="flex items-center justify-between "
                     >
@@ -417,7 +429,7 @@ let totalPackages = apiResponse.meta.pagination.total;
                 </td>
                 <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
                     <a
-                      href=${row.status_AArch64_logs}
+                      href=${logURL + row.status_AArch64_logs}
                       style="${row.status_AArch64_logs === null ? "pointer-events: none;text-decoration-line: none; font-size: 0.875rem; line-height: 1.25rem; " : "text-decoration-line: none; font-size: 0.875rem; line-height: 1.25rem; "}"
                       class="flex items-center justify-between "
                     >
@@ -467,7 +479,28 @@ let totalPackages = apiResponse.meta.pagination.total;
     try {
       const apiResponse = await response.json();
       if (apiResponse) document.getElementById("search-status").innerHTML = "";
-      renderTable(apiResponse);
+      let builderData = apiResponse.data.map((builder) => ({
+        ...builder,
+        status_x86_64_logs:
+          builder.status_x86_64_logs === "-"
+            ? null
+            : builder.status_x86_64_logs,
+        status_i686_logs:
+          builder.status_i686_logs === "-" ? null : builder.status_i686_logs,
+        status_ARMv6h_logs:
+          builder.status_ARMv6h_logs === "-"
+            ? null
+            : builder.status_ARMv6h_logs,
+        status_ARMv7h_logs:
+          builder.status_ARMv7h_logs === "-"
+            ? null
+            : builder.status_ARMv7h_logs,
+        status_AArch64_logs:
+          builder.status_AArch64_logs === "-"
+            ? null
+            : builder.status_AArch64_logs,
+      }));
+      renderTable(builderData);
     } catch (e) {
       document.getElementById("search-status").innerHTML =
         "Something went wrong";
