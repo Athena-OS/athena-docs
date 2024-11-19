@@ -42,13 +42,15 @@ packagesData.map(
     p.category.split(",").forEach((i) => categoriesList.push(i.trim()))
 );
 
+let categoriesUnique: string[] = [...new Set(categoriesList.sort())];
+
 let totalPages = apiResponse.meta.pagination.pageCount;
 let totalPackages = apiResponse.meta.pagination.total;
 ---
 
-<div class="flex items-center gap-4">
+<div class="flex max-sm:flex-col max-sm:items-start items-center gap-4">
   <SearchPackages placeholder="Search Packages" />
-  <FilterPackages items={categoriesList} />
+  <FilterPackages items={categoriesUnique} />
 </div>
 
 <p id="search-status"></p>
