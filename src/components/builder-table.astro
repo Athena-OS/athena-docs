@@ -339,6 +339,9 @@ let logURL = "https://logs.athenaos.org/";
     const dataRows = document.getElementById("dataRows");
     dataRows.innerHTML = "";
 
+    if (packagesData.length > 0 === false)
+      document.getElementById("search-status").innerHTML = "No results found";
+
     packagesData.map((row) => {
       const tr = document.createElement("tr");
       tr.innerHTML = `
@@ -517,8 +520,10 @@ let logURL = "https://logs.athenaos.org/";
     document.getElementById("search-input").addEventListener("input", (e) => {
       clearTimeout(debounceTimeout);
       let userInput = e.target.value;
+
       if (!userInput) {
         document.getElementById("dataRows").innerHTML = originalData;
+        document.getElementById("search-status").innerHTML = "";
         applyStatusStyles();
       }
 
