@@ -23,6 +23,7 @@ export default defineConfig({
       components: {
         // Override the default `SocialIcons` component.
         SocialIcons: "./src/components/custom-navbar-links.astro",
+        Header: "./src/components/Header.astro",
       },
       editLink: {
         baseUrl: "https://github.com/Athena-OS/athena-docs/tree/main/",
