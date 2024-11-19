@@ -1,4 +1,5 @@
 ---
+import MobileMenuToggle from "virtual:starlight/components/MobileMenuToggle";
 import config from "virtual:starlight/user-config";
 import type { StarlightRouteData as Props } from "virtual:starlight/utils/route-data";
 
@@ -7,6 +8,14 @@ import Search from "virtual:starlight/components/Search";
 import SiteTitle from "virtual:starlight/components/SiteTitle";
 import SocialIcons from "virtual:starlight/components/SocialIcons";
 import ThemeSelect from "virtual:starlight/components/ThemeSelect";
+import { Icon } from "@astrojs/starlight/components";
+
+let { pathname } = Astro.url;
+
+let showMobileMenu =
+  pathname === "/" ||
+  pathname.startsWith("/packages") ||
+  pathname.startsWith("/builder");
 
 /**
  * Render the `Search` component if Pagefind is enabled or the default search component has been overridden.
@@ -21,18 +30,64 @@ const shouldRenderSearch =
     <SiteTitle {...Astro.props} />
   </div>
   <div class="sl-flex gap-2 items-center">
-    <a
-      class="text-sm text-white no-underline hover:opacity-80 md:hidden"
-      href="/packages">Packages</a
-    >
-    <a
-      class="text-sm text-white no-underline hover:opacity-80 md:hidden"
-      href="/builder">Builder</a
-    >
     {shouldRenderSearch && <Search {...Astro.props} />}
+    {
+      showMobileMenu && (
+        <div class="md:hidden flex">
+          <div>
+            <button class="flex md:sl-hidden" id="menu-btn">
+              <Icon name="bars" />
+            </button>
+          </div>
+        </div>
+      )
+    }
+
+    <!-- Mobile Menu -->
+    <div
+      id="mobile-menu"
+      class="hidden md:hidden absolute top-14 right-0 left-0 bottom-0"
+    >
+      <div
+        class="bg-white/30 dark:bg-[#17181C] backdrop-blur-lg h-screen flex flex-col gap-2 px-4 pt-4"
+      >
+        <a
+          class="text-sm text-gray-800 dark:text-white no-underline hover:opacity-80 py-4 px-2"
+          href="/packages">Packages</a
+        >
+        <a
+          class="text-sm text-gray-800 dark:text-white no-underline hover:opacity-80 py-4 px-2"
+          href="/builder">Builder</a
+        >
+        <div class="px-2 flex gap-3 pt-8">
+          <SocialIcons {...Astro.props} />
+        </div>
+        <div class="flex right-group p-2">
+          <ThemeSelect {...Astro.props} />
+          <LanguageSelect {...Astro.props} />
+        </div>
+      </div>
+    </div>
   </div>
+
   <div class="sl-hidden md:sl-flex right-group">
     <div class="sl-flex social-icons">
+      <a
+        href="/en/getting-started/athenaos/"
+        class="text-black hover:text-gray-700 dark:text-white dark:hover:text-gray-300 no-underline"
+        >Docs</a
+      >
+      <a
+        href="/packages"
+        class="text-black hover:text-gray-700 dark:text-white dark:hover:text-gray-300 no-underline"
+        >Packages</a
+      >
+      <a
+        style="border-inline-end:1px solid var(--sl-color-gray-5)"
+        href="/builder"
+        class="text-black hover:text-gray-700 dark:text-white dark:hover:text-gray-300 no-underline pe-4"
+        >Builder</a
+      >
       <SocialIcons {...Astro.props} />
     </div>
     <ThemeSelect {...Astro.props} />
@@ -100,5 +155,46 @@ const shouldRenderSearch =
         auto;
       align-content: center;
     }
+  }
+</style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const menuBtn = document.getElementById("menu-btn");
+    const mobileMenu = document.getElementById("mobile-menu");
+
+    menuBtn.addEventListener("click", () => {
+      mobileMenu.classList.toggle("hidden");
+    });
+  });
+</script>
+
+<style>
+  button {
+    inset-inline-end: var(--sl-nav-pad-x);
+    z-index: var(--sl-z-index-navbar);
+    border: 0;
+    border-radius: 50%;
+    width: var(--sl-menu-button-size);
+    height: var(--sl-menu-button-size);
+    padding: 0.5rem;
+    background-color: var(--sl-color-white);
+    color: var(--sl-color-black);
+    box-shadow: var(--sl-shadow-md);
+    cursor: pointer;
+  }
+
+  [aria-expanded="true"] button {
+    background-color: var(--sl-color-gray-2);
+    box-shadow: none;
+  }
+
+  :global([data-theme="light"]) button {
+    background-color: var(--sl-color-black);
+    color: var(--sl-color-white);
+  }
+
+  :global([data-theme="light"]) [aria-expanded="true"] button {
+    background-color: var(--sl-color-gray-5);
   }
 </style>
