@@ -140,11 +140,11 @@ let logURL = "https://logs.athenaos.org/";
               <tr>
                 <td
                   style="padding-left: 1rem;"
-                  class="whitespace-nowrap py-2 pl-4 pr-3 text-sm text-gray-500 dark:text-gray-200 sm:pl-0"
+                  class="py-2 pl-4 pr-3 text-sm text-gray-500 dark:text-gray-200 sm:pl-0"
                 >
-                  <div class="flex items-center justify-between ">
+                  <div class="flex items-center justify-between gap-2">
                     <span class="font-medium">{row.package_name ?? ""}</span>
-                    <span>
+                    <span class="shrink-0">
                       {row.package_source && (
                         <a href={row.package_source}>
                           <img src="/cube.svg" class="h-5 w-5" />
