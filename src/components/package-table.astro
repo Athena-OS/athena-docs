@@ -16,6 +16,7 @@ type Package = {
   updatedAt: string;
   publishedAt: string;
   locale: string;
+  license: string;
 };
 
 let { currentPage } = Astro.props;
@@ -35,6 +36,7 @@ const response = await fetch(
 );
 const apiResponse = await response.json();
 let packagesData = apiResponse.data;
+console.log(packagesData);
 let categoriesList: string[] = [];
 packagesData.map(
   (p: Package) =>
@@ -71,30 +73,36 @@ let totalPackages = apiResponse.meta.pagination.total;
             </th>
             <th
               scope="col"
-              class="w-2/12 px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-100"
+              class="w-1/12 px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-100"
               >Version</th
             >
             <th
               scope="col"
-              class="w-2/12 px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-100"
+              class="w-1/12 px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-100"
             >
               Category
             </th>
             <th
               scope="col"
-              class="w-2/12 px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-100"
+              class="w-4/12 px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-100"
               >Description</th
             >
             <th
               scope="col"
-              class="w-2/12 px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-100 whitespace-nowrap"
+              class="w-1/12 px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-100 whitespace-nowrap"
               >Installed Size</th
             >
             <th
               scope="col"
               style="padding-right: 1rem;"
               class="w-2/12 relative py-3.5 pl-3 pr-4 sm:pr-3 text-left text-sm font-semibold text-gray-900 dark:text-gray-100"
-              >URL</th
+              >Homepage</th
+            >
+            <th
+              scope="col"
+              style="padding-right: 1rem;"
+              class="w-1/12 relative py-3.5 pl-3 pr-4 sm:pr-3 text-left text-sm font-semibold text-gray-900 dark:text-gray-100"
+              >License</th
             >
           </tr>
         </thead>
@@ -120,10 +128,7 @@ let totalPackages = apiResponse.meta.pagination.total;
                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 dark:text-gray-400">
                   {p.installed_size ? p.installed_size : "—"}
                 </td>
-                <td
-                  style="padding-right: 1rem;"
-                  class="whitespace-wrap px-3 py-4 text-sm text-gray-500 dark:text-gray-300"
-                >
+                <td class="whitespace-wrap px-3 py-4 text-sm text-gray-500 dark:text-gray-300">
                   {p.upstream_url ? (
                     <a
                       href={p.upstream_url}
@@ -136,6 +141,12 @@ let totalPackages = apiResponse.meta.pagination.total;
                   ) : (
                     "—"
                   )}
+                </td>
+                <td
+                  style="padding-right: 1rem;"
+                  class="whitespace-wrap px-3 py-4 text-sm text-gray-500 dark:text-gray-300"
+                >
+                  {p.license ? p.license : "—"}
                 </td>
               </tr>
             ))
@@ -206,12 +217,16 @@ let totalPackages = apiResponse.meta.pagination.total;
                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 dark:text-gray-400">
                   ${p.installed_size ? p.installed_size : "—"}
                 </td>
+                <td class="whitespace-wrap px-3 py-4 text-sm text-gray-500 dark:text-gray-300">
+                  ${p.upstream_url ? "<a href='" + p.upstream_url + "' target='_blank' rel='noopener noreferrer' class='text-blue-500 underline hover:text-blue-700' >" + p.upstream_url + "</a>" : "—"}
+                </td>
                 <td
                   style="padding-right: 1rem;"
                   class="whitespace-wrap px-3 py-4 text-sm text-gray-500 dark:text-gray-300"
                 >
-                  ${p.upstream_url ? "<a href=" + p.upstream_url + " target='_blank' " + "rel='noopener noreferrer' " + " class='text-blue-500 underline hover:text-blue-700'> " + p.upstream_url + "</a>" : "—"}
+                  ${p.license ? p.license : "—"}
                 </td>
+
       `;
       dataRows.appendChild(tr);
     });

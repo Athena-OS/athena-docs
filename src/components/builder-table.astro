@@ -26,6 +26,7 @@ type Package = {
   status_ARMv6h_logs: null | string;
   status_ARMv7h_logs: null | string;
   status_AArch64_logs: null | string;
+  package_source: string;
 };
 
 let { currentPage } = Astro.props;
@@ -43,6 +44,7 @@ const response = await fetch(
   }
 );
 const apiResponse = await response.json();
+console.log(apiResponse.data);
 
 let builderData = apiResponse.data.map((builder: Package) => ({
   ...builder,
@@ -64,7 +66,6 @@ function getUniqueValues(platformName: string) {
   let statuses: string[] = [];
   let statusString: string = "status_" + platformName;
 
-  console.log(statusString);
   builderData.map((p: Package) => {
     // @ts-ignore
     if (p[statusString]?.length)
@@ -143,6 +144,13 @@ let logURL = "https://logs.athenaos.org/";
                 >
                   <div class="flex items-center justify-between ">
                     <span class="font-medium">{row.package_name ?? ""}</span>
+                    <span>
+                      {row.package_source && (
+                        <a href={row.package_source}>
+                          <img src="/cube.svg" class="h-5 w-5" />
+                        </a>
+                      )}
+                    </span>
                   </div>
                 </td>
                 <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-900">
@@ -372,6 +380,9 @@ let logURL = "https://logs.athenaos.org/";
                 >
                   <div class="flex items-center justify-between ">
                     <span class="font-medium">${row.package_name ?? ""}</span>
+                    <span>
+                      ${row?.package_source ? "<a href=" + row.package_source + "> <img src='/cube.svg' class='h-5 w-5' /> </a>" : null}
+                    </span>
                   </div>
                 </td>
                 <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-900">
