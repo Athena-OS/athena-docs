@@ -132,7 +132,7 @@ let totalPackages = apiResponse.meta.pagination.total;
                   {p.license ? p.license : "—"}
                 </td>
                 <td
-                  style="padding-right: 1rem;"
+                  style="padding-right: 1rem; word-break:break-all;"
                   class="px-3 py-4 text-sm text-gray-500 dark:text-gray-300"
                 >
                   {p.upstream_url ? (
@@ -223,7 +223,7 @@ let totalPackages = apiResponse.meta.pagination.total;
                   ${p.license ? p.license : "—"}
                 </td>
                 <td
-                  style="padding-right: 1rem;"
+                  style="padding-right: 1rem; word-break:break-all;"
                  class="px-3 py-4 text-sm text-gray-500 dark:text-gray-300">
                   ${p.upstream_url ? "<a href='" + p.upstream_url + "' target='_blank' rel='noopener noreferrer' class='text-blue-500 underline hover:text-blue-700' >" + p.upstream_url + "</a>" : "—"}
                 </td>
