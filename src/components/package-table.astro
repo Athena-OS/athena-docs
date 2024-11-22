@@ -1,5 +1,4 @@
 ---
-import Pagination from "./pagination.astro";
 import SearchPackages from "./search-packages.astro";
 import FilterPackages from "./filter-packages.astro";
 
@@ -19,14 +18,11 @@ type Package = {
   license: string;
 };
 
-let { currentPage } = Astro.props;
-
-const itemsPerPage = 100;
 let strapiURL = import.meta.env.STRAPI_URL;
 let bearerToken = import.meta.env.STRAPI_READONLY_TOKEN;
 
 const response = await fetch(
-  `${strapiURL}/api/packages?pagination[page]=${currentPage}&pagination[pageSize]=${itemsPerPage}&sort[1]=package_name:asc`,
+  `${strapiURL}/api/packages?sort[1]=package_name:asc`,
   {
     headers: {
       Authorization: `Bearer ${bearerToken}`,
@@ -36,7 +32,6 @@ const response = await fetch(
 );
 const apiResponse = await response.json();
 let packagesData = apiResponse.data;
-console.log(packagesData);
 let categoriesList: string[] = [];
 packagesData.map(
   (p: Package) =>
@@ -45,9 +40,7 @@ packagesData.map(
 );
 
 let categoriesUnique: string[] = [...new Set(categoriesList.sort())];
-
-let totalPages = apiResponse.meta.pagination.pageCount;
-let totalPackages = apiResponse.meta.pagination.total;
+console.log(categoriesUnique);
 ---
 
 <div class="flex max-sm:flex-col max-sm:items-start items-center gap-4">
@@ -157,14 +150,6 @@ let totalPackages = apiResponse.meta.pagination.total;
   </div>
 </div>
 
-<Pagination
-  currentPage={+currentPage}
-  totalPages={+totalPages}
-  totalItems={+totalPackages}
-  itemsPerPage={+itemsPerPage}
-  resourceName="packages"
-/>
-
 <script define:vars={{ strapiURL, bearerToken }}>
   const originalData = document.getElementById("dataRows").innerHTML;
 
@@ -236,7 +221,7 @@ let totalPackages = apiResponse.meta.pagination.total;
   }
 
   async function filterTables(categoryName) {
-    const itemsPerPage = 100;
+    const itemsPerPage = 5000;
 
     document.getElementById("search-status").innerHTML =
       `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" style="shape-rendering: auto; display: block; background: transparent;" width="30" height="30" xmlns:xlink="http://www.w3.org/1999/xlink"><g><g transform="translate(50 50)">
@@ -252,7 +237,7 @@ let totalPackages = apiResponse.meta.pagination.total;
 </g><g></g></g></svg>`;
 
     const response = await fetch(
-      `${strapiURL}/api/packages?filters[category][$contains]=${categoryName}&pagination[page]=${1}&pagination[pageSize]=${itemsPerPage}&sort[1]=package_name:asc`,
+      `${strapiURL}/api/packages?filters[category][$contains]=${categoryName}&sort[1]=package_name:asc`,
       {
         headers: {
           Authorization: `Bearer ${bearerToken}`,
@@ -272,7 +257,7 @@ let totalPackages = apiResponse.meta.pagination.total;
   }
 
   async function getPackagesTables(searchQuery) {
-    const itemsPerPage = 100;
+    const itemsPerPage = 5000;
 
     document.getElementById("search-status").innerHTML =
       `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" style="shape-rendering: auto; display: block; background: transparent;" width="30" height="30" xmlns:xlink="http://www.w3.org/1999/xlink"><g><g transform="translate(50 50)">
@@ -288,7 +273,7 @@ let totalPackages = apiResponse.meta.pagination.total;
 </g><g></g></g></svg>`;
 
     const response = await fetch(
-      `${strapiURL}/api/packages?filters[$or][0][package_name][$contains]=${searchQuery}&filters[$or][1][description][$contains]=${searchQuery}&pagination[page]=${1}&pagination[pageSize]=${itemsPerPage}&sort[1]=package_name:asc`,
+      `${strapiURL}/api/packages?filters[$or][0][package_name][$contains]=${searchQuery}&filters[$or][1][description][$contains]=${searchQuery}&sort[1]=package_name:asc`,
       {
         headers: {
           Authorization: `Bearer ${bearerToken}`,
