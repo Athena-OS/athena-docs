@@ -301,7 +301,9 @@ console.log(categoriesUnique);
       clearTimeout(debounceTimeout);
       let userInput = e.target.value;
       if (!userInput) {
-        document.getElementById("dataRows").innerHTML = originalData;
+        setTimeout(() => {
+          document.getElementById("dataRows").innerHTML = originalData;
+        }, 50);
         document.getElementById("search-status").innerHTML = "";
       }
       debounceTimeout = setTimeout(() => {
