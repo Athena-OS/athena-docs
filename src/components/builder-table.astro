@@ -41,7 +41,6 @@ const response = await fetch(
   }
 );
 const apiResponse = await response.json();
-console.log(apiResponse.data);
 
 let builderData = apiResponse.data.map((builder: Package) => ({
   ...builder,
@@ -88,6 +87,7 @@ let logURL = "https://logs.athenaos.org/";
     <div class="inline-block min-w-full py-2 align-middle px-4 sm:px-6 lg:px-8">
       <table
         class="table-auto border-collapse min-w-full divide-y divide-gray-300 dark:divide-gray-100"
+        width="80rem"
       >
         <thead>
           <tr>
@@ -131,7 +131,11 @@ let logURL = "https://logs.athenaos.org/";
       </table>
       <div id="sentinel"></div>
     </div>
-    <div id="search-status"></div>
+    <div
+      class="px-6 sm:px-8 lg:px-12 font-mono text-sm text-white"
+      id="search-status"
+    >
+    </div>
   </div>
 </div>
 
@@ -297,10 +301,10 @@ let logURL = "https://logs.athenaos.org/";
 
   async function renderTable(packagesData) {
     if (!packagesData.length) {
+      isDone = true;
       if (currentPage === 2) {
         document.getElementById("search-status").innerHTML = "No results found";
       } else {
-        isDone = true;
         document.getElementById("search-status").innerHTML = "End of results";
       }
     }
@@ -422,11 +426,17 @@ let logURL = "https://logs.athenaos.org/";
       `;
       fragment.appendChild(tr);
     });
-    console.log("FF", fragment);
 
     dataRows.appendChild(fragment);
 
     applyStatusStyles();
+  }
+
+  function clearFilters() {
+    ["x86_64", "i686", "ARMv6h", "ARMv7h", "AArch64"].map((a) => {
+      const selectElement = document.getElementById(a);
+      selectElement.value = "";
+    });
   }
 
   function getSearchQuery() {
@@ -442,16 +452,20 @@ let logURL = "https://logs.athenaos.org/";
         currentPage = 1;
         clearTableRows();
         clearStatusLine();
+        clearFilters();
+        getBuilderData();
       }
 
       debounceTimeout = setTimeout(() => {
         if (userInput) {
           isDone = false;
           filterInput = null;
+          clearFilters();
           searchQuery = userInput;
           currentPage = 1;
           clearTableRows();
           clearStatusLine();
+          getBuilderData();
         }
       }, 1000);
     });
@@ -469,6 +483,7 @@ let logURL = "https://logs.athenaos.org/";
         currentPage = 1;
         clearTableRows();
         clearStatusLine();
+        getBuilderData();
       }
 
       if (userInput) {
@@ -483,6 +498,9 @@ let logURL = "https://logs.athenaos.org/";
         currentPage = 1;
         clearTableRows();
         clearStatusLine();
+        const searchInput = document.getElementById("search-input");
+        searchInput.value = "";
+        getBuilderData();
       }
     });
   }
