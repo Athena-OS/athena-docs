@@ -17,6 +17,11 @@ function capitalizeText(text: string): string {
     class="-mt-8 block w-full rounded-md border-0 py-[7px] pl-3 pr-10 text-gray-900 dark:text-gray-50 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6"
   >
     <option value="">Filter Category</option>
-    {items.map((i: string) => <option value={i}>{capitalizeText(i)}</option>)}
+    {
+      items.map(
+        (i: string) =>
+          i.length && <option value={i}>{capitalizeText(i)}</option>
+      )
+    }
   </select>
 </div>
