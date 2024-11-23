@@ -48,8 +48,6 @@ console.log(categoriesUnique);
   <FilterPackages items={categoriesUnique} />
 </div>
 
-<p id="search-status"></p>
-
 <div class="mt-8 flow-root">
   <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
     <div class="inline-block min-w-full py-2 align-middle px-4 sm:px-6 lg:px-8">
@@ -99,88 +97,160 @@ console.log(categoriesUnique);
             >
           </tr>
         </thead>
-        <tbody id="dataRows">
-          {
-            packagesData.map((p: Package) => (
-              <tr class="even:bg-gray-50 dark:even:bg-gray-800">
-                <td
-                  style="padding-left: 1rem;"
-                  class="py-4 pl-4 px-3 text-sm font-medium text-gray-900 dark:text-gray-200 sm:pl-3"
-                >
-                  {p.package_name}
-                </td>
-                <td class="px-3 py-4 text-xs text-gray-500 dark:text-gray-400">
-                  {p.version}
-                </td>
-                <td class="relative py-4 pr-4 text-left text-sm font-medium sm:pr-3 text-gray-500 dark:text-gray-400">
-                  {p.category ? p.category : <span class="">—</span>}
-                </td>
-                <td class="px-3 py-4 text-sm text-gray-500 dark:text-gray-300">
-                  {p.description}
-                </td>
-                <td class="px-3 py-4 text-sm text-gray-500 dark:text-gray-400">
-                  {p.installed_size ? p.installed_size : "—"}
-                </td>
-                <td class="px-3 py-4 text-sm text-gray-500 dark:text-gray-300">
-                  {p.license ? p.license : "—"}
-                </td>
-                <td
-                  style="padding-right: 1rem; word-break:break-all;"
-                  class="px-3 py-4 text-sm text-gray-500 dark:text-gray-300"
-                >
-                  {p.upstream_url ? (
-                    <a
-                      href={p.upstream_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="text-blue-500 underline hover:text-blue-700"
-                    >
-                      {p.upstream_url}
-                    </a>
-                  ) : (
-                    "—"
-                  )}
-                </td>
-              </tr>
-            ))
-          }
-        </tbody>
+        <tbody id="dataRows"> </tbody>
       </table>
+      <div id="sentinel"></div>
+    </div>
+    <div
+      class="px-6 sm:px-8 lg:px-12 font-mono text-sm text-white"
+      id="search-status"
+    >
     </div>
   </div>
 </div>
 
 <script define:vars={{ strapiURL, bearerToken }}>
-  const originalData = document.getElementById("dataRows").innerHTML;
+  let currentPage = 1;
+  let pageSize = 100;
+  let categoryInput = null;
+  let searchInput = null;
+  let isDone = false;
+  let loading = false;
 
-  function applyStatusStyles() {
-    const statusElements = document.querySelectorAll(".status");
-    statusElements.forEach((element) => {
-      let status = element.getAttribute("data-status");
-      if (status) {
-        status = status.toLowerCase();
-        if (status === "done") {
-          element.classList.add("text-green-500");
-        } else if (status === "fail") {
-          element.classList.add("text-red-600");
-        } else if (status === "incomplete") {
-          element.classList.add("text-yellow-500");
-        } else if (status === "skip") {
-          element.classList.add("text-gray-400");
+  async function getPackageData() {
+    if (loading || isDone) return;
+    console.log("getPackageData() RAN");
+
+    loading = true;
+    newLoadingSpinner();
+
+    let searchString =
+      searchInput?.length > 0
+        ? `&filters[$or][0][package_name][$contains]=${searchInput}&filters[$or][1][description][$contains]=${searchInput}`
+        : "";
+    let categoryString =
+      categoryInput?.length > 0
+        ? `&filters[category][$contains]=${categoryInput}`
+        : "";
+    let paginationString = currentPage
+      ? `&pagination[page]=${currentPage}&pagination[pageSize]=${pageSize}`
+      : `&pagination[page]=1&pagination[pageSize]=${pageSize}`;
+
+    try {
+      const response = await fetch(
+        `${strapiURL}/api/packages?sort[1]=package_name:asc${paginationString}${categoryString}${searchString}`,
+        {
+          headers: {
+            Authorization: `Bearer ${bearerToken}`,
+            "Content-Type": "application/json",
+          },
         }
+      );
+
+      const apiResponse = await response.json();
+      newRemoveLoadingSpinners();
+
+      if (apiResponse.data.length === 0) {
+        isDone = true;
+        document.getElementById("search-status").innerHTML = "End of results";
+        return;
       }
-    });
+
+      renderTable(apiResponse.data);
+      currentPage++;
+    } catch (error) {
+      showErrorMessage();
+      console.error(error);
+    } finally {
+      loading = false;
+    }
   }
 
-  applyStatusStyles();
+  function newLoadingSpinner() {
+    console.log("newLoadingSpinner() RAN");
+    const fragment = document.createDocumentFragment();
+
+    Array.from({ length: 5 }).map(() => {
+      const tr = document.createElement("tr");
+      tr.classList.add("skeletons");
+      tr.innerHTML = `
+                <td
+                  style="padding-left: 1rem; min-width: 25%;"
+                  class="whitespace-nowrap py-2 pl-4 pr-3 text-sm text-gray-500 dark:text-gray-200 sm:pl-0"
+                >
+                  <div class="flex items-center justify-between ">
+<div
+              class="animate-pulse rounded-md bg-gray-600"
+              style="height: 20px; width: 100%;"
+            ></div>
+                  </div>
+                </td>
+                <td 
+                class="whitespace-nowrap px-2 py-2 text-sm text-gray-900">
+                    <div
+              class="animate-pulse rounded-md bg-gray-600"
+              style="height: 20px; width: 100%;"
+            ></div>
+                    
+                </td>
+                <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
+                    <div
+              class="animate-pulse rounded-md bg-gray-600"
+              style="height: 20px; width: 100%;"
+            ></div>
+                </td>
+                <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
+                    <div
+              class="animate-pulse rounded-md bg-gray-600"
+              style="height: 20px; width: 100%;"
+            ></div>
+                </td>
+                <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
+                    <div
+              class="animate-pulse rounded-md bg-gray-600"
+              style="height: 20px; width: 100%;"
+            ></div>
+                </td>
+                <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
+                    <div
+              class="animate-pulse rounded-md bg-gray-600"
+              style="height: 20px; width: 100%;"
+            ></div>
+                </td>
+      `;
+      fragment.appendChild(tr);
+    });
+
+    dataRows.appendChild(fragment);
+  }
+
+  function clearStatusLine() {
+    document.getElementById("search-status").innerHTML = "";
+  }
+
+  function clearTableRows() {
+    document.getElementById("dataRows").innerHTML = "";
+  }
+
+  function newRemoveLoadingSpinners() {
+    console.log("newRemoveLoadingSpinners() RAN");
+    const skeletonElements = document.querySelectorAll(".skeletons");
+
+    skeletonElements.forEach((element) => element.remove());
+  }
 
   function renderTable(packagesData) {
-    const dataRows = document.getElementById("dataRows");
-    dataRows.innerHTML = "";
+    if (!packagesData.length) {
+      isDone = true;
+      if (currentPage === 2) {
+        document.getElementById("search-status").innerHTML = "No results found";
+      } else {
+        document.getElementById("search-status").innerHTML = "End of results";
+      }
+      return;
+    }
 
-    if (packagesData.length > 0 === false)
-      document.getElementById("search-status").innerHTML = "No results found";
-
+    const fragment = document.createDocumentFragment();
     packagesData.map((p) => {
       const tr = document.createElement("tr");
       tr.innerHTML = `
@@ -214,117 +284,95 @@ console.log(categoriesUnique);
                 </td>
 
       `;
-      dataRows.appendChild(tr);
+      fragment.appendChild(tr);
     });
 
-    applyStatusStyles();
+    dataRows.appendChild(fragment);
   }
 
-  async function filterTables(categoryName) {
-    const itemsPerPage = 5000;
-
-    document.getElementById("search-status").innerHTML =
-      `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" style="shape-rendering: auto; display: block; background: transparent;" width="30" height="30" xmlns:xlink="http://www.w3.org/1999/xlink"><g><g transform="translate(50 50)">
-  <g transform="scale(0.8)">
-    <g transform="translate(-50 -50)">
-      <g>
-        <animateTransform keyTimes="0;0.33;0.66;1" values="-20 -20;20 -20;0 20;-20 -20" dur="1s" repeatCount="indefinite" type="translate" attributeName="transform"></animateTransform>
-        <path d="M44.19 26.158c-4.817 0-9.345 1.876-12.751 5.282c-3.406 3.406-5.282 7.934-5.282 12.751 c0 4.817 1.876 9.345 5.282 12.751c3.406 3.406 7.934 5.282 12.751 5.282s9.345-1.876 12.751-5.282 c3.406-3.406 5.282-7.934 5.282-12.751c0-4.817-1.876-9.345-5.282-12.751C53.536 28.033 49.007 26.158 44.19 26.158z" fill="#ffffff"></path>
-        <path d="M78.712 72.492L67.593 61.373l-3.475-3.475c1.621-2.352 2.779-4.926 3.475-7.596c1.044-4.008 1.044-8.23 0-12.238 c-1.048-4.022-3.146-7.827-6.297-10.979C56.572 22.362 50.381 20 44.19 20C38 20 31.809 22.362 27.085 27.085 c-9.447 9.447-9.447 24.763 0 34.21C31.809 66.019 38 68.381 44.19 68.381c4.798 0 9.593-1.425 13.708-4.262l9.695 9.695 l4.899 4.899C73.351 79.571 74.476 80 75.602 80s2.251-0.429 3.11-1.288C80.429 76.994 80.429 74.209 78.712 72.492z M56.942 56.942 c-3.406 3.406-7.934 5.282-12.751 5.282s-9.345-1.876-12.751-5.282c-3.406-3.406-5.282-7.934-5.282-12.751 c0-4.817 1.876-9.345 5.282-12.751c3.406-3.406 7.934-5.282 12.751-5.282c4.817 0 9.345 1.876 12.751 5.282 c3.406 3.406 5.282 7.934 5.282 12.751C62.223 49.007 60.347 53.536 56.942 56.942z" fill="#eb8b0a"></path>
-      </g>
-    </g>
-  </g>
-</g><g></g></g></svg>`;
-
-    const response = await fetch(
-      `${strapiURL}/api/packages?filters[category][$contains]=${categoryName}&sort[1]=package_name:asc`,
-      {
-        headers: {
-          Authorization: `Bearer ${bearerToken}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    try {
-      const apiResponse = await response.json();
-      if (apiResponse) document.getElementById("search-status").innerHTML = "";
-      renderTable(apiResponse.data);
-    } catch (e) {
-      document.getElementById("search-status").innerHTML =
-        "Something went wrong";
-      console.log(e);
-    }
-  }
-
-  async function getPackagesTables(searchQuery) {
-    const itemsPerPage = 5000;
-
-    document.getElementById("search-status").innerHTML =
-      `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" style="shape-rendering: auto; display: block; background: transparent;" width="30" height="30" xmlns:xlink="http://www.w3.org/1999/xlink"><g><g transform="translate(50 50)">
-  <g transform="scale(0.8)">
-    <g transform="translate(-50 -50)">
-      <g>
-        <animateTransform keyTimes="0;0.33;0.66;1" values="-20 -20;20 -20;0 20;-20 -20" dur="1s" repeatCount="indefinite" type="translate" attributeName="transform"></animateTransform>
-        <path d="M44.19 26.158c-4.817 0-9.345 1.876-12.751 5.282c-3.406 3.406-5.282 7.934-5.282 12.751 c0 4.817 1.876 9.345 5.282 12.751c3.406 3.406 7.934 5.282 12.751 5.282s9.345-1.876 12.751-5.282 c3.406-3.406 5.282-7.934 5.282-12.751c0-4.817-1.876-9.345-5.282-12.751C53.536 28.033 49.007 26.158 44.19 26.158z" fill="#ffffff"></path>
-        <path d="M78.712 72.492L67.593 61.373l-3.475-3.475c1.621-2.352 2.779-4.926 3.475-7.596c1.044-4.008 1.044-8.23 0-12.238 c-1.048-4.022-3.146-7.827-6.297-10.979C56.572 22.362 50.381 20 44.19 20C38 20 31.809 22.362 27.085 27.085 c-9.447 9.447-9.447 24.763 0 34.21C31.809 66.019 38 68.381 44.19 68.381c4.798 0 9.593-1.425 13.708-4.262l9.695 9.695 l4.899 4.899C73.351 79.571 74.476 80 75.602 80s2.251-0.429 3.11-1.288C80.429 76.994 80.429 74.209 78.712 72.492z M56.942 56.942 c-3.406 3.406-7.934 5.282-12.751 5.282s-9.345-1.876-12.751-5.282c-3.406-3.406-5.282-7.934-5.282-12.751 c0-4.817 1.876-9.345 5.282-12.751c3.406-3.406 7.934-5.282 12.751-5.282c4.817 0 9.345 1.876 12.751 5.282 c3.406 3.406 5.282 7.934 5.282 12.751C62.223 49.007 60.347 53.536 56.942 56.942z" fill="#eb8b0a"></path>
-      </g>
-    </g>
-  </g>
-</g><g></g></g></svg>`;
-
-    const response = await fetch(
-      `${strapiURL}/api/packages?filters[$or][0][package_name][$contains]=${searchQuery}&filters[$or][1][description][$contains]=${searchQuery}&sort[1]=package_name:asc`,
-      {
-        headers: {
-          Authorization: `Bearer ${bearerToken}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    try {
-      const apiResponse = await response.json();
-      if (apiResponse) document.getElementById("search-status").innerHTML = "";
-      renderTable(apiResponse.data);
-    } catch (e) {
-      document.getElementById("search-status").innerHTML =
-        "Something went wrong";
-      console.log(e);
-    }
+  function showErrorMessage() {
+    document.getElementById("search-status").innerHTML = "Something went wrong";
   }
 
   function getSearchQuery() {
     let debounceTimeout;
 
     document.getElementById("search-input").addEventListener("input", (e) => {
-      const selectElement = document.getElementById("packages");
-      selectElement.value = "";
       clearTimeout(debounceTimeout);
       let userInput = e.target.value;
-      if (!userInput) {
-        setTimeout(() => {
-          document.getElementById("dataRows").innerHTML = originalData;
-        }, 50);
-        document.getElementById("search-status").innerHTML = "";
+
+      if (!userInput.length) {
+        isDone = false;
+        searchInput = null;
+        currentPage = 1;
+        clearTableRows();
+        clearStatusLine();
+        const selectElement = document.getElementById("packages");
+        selectElement.value = "";
+        getPackageData();
       }
+
       debounceTimeout = setTimeout(() => {
-        if (userInput) getPackagesTables(userInput);
+        if (userInput) {
+          isDone = false;
+          categoryInput = null;
+          const selectElement = document.getElementById("packages");
+          selectElement.value = "";
+          searchInput = userInput;
+          currentPage = 1;
+          clearTableRows();
+          clearStatusLine();
+          getPackageData();
+        }
       }, 1000);
     });
   }
-
-  getSearchQuery();
 
   function filterPackages() {
     const selectElement = document.getElementById("packages");
 
     selectElement.addEventListener("change", (e) => {
       let userInput = e.target.value;
-      if (!userInput)
-        document.getElementById("dataRows").innerHTML = originalData;
-      if (userInput) filterTables(userInput);
+
+      if (!userInput.length) {
+        isDone = false;
+        searchInput = null;
+        categoryInput = null;
+        currentPage = 1;
+        clearTableRows();
+        clearStatusLine();
+        getPackageData();
+      }
+
+      if (userInput) {
+        isDone = false;
+        searchInput = null;
+        categoryInput = userInput;
+        currentPage = 1;
+        clearTableRows();
+        clearStatusLine();
+        const searchInputElement = document.getElementById("search-input");
+        searchInputElement.value = "";
+        getPackageData();
+      }
     });
   }
+
+  getSearchQuery();
   filterPackages();
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      const entry = entries[0];
+      if (entry.isIntersecting && !isDone) {
+        console.log("INTERSECTING");
+        getPackageData();
+      }
+    },
+    { threshold: 1.0 }
+  );
+
+  observer.observe(sentinel);
 </script>
 
 <script defer>

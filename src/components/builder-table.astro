@@ -147,13 +147,16 @@ let logURL = "https://logs.athenaos.org/";
   let filterInput = null;
   let searchQuery = null;
   let isDone = false;
+  let loading = false;
 
   function clearTableRows() {
     document.getElementById("dataRows").innerHTML = "";
   }
 
   async function getBuilderData() {
-    isDone = false;
+    if (loading || isDone) return;
+
+    loading = true;
     newLoadingSpinner();
     let searchString =
       searchQuery?.length > 0
@@ -178,7 +181,13 @@ let logURL = "https://logs.athenaos.org/";
     );
     try {
       const apiResponse = await response.json();
-      if (apiResponse) newRemoveLoadingSpinners();
+      newRemoveLoadingSpinners();
+
+      if (apiResponse.data.length === 0) {
+        isDone = true;
+        document.getElementById("search-status").innerHTML = "End of results";
+        return;
+      }
 
       let builderData = apiResponse.data.map((builder) => ({
         ...builder,
@@ -203,9 +212,12 @@ let logURL = "https://logs.athenaos.org/";
       }));
 
       renderTable(builderData);
+      currentPage++;
     } catch (e) {
       showErrorMessage();
       console.log(e);
+    } finally {
+      loading = false;
     }
   }
 
@@ -513,7 +525,6 @@ let logURL = "https://logs.athenaos.org/";
     const entry = entries[0];
     if (entry.isIntersecting && !isDone) {
       getBuilderData();
-      currentPage++;
     }
   });
 
