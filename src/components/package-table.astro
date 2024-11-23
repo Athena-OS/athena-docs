@@ -40,7 +40,6 @@ packagesData.map(
 );
 
 let categoriesUnique: string[] = [...new Set(categoriesList.sort())];
-console.log(categoriesUnique);
 ---
 
 <div class="flex max-sm:flex-col max-sm:items-start items-center gap-4">
@@ -119,7 +118,6 @@ console.log(categoriesUnique);
 
   async function getPackageData() {
     if (loading || isDone) return;
-    console.log("getPackageData() RAN");
 
     loading = true;
     newLoadingSpinner();
@@ -167,7 +165,6 @@ console.log(categoriesUnique);
   }
 
   function newLoadingSpinner() {
-    console.log("newLoadingSpinner() RAN");
     const fragment = document.createDocumentFragment();
 
     Array.from({ length: 5 }).map(() => {
@@ -233,7 +230,6 @@ console.log(categoriesUnique);
   }
 
   function newRemoveLoadingSpinners() {
-    console.log("newRemoveLoadingSpinners() RAN");
     const skeletonElements = document.querySelectorAll(".skeletons");
 
     skeletonElements.forEach((element) => element.remove());
@@ -365,7 +361,6 @@ console.log(categoriesUnique);
     (entries) => {
       const entry = entries[0];
       if (entry.isIntersecting && !isDone) {
-        console.log("INTERSECTING");
         getPackageData();
       }
     },
