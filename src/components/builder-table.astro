@@ -464,15 +464,12 @@ let logURL = "https://logs.athenaos.org/";
         currentPage = 1;
         clearTableRows();
         clearStatusLine();
-        clearFilters();
         getBuilderData();
       }
 
       debounceTimeout = setTimeout(() => {
         if (userInput) {
           isDone = false;
-          filterInput = null;
-          clearFilters();
           searchQuery = userInput;
           currentPage = 1;
           clearTableRows();
@@ -500,7 +497,6 @@ let logURL = "https://logs.athenaos.org/";
 
       if (userInput) {
         isDone = false;
-        searchQuery = null;
         let toBeCleared = architectures.filter((item) => item !== platformName);
         toBeCleared.map((a) => {
           const selectElement = document.getElementById(a);
@@ -510,8 +506,6 @@ let logURL = "https://logs.athenaos.org/";
         currentPage = 1;
         clearTableRows();
         clearStatusLine();
-        const searchInput = document.getElementById("search-input");
-        searchInput.value = "";
         getBuilderData();
       }
     });

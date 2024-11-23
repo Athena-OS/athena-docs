@@ -303,17 +303,12 @@ let categoriesUnique: string[] = [...new Set(categoriesList.sort())];
         currentPage = 1;
         clearTableRows();
         clearStatusLine();
-        const selectElement = document.getElementById("packages");
-        selectElement.value = "";
         getPackageData();
       }
 
       debounceTimeout = setTimeout(() => {
         if (userInput) {
           isDone = false;
-          categoryInput = null;
-          const selectElement = document.getElementById("packages");
-          selectElement.value = "";
           searchInput = userInput;
           currentPage = 1;
           clearTableRows();
@@ -332,7 +327,6 @@ let categoriesUnique: string[] = [...new Set(categoriesList.sort())];
 
       if (!userInput.length) {
         isDone = false;
-        searchInput = null;
         categoryInput = null;
         currentPage = 1;
         clearTableRows();
@@ -342,13 +336,10 @@ let categoriesUnique: string[] = [...new Set(categoriesList.sort())];
 
       if (userInput) {
         isDone = false;
-        searchInput = null;
         categoryInput = userInput;
         currentPage = 1;
         clearTableRows();
         clearStatusLine();
-        const searchInputElement = document.getElementById("search-input");
-        searchInputElement.value = "";
         getPackageData();
       }
     });
