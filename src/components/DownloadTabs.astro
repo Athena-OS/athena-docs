@@ -85,14 +85,28 @@ import { data } from "src/javascript/downloadsData";
           const button = document.getElementById(
             `download-` + element.download_type
           );
-          button?.addEventListener("click", (e) => {
+          let isRequestInProgress = false;
+          button?.addEventListener("click", function (e) {
             e.preventDefault();
-            increaseCount(element.download_type);
-            console.log("it ran");
-            setTimeout(() => {
-              // @ts-expect-error
-              window.location.href = button.getAttribute("href");
-            }, 1000);
+            if (isRequestInProgress) {
+              return;
+            }
+            isRequestInProgress = true;
+
+            try {
+              increaseCount(element.download_type);
+              console.log("it ran");
+              setTimeout(() => {
+                // @ts-expect-error
+                window.location.href = button.getAttribute("href");
+              }, 1000);
+            } catch (e) {
+              console.log(e);
+            } finally {
+              setTimeout(() => {
+                isRequestInProgress = false;
+              }, 3000);
+            }
           });
         }
       );
