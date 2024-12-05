@@ -108,7 +108,9 @@ let categoriesUnique: string[] = [...new Set(categoriesList.sort())];
   </div>
 </div>
 
-<script define:vars={{ strapiURL, bearerToken }}>
+<script>
+  import { actions } from "astro:actions";
+
   let currentPage = 1;
   let pageSize = 100;
   let categoryInput = null;
@@ -135,17 +137,13 @@ let categoriesUnique: string[] = [...new Set(categoriesList.sort())];
       : `&pagination[page]=1&pagination[pageSize]=${pageSize}`;
 
     try {
-      const response = await fetch(
-        `${strapiURL}/api/packages?sort[1]=package_name:asc${paginationString}${categoryString}${searchString}`,
-        {
-          headers: {
-            Authorization: `Bearer ${bearerToken}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      let response = await actions.getPackagesData({
+        searchString,
+        paginationString,
+        categoryString,
+      });
 
-      const apiResponse = await response.json();
+      const apiResponse = await response.data;
       newRemoveLoadingSpinners();
 
       if (apiResponse.data.length === 0) {

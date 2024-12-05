@@ -74,8 +74,6 @@ let architectures = ["x86_64", "i686", "ARMv6h", "ARMv7h", "AArch64"];
 let statuses;
 if (builderData)
   statuses = architectures.map((str) => ({ [str]: getUniqueValues(str) }));
-
-let logURL = "https://logs.athenaos.org/";
 ---
 
 <SearchPackages placeholder="Search Builder" />
@@ -139,7 +137,11 @@ let logURL = "https://logs.athenaos.org/";
   </div>
 </div>
 
-<script define:vars={{ strapiURL, bearerToken, logURL, architectures }}>
+<script>
+  import { actions } from "astro:actions";
+
+  let logURL = "https://logs.athenaos.org/";
+  let architectures = ["x86_64", "i686", "ARMv6h", "ARMv7h", "AArch64"];
   const dataRows = document.getElementById("dataRows");
   const sentinel = document.getElementById("sentinel");
   let currentPage = 1;
@@ -170,17 +172,16 @@ let logURL = "https://logs.athenaos.org/";
         ? `&filters[status_${filterInput.platformName}][$eq]=${filterInput.value}`
         : "";
 
-    const response = await fetch(
-      `${strapiURL}/api/builders?sort[1]=package_name:asc${searchString}${paginationString}${filterString}`,
-      {
-        headers: {
-          Authorization: `Bearer ${bearerToken}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
     try {
-      const apiResponse = await response.json();
+      let response = await actions.getBuilderData({
+        searchString,
+        paginationString,
+        filterString,
+      });
+
+      let apiResponse = await response.data;
+      let error = await response.error;
+
       newRemoveLoadingSpinners();
 
       if (apiResponse.data.length === 0) {
@@ -214,7 +215,7 @@ let logURL = "https://logs.athenaos.org/";
       renderTable(builderData);
       currentPage++;
     } catch (e) {
-      showErrorMessage();
+      howErrorMessage();
       console.log(e);
     } finally {
       loading = false;
