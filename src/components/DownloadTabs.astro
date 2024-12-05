@@ -1,0 +1,160 @@
+---
+import Tabs from "./tabs/Tabs.astro";
+import { TabItem } from "@astrojs/starlight/components";
+import { data } from "src/javascript/downloadsData";
+---
+
+<div
+  class="flex items-center justify-center max-w-[46rem] mx-auto overflow-hidden"
+>
+  <Tabs>
+    {
+      data.map((platform) => (
+        <TabItem label={platform.title}>
+          <article class="card sl-flex w-full">
+            <p class="title sl-flex">
+              <img
+                src={platform.image}
+                alt={platform.title}
+                class="h-10 w-10"
+              />
+
+              <span set:html={platform.title} />
+            </p>
+            <div class="body">{platform.description}</div>
+            <Tabs>
+              {Object.keys(platform.hashes).map((hashType) => (
+                <TabItem label={hashType}>
+                  {/*  @ts-expect-error */}
+                  <code>{platform.hashes[hashType]}</code>
+                </TabItem>
+              ))}
+            </Tabs>
+
+            <a
+              href={platform.downloadURL}
+              style=" background: var(--sl-color-text-accent); color: var(--sl-color-black);"
+              class="mt-8 inline-flex items-center gap-x-2 rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 w-fit no-underline"
+              id={`download-${platform.id}`}
+            >
+              Download
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                class="size-6 -mr-0.5"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-.53 14.03a.75.75 0 0 0 1.06 0l3-3a.75.75 0 1 0-1.06-1.06l-1.72 1.72V8.25a.75.75 0 0 0-1.5 0v5.69l-1.72-1.72a.75.75 0 0 0-1.06 1.06l3 3Z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+            </a>
+            <p class="text-xs italic" id={`count-${platform.id}`} />
+          </article>
+        </TabItem>
+      ))
+    }
+  </Tabs>
+</div>
+
+<script>
+  import { actions } from "astro:actions";
+
+  async function increaseCount(id: string) {
+    await actions.increaseCount({ id });
+  }
+
+  document.addEventListener("DOMContentLoaded", async () => {
+    const { data, error } = await actions.getDownloadCount();
+
+    if (!error) {
+      data.forEach(
+        (element: { download_type: string; download_count: string }) => {
+          let countElement = document.getElementById(
+            "count-" + element.download_type
+          );
+          if (countElement)
+            countElement.innerHTML = `Downloaded ${element.download_count} times`;
+        }
+      );
+
+      data.forEach(
+        (element: { download_type: string; download_count: string }) => {
+          const button = document.getElementById(
+            `download-` + element.download_type
+          );
+          button?.addEventListener("click", (e) => {
+            e.preventDefault();
+            increaseCount(element.download_type);
+            console.log("it ran");
+            setTimeout(() => {
+              // @ts-expect-error
+              window.location.href = button.getAttribute("href");
+            }, 1000);
+          });
+        }
+      );
+    }
+  });
+</script>
+
+<style>
+  ul {
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .card {
+    --sl-card-border: var(--sl-color-purple);
+    --sl-card-bg: var(--sl-color-purple-low);
+    border: 1px solid var(--sl-color-gray-5);
+    background-color: var(--sl-color-black);
+    padding: clamp(1rem, calc(0.125rem + 3vw), 2.5rem);
+    flex-direction: column;
+    gap: clamp(0.5rem, calc(0.125rem + 1vw), 1rem);
+  }
+  .card:nth-child(4n + 1) {
+    --sl-card-border: var(--sl-color-orange);
+    --sl-card-bg: var(--sl-color-orange-low);
+  }
+  .card:nth-child(4n + 3) {
+    --sl-card-border: var(--sl-color-green);
+    --sl-card-bg: var(--sl-color-green-low);
+  }
+  .card:nth-child(4n + 4) {
+    --sl-card-border: var(--sl-color-red);
+    --sl-card-bg: var(--sl-color-red-low);
+  }
+  .card:nth-child(4n + 5) {
+    --sl-card-border: var(--sl-color-blue);
+    --sl-card-bg: var(--sl-color-blue-low);
+  }
+  .title {
+    font-weight: 600;
+    font-size: var(--sl-text-h4);
+    color: var(--sl-color-white);
+    line-height: var(--sl-line-height-headings);
+    gap: 1rem;
+    align-items: center;
+  }
+  .card .icon {
+    border: 1px solid var(--sl-card-border);
+    background-color: var(--sl-card-bg);
+    padding: 0.2em;
+    border-radius: 0.25rem;
+  }
+  .card .body {
+    margin: 0;
+    font-size: clamp(
+      var(--sl-text-sm),
+      calc(0.5rem + 1vw),
+      var(--sl-text-body)
+    );
+  }
+
+  starlight-tab-item {
+    display: none !important;
+  }
+</style>
