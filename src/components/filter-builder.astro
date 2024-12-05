@@ -26,7 +26,6 @@ function capitalizeText(text: string): string {
           <option value="">Filter {value} Status</option>
           {s[value].length > 0 &&
             s[value].map((i: string) => {
-              console.log(i);
               return <option value={i}>{capitalizeText(i)}</option>;
             })}
         </select>

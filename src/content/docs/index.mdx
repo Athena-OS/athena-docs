@@ -26,17 +26,11 @@ import { Card, CardGrid } from "@astrojs/starlight/components";
 import ScriptWorkaround from "/src/components/ScriptWorkaround.astro";
 import TimelineComponent from "/src/components/TimelineComponent.astro";
 import StatusComponent from "/src/components/StatusComponent.astro";
-import DownloadCards from "/src/components/DownloadCards.jsx";
+import DownloadTabs from "/src/components/DownloadTabs.astro";
 
 <StatusComponent />
-{/*
-Uncomment when to show Timeline
 <TimelineComponent />
-*/}
-{/*
-Uncomment when to publish and show DownloadCards again
-<DownloadCards client:load />
-*/}
+<DownloadTabs />
 
 <CardGrid stagger>
   <Card title="Pentesting" icon="add-document">
@@ -50,7 +44,7 @@ Uncomment when to publish and show DownloadCards again
   </Card>
   <Card title="Performance" icon="rocket">
     **Optimized resource consumption** by retrieving the tools you need only
-    when you use them.     Configured to load the **bare minimum** for its purpose.
+    when you use them. Configured to load the **bare minimum** for its purpose.
     **No useless services** or **modules** consuming your resources.
   </Card>
   <Card title="Flexibilty" icon="puzzle">
