@@ -1,13 +1,13 @@
 import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
 import tailwind from "@astrojs/tailwind";
-import vercel from "@astrojs/vercel/serverless";
+import netlify from "@astrojs/netlify";
 
 // https://astro.build/config
 export default defineConfig({
   site: "https://athenaos.org/",
   output: "hybrid",
-  adapter: vercel(),
+  adapter: netlify(),
   integrations: [
     starlight({
       title: "Athena OS",
