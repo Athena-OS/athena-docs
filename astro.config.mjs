@@ -1,12 +1,13 @@
 import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
-import react from "@astrojs/react";
 import tailwind from "@astrojs/tailwind";
+import vercel from "@astrojs/vercel/serverless";
 
 // https://astro.build/config
 export default defineConfig({
   site: "https://athenaos.org/",
   output: "hybrid",
+  adapter: vercel(),
   integrations: [
     starlight({
       title: "Athena OS",
@@ -266,7 +267,6 @@ export default defineConfig({
         },
       ],
     }),
-    react(),
     tailwind({ applyBaseStyles: false }),
   ],
   // Process images with sharp: https://docs.astro.build/en/guides/assets/#using-sharp
