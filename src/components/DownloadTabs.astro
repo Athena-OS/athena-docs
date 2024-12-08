@@ -22,14 +22,16 @@ import { data } from "src/javascript/downloadsData";
               <span set:html={platform.title} />
             </p>
             <div class="body">{platform.description}</div>
-            <Tabs>
-              {Object.keys(platform.hashes).map((hashType) => (
-                <TabItem label={hashType}>
-                  {/*  @ts-expect-error */}
-                  <code>{platform.hashes[hashType]}</code>
-                </TabItem>
-              ))}
-            </Tabs>
+            {platform.hashes ? (
+              <Tabs>
+                {Object.keys(platform.hashes).map((hashType) => (
+                  <TabItem label={hashType}>
+                    {/*  @ts-expect-error */}
+                    <code>{platform.hashes[hashType]}</code>
+                  </TabItem>
+                ))}
+              </Tabs>
+            ) : null}
 
             <a
               href={platform.downloadURL}
@@ -37,7 +39,7 @@ import { data } from "src/javascript/downloadsData";
               class="mt-8 inline-flex items-center gap-x-2 rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 w-fit no-underline"
               id={`download-${platform.id}`}
             >
-              Download
+              {platform.buttonLabel}
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
@@ -51,7 +53,9 @@ import { data } from "src/javascript/downloadsData";
                 />
               </svg>
             </a>
-            <p class="text-xs italic" id={`count-${platform.id}`} />
+            {platform.enableDownloadCounter && (
+              <p class="text-xs italic" id={`count-${platform.id}`} />
+            )}
           </article>
         </TabItem>
       ))

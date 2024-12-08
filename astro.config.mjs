@@ -21,7 +21,11 @@ export default defineConfig({
         light: "/src/assets/athena-light.svg",
         dark: "/src/assets/athena-dark.svg",
       },
-      customCss: ["./src/styles/tailwind.css"],
+      customCss: [
+        "./src/styles/tailwind.css",
+        "@fontsource/inter/400.css",
+        "@fontsource/inter/600.css",
+      ],
       components: {
         // Override the default `SocialIcons` component.
         SocialIcons: "./src/components/custom-navbar-links.astro",

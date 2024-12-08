@@ -15,7 +15,7 @@ export const data = [
     },
     downloadURL: "https://cms.athenaos.org/api/downloads/11",
     enableDownloadCounter: true,
-    downloadsCount: null,
+    buttonLabel: "Download",
   },
   {
     id: "vmware",
@@ -33,7 +33,7 @@ export const data = [
     },
     downloadURL: "https://cms.athenaos.org/api/downloads/14",
     enableDownloadCounter: true,
-    downloadsCount: null,
+    buttonLabel: "Download",
   },
   {
     id: "virtualbox",
@@ -51,7 +51,7 @@ export const data = [
     },
     downloadURL: "https://cms.athenaos.org/api/downloads/16",
     enableDownloadCounter: true,
-    downloadsCount: null,
+    buttonLabel: "Download",
   },
   {
     id: "docker",
@@ -59,17 +59,10 @@ export const data = [
     description:
       "Ideal for containerized environments! Ensure lightweight and efficient performance. Utilize the full potential across various platforms without the need for complex setups, providing a scalable and consistent solution for your development and deployment needs.",
     image: "/icons/docker.svg",
-    hashes: {
-      MD5: "7HFEJeGYbuXwkfMGy3yXAJhARt08gyzxCOgtDAJKiDpHNhnX2VA9LQ7O99a36734",
-      SHA1: "hg9qMB4356v24ERAn7Bx5dZoHuHNsQ57ibxlG0OH1JJUcBWbojA4aRNEuAFUvMmi",
-      SHA256:
-        "5eb9dc96cccbdfe7610d3cbced1bd6ee89b5acdfc83ffee1f06e6d02b058390c",
-      SHA512:
-        "kFJrYlvyVlnqBMGpjRFNWskHzr1Bdv9VTOrqV9HogAspOWpCAzRDEsPiOMMJ1qle",
-    },
+    hashes: false,
     downloadURL: "https://hub.docker.com/u/athenaos",
     enableDownloadCounter: false,
-    downloadsCount: null,
+    buttonLabel: "Get it now",
   },
   {
     id: "wsl",
@@ -77,18 +70,10 @@ export const data = [
     description:
       "Integrate seamlessly into your Windows environment! Enjoy the full power directly from Windows, offering a smooth and efficient Linux experience. Enhance your productivity with the flexibility and compatibility alongside your native Windows applications.",
     image: "/icons/wsl.svg",
-    hashes: {
-      MD5: "7HFEJeGYbuXwkfMGy3yXAJhARt08gyzxCOgtDAJKiDpHNhnX2VA9LQ7O99a36734",
-      SHA1: "hg9qMB4356v24ERAn7Bx5dZoHuHNsQ57ibxlG0OH1JJUcBWbojA4aRNEuAFUvMmi",
-      SHA256:
-        "5eb9dc96cccbdfe7610d3cbced1bd6ee89b5acdfc83ffee1f06e6d02b058390c",
-      SHA512:
-        "kFJrYlvyVlnqBMGpjRFNWskHzr1Bdv9VTOrqV9HogAspOWpCAzRDEsPiOMMJ1qle",
-    },
+    hashes: false,
     downloadURL:
       "https://www.microsoft.com/store/productId/9N1M7Q4F1KQF?ocid=pdpshare",
     enableDownloadCounter: false,
-    downloadsCount: null,
+    buttonLabel: "Get it now",
   },
-  // ... other items (you can repeat this structure for multiple installers)
 ];
