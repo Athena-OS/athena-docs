@@ -15,6 +15,7 @@
     "@astrojs/starlight": "^0.29.2",
     "@astrojs/starlight-tailwind": "^2.0.3",
     "@astrojs/tailwind": "^5.1.2",
+    "@fontsource/inter": "^5.1.0",
     "astro": "^4.16.16",
     "hast": "^1.0.0",
     "hast-util-select": "^6.0.3",
