@@ -31,10 +31,10 @@ import { data } from "src/javascript/downloadsData";
 
                     <div class="max-w-full mx-auto">
                       <div class="rounded-md p-4 relative border dark:border-gray-600">
-                        <p class="text-sm font-mono block mr-12">
+                        <p class="text-sm font-mono block mb-8">
                           <code
                             id="code-block"
-                            style="background: transparent;"
+                            style="background: transparent; padding: 0;"
                           >
                             {/*  @ts-expect-error */}
                             {platform.hashes[hashType]}
@@ -43,7 +43,7 @@ import { data } from "src/javascript/downloadsData";
                         {/*  @ts-expect-error */}
                         <button
                           onclick={`copyToClipboard(event, '${platform.hashes[hashType]}')`}
-                          class="absolute -top-2 right-2 bg-blue-500 text-white text-xs px-3 py-1.5 rounded hover:bg-blue-600 cursor-pointer"
+                          class="absolute bottom-2 right-1/2 translate-x-1/2 bg-blue-500 text-white text-xs px-3 py-1.5 rounded hover:bg-blue-600 cursor-pointer"
                         >
                           Copy
                         </button>
