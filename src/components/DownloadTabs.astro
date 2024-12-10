@@ -6,6 +6,7 @@ import { data } from "src/javascript/downloadsData";
 
 <div
   class="flex items-center justify-center max-w-[46rem] mx-auto overflow-hidden pb-20"
+  id="downloads"
 >
   <Tabs>
     {
@@ -26,8 +27,28 @@ import { data } from "src/javascript/downloadsData";
               <Tabs>
                 {Object.keys(platform.hashes).map((hashType) => (
                   <TabItem label={hashType}>
-                    {/*  @ts-expect-error */}
-                    <code>{platform.hashes[hashType]}</code>
+                    <p class="w-full" />
+
+                    <div class="max-w-full mx-auto">
+                      <div class="rounded-md p-4 relative border dark:border-gray-600">
+                        <p class="text-sm font-mono block mr-12">
+                          <code
+                            id="code-block"
+                            style="background: transparent;"
+                          >
+                            {/*  @ts-expect-error */}
+                            {platform.hashes[hashType]}
+                          </code>
+                        </p>
+                        {/*  @ts-expect-error */}
+                        <button
+                          onclick={`copyToClipboard(event, '${platform.hashes[hashType]}')`}
+                          class="absolute -top-2 right-2 bg-blue-500 text-white text-xs px-3 py-1.5 rounded hover:bg-blue-600 cursor-pointer"
+                        >
+                          Copy
+                        </button>
+                      </div>
+                    </div>
                   </TabItem>
                 ))}
               </Tabs>
@@ -62,6 +83,16 @@ import { data } from "src/javascript/downloadsData";
     }
   </Tabs>
 </div>
+
+<script is:inline>
+  function copyToClipboard(event, text) {
+    navigator.clipboard.writeText(text);
+    event.target.innerText = "Copied!";
+    setTimeout(() => {
+      event.target.innerText = "Copy";
+    }, 2000);
+  }
+</script>
 
 <script>
   import { actions } from "astro:actions";
