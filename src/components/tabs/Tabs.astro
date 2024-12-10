@@ -98,17 +98,20 @@ if (isSynced) {
 <style>
 	starlight-tabs {
 		display: block;
+		overflow-x: scroll;
 	}
 
 	.tablist-wrapper {
-		overflow-x: auto;
+		overflow-x: scroll;
 	}
 
 	[role='tablist'] {
 		display: flex;
-		flex-wrap: wrap;
+		flex-wrap: nowrap;
 		list-style: none;
 		padding: 0;
+		overflow-x: scroll;
+		padding-bottom: 2px;
 	}
 
 	.tab {
@@ -121,6 +124,7 @@ if (isSynced) {
 		gap: 0.5rem;
 		padding: 0 1.25rem;
 		text-decoration: none;
+		text-wrap: nowrap;
 		border-bottom: 2px solid var(--sl-color-gray-5);
 		color: var(--sl-color-gray-3);
 		outline-offset: var(--sl-outline-offset-inside);
