@@ -43,7 +43,7 @@ import { data } from "src/javascript/downloadsData";
                         {/*  @ts-expect-error */}
                         <button
                           onclick={`copyToClipboard(event, '${platform.hashes[hashType]}')`}
-                          class="absolute -top-2 right-2 bg-blue-500 text-white text-xs px-3 py-1.5 rounded hover:bg-blue-600 cursor-pointer"
+                          class="absolute max-sm:bottom-2 max-sm:right-1/2 max-sm:translate-x-1/2 sm:-top-2 sm:right-2 bg-blue-500 text-white text-xs px-3 py-1.5 rounded hover:bg-blue-600 cursor-pointer"
                         >
                           Copy
                         </button>
