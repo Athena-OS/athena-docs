@@ -24,12 +24,12 @@ export const data = [
       "Experience effortlessly! Ensure optimal performance and seamless integration. Take advantage of full feature set without modifying your primary system, providing a robust and efficient solution for your virtualization needs.",
     image: "/icons/vmware.svg",
     hashes: {
-      MD5: "7HFEJeGYbuXwkfMGy3yXAJhARt08gyzxCOgtDAJKiDpHNhnX2VA9LQ7O99a36734",
-      SHA1: "hg9qMB4356v24ERAn7Bx5dZoHuHNsQ57ibxlG0OH1JJUcBWbojA4aRNEuAFUvMmi",
+      MD5: "Work In Progress",
+      SHA1: "Work In Progress",
       SHA256:
-        "5eb9dc96cccbdfe7610d3cbced1bd6ee89b5acdfc83ffee1f06e6d02b058390c",
+        "Work In Progress",
       SHA512:
-        "kFJrYlvyVlnqBMGpjRFNWskHzr1Bdv9VTOrqV9HogAspOWpCAzRDEsPiOMMJ1qle",
+        "Work In Progress",
     },
     downloadURL: "https://cms.athenaos.org/api/downloads/14",
     enableDownloadCounter: true,
@@ -42,12 +42,12 @@ export const data = [
       "Run seamlessly! Designed for smooth performance and full compatibility. Enjoy all the features without altering your main system, providing a flexible and efficient virtualization solution.",
     image: "/icons/vbox.svg",
     hashes: {
-      MD5: "7HFEJeGYbuXwkfMGy3yXAJhARt08gyzxCOgtDAJKiDpHNhnX2VA9LQ7O99a36734",
-      SHA1: "hg9qMB4356v24ERAn7Bx5dZoHuHNsQ57ibxlG0OH1JJUcBWbojA4aRNEuAFUvMmi",
+      MD5: "Work In Progress",
+      SHA1: "Work In Progress",
       SHA256:
-        "5eb9dc96cccbdfe7610d3cbced1bd6ee89b5acdfc83ffee1f06e6d02b058390c",
+        "Work In Progress",
       SHA512:
-        "kFJrYlvyVlnqBMGpjRFNWskHzr1Bdv9VTOrqV9HogAspOWpCAzRDEsPiOMMJ1qle",
+        "Work In Progress",
     },
     downloadURL: "https://cms.athenaos.org/api/downloads/16",
     enableDownloadCounter: true,
