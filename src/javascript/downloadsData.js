@@ -6,14 +6,14 @@ export const data = [
       "Get the full capabilities of your hardware! Achieve unparalleled performance and seamless integration with your hardware, ensuring a smooth and efficient computing experience.",
     image: "/icons/iso.svg",
     hashes: {
-      MD5: "7HFEJeGYbuXwkfMGy3yXAJhARt08gyzxCOgtDAJKiDpHNhnX2VA9LQ7O99a36734",
-      SHA1: "hg9qMB4356v24ERAn7Bx5dZoHuHNsQ57ibxlG0OH1JJUcBWbojA4aRNEuAFUvMmi",
+      MD5: "c035caf231a8101eabe4946911364008",
+      SHA1: "9dbc79e2c1eca0cb9d684ff1976fcca6609e9cef",
       SHA256:
-        "5eb9dc96cccbdfe7610d3cbced1bd6ee89b5acdfc83ffee1f06e6d02b058390c",
+        "61883b6ad4085e28ddd838ddc6a543d912149d0b529bef19ae099980de541f46",
       SHA512:
-        "abs118c0267216830b4214dcd2a2d2a3891a97dab6cf2aa5cd398262c0343d89a6beea759b9052a5cd37edccfdab855174a4ef0f56100177548d7c6f91bc0ab414d",
+        "93897f3dbbcb70cdecc7563ef14048d3c8c93e831c046008701d2dc20346357403de8c6f4ac57f2a490b3549168882c2df68383b55e2210c0f1fc936b1dc0976",
     },
-    downloadURL: "https://cms.athenaos.org/api/downloads/11",
+    downloadURL: "https://github.com/Athena-OS/athena/releases/download/v23.11/athena-rolling-x86_64.iso",
     enableDownloadCounter: true,
     buttonLabel: "Download",
   },
