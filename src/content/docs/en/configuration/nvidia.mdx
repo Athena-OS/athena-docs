@@ -89,4 +89,38 @@ It will turn on the NVIDIA GPU and load the related modules.
 
 During the installation phase in Calamares, Athena will set the NVIDIA drivers **automatically** in order to use your dedicated GPU right away.
 
+## Remove NVIDIA
+
+If you are on a working environment with no NVIDIA drivers installed, then you install them and you cannot access to your environment (i.e., GNOME crashes at boot time (if you are using GDM) or after login (if you are using a different display manager)), to completely restore a working status, you need to remove completely all NVIDIA components. The only driver package removal is not enough.
+
+To completely remove NVIDIA, boot to a TTY by pressing **CTRL + ALT + F2** (or any function key from **F2** to **F6**), login to the session and run:
+```shell
+sudo pacman -Rns <nvidia-driver-pkg-you-installed>
+```
+Check on `/etc/mkinitcpio.conf` inside `MODULES` array that no `nvidia` parameters are shown, otherwise, delete them. Move to `HOOKS` array and restore `kms` parameter, if needed, to finally have:
+```
+HOOKS=(base systemd autodetect modconf kms keyboard sd-vconsole block sd-encrypt lvm2 filesystems fsck)
+```
+and save the file.
+
+Check on `/etc/default/grub`, inside `GRUB_CMDLINE_LINUX_DEFAULT` variable, that no `nvidia` parameters are stored, otherwise delete them.
+
+Run:
+```shell
+sudo rm -rf /etc/ld.so.conf.d/00-nvidia.conf
+sudo rm -rf /etc/X11/xorg.conf.d/10-nvidia*.conf
+sudo rm -rf /usr/share/X11/xorg.conf.d/10-nvidia*.conf
+```
+If kernel module exists, remove it by:
+```shell
+sudo rm -rf /etc/modprobe.d/nvidia*.conf
+sudo modprobe -r nvidia
+```
+Finally, run:
+```shell
+sudo ldconfig
+sudo mkinitcpio -P
+```
+If no errors occur, reboot the system by running `reboot` command.
+
 <ImageComponent />
