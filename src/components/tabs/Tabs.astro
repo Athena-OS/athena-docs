@@ -98,11 +98,20 @@ if (isSynced) {
 <style>
 	starlight-tabs {
 		display: block;
-		overflow-x: scroll;
 	}
 
-	.tablist-wrapper {
-		overflow-x: scroll;
+	@media only screen and (max-width: 768px) {
+		starlight-tabs {
+			overflow-x: scroll;
+		}
+		
+		[role='tablist'] {
+			overflow-x: scroll;
+		}
+	
+		.tablist-wrapper {
+			overflow-x: scroll;
+		}
 	}
 
 	[role='tablist'] {
@@ -110,7 +119,6 @@ if (isSynced) {
 		flex-wrap: nowrap;
 		list-style: none;
 		padding: 0;
-		overflow-x: scroll;
 		padding-bottom: 2px;
 	}
 
