@@ -222,6 +222,10 @@ export default defineConfig({
               label: "Submitting Tools in Arch",
               link: "/en/community/submitting-tools-arch",
             },
+            {
+              label: "Team",
+              link: "/en/community/team",
+            },
           ],
         },
         {
