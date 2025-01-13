@@ -314,6 +314,20 @@ kex --esm --ip -s
 
 ### Misc
 
+#### Maximum file size exceeded
+
+When you install or upgrade packages, if you get the following error:
+```
+error: failed retrieving file 'package-name.pkg.tar.zst' from hub.athenaos.org : Maximum file size exceeded
+```
+probably the Athena repository database was not updated correctly at server side during the building of the package. In this case, contact Athena Team. They should trigger the update of the Athena repository database.
+
+After that, run:
+```
+sudo pacman -Syy
+```
+and try again to install or upgrade your packages.
+
 #### Visual glitch
 
 If you are experiencing virtual glitches like:
