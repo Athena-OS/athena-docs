@@ -5,6 +5,65 @@ description: Athena OS Display Managers.
 import ImageComponent from "@components/ImageComponent.astro";
 import ThemedImage from '@components/ThemedImage.astro';
 
+Athena OS uses **SDDM** as Display Manager because of its reliability and flexibility, in particular the [sddm-astronaut-theme](https://github.com/Keyitdev/sddm-astronaut-theme).
+
+It offers several themes, static and dynamic, that can be set by editing `/usr/share/sddm/themes/sddm-astronaut-theme/metadata.desktop`:
+```toml
+[SddmGreeterTheme]
+Name=sddm-astronaut-theme
+Description=sddm-astronaut-theme
+Author=keyitdev
+Website=https://github.com/Keyitdev/sddm-astronaut-theme
+License=GPL-3.0-or-later
+Type=sddm-theme
+Version=1.3
+ConfigFile=Themes/astronaut.conf
+Screenshot=Previews/astronaut.png
+MainScript=Main.qml
+TranslationsDirectory=translations
+Theme-Id=sddm-astronaut-theme
+Theme-API=2.0
+QtVersion=6
+```
+To set a different theme, edit `ConfigFile=Themes/astronaut.conf` line by declaring your favourite `.conf` file. The name of the available config files can be found in `/usr/share/sddm/themes/sddm-astronaut-theme/Themes` directory.
+
+### Astronaut
+**Themes/astronaut.conf**
+![SDDM Astronaut Theme](@assets/images/sddm-astronaut.png)
+
+### Black Hole
+**Themes/black_hole.conf**
+![SDDM Black Hole Theme](@assets/images/sddm-black_hole.png)
+
+### Cyberpunk
+**Themes/cyberpunk.conf**
+![SDDM Cyberpunk Theme](@assets/images/sddm-cyberpunk.png)
+
+### Cyborg
+**Themes/japanese_aesthetic.conf**
+![SDDM Cyborg Theme](@assets/images/sddm-japanese_aesthetic.png)
+
+### Kath
+**Themes/hyprland_kath.conf**
+![SDDM Kath Theme](@assets/images/sddm-kath.gif)
+
+### Jake The Dog
+**Themes/jake_the_dog.conf**
+![SDDM Jake The Dog Theme](@assets/images/sddm-jake_the_dog.gif)
+
+### Pixel Sakura
+**Themes/pixel_sakura.conf**
+![SDDM Sakura Theme](@assets/images/sddm-pixel_sakura.gif)
+
+### Post-Apocalypse
+**Themes/post-apocalyptic_hacker.conf**
+![SDDM Post-Apocalypse Theme](@assets/images/sddm-post_apocalyptic_hacker.png)
+
+### Purple Leaves
+**Themes/purple_leaves.conf**
+![SDDM Purple Leaves Theme](@assets/images/sddm-purple_leaves.png)
+
+{/*
 An important element in the system is the **Display Manager** that manages the login phase. By Athena OS installer, users can choose among different Display Managers as they wish under the “Login Manager” pane. Indeed, currently Athena offers three solutions: **GDM**, **LightDM** and **SDDM**.
 
 ## GDM
@@ -48,5 +107,6 @@ LightDM cannot manage Screen Lock on GNOME, so, if the user clicks on the Power 
 If you need to swap desktop environment or window manager (i.e., you need to switch from GNOME Xorg to GNOME Wayland), click on the dropdown menu, under **Log In** button, where you can select your destination environment.
 
 ![SDDM Astronaut Theme](@assets/images/sddm-astronaut.png)
+*/}
 
 <ImageComponent />
