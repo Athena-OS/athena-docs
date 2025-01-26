@@ -4,10 +4,15 @@ description: Athena OS Display Managers.
 ---
 import ImageComponent from "@components/ImageComponent.astro";
 import ThemedImage from '@components/ThemedImage.astro';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
 
 Athena OS uses **SDDM** as Display Manager because of its reliability and flexibility, in particular the [sddm-astronaut-theme](https://github.com/Keyitdev/sddm-astronaut-theme).
 
-It offers several themes, static and dynamic, that can be set by editing `/usr/share/sddm/themes/sddm-astronaut-theme/metadata.desktop`:
+It offers several themes, static and dynamic, that can be set by editing:
+
+<Tabs>
+<TabItem label="Athena Arch">
+`/usr/share/sddm/themes/sddm-astronaut-theme/metadata.desktop`:
 ```toml
 [SddmGreeterTheme]
 Name=sddm-astronaut-theme
@@ -26,6 +31,20 @@ Theme-API=2.0
 QtVersion=6
 ```
 To set a different theme, edit `ConfigFile=Themes/astronaut.conf` line by declaring your favourite `.conf` file. The name of the available config files can be found in `/usr/share/sddm/themes/sddm-astronaut-theme/Themes` directory.
+</TabItem>
+<TabItem label="Athena Nix">
+`/etc/nixos/modules/dms/sddm/default.nix
+`:
+```nix
+    environment.systemPackages = with pkgs; [
+      (sddm-astronaut.override {
+        embeddedTheme = "cyberpunk";
+      })
+    ];
+```
+To set a different theme, edit `embeddedTheme = "cyberpunk";` line by replacing its value by your favourite theme. The name of the available themes can be found between the filename, without extension, of files in the `/run/current-system/sw/share/sddm/themes/sddm-astronaut-theme/Themes` directory.
+</TabItem>
+</Tabs>
 
 ### Astronaut
 **Themes/astronaut.conf**
