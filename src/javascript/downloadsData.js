@@ -6,12 +6,12 @@ export const data = [
       "Get the full capabilities of your hardware! Achieve unparalleled performance and seamless integration with your hardware, ensuring a smooth and efficient computing experience.",
     image: "/icons/iso.svg",
     hashes: {
-      MD5: "8883b03f4cc37cd4c5068e5fd5fee16d",
-      SHA1: "32f764eb9073a15d4b875113d113151f352ec54c",
+      MD5: "43cee34b1d19fdf869bce7c67a57c9ec",
+      SHA1: "4d8a83f0a93f765c375cd735bb838edfd3381165",
       SHA256:
-        "11f15871ba3f9e461860f52d1f4b0884feffca09d4fedb136016fbc8755415b2",
+        "d741453e1ea3121b384ffcf99a11846284f4df320a3b8fcc2734a246218ade7d",
       SHA512:
-        "cd0228ed8d62a6db866eb488bff7c973ad93e33d5f7a08a10addbf339a953f78e9f3a2a9ff6ef28587fd12b7be849a28d12a2a15eaaa8263fe4e517ac95b73b4",
+        "d5a1d67c7be9f11a4dd955caed75098d0c987aae7f7b74f85b972e3f2f0d1763e003fe40dd55851b24b0f726793058efad20700fde26b3dc57e0eb45c797830e",
     },
     downloadURL: "https://github.com/Athena-OS/athena/releases/download/v23.11/athena-rolling-x86_64.iso",
     enableDownloadCounter: true,
