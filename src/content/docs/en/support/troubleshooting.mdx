@@ -312,6 +312,18 @@ Then, reopen Athena OS WSL and try to run again:
 kex --esm --ip -s
 ```
 
+#### Error: unable to open display :0
+
+When installing software like `mesa-utils`, when running a GUI application, you could get the following error:
+```
+Error: unable to open display :0
+```
+To solve it, just shutdown WSL by:
+```
+sudo shutdown now
+```
+The terminal will close, wait for some seconds and rerun Athena WSL again.
+
 ### Misc
 
 #### Maximum file size exceeded
