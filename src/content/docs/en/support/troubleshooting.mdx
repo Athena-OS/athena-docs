@@ -44,6 +44,57 @@ If Athena Nix installation is killed and the following error is produced:
 ```
 just assign more resources (CPU, RAM, Swap space) to your system.
 
+#### memtest86+: /mnt/boot/memtest86+/memtest.bin exists in filesystem
+
+If the installation interrupts due to the following errors:
+```shell
+[ INFO ] 16:54:32 checking keyring...
+[ INFO ] 16:54:32 checking package integrity...
+[ INFO ] 16:55:04 loading package files...
+[ INFO ] 16:55:05 checking for file conflicts...
+[ INFO ] 16:55:07 error: failed to commit transaction (conflicting files)
+[ INFO ] 16:55:07 memtest86+: /mnt/boot/memtest86+/memtest.bin exists in filesystem
+[ INFO ] 16:55:07 athena-grub-theme: /mnt/boot/grub/themes/athena/background.png exists in filesystem
+[ INFO ] 16:55:07 athena-grub-theme: /mnt/boot/grub/themes/athena/boot_menu_c.png exists in filesystem
+[ INFO ] 16:55:07 athena-grub-theme: /mnt/boot/grub/themes/athena/boot_menu_e.png exists in filesystem
+[ INFO ] 16:55:07 athena-grub-theme: /mnt/boot/grub/themes/athena/boot_menu_n.png exists in filesystem
+[ INFO ] 16:55:07 athena-grub-theme: /mnt/boot/grub/themes/athena/boot_menu_ne.png exists in filesystem
+[ INFO ] 16:55:07 athena-grub-theme: /mnt/boot/grub/themes/athena/boot_menu_nw.png exists in filesystem
+[ INFO ] 16:55:07 athena-grub-theme: /mnt/boot/grub/themes/athena/boot_menu_s.png exists in filesystem
+[ INFO ] 16:55:07 athena-grub-theme: /mnt/boot/grub/themes/athena/boot_menu_se.png exists in filesystem
+[ INFO ] 16:55:07 athena-grub-theme: /mnt/boot/grub/themes/athena/boot_menu_sw.png exists in filesystem
+[ INFO ] 16:55:07 athena-grub-theme: /mnt/boot/grub/themes/athena/boot_menu_w.png exists in filesystem
+[ INFO ] 16:55:07 athena-grub-theme: /mnt/boot/grub/themes/athena/hackb_18.pf2 exists in filesystem
+[ INFO ] 16:55:07 athena-grub-theme: /mnt/boot/grub/themes/athena/icons/athena.png exists in filesystem
+[ INFO ] 16:55:07 athena-grub-theme: /mnt/boot/grub/themes/athena/menu_bkg_c.png exists in filesystem
+[ INFO ] 16:55:07 athena-grub-theme: /mnt/boot/grub/themes/athena/menu_bkg_e.png exists in filesystem
+[ INFO ] 16:55:07 athena-grub-theme: /mnt/boot/grub/themes/athena/menu_bkg_n.png exists in filesystem
+[ INFO ] 16:55:07 athena-grub-theme: /mnt/boot/grub/themes/athena/menu_bkg_ne.png exists in filesystem
+[ INFO ] 16:55:07 athena-grub-theme: /mnt/boot/grub/themes/athena/menu_bkg_nw.png exists in filesystem
+[ INFO ] 16:55:07 athena-grub-theme: /mnt/boot/grub/themes/athena/menu_bkg_s.png exists in filesystem
+[ INFO ] 16:55:07 athena-grub-theme: /mnt/boot/grub/themes/athena/menu_bkg_se.png exists in filesystem
+[ INFO ] 16:55:07 athena-grub-theme: /mnt/boot/grub/themes/athena/menu_bkg_sw.png exists in filesystem
+[ INFO ] 16:55:07 athena-grub-theme: /mnt/boot/grub/themes/athena/menu_bkg_w.png exists in filesystem
+[ INFO ] 16:55:07 athena-grub-theme: /mnt/boot/grub/themes/athena/norwester_16.pf2 exists in filesystem
+[ INFO ] 16:55:07 athena-grub-theme: /mnt/boot/grub/themes/athena/norwester_20.pf2 exists in filesystem
+[ INFO ] 16:55:07 athena-grub-theme: /mnt/boot/grub/themes/athena/norwester_22.pf2 exists in filesystem
+[ INFO ] 16:55:07 athena-grub-theme: /mnt/boot/grub/themes/athena/progress_bar_c.png exists in filesystem
+[ INFO ] 16:55:07 athena-grub-theme: /mnt/boot/grub/themes/athena/progress_bar_e.png exists in filesystem
+[ INFO ] 16:55:07 athena-grub-theme: /mnt/boot/grub/themes/athena/progress_bar_w.png exists in filesystem
+[ INFO ] 16:55:07 athena-grub-theme: /mnt/boot/grub/themes/athena/progress_highlight_c.png exists in filesystem
+[ INFO ] 16:55:07 athena-grub-theme: /mnt/boot/grub/themes/athena/select_c.png exists in filesystem
+[ INFO ] 16:55:07 athena-grub-theme: /mnt/boot/grub/themes/athena/select_e.png exists in filesystem
+[ INFO ] 16:55:07 athena-grub-theme: /mnt/boot/grub/themes/athena/select_w.png exists in filesystem
+[ INFO ] 16:55:07 athena-grub-theme: /mnt/boot/grub/themes/athena/slider_c.png exists in filesystem
+[ INFO ] 16:55:07 athena-grub-theme: /mnt/boot/grub/themes/athena/slider_n.png exists in filesystem
+[ INFO ] 16:55:07 athena-grub-theme: /mnt/boot/grub/themes/athena/slider_s.png exists in filesystem
+[ INFO ] 16:55:07 athena-grub-theme: /mnt/boot/grub/themes/athena/theme.txt exists in filesystem
+[ INFO ] 16:55:07 intel-ucode: /mnt/boot/intel-ucode.img exists in filesystem
+[ INFO ] 16:55:07 Errors occurred, no packages were upgraded.
+[ INFO ] 16:55:07 ==> ERROR: Failed to install packages to new root
+```
+probably you are using a non-empty boot partition that contains `memtest.bin` as in Athena, probably from another Linux distro installation. To fix this, format this boot partition or select a new partition to be used as Athena boot partition.
+
 ### Boot
 
 #### Login freeze at ISO Live boot
