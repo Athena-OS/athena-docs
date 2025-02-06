@@ -64,10 +64,20 @@ Kali docs has a well documented page about Win-Kex Enhanced Session Mode. Visit 
 
 It sets a VNC server and places in Windows desktop applications and elements of Athena OS XFCE environment.
 
-You can run KeX in Seamless Mode by running inside of Athena WSL:
+Win-Kex leverages on **VcXsrv** installed in `/usr/lib/win-kex` but to run correctly, this software must be installed on the host side too. Download VcXsrv by https://vcxsrv.com/ and install it. On "Task Manager" -> "Details" be sure there are no *vcxsrv* running processes. If so, terminate them. Then, run it on Windows by typing *vcxsrv* on the search bar. At first run, it could require to add an exception on Windows Firewall. Add it by selecting public networks. If it is not asked to add exception on Windows Firewall, just check if it exists by searching for "Firewall & network protection" in Windows, click on "Allow an app through firewall", if *vcxsrv* is not in the list, click on "Change settings" -> "Allow another app..." and search for "C:\Program Files\VcXsrv\vcxsrv.exe", click on "Network types..." and select "Public", finally click "OK".
+
+Once you run VcXsrv on Windows, the process will run in background. If you run more times, you will get an error. Just be sure it is running by looking on "Task Manager" -> "Details" as *vcsrv.exe*.
+
+Finally, you can run KeX in Seamless Mode by running inside of Athena WSL:
 ```shell
 kex --sl -s
 ```
+
+To stop Seamless Mode, run:
+```shell
+kex --sl --stop
+```
+Be aware that this command will kill *vcxsrv.exe* process on Windows, so, the next time you need to use Seamless mode, before running it, you must run VcXsrv application on Windows host.
 
 Kali docs has a well documented page about Win-Kex Seamless Mode. Visit [Win-KeX Seamless Mode usage documentation](https://www.kali.org/docs/wsl/win-kex-sl/) for further information.
 
