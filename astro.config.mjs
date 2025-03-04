@@ -14,7 +14,6 @@ export default defineConfig({
       description:
         "Athena OS, a new pentesting/cybersecurity Linux distribution.",
       components: {
-        TableOfContents: "./src/components/TOC.astro",
         PageTitle: "./src/components/CustomPageTitle.astro",
       },
       logo: {
@@ -28,6 +27,7 @@ export default defineConfig({
       ],
       components: {
         // Override the default `SocialIcons` component.
+        TableOfContents: "./src/components/TOC.astro",
         SocialIcons: "./src/components/custom-navbar-links.astro",
         Header: "./src/components/Header.astro",
       },
