@@ -95,6 +95,10 @@ If the installation interrupts due to the following errors:
 ```
 probably you are using a non-empty boot partition that contains `memtest.bin` as in Athena, probably from another Linux distro installation. To fix this, format this boot partition or select a new partition to be used as Athena boot partition.
 
+#### Disks not detected
+
+In case the system does not recognize your disk, even if you are using GParted or `fdisk -l` command, the cause could be that the disk is set to RAID. You must change it to AHCI.
+
 ### Boot
 
 #### Login freeze at ISO Live boot
