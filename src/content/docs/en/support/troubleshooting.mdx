@@ -446,9 +446,34 @@ and select the **Linux Kernel** to run
 
 ![Athena Snapshots Run](@assets/images/athena-snapshots-run.png)
 
-#### Cannot store HTB App Token due to secret-tool hanging
+#### Cannot store HTB App Token
+
+##### secret-tool hanging
 
 When you run `htb-toolkit -k set` and, by entering your App Token in the Password field secret-tool hangs, try to reboot the system. If it does not work, install Brave browser, open it and at first run a popup window asking for the creation of a new password is shown. You can choose to set a password or just press **Enter** two times if you don't want, and finally try again `htb-toolkit -k set`.
+
+##### secret-tool: The '/org/freedesktop/secrets/collection/login' object does not exist
+
+Run:
+```shell
+killall gnome-keyring-daemon
+gnome-keyring-daemon --start
+```
+it will create the directory `$HOME/.local/share/keyrings`.
+
+##### secret-tool: Object does not exist at path "/org/freedesktop/secrets/collection/login"
+
+In WSL, it happens because it is not able to prompt the graphical view to add the password to protect the keyring. You can connect by RDP to Athena WSL GUI by kex:
+```shell
+kex --esm --ip -s
+```
+open a terminal and run:
+```shell
+codium
+```
+It will open VSCodium that will trigger the keyring password window. Leave blank or choose a password on both the fields and confirm.
+
+Exit from RDP session and now you can store the HTB App Token.
 
 #### Pentesting tool from menu opening terminal with no output in VirtualBox
 
