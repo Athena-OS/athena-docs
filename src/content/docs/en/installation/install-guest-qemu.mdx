@@ -14,8 +14,6 @@ First, you need to prepare your environment for running Virt-Manager (LibVirt GU
 sudo pacman -S virt-manager qemu-full dnsmasq
 sudo systemctl enable libvirtd
 sudo systemctl start libvirtd
-sudo systemctl enable dnsmasq
-sudo systemctl start dnsmasq
 ```
 Run `virt-manager`. At first run, in case there is only `LXC` connection but not `QEMU/KVM` connection, click on **File** -> **Add Connection...**, be sure that **Hypervisor** field is set to **QEMU/KVM** and click on **Connect**
 
