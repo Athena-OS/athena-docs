@@ -63,6 +63,7 @@ At the end, apply all the changes and click on **Begin Installation** button on 
 When the VM is run, install Athena OS as explained in [Installing as single boot](/en/installation/install-single-boot/) chapter.
 
 :::note
+In general, to make shared clipboard between Host and Guest working, it is needed to install `qemu-guest-agent` and `spice-vdagent`, and, finally, run `sudo systemctl enable qemu-guest-agent`, and reboot.
 Athena OS automatically recognizes if you are using a virtualized environment so you don't need to install QEMU Guest Agent because the system will do automatically for you during the OS installation.
 :::
 
