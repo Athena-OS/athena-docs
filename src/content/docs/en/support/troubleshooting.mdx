@@ -296,7 +296,13 @@ After that, downgrade the affected components, for example you can try with the 
 pacman -Rnsd --nodeps <yourkernel> <yourkernel>-headers
 pacman -S linux-lts linux-lts-headers
 ```
-If you boot, and you are able to get some output log strings and you reach another different blinking cursor, press `CTRL+ALT+Fx` (where `x` can be 2, 3, 4, and so on) to perform more troubleshooting. 
+If you boot, and you are able to get some output log strings and you reach another different blinking cursor, press `CTRL+ALT+Fx` (where `x` can be 2, 3, 4, and so on) to perform more troubleshooting.
+
+### Desktop Environments
+
+#### KDE Plasma
+
+After login, if you get a black screen and nothing happens, probably the cause is **gnome-shell**. Just get TTY by **CTRL+ALT+F3** or another **Fn** button on your keyboard, and remove **gnome-shell** package.
 
 ### Display Managers
 
