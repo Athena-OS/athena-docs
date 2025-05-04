@@ -304,6 +304,8 @@ If you boot, and you are able to get some output log strings and you reach anoth
 
 After login, if you get a black screen and nothing happens, probably the cause is **gnome-shell**. Just get TTY by **CTRL+ALT+F3** or another **Fn** button on your keyboard, and remove **gnome-shell** package.
 
+If the issue persists, install Xorg server packages (i.e., `xorg-x11-drv-libinput`, `xorg-x11-server-Xorg`, `xorg-x11-server-Xwayland`). After this, reboot and at login, if you cannot reach the GUI, access to the system by TTY and search for logs in `~/.xsession-errors`.
+
 ### Display Managers
 
 #### GDM: login background turned to grey
