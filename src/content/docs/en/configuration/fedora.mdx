@@ -17,6 +17,8 @@ User experience on Athena Fedora will be much similar to the Arch-based one with
 
 Athena Fedora manages packages by using **dnf** instead than pacman. Here there are useful commands to start with:
 
+### Package Installation
+
 Install a package:
 ```shell
 sudo dnf install <package-name>
@@ -35,6 +37,8 @@ Reinstall a package without providing confirmation:
 sudo dnf reinstall -y <package-name>
 ```
 
+### Package Removal
+
 Remove a package:
 ```shell
 sudo dnf remove <package-name>
@@ -44,10 +48,92 @@ Remove a package without providing confirmation:
 sudo dnf remove -y <package-name>
 ```
 
+### System Upgrade
+
 Upgrade the system:
 ```shell
 sudo dnf upgrade
 ```
+
+### Package Version Downgrade
+
+There are several methods to downgrade a package. By using:
+```shell
+sudo dnf downgrade <package-name>
+```
+the package will be downgrade on the early version, if it exists on the repository.
+
+You can also downgrade a package to a specific version by getting the list of available versions:
+```shell
+dnf --showduplicates list <package-name>
+```
+and then installing your favourite version:
+```shell
+sudo dnf install <package-name>-<version>
+```
+
+After downgrading, you might want to hold the package:
+```shell
+sudo dnf versionlock add <package-name>
+```
+To unlock:
+```shell
+sudo dnf versionlock delete <package-name>
+```
+
+### Package Information
+
+To check information about a remote package:
+```shell
+dnf info <package-name>
+```
+
+To check information about a local package:
+```shell
+dnf info --installed <package-name>
+```
+or
+```shell
+rpm -qi <package-name>
+```
+
+### Package Dependencies
+
+To list all the dependencies required by a package:
+```shell
+dnf repoquery --requires <package-name>
+```
+or, for local packages only:
+```shell
+rpm -qR <package-name>
+```
+
+To list all the packages a specific package is a dependency:
+```shell
+dnf repoquery --whatrequires <package-name>
+```
+or, for installed packages only:
+```shell
+dnf repoquery --installed --whatrequires <package-name>
+```
+
+### Package File Details
+
+To list all files installed by a package:
+```shell
+dnf repoquery --list <package-name>
+```
+or
+```shell
+rpm -ql <package-name>
+```
+
+To list a specific file to which package belongs:
+```shell
+rpm -qf /path/to/file
+```
+
+### Package Search
 
 To check for all packages provided by your set repositories by command line:
 ```shell
@@ -64,7 +150,7 @@ or you can use regex if you are not sure of the complete name:
 ```shell
 dnf repoquery --repo=fedora "libse*"
 ```
-The value of `--repo=` parameter for each repository set on your system can be found inside the first line of each file in `/etc/yum.repos.d`.
+The value of `--repo=` parameter for each repository (official, third-party, COPR) set on your system can be found inside the first line of each file in `/etc/yum.repos.d`.
 
 Add RPM Fusion repository: https://docs.fedoraproject.org/en-US/quick-docs/rpmfusion-setup/
 
