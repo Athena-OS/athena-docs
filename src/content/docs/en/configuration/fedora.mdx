@@ -1,0 +1,56 @@
+---
+title: Athena Fedora
+description: Getting Started with Athena Fedora.
+---
+import ImageComponent from "@components/ImageComponent.astro";
+import ThemedImage from '@components/ThemedImage.astro';
+
+## Getting Started
+
+Athena OS is migrating to Fedora-base in order to improve stability and security of the system.
+
+A beta is available to be tested and published at https://hub.athenaos.org/athena-images/rolling/athenaos-live-x86_64.iso
+
+## How To Use
+
+User experience on Athena Fedora will be much similar to the Arch-based one with just one difference: the management of the packages.
+
+Athena Fedora manages packages by using **dnf** instead than pacman. Here there are useful commands to start with:
+
+Install a package:
+```shell
+sudo dnf install <package-name>
+```
+Install a package without providing confirmation:
+```shell
+sudo dnf install -y <package-name>
+```
+
+Reinstall a package:
+```shell
+sudo dnf reinstall <package-name>
+```
+Reinstall a package without providing confirmation:
+```shell
+sudo dnf reinstall -y <package-name>
+```
+
+Remove a package:
+```shell
+sudo dnf remove <package-name>
+```
+Remove a package without providing confirmation:
+```shell
+sudo dnf remove -y <package-name>
+```
+
+Upgrade the system:
+```shell
+sudo dnf upgrade
+```
+
+Add RPM Fusion repository: https://docs.fedoraproject.org/en-US/quick-docs/rpmfusion-setup/
+
+To check if a package is provided by Official Fedora Repositories, look at https://packages.fedoraproject.org/
+
+<ImageComponent />
