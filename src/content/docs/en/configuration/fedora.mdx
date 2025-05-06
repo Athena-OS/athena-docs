@@ -49,8 +49,26 @@ Upgrade the system:
 sudo dnf upgrade
 ```
 
+To check for all packages provided by your set repositories by command line:
+```shell
+dnf repoquery --repo=fedora 
+dnf repoquery --repo=athena
+dnf repoquery --repo=microsoft-fedora
+```
+
+To check for a specific package by command line:
+```shell
+dnf repoquery --repo=fedora libsecret
+```
+or you can use regex if you are not sure of the complete name:
+```shell
+dnf repoquery --repo=fedora "libse*"
+```
+The value of `--repo=` parameter for each repository set on your system can be found inside the first line of each file in `/etc/yum.repos.d`.
+
 Add RPM Fusion repository: https://docs.fedoraproject.org/en-US/quick-docs/rpmfusion-setup/
 
-To check if a package is provided by Official Fedora Repositories, look at https://packages.fedoraproject.org/
+To check online if a package is provided by Official Fedora Repositories: https://packages.fedoraproject.org/
+Or, to check  if a package exists in also Fedora Third-Party repositories (i.e., RPM Fusion): https://pkgs.org/
 
 <ImageComponent />
