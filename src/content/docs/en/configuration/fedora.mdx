@@ -5,6 +5,57 @@ description: Getting Started with Athena Fedora.
 import ImageComponent from "@components/ImageComponent.astro";
 import ThemedImage from '@components/ThemedImage.astro';
 
+
+## Introduction
+
+During this period, and according to the preferences of the community, a **feasibility study** has been performed on using **Fedora** as base system for a **pentesting distribution**.
+
+Our study identified very interesting advantages of designing a pentesting distro based on Fedora. For this reason, we decided to migrate Athena OS from Arch Linux to Fedora.
+
+### Advantages of Athena Fedora over Arch**
+
+**Security-Enhanced Linux**
+
+Athena Fedora will implement **SELinux (Security-Enhanced Linux)** including security policies provided directly by Fedora and Red Hat Team, preinstalled and preconfigured for you. SELinux enforces a **Mandatory Access Control (MAC)** through Linux Security Modules in the Linux kernel, in addition to the already provided **Discretionary Access Control (DAC)**.  They are enforced in a separated manner providing a boost on the security of your system.
+
+**Secure Boot Support**
+
+**UEFI Secure Boot** is supported and ensures that only trusted software is allowed to start when your computer boots up. No malware or rootkits could try to take control before your OS even starts.
+
+**Hardened Compiler Flags**
+
+RPM packages that will be shipped in Athena are built with **hardened compiler flags** to mitigate memory corruption attacks.
+
+**CI/CD Automation**
+
+Athena OS infrastructure is integrated with Fedora infrastructure (COPR) in order to maintain, build and update packages with **no manual intervention**. It strongly reduces the effort of Athena maintainers that can focus on different aspects of the system.
+
+**RPM packaging**
+
+We are studying an efficient way to create and build packages for pentesting tools by RPM packages. It allows these pentesting tools to be used not only on Fedora-based systems but **on several different distros** (i.e., AlmaLinux, CentOS, RHEL, OpenSUSE).
+
+**Stable vs Rolling releases**
+
+On Arch-base the project suffered the weak point of a rolling release model, that could provide unstable packages that can brick the system.
+The purpose of the project is to focus on **security and stability** over all. Stable releases could fit this target.
+
+
+### Performance
+
+The kernel includes a lot of important modules that in Arch must be manually included by adding a time delay during the installation.
+
+During these last days, simple performance tests have been performed on QEMU/KVM and:
+* The boot takes **4 seconds**
+* The installation takes **6 minutes** by a standard Internet connection; in Athena Arch it needed 15 minutes
+
+
+### Roadmap
+
+A long-term target will be to make Athena OS the first **OSTree pentesting distribution**. It will boost much more security and stability of the system.
+
+The purpose of this huge project is not only to set up a friendly environment for pentesters or red-teamers, but also to provide a **highly-secure system**, mostly for those users operating in **high-risky environments**.
+
+
 ## Getting Started
 
 Athena OS is migrating to Fedora-base in order to improve stability and security of the system.
@@ -14,6 +65,7 @@ A beta is available to be tested and published at https://hub.athenaos.org/athen
 Currently, Athena Fedora does not ship pentesting tools but it just leverages on ones provided by Fedora repository itself.
 
 In the future, we will submit much more pentesting tools in the repository.
+
 
 ## How To Use
 
