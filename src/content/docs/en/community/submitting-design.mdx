@@ -1,14 +1,14 @@
 ---
-title: Submitting Themes
-description: How to submit themes.
+title: Submitting Design
+description: How to submit a design.
 ---
 import ImageComponent from "@components/ImageComponent.astro";
 import ThemedImage from '@components/ThemedImage.astro';
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 
-Athena OS gives you the chance to propose your favourite rice and deploy it. This document explains how to prepare and propose your custom theme in order to be submitted for Athena OS.
+Athena OS gives you the chance to propose your favourite rice and deploy it. This document explains how to prepare and propose your custom design in order to be submitted for Athena OS.
 
-Generally, an Athena environment theme consists of:
+Generally, an Athena design consists of:
 * **GTK4 theme**: change the colours, window decorations, and overall style
 * **Icon theme**: change the application and system icon style
 * **Cursor theme**: change the mouse cursor style
@@ -17,14 +17,14 @@ Generally, an Athena environment theme consists of:
 * **Codium theme**: VSCodium style
 * **Tmux theme**: Tmux color style
 
-Let's suppose you would like to submit a theme for Athena OS. The process consists of the following steps:
-1. Identify the elements of the theme (GTK4 theme, Icon theme, Cursor theme, Background, Kitty theme, VSCodium theme, Tmux theme)
-2. Test the theme on your local machine
-3. Submit the theme
+Let's suppose you would like to submit a design for Athena OS. The process consists of the following steps:
+1. Identify the elements of the design (GTK4 theme, Icon theme, Cursor theme, Background, Kitty theme, VSCodium theme, Tmux theme)
+2. Test the design on your local machine
+3. Submit the design
 
 ### Identify the elements
 
-The elements of a theme can be retrieved from Internet. There are several websites that offer these elements for each environment, for example [GNOME Look](https://www.gnome-look.org/browse/) for GNOME or [MATE Look](https://www.mate-look.org/browse/). Just use an online search engine for getting them.
+The elements of a design can be retrieved from Internet. There are several websites that offer these elements for each environment, for example [GNOME Look](https://www.gnome-look.org/browse/) for GNOME or [MATE Look](https://www.mate-look.org/browse/). Just use an online search engine for getting them.
 
 If you are a GTK or Icon or Cursor theme developer, you can create your elements from scratch.
 
@@ -38,9 +38,9 @@ For VSCodium, you can retrieve a theme from VSCodium Extensions section. Take no
 
 For Tmux, the available themes can be found in the [Tmux Powerline Theme](https://github.com/wfxr/tmux-power#-themes) webpage. Take note of the name of the theme.
 
-### Test the theme
+### Test the design
 
-Once you get all the elements of the theme, you need to test them in your local machine to check if the overall theme works as intended.
+Once you get all the elements of the design, you need to test them in your local machine to check if the overall theme works as intended.
 
 <Tabs>
 <TabItem label="Athena Arch">
@@ -50,7 +50,7 @@ You should follow the provided instructions but in general you may:
 * store the Cursor theme folder in **/usr/share/icons/**
 </TabItem>
 <TabItem label="Athena Nix">
-Athena Nix is a declarative system, it means you need to "declare" the theme resources you need to test. You need to create a `.nix` module that sets the defined theme. For GTK theme, Icon theme and Cursor theme, you can refer as example to the [Nix modules](https://github.com/Athena-OS/athena-nix/blob/main/nixos/modules/themes/redmoon/default.nix) provided by Athena OS.
+Athena Nix is a declarative system, it means you need to "declare" the design resources you need to test. You need to create a `.nix` module that sets the defined design. For GTK theme, Icon theme and Cursor theme, you can refer as example to the [Nix modules](https://github.com/Athena-OS/athena-nix/blob/main/nixos/modules/design/redmoon/default.nix) provided by Athena OS.
 </TabItem>
 </Tabs>
 
@@ -58,7 +58,7 @@ Kitty can be tested directly by running:
 ```shell
 kitty +kitten themes
 ```
-and selecting the color style suitable for your theme.
+and selecting the color style suitable for your design.
 
 VSCodium theme can be selected and installed directly from the Extensions section.
 
@@ -72,7 +72,7 @@ Then, you must apply these elements on your environment. The implementation of G
 
 #### GNOME
 
-Open **Tweaks** application and set the theme elements there:
+Open **Tweaks** application and set the design elements there:
 ![GNOME Tweaks](@assets/images/gnome-custom-theme.png)
 
 Move to **Appearance** tab and:
@@ -136,8 +136,8 @@ gsettings set org.gnome.desktop.interface cursor-theme <cursor_theme_foldername>
 
 Apply the Background image by renaming your image as **wallpaper** and just replace **~/.config/eww/images/wallpaper/wallpaper** by your image file.
 
-### Submit the theme
+### Submit the design
 
-Submit the theme on [Athena Ticketing System](https://github.com/Athena-OS/athena/issues/new/choose) by clicking on **Get started** of **Submit theme** entry and propose your theme to the Community! Ask Community for reacting to the opened ticket and **high reacted themes** will be implemented in Athena!
+Submit the design on [Athena Ticketing System](https://github.com/Athena-OS/athena/issues/new/choose) by clicking on **Get started** of **Submit design** entry and propose your design to the Community! Ask Community for reacting to the opened ticket and **high reacted themes** will be implemented in Athena!
 
 <ImageComponent />
