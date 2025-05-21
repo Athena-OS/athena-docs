@@ -120,7 +120,7 @@ export default defineConfig({
             { label: "Kernel", link: "/en/configuration/kernel" },
             { label: "Shell", link: "/en/configuration/shell" },
             {
-              label: "Display Manager",
+              label: "Display Manager Themes",
               link: "/en/configuration/display-manager",
             },
             { label: "GNOME", link: "/en/configuration/gnome" },
