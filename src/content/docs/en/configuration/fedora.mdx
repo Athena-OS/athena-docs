@@ -62,14 +62,19 @@ Athena OS is migrating to Fedora-base in order to improve stability and security
 
 A beta is available to be tested and published at https://hub.athenaos.org/athena-images/rolling/athenaos-live-x86_64.iso
 
-Currently, Athena Fedora does not ship pentesting tools but it just leverages on ones provided by Fedora repository itself.
+## Architecture
 
-A list of them can be found in the [Fedora Security Lab repository](https://pagure.io/security-lab/blob/master/f/security-menu).
+Creating packages for pentesting tools in Fedora requires a huge effort and time. Athena Fedora is designed in a new concept by tiering principle, to increase security. The pentesting packages won't be distributed directly by packages but by containers. The system will consist of:
+* Tier 0 - System Layer (Root)
+* Tier 1 - Pentesting Layer (Containerization)
+* Tier 2 - User Layer
 
-In the future, we will submit much more pentesting tools in the repository.
+In this manner, at system level the security provided by SELinux (and Secure Boot) is enforced, while keeping your pentesting activity isolated from the System Tier. 
+The Tier 1 is based on podman containers based on Arch Linux, including BlackArch repository to get access to thousands of pentesting tools.
 
+The usage of containers in the Pentesting Layer allows you to clean all your environment in case you need to remove any track of your pentesting activity.
 
-## How To Use
+## Basic Commands
 
 User experience on Athena Fedora will be much similar to the Arch-based one with just one difference: the management of the packages.
 
@@ -214,5 +219,32 @@ Add RPM Fusion repository: https://docs.fedoraproject.org/en-US/quick-docs/rpmfu
 
 To check online if a package is provided by Official Fedora Repositories: https://packages.fedoraproject.org/
 Or, to check  if a package exists in also Fedora Third-Party repositories (i.e., RPM Fusion): https://pkgs.org/
+
+## Cyber Commands
+
+All pentesting tools are run in a Arch Linux container and retrieved from BlackArch repository. The container is managed by **cyber-shell**, a wrapper used to create, run, stop and delete the `athena-pentest` container, and to install and run the invoked pentesting tool.
+
+When the user clicks on the icon of a pentesting tool, `cyber-shell` is triggered to run it.
+
+`cyber-shell` can be also used to run a pentesting tool from your terminal, for example:
+* `cyber-shell -b nmap -x '-sS scanme.nmap.org'` - invoke `nmap` and run the arguments specified by `-x` parameter
+* `cyber-shell -b seclists -d /usr/share/seclists,/opt/seclists` - invoke `seclists` and access to the directory specified by `-d` parameter
+* `cyber-shell -s` - enter inside the `athena-pentest` container and install or use any pentesting tool you wish
+* `cyber-shell -b burpsuite -g` - invoke `burpsuite`. `-g` parameter must be used if the tool provides a GUI
+
+For additional information, run `cyber-shell -h`.
+
+Over time the related image of the container is updated. To retrieve the latest updates, run:
+```shell
+cyber-shell -u
+```
+If you wish to stop the container and delete it, run:
+```shell
+cyber-shell -z
+```
+If you wish to delete the image from your system, run:
+```shell
+sudo podman system prune -a
+```
 
 <ImageComponent />
