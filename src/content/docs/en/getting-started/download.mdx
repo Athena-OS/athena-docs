@@ -9,6 +9,8 @@ import ThemedImage from '@components/ThemedImage.astro';
 
 Athena OS can be installed by an ISO file downloaded from the [official website](https://github.com/Athena-OS/athena/releases) and currently available for **x86_64** architectures. A single ISO allows you to install Athena Arch (Arch-based) or Athena Nix (NixOS-based). Athena Nix can potentially work also on different architectures.
 
+Due to the migration to Fedora, currently Athena OS based on Fedora is available as beta to this [link](https://hub.athenaos.org/athena-images/rolling/athenaos-live-x86_64.iso).
+
 Are you not sure about your architecture?
 * If you are on a Linux or macOS, run:
   ```shell
@@ -29,13 +31,13 @@ In addition of the integrity, it is possible to check also the **authenticity** 
 ### Verify ISO Image Integrity
 
 To verify the integrity of the ISO file, download it and:
-* if you are on Linux or macOS, run the following command (by replacing `athena-<file-version>-<arch>.iso` with the actual ISO filename):
+* if you are on Linux or macOS, run the following command (by replacing `athenaos-<file-version>-<arch>.iso` with the actual ISO filename):
   ```shell
-  shasum -a 256 athena-<file-version>-<arch>.iso
+  shasum -a 256 athenaos-<file-version>-<arch>.iso
   ```
-* if you are on Windows, run the following command (by replacing `athena-<file-version>-<arch>.iso` with the actual ISO filename):
+* if you are on Windows, run the following command (by replacing `athenaos-<file-version>-<arch>.iso` with the actual ISO filename):
   ```shell
-  certutil -hashfile athena-<file-version>-<arch>.iso sha256
+  certutil -hashfile athenaos-<file-version>-<arch>.iso sha256
   ```
   :::note
   Be sure to have `certutil` installed on Windows, otherwise you could use other tools such as [Microsoft File Checksum Integrity Verifier](http://www.microsoft.com/en-us/download/details.aspx?id=11533).
@@ -59,9 +61,9 @@ To verify the authenticity of the ISO file to be sure that the actual one has be
    gpg:               imported: 1  (RSA: 1)
    ```
 
-2. Download the ISO file and its `.sig` signature file and run the following commmand (by replacing `athena-<file-version>-<arch>.iso` with the actual ISO filename):
+2. Download the ISO file and its `.sig` signature file and run the following commmand (by replacing `athenaos-<file-version>-<arch>.iso` with the actual ISO filename):
    ```shell
-   gpg --verify athena-<file-version>-<arch>.iso.sig athena-<file-version>-<arch>.iso
+   gpg --verify athenaos-<file-version>-<arch>.iso.sig athenaos-<file-version>-<arch>.iso
    ```
    If you get a **Good signature** output, the ISO file is genuine:
    ```
