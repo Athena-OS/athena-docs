@@ -298,6 +298,14 @@ pacman -S linux-lts linux-lts-headers
 ```
 If you boot, and you are able to get some output log strings and you reach another different blinking cursor, press `CTRL+ALT+Fx` (where `x` can be 2, 3, 4, and so on) to perform more troubleshooting.
 
+#### Black screen on VMware after reboot
+
+After reboot, if you get black screen, and you are able to get the TTY, you can check for an error by running:
+```shell
+journalctl -b -p 3
+```
+If you see an error related to the VMware driver, install `xf86-video-vesa` and `xf86-video-fbdev` packages and reboot.
+
 ### Desktop Environments
 
 #### KDE Plasma
