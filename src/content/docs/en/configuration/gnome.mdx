@@ -315,22 +315,26 @@ Here are reported some useful **keybindings** set by default in Athena OS GNOME.
 <Tabs>
 <TabItem label="Athena Arch">
 To install Athena OS GNOME environment on side of an existing environment, run:
-```
+
+```shell
 sudo pacman -S athena-gnome-config
 dconf load /org/gnome/settings-daemon/plugins/media-keys/ < /usr/share/athena-gnome-config/dconf-custom-keybindings.ini
 dconf load /org/gnome/mutter/ < /usr/share/athena-gnome-config/dconf-mutter.ini
 dconf load /org/gnome/desktop/ < /usr/share/athena-gnome-config/dconf-desktop.ini
 dconf load /org/gnome/shell/ < /usr/share/athena-gnome-config/dconf-shell.ini
 ```
+
 Then reboot. On Login Manager, select **GNOME Wayland** or **GNOME Xorg** session and login.
 
 If your theme is not correctly displayed, run `athena-theme-tweak` to set or change the current environment theme.
 </TabItem>
 <TabItem label="Athena Nix">
 To set Athena OS GNOME environment on side of an existing environment, just edit `/etc/nixos/configuration` and change `desktop` variable to `gnome`. Finally, run:
+
 ```shell
 sudo nixos-rebuild switch
 ```
+
 </TabItem>
 </Tabs>
 
