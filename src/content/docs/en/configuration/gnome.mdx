@@ -123,10 +123,12 @@ When the GNOME Tweaks is opened, move to **Appearance** tab and tweak your image
 ![GNOME Tweaks Background](@assets/images/gnome-custom-tweaks-background.png)
 
 An additional method is by terminal. Run:
+
 ```shell
 gsettings set org.gnome.desktop.background picture-uri-dark background.png
 gsettings set org.gnome.desktop.background picture-options stretched
 ```
+
 **stretched** is used to adjust the image in order to fill the entire screen.
 
 :::tip
@@ -155,6 +157,7 @@ When the GNOME Tweaks is opened, move to **Appearance** tab and select your curs
 ![GNOME Tweaks Cursor](@assets/images/gnome-custom-cursor.png)
 
 You can apply a cursor theme also by terminal by running:
+
 ```shell
 gsettings set org.gnome.desktop.interface cursor-theme <cursor_theme_foldername>
 ```
@@ -181,6 +184,7 @@ When the GNOME Tweaks is opened, move to **Appearance** tab and select your icon
 ![GNOME Tweaks Icons](@assets/images/gnome-custom-icons.png)
 
 You can apply an icon theme also by terminal by running:
+
 ```shell
 gsettings set org.gnome.desktop.interface icon-theme <icon_theme_foldername>
 ```
@@ -206,6 +210,7 @@ When the GNOME Tweaks is opened, move to **Appearance** tab and select your them
 ![GNOME Tweaks GTK](@assets/images/gnome-custom-theme.png)
 
 You can apply an theme also by terminal by running:
+
 ```shell
 gsettings set org.gnome.desktop.interface gtk-theme <theme_foldername>
 gsettings set org.gnome.desktop.wm.preferences theme <theme_foldername>
@@ -219,8 +224,8 @@ If you wish to apply one of the complete themes prebuilt for Athena OS:
 the theme folder must always be stored in `/usr/share/themes/` or `~/.local/share/themes/`
 
 If you wish to apply one of the complete themes prebuilt for Athena OS, you can use **athena-tweak-tool**.
-```
 </TabItem>
+
 <TabItem label="Athena Nix">
 edit `/etc/nixos/configuration.nix` file and set `theme` value as desired.
 </TabItem>
@@ -315,22 +320,26 @@ Here are reported some useful **keybindings** set by default in Athena OS GNOME.
 <Tabs>
 <TabItem label="Athena Arch">
 To install Athena OS GNOME environment on side of an existing environment, run:
-```
+
+```shell
 sudo pacman -S athena-gnome-config
 dconf load /org/gnome/settings-daemon/plugins/media-keys/ < /usr/share/athena-gnome-config/dconf-custom-keybindings.ini
 dconf load /org/gnome/mutter/ < /usr/share/athena-gnome-config/dconf-mutter.ini
 dconf load /org/gnome/desktop/ < /usr/share/athena-gnome-config/dconf-desktop.ini
 dconf load /org/gnome/shell/ < /usr/share/athena-gnome-config/dconf-shell.ini
 ```
+
 Then reboot. On Login Manager, select **GNOME Wayland** or **GNOME Xorg** session and login.
 
 If your theme is not correctly displayed, run `athena-theme-tweak` to set or change the current environment theme.
 </TabItem>
 <TabItem label="Athena Nix">
 To set Athena OS GNOME environment on side of an existing environment, just edit `/etc/nixos/configuration` and change `desktop` variable to `gnome`. Finally, run:
+
 ```shell
 sudo nixos-rebuild switch
 ```
+
 </TabItem>
 </Tabs>
 
