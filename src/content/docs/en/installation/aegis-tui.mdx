@@ -22,12 +22,12 @@ Its purpose is to create a JSON configuration file containing all the user choic
 {
     "partition": {
         "device": "/dev/sda",
-        "mode": "Auto",
+        "mode": "EraseDisk",
         "encrypt_check": false,
         "efi": true,
         "swap": false,
         "swap_size": "",
-        "partitions": []
+        "partitions": ["none:none:none:none:false"]
     },
     "bootloader": {
         "type": "grub-efi",
@@ -78,12 +78,12 @@ Its purpose is to create a JSON configuration file containing all the user choic
 {
     "partition": {
         "device": "/dev/sda",
-        "mode": "Auto",
+        "mode": "EraseDisk",
         "encrypt_check": false,
         "efi": true,
         "swap": false,
         "swap_size": "",
-        "partitions": []
+        "partitions": ["none:none:none:none:false"]
     },
     "bootloader": {
         "type": "grub-efi",
