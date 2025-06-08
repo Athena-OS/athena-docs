@@ -14,15 +14,18 @@ In case you are installing Athena OS in dual boot with Windows, make sure that *
 
 # Install Athena OS as dual boot
 
-Once prepared the setup as described in [Baremetal installation prepare](/en/installation/prepare-install/#prepare-baremetal-installation), and rebooted the system with your plugged USB drive containing the Athena OS installation media, according to your boot mode (EFI or BIOS/Legacy), you will be shown:
+Once prepared the setup as described in [Baremetal installation prepare](/en/installation/prepare-install/#prepare-baremetal-installation), and rebooted the system with your plugged USB drive containing the Athena OS installation media, you will see:
 
+<Tabs>
+<TabItem label="UEFI">
 ![EFI Boot](@assets/images/efi-boot.png)
-
-for **EFI boot**, select **Athena OS install medium** or:
-
+select **Athena OS install medium**.
+</TabItem>
+<TabItem label="BIOS/Legacy">
 ![BIOS/Legacy Boot](@assets/images/bios-boot.png)
-
-for **BIOS/Legacy boot**, select **Boot Athena OS (x86_64, BIOS, open source)**.
+select **Boot Athena OS (x86_64, BIOS, open source)**.
+</TabItem>
+</Tabs>
 
 ## Pre-installation
 
@@ -87,7 +90,6 @@ If your system is UEFI, select **UEFI** tab. If your system is BIOS-Legacy, sele
 
 <Tabs>
 <TabItem label="UEFI">
-The example partition will appear like:
 ![Aegis TUI Partitioning Example Layout EFI](@assets/images/aegis-tui-partitioning-manual-layout-efi.png)
 
 Select the disk to work on. It is needed now to create the needed partitions for Athena OS. At label selection, select **gpt**.
