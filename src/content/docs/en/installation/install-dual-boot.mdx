@@ -4,6 +4,7 @@ description: How to install Athena OS as dual boot with Linux or Windows.
 ---
 import ImageComponent from "@components/ImageComponent.astro";
 import ThemedImage from '@components/ThemedImage.astro';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
 
 The following section will guide you through the steps to install Athena OS as dual booth with Linux or Windows by covering all the possible choices you could set.
 
@@ -82,10 +83,10 @@ Finally, follow the [Aegis TUI Installer](/en/installation/aegis-tui/) chapter u
 If you are using Aegis TUI, on **Partitioning**, select **Manual** or **Replace** according to your need:
 ![Aegis TUI Partitioning Manual](@assets/images/aegis-tui-partitioning-mode-manual.png)
 
-If your system is UEFI, follow **EFI** section. If your system is BIOS-Legacy, scroll down and follow **BIOS-Legacy** section below.
+If your system is UEFI, select **UEFI** tab. If your system is BIOS-Legacy, select **BIOS-Legacy**.
 
-### EFI
-
+<Tabs>
+<TabItem label="UEFI">
 The example partition will appear like:
 ![Aegis TUI Partitioning Example Layout EFI](@assets/images/aegis-tui-partitioning-manual-layout-efi.png)
 
@@ -99,8 +100,12 @@ First, due to Windows installation, a UEFI boot partition should already exist, 
 
 (Optional) If you want to set a Swap Partition, if you have enough available free space, press **"New"**, otherwise **"Delete"** or **"Resize"** an existing partition to get additional free space. As Partition Size, set **"1G"** or **"2G"** or **"4G"** or **"8G"** depending on the amount of your RAM or your preference, select **"Type"** option and select **"Linux swap"** as partition type.
 
+(Optional) In case you want to install a separated EFI partition, select the free space entry, press **"New"**, otherwise **"Delete"** or **"Resize"** an existing partition to get additional free space. As **Partition Size**, set **"512M"**, select **"Type"** option and select **"EFI System"** as partition type.
+
+If you are in a UEFI system, and **you are going to encrypt the root partition**, first you need to create an additional partition to store GRUB configuration file. Select the free space entry, press **"New"**, otherwise **"Delete"** or **"Resize"** an existing partition to get additional free space. As **Partition Size**, set **"1024M"**, select **"Type"** option and select **"Linux filesystem"** as partition type. 
+
 :::note
-If you are going to enable **Zram** later, you don't need to create a Swap partition.
+**Zram** will be automatically enabled, so for systems with 4GB+ RAM, you don't actually need to create a Swap partition.
 :::
 
 Now, create a root partition for your system. If you have enough available free space, press **"New"**, otherwise **"Delete"** or **"Resize"** an existing partition to get space. As Partition Size, set the remaning free space amount. As **"Type"**, be sure it is set as **"Linux filesystem"**.
@@ -124,10 +129,12 @@ Now it will be asked you to select what is the root partition you created. Selec
 
 Then, as **root partition mountpoint**, select **/** and as **root partition filesystem** select one of shown options (i.e., **btrfs**).
 
-Continue to follow the [Partitioning Final Steps](/en/installation/install-dual-boot/#final-steps).
+Finally, it will be asked if you wish to encrypt the root partition:
+![Aegis TUI Partitioning Encryption](@assets/images/aegis-tui-partitioning-encrypt-partition.png)
 
-### BIOS Legacy
-
+If you select to encrypt the root partition, you will be asked to select the GRUB partition. Select it from the list.
+</TabItem>
+<TabItem label="BIOS/Legacy">
 ![Aegis TUI Partitioning Example Layout Legacy](@assets/images/aegis-tui-partitioning-manual-layout-legacy.png)
 
 Select the disk to work on. It is needed now to create the needed partitions for Athena OS. At label selection, select **dos**.
@@ -142,7 +149,7 @@ In case you have already an existing GRUB Legacy partition, and you want to use 
 (Optional) If you want to set a Swap Partition, if you have enough available free space, press **"New"**, otherwise **"Delete"** or **"Resize"** an existing partition to get additional free space. As Partition Size, set **"1G"** or **"2G"** or **"4G"** or **"8G"** depending on the amount of your RAM or your preference, set **"primary"** and select **"Type"** option and select **"Linux swap"** as partition type.
 
 :::note
-If you are going to enable **Zram** later, you don't need to create a Swap partition.
+**Zram** will be automatically enabled, so for systems with 4GB+ RAM, you don't actually need to create a Swap partition.
 :::
 
 Now, create a root partition for your system. If you have enough available free space, press **"New"**, otherwise **"Delete"** or **"Resize"** an existing partition to get space. As Partition Size, set the remaning free space amountand set it as **"primary"**. As **"Type"**, be sure it is set as **"Linux"**. In case you didn't create any GRUB Legacy partition because you use the one created automatically by MBR (dos) in the boot sector, keeping the selection on the created root partition, press on **"Bootable"** option to mark it as bootable partition.
@@ -164,13 +171,15 @@ Now it will be asked you to select what is the root partition you created. Selec
 
 Then, as **root partition mountpoint**, select **/** and as **root partition filesystem** select one of shown options (i.e., **btrfs**).
 
+Finally, it will be asked if you wish to encrypt the root partition:
+![Aegis TUI Partitioning Encryption](@assets/images/aegis-tui-partitioning-encrypt-partition.png)
+</TabItem>
+</Tabs>
+
 ### Final Steps
 
 Next it will be asked if you created a Swap partition. If you didn't create it, press **No**. If you did, press **Yes**. It will be asked you to select what is the swap partition you created. Select it (usually it should be the one sized 1G or 2G or 4G or 8G):
 ![Aegis TUI Partitioning Select Swap](@assets/images/aegis-tui-partitioning-manual-select-swap-partition.png)
-
-Finally, it will be asked if you wish to encrypt the root partition:
-![Aegis TUI Partitioning Encryption](@assets/images/aegis-tui-partitioning-encrypt-partition.png)
 
 Then, continue to follow the [Aegis TUI guide](/en/installation/aegis-tui/#partitioning).
 
