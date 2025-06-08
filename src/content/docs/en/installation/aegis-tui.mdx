@@ -154,19 +154,17 @@ Select the timezone
 
 #### Console Keymap
 
-Select the console keymap
-![Console Keymap](@assets/images/aegis-tui-console-keymap.png)
+The console keymap is automatically set to **en** (English).
 
 #### X11 Keymap
 
-Select the X11 keymap
+Select the X11 (GUI) keymap
 ![X11 Keymap](@assets/images/aegis-tui-keymap.png)
 
 #### Locale
 
 Select the locale
 ![System Locale](@assets/images/aegis-tui-locale.png)
-
 
 #### Users
 
@@ -223,13 +221,11 @@ Select your favourite theme
 
 #### Login Manager
 
-Select your favourite display manager for login
-![System Login](@assets/images/aegis-tui-dm.png)
+The display manager will be SDDM. Select your [favourite theme](https://athenaos.org/en/configuration/display-manager/) for login.
 
 #### Browser
 
-Select your favourite browser
-![Browser](@assets/images/aegis-tui-browser.png)
+The browser will be **Firefox**.
 
 #### Terminal
 
@@ -241,16 +237,8 @@ Select your favourite terminal
 Select your favourite settings by using **Space** key button and confirm by **Enter**
 ![System Settings](@assets/images/aegis-tui-misc.png)
 
-:::note
-**Zram** should be enabled only if a swap partition has not been created.
-:::
-
 Review the **Summary** and run the installation.
 ![Install Summary](@assets/images/aegis-tui-summary.png)
-
-Select the install parameters for the installation process (**Athena Nix only**)
-![Install Set Cores](@assets/images/aegis-tui-install-cores.png)
-![Install Set Jobs](@assets/images/aegis-tui-install-jobs.png)
  
 Finally, if you are ready to install, proceed
 ![Install Confirm](@assets/images/aegis-tui-install-confirm.png)
@@ -273,7 +261,7 @@ If no errors have been raised during the installation phase, you are ready to us
 
 ![Installation Finished](@assets/images/aegis-tui-finish.png)
 
-Before rebooting, if you installed Athena OS in dual boot with Windows, as explained in the related section, restore Microsoft bootloader inside the boot partition (i.e., `/dev/nvme0n1p1`):
+Before rebooting, if you installed Athena OS in dual boot with Windows, as explained in the related section, and you used the boot partition intended for Windows, restore Microsoft bootloader inside the boot partition (i.e., `/dev/nvme0n1p1`):
 ```shell
 sudo mount /dev/nvme0n1p1 /mnt
 sudo cp -rf ~/Microsoft /mnt/EFI/
