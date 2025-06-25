@@ -9,7 +9,7 @@ export const data = [
       //MD5: "43cee34b1d19fdf869bce7c67a57c9ec",
       //SHA1: "4d8a83f0a93f765c375cd735bb838edfd3381165",
       SHA256:
-        "7597327cb15cd2d05c7fc9d667e54acc90ac576b807e8be65018b40e833ddb54",
+        "0f95245c11eed7d72003966aa9f6fa94d90cbcf5e37e36e61eef7d2cfa033851",
       //SHA512:
       //  "d5a1d67c7be9f11a4dd955caed75098d0c987aae7f7b74f85b972e3f2f0d1763e003fe40dd55851b24b0f726793058efad20700fde26b3dc57e0eb45c797830e",
     },
