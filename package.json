@@ -11,12 +11,12 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/netlify": "^5.5.4",
-    "@astrojs/starlight": "^0.29.2",
-    "@astrojs/starlight-tailwind": "^2.0.3",
-    "@astrojs/tailwind": "^5.1.2",
+    "@astrojs/netlify": "^6.4.1",
+    "@astrojs/starlight": "^0.34.4",
+    "@astrojs/starlight-tailwind": "^4.0.1",
+    "@astrojs/tailwind": "^6.0.2",
     "@fontsource/inter": "^5.1.0",
-    "astro": "^4.16.18",
+    "astro": "^5.11.0",
     "hast": "^1.0.0",
     "hast-util-select": "^6.0.3",
     "rehype": "^13.0.2",
