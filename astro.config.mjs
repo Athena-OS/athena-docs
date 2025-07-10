@@ -6,7 +6,6 @@ import netlify from "@astrojs/netlify";
 // https://astro.build/config
 export default defineConfig({
   site: "https://athenaos.org/",
-  output: "server",
   adapter: netlify(),
   integrations: [
     starlight({
