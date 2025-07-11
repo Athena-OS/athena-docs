@@ -1,6 +1,6 @@
 import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
-import tailwind from "@astrojs/tailwind";
+import tailwindcss from "@tailwindcss/vite";
 import netlify from "@astrojs/netlify";
 
 // https://astro.build/config
@@ -275,8 +275,10 @@ export default defineConfig({
         },
       ],
     }),
-    tailwind({ applyBaseStyles: false }),
   ],
+  vite: {
+    plugins: [tailwindcss({ applyBaseStyles: false })],
+  },
   // Process images with sharp: https://docs.astro.build/en/guides/assets/#using-sharp
   image: {
     service: {
