@@ -3,76 +3,82 @@ import { Tabs, TabItem } from "@astrojs/starlight/components";
 import { data } from "src/javascript/downloadsData";
 ---
 
-<Tabs>
-  {
-    data.map((platform) => (
-      <TabItem label={platform.title}>
-        <article class="card sl-flex w-full">
-          <p class="title sl-flex">
-            <img src={platform.image} alt={platform.title} class="h-10 w-10" />
-
-            <span set:html={platform.title} />
-          </p>
-          <div class="body">{platform.description}</div>
-          {platform.hashes ? (
-            <Tabs>
-              {Object.keys(platform.hashes).map((hashType) => (
-                <TabItem label={hashType}>
-                  <p class="w-full" />
-
-                  <div class="max-w-full mx-auto">
-                    <div class="rounded-md p-4 relative border dark:border-gray-600">
-                      <p class="text-sm font-mono block mb-8">
-                        <code
-                          id="code-block"
-                          style="background: transparent; padding: 0;"
-                        >
-                          {/*  @ts-expect-error */}
-                          {platform.hashes[hashType]}
-                        </code>
-                      </p>
-                      {/*  @ts-expect-error */}
-                      <button
-                        onclick={`copyToClipboard(event, '${platform.hashes[hashType]}')`}
-                        class="absolute bottom-2 right-1/2 translate-x-1/2 bg-blue-500 text-white text-xs px-3 py-1.5 rounded hover:bg-blue-600 cursor-pointer"
-                      >
-                        Copy
-                      </button>
-                    </div>
-                  </div>
-                </TabItem>
-              ))}
-            </Tabs>
-          ) : null}
-
-          <a
-            href={platform.downloadURL}
-            style=" background: var(--sl-color-text-accent); color: var(--sl-color-black);"
-            class="mt-8 inline-flex items-center gap-x-2 rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 w-fit no-underline"
-            id={`download-${platform.id}`}
-          >
-            {platform.buttonLabel}
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              class="size-6 -mr-0.5"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-.53 14.03a.75.75 0 0 0 1.06 0l3-3a.75.75 0 1 0-1.06-1.06l-1.72 1.72V8.25a.75.75 0 0 0-1.5 0v5.69l-1.72-1.72a.75.75 0 0 0-1.06 1.06l3 3Z"
-                clip-rule="evenodd"
+<div class="max-w-[46rem] mx-auto pb-20" id="downloads">
+  <Tabs>
+    {
+      data.map((platform) => (
+        <TabItem label={platform.title}>
+          <article class="card sl-flex w-full">
+            <p class="title sl-flex">
+              <img
+                src={platform.image}
+                alt={platform.title}
+                class="h-10 w-10"
               />
-            </svg>
-          </a>
-          {platform.enableDownloadCounter && (
-            <p class="text-xs italic" id={`count-${platform.id}`} />
-          )}
-        </article>
-      </TabItem>
-    ))
-  }
-</Tabs>
+
+              <span set:html={platform.title} />
+            </p>
+            <div class="body">{platform.description}</div>
+            {platform.hashes ? (
+              <Tabs>
+                {Object.keys(platform.hashes).map((hashType) => (
+                  <TabItem label={hashType}>
+                    <p class="w-full" />
+
+                    <div class="max-w-full mx-auto">
+                      <div class="rounded-md p-4 relative border dark:border-gray-600">
+                        <p class="text-sm font-mono block mb-8">
+                          <code
+                            id="code-block"
+                            style="background: transparent; padding: 0;"
+                          >
+                            {/*  @ts-expect-error */}
+                            {platform.hashes[hashType]}
+                          </code>
+                        </p>
+                        {/*  @ts-expect-error */}
+                        <button
+                          onclick={`copyToClipboard(event, '${platform.hashes[hashType]}')`}
+                          class="absolute bottom-2 right-1/2 translate-x-1/2 bg-blue-500 text-white text-xs px-3 py-1.5 rounded hover:bg-blue-600 cursor-pointer"
+                        >
+                          Copy
+                        </button>
+                      </div>
+                    </div>
+                  </TabItem>
+                ))}
+              </Tabs>
+            ) : null}
+
+            <a
+              href={platform.downloadURL}
+              style=" background: var(--sl-color-text-accent); color: var(--sl-color-black);"
+              class="mt-8 inline-flex items-center gap-x-2 rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 w-fit no-underline"
+              id={`download-${platform.id}`}
+            >
+              {platform.buttonLabel}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                class="size-6 -mr-0.5"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-.53 14.03a.75.75 0 0 0 1.06 0l3-3a.75.75 0 1 0-1.06-1.06l-1.72 1.72V8.25a.75.75 0 0 0-1.5 0v5.69l-1.72-1.72a.75.75 0 0 0-1.06 1.06l3 3Z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+            </a>
+            {platform.enableDownloadCounter && (
+              <p class="text-xs italic" id={`count-${platform.id}`} />
+            )}
+          </article>
+        </TabItem>
+      ))
+    }
+  </Tabs>
+</div>
 
 <script is:inline>
   function copyToClipboard(event, text) {

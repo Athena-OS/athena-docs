@@ -9,6 +9,9 @@
   --font-mono: "IBM Plex Mono";
 }
 
+html {
+  scroll-behavior: smooth;
+}
 :root {
   .tablist-wrapper:where(.astro-esqgolmp) {
     height: 100%;
