@@ -14,14 +14,15 @@
     "@astrojs/netlify": "^6.4.1",
     "@astrojs/starlight": "^0.34.5",
     "@astrojs/starlight-tailwind": "^4.0.1",
-    "@tailwindcss/vite": "^4.0.7",
-    "tailwindcss": "^4.0.7",
+    "@babel/runtime": "^7.27.6",
     "@fontsource/inter": "^5.1.0",
+    "@tailwindcss/vite": "^4.0.7",
     "astro": "^5.6.1",
-    "sharp": "^0.34.2",
     "hast": "^1.0.0",
     "hast-util-select": "^6.0.3",
     "rehype": "^13.0.2",
+    "sharp": "^0.34.2",
+    "tailwindcss": "^4.0.7",
     "unist-util-visit": "^5.0.0"
   }
 }
