@@ -212,7 +212,7 @@ export default defineConfig({
             { label: "Submitting Bugs", link: "/en/community/submitting-bugs" },
             {
               label: "Submitting Themes",
-              link: "/en/community/submitting-themes",
+              link: "/en/community/submitting-design",
             },
             {
               label: "Submitting Tools in Nix",
