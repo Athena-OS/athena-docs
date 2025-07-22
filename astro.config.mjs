@@ -211,7 +211,7 @@ export default defineConfig({
             },
             { label: "Submitting Bugs", link: "/en/community/submitting-bugs" },
             {
-              label: "Submitting Themes",
+              label: "Submitting Design",
               link: "/en/community/submitting-design",
             },
             {
