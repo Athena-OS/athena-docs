@@ -13,7 +13,7 @@ export const data = [
       //SHA512:
       //  "d5a1d67c7be9f11a4dd955caed75098d0c987aae7f7b74f85b972e3f2f0d1763e003fe40dd55851b24b0f726793058efad20700fde26b3dc57e0eb45c797830e",
     },
-    downloadURL: "https://github.com/Athena-OS/athena/releases/download/v23.11/athenaos-live-x86_64.iso",
+    downloadURL: "https://hub.athenaos.org/athena-images/rolling/athenaos-live-x86_64.iso",
     enableDownloadCounter: true,
     buttonLabel: "Download",
   },
@@ -77,4 +77,5 @@ export const data = [
     buttonLabel: "Get it now",
   },
 ];
+
 
