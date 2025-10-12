@@ -1,0 +1,432 @@
+---
+title: Aegis Installer
+description: How to install Athena OS by Aegis Installer.
+---
+import ImageComponent from "@components/ImageComponent.astro";
+import ThemedImage from '@components/ThemedImage.astro';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import { LinkCard, CardGrid } from '@astrojs/starlight/components';
+
+[Aegis](https://github.com/Athena-OS/aegis) is a terminal-based installer, developed, tailored and optimized specifically for Athena OS.
+
+To provide more accessible resources to the users, Aegis provides a terminal interface to configure and install your systems according to your preferences.
+
+Aegis will improve over time in order to detect automatically your hardware. It means that the installer is able to detect your environment (baremetal or virtualized), your CPU and your GPU. According to this information, all the needed drivers are automatically installed with no any actions by your side.
+
+Aegis can be run by running `aegis` command and requires a working Internet connection.
+
+Its purpose is to generate JSON system and drive configuration files containing all the user choices, set during the installation. The JSON configuration files will be saved as hidden temporary files `/tmp` directory. Configurations have the following structure:
+<Tabs>
+<TabItem label="System Config">
+```json
+{
+  "config": {
+    "base": "Athena Arch",
+    "design": "temple",
+    "desktop_environment": "gnome",
+    "display_manager": "cyberpunk",
+    "hostname": "athenaos",
+    "keyboard_layout": "us",
+    "language": null,
+    "locale": "en_US.UTF-8 UTF-8",
+    "root_passwd_hash": "*REDACTED*",
+    "timezone": "Europe/Rome",
+    "users": [
+      {
+        "groups": [
+          "wheel"
+        ],
+        "password_hash": "*REDACTED*",
+        "shell": "fish",
+        "username": "athena"
+      }
+    ]
+  }
+}
+```
+
+</TabItem>
+<TabItem label="Drives Config">
+```json
+{
+  "drives": {
+    "content": {
+      "partitions": [
+        {
+          "action": "delete",
+          "blockdevice": "/dev/sdb1",
+          "end": "1026047",
+          "filesystem": "ext4",
+          "flags": [],
+          "label": null,
+          "mountpoint": "/mnt/boot",
+          "sectors": 1024000,
+          "size": "524M",
+          "start": "2048",
+          "type": "filesystem"
+        },
+        {
+          "action": "delete",
+          "blockdevice": "/dev/sdb2",
+          "end": "30711807",
+          "filesystem": "ext4",
+          "flags": [],
+          "label": null,
+          "mountpoint": "/mnt",
+          "sectors": 29685760,
+          "size": "15G",
+          "start": "1026048",
+          "type": "filesystem"
+        },
+        {
+          "action": "create",
+          "blockdevice": "/dev/sdb1",
+          "end": "1026047",
+          "filesystem": "ext4",
+          "flags": [
+            "boot"
+          ],
+          "label": "BOOT",
+          "mountpoint": "/boot",
+          "sectors": 1024000,
+          "size": "524M",
+          "start": "2048",
+          "type": "filesystem"
+        },
+        {
+          "action": "create",
+          "blockdevice": "/dev/sdb2",
+          "end": "28614655",
+          "filesystem": "btrfs",
+          "flags": [],
+          "label": "ROOT",
+          "mountpoint": "/",
+          "sectors": 27588608,
+          "size": "14G",
+          "start": "1026048",
+          "type": "filesystem"
+        },
+        {
+          "action": "create",
+          "blockdevice": "/dev/sdb3",
+          "end": "30711807",
+          "filesystem": "swap",
+          "flags": [],
+          "label": "SWAP",
+          "mountpoint": null,
+          "sectors": 2097152,
+          "size": "1G",
+          "start": "28614656",
+          "type": "filesystem"
+        }
+      ],
+      "type": "msdos"
+    },
+    "device": "/dev/sdb",
+    "type": "disk"
+  }
+}
+```
+</TabItem>
+</Tabs>
+
+The installation logs will be saved to `/tmp/aegis.log` and copied to the installed system to `/var/log/aegis.log`.
+
+Open the terminal and run:
+```shell
+sudo aegis
+```
+![Aegis](@assets/images/aegis.png)
+
+Choose your favourite base system
+![Aegis Base](@assets/images/aegis-base.png)
+
+:::note
+Some options can vary according to the chosen base system.
+:::
+
+## Timezone
+
+Select the timezone
+
+![System Timezone](@assets/images/aegis-timezone.png)
+
+## Keyboard Layout
+
+Select the keyboard layout
+
+![Keymap](@assets/images/aegis-keyboard.png)
+
+:::note
+In Wayland environments, you must manually set the keyboard layout on the installed system.
+:::
+
+## Locale
+
+Select the locale
+
+![System Locale](@assets/images/aegis-locale.png)
+
+## Partitioning
+
+Select **Use a best-effort default partition layout** or **Configure partitions manually** according to your need:
+
+![Aegis Partitioning](@assets/images/aegis-partitioning.png)
+
+:::note
+At this time, any choice done on partitioning does not affect your disks or partitions.
+:::
+
+### Use a best-effort default partition layout
+
+By clicking on this mode, you are asked to select among the available disks or devices.
+
+![Aegis Device List](@assets/images/aegis-device-list.png)
+
+Once you select one, you are asked for a swap device.
+
+![Aegis Swap](@assets/images/aegis-swap.png)
+
+:::note
+**Zram** will be automatically enabled, so for systems with **4GB+ RAM**, you don't actually need to create a Swap partition.
+:::
+
+Next, you must choose the filesystem for your root partition where Athena OS will be installed.
+
+![Aegis Filesystem](@assets/images/aegis-filesystem.png)
+
+:::tip
+**btrfs** is a good choice.
+:::
+
+Once confirmed, it will automatically propose a partitioning layout for you.
+
+:::note
+Aegis detects the type of Partition Table set on the selected disk. If it is **msdos**, it will create a **BIOS/Legacy GRUB** boot partition; if it is **gpt**, it will create a **EFI** boot partition.
+:::
+
+
+### Configure partitions manually
+
+By clicking on this mode, you are asked to select among the available disks or devices.
+
+![Aegis Device List](@assets/images/aegis-device-list.png)
+
+Once you select one, you get the list of the current partition of the disk.
+
+![Aegis Partition List](@assets/images/aegis-partition-manual-list.png)
+
+#### Create boot partition
+
+**Only for EFI partitions**: if you are in dual boot with a Windows and/or Linux that use an existing EFI partition, it is not necessary to create a new one.
+
+You can mainly create a partition by an available free space or by deleting a specific partition and use the derived free space, or by replacing an existing partition.
+
+**Create from free space**
+
+In case you need to create a new EFI or GRUB Legacy partition, and no free space is already available, select an **existing partition** to be deleted, and select **Delete Partition**. It will create a new **free** entry and press **"Enter"**.
+
+It will ask for size. Type **512MiB**.
+
+<Tabs>
+<TabItem label="UEFI Boot Partition">
+As filesystem, select **fat32** and as mount point, type **/boot/efi**.
+</TabItem>
+<TabItem label="GRUB Legacy Boot Partition">
+As filesystem, select **ext4** and as mount point, type **/boot**.
+</TabItem>
+</Tabs>
+Finally, don't select **Encryption (LUKS)** and press on **Continue**.
+
+
+**Create by replacing an existing partition**
+
+From the partition list, select an existing partition you want to replace and use all its space for your boot partition. Note that the partition must be 512MiB, don't waste further space by replacing bigger partitions.
+
+Select the interested partition.
+
+![Aegis Partition Mark](@assets/images/aegis-partition-mark.png)
+
+Press on **Mark For Modification** entry.
+
+![Aegis Partition Mark](@assets/images/aegis-partition-manual-modify.png)
+
+:::tip
+If you don't see all the entries in the image, expand your terminal.
+:::
+
+<Tabs>
+<TabItem label="UEFI Boot Partition">
+Enter on **Set Mount Point** and type **/boot/efi**. Successively, check on **Mark as bootable partition** and **Mark as ESP partition** flags. In this manner the installer will be aware you are creating an EFI boot partition.
+
+Click on **Change Filesystem** and select **fat32**.
+
+Finally, select **Back**.
+</TabItem>
+<TabItem label="GRUB Legacy Boot Partition">
+Enter on **Set Mount Point** and type **/boot**. Successively, check on **Mark as bootable partition** flag. In this manner the installer will be aware you are creating a GRUB Legacy boot partition.
+
+Click on **Change Filesystem** and select **ext4**.
+
+Finally, select **Back**.
+</TabItem>
+</Tabs>
+
+If you are in a UEFI system, and **you are going to encrypt the root partition**, first you need to create an additional partition of **"1024MiB"** to store GRUB configuration file.
+
+
+#### Create root partition
+
+**Create from free space**
+
+In case no free space is already available, select an **existing partition** to be deleted or more contiguous of them, and select **Delete Partition**. It will create a new **free** entry and press **"Enter"**.
+
+It will ask for size. Type any value you wish. If you need to use all the space, you can insert **100%**.
+
+As filesystem, select any value you wish.
+
+:::tip
+**btrfs** is a good choice.
+:::
+
+As mount point, type **/**. Finally, evaluate if encrypt the root partition by checking on **Encryption (LUKS)** or not. At the end, press on **Continue**.
+
+**Create by replacing an existing partition**
+
+From the partition list, select an existing partition you want to replace and use all its space for your root partition.
+
+Select the interested partition.
+
+![Aegis Partition Mark](@assets/images/aegis-partition-mark.png)
+
+Press on **Mark For Modification** entry.
+
+![Aegis Partition Mark](@assets/images/aegis-partition-manual-modify.png)
+
+:::tip
+If you don't see all the entries in the image, expand your terminal.
+:::
+
+Enter on **Set Mount Point** and type **/**. If you want to encrypt the root partition, check on **Encryption (LUKS)** flag.
+
+Click on **Change Filesystem** and select any value you wish.
+
+:::tip
+**btrfs** is a good choice.
+:::
+
+Finally, select **Back**.
+
+
+#### Create swap partition
+
+Creating a partition would be useful only on low-memory systems (less than 4GB of RAM).
+
+If you want to create a Swap Partition, you can follow one of the two approaches used for root partition above, but as filesystem select **swap**.
+
+
+#### Last steps
+
+Once all partitions have been configured, just press on **Confirm and Exit**.
+
+
+## Hostname
+
+Set the hostname
+
+![System Hostname](@assets/images/aegis-hostname.png)
+
+## Root password
+
+Set the password for **root** account
+
+![User Password](@assets/images/aegis-root.png)
+
+## Users
+
+Set your user account
+![Users](@assets/images/aegis-users.png)
+
+By pressing on **Add a new user** you can setup your account.
+
+![Users](@assets/images/aegis-user-info.png)
+
+Then, you can assign Linux groups to the account.
+
+![Users](@assets/images/aegis-user-group.png)
+
+:::tip
+Assign the **wheel** group if your user account needs of **sudo** power.
+:::
+
+## Desktop
+
+Select your favourite environment
+![System Desktop](@assets/images/aegis-desktop.png)
+
+## Login Manager
+
+The display manager will be SDDM. Select your [favourite theme](https://athenaos.org/en/configuration/display-manager/) for login.
+
+![Display Manager](@assets/images/aegis-dm.png)
+
+## Design
+
+Select your favourite design
+
+![System Theme](@assets/images/aegis-design.png)
+
+## Installation
+
+Press on **Done** and review your JSON configuration.
+
+![Install Configuration](@assets/images/aegis-config-preview.png)
+ 
+Finally, if you are ready to install, proceed on **Begin Installation**.
+
+![Install System](@assets/images/aegis-installation.png)
+ 
+During the installation, installation logs are saved in `/tmp/aegis.log`.
+
+If the installation fails, you can generate a link with install logs that can be used for troubleshooting.
+
+![Install Fails](@assets/images/aegis-failed.png)
+![Install Logs](@assets/images/aegis-logs.png)
+
+Communicate the link to Athena OS Team for getting support.
+ 
+:::tip
+If the screen locks due to user inactivity, unlock the screen by using `athena` as password.
+:::
+
+If no errors have been raised during the installation phase, you are ready to use Athena OS!
+
+
+Before rebooting, if you installed Athena OS in dual boot with Windows, as explained in the related section, and you used the boot partition intended for Windows, restore Microsoft bootloader inside the boot partition (i.e., `/dev/nvme0n1p1`):
+```shell
+sudo mount /dev/nvme0n1p1 /mnt
+sudo cp -rf ~/Microsoft /mnt/EFI/
+sudo umount /mnt
+```
+Once you reboot, and you land on the installed system, open the terminal and run:
+```shell
+sudo os-prober
+sudo grub-mkconfig -o /boot/grub/grub.cfg
+```
+In this manner, Windows entry should be added in GRUB.
+
+:::note
+At the end of a successful installation in an EFI system, you could get a message like:
+```
+⚠ Mount point '/boot' which backs the random seed file is world accessible, which is a security hole! ⚠
+⚠ Random seed file '/boot/loader/.#bootctlrandom-seedc5706ea22f8895b0' is world accessible, which is a security hole! ⚠
+Random seed file /boot/loader/random-seed successfully written (32 bytes).
+```
+It is related to all Linux systems, but it should be mitigated by using encrypted partitions. To get more details about this warning, refer to [this resource](https://discourse.nixos.org/t/security-warning-when-installing-nixos-23-11/37636).
+:::
+
+For Athena Nix installation, once reboot and land on the installed system, initialize Nix Channels by opening the terminal and running:
+```shell
+sudo nix-channel --update
+```
+<ImageComponent />

@@ -56,12 +56,8 @@ export default defineConfig({
               link: "/en/installation/prepare-install",
             },
             {
-              label: "Installing as single boot",
-              link: "/en/installation/install-single-boot",
-            },
-            {
-              label: "Installing as dual boot with Linux or Windows",
-              link: "/en/installation/install-dual-boot",
+              label: "Installing on system",
+              link: "/en/installation/install-baremetal",
             },
             {
               label: "Installing by NixOS",
@@ -104,8 +100,8 @@ export default defineConfig({
               link: "/en/installation/update-athena",
             },
             {
-              label: "Aegis Installer TUI",
-              link: "/en/installation/aegis-tui",
+              label: "Aegis Installer",
+              link: "/en/installation/aegis",
             },
           ],
         },
