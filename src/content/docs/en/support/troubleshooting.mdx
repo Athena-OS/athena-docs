@@ -318,7 +318,7 @@ Reference: [#99](https://github.com/legionus/kbd/issues/99)
 
 #### Blinking cursor after boot
 
-After an upgrade of your system, when you boot, after the GRUB choice, if you get only a blinking cursor, the issue could be related to the upgrade of some components that could break your system boot. To solve this issue, mount an Athena ISO to your computer to enter in a Live Environment, mount to `&mnt` the partition where your original system was installed and run:
+After an upgrade of your system, when you boot, after the GRUB choice, if you get only a blinking cursor, the issue could be related to the upgrade of some components that could break your system boot. To solve this issue, mount an Athena ISO to your computer to enter in a Live Environment, mount to `/mnt` the partition where your original system was installed and run:
 ```shell
 sudo arch-chroot /mnt
 ```
