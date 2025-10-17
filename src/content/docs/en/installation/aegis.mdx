@@ -229,10 +229,12 @@ It will ask for size. Type **512MiB**.
 
 <Tabs>
 <TabItem label="UEFI Boot Partition">
-As filesystem, select **fat32** and as mount point, type **/boot/efi**.
+If you are dual booting with a Windows or another Linux system, as filesystem select **don't format**.
+If you are removing all the operating systems from your disk to keep only Athena OS, as filesystem, select **fat32** and as mount point, type **/boot/efi**.
 </TabItem>
 <TabItem label="GRUB Legacy Boot Partition">
-As filesystem, select **ext4** and as mount point, type **/boot**.
+If you are dual booting with a Windows or another Linux system, as filesystem select **don't format**.
+If you are removing all the operating systems from your disk to keep only Athena OS, as filesystem, select **ext4** and as mount point, type **/boot**.
 </TabItem>
 </Tabs>
 Finally, don't select **Encryption (LUKS)** and press on **Continue**.
