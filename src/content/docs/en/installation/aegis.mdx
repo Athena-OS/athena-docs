@@ -25,6 +25,10 @@ Its purpose is to generate JSON system and drive configuration files containing 
     "design": "temple",
     "desktop_environment": "gnome",
     "display_manager": "cyberpunk",
+    "extra_packages": [
+      "hoaxshell",
+      "caido"
+    ],
     "hostname": "athenaos",
     "keyboard_layout": "us",
     "locale": "en_US.UTF-8 UTF-8",
@@ -198,6 +202,14 @@ Next, you must choose the filesystem for your root partition where Athena OS wil
 **btrfs** is a good choice.
 :::
 
+Finally, you can choose to encrypt your root partition.
+
+![Aegis Encrypt](@assets/images/aegis-encrypt-root.png)
+
+If you select **Encrypt ROOT (LUKS)**, and press **Continue**, insert your LUKS passphrase.
+
+![Aegis LUKS](@assets/images/aegis-encrypt-luks.png)
+
 Once confirmed, it will automatically propose a partitioning layout for you.
 
 :::note
@@ -273,8 +285,9 @@ Finally, select **Back**.
 </TabItem>
 </Tabs>
 
-If you are in a UEFI system, and **you are going to encrypt the root partition**, first you need to create an additional partition of **"1024MiB"** to store GRUB configuration file.
-
+:::tip
+If you are in a UEFI system, and **you are going to encrypt the root partition**, you need to create an additional partition of **"1024MiB"** with **/boot** as mount point with no flags. It is needed to store the initramfs and GRUB configuration files in an unencrypted partition to make LUKS encryption working properly for root partition.
+:::
 
 #### Create root partition
 
