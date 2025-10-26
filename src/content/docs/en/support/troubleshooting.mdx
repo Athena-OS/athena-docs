@@ -99,38 +99,6 @@ probably you are using a non-empty boot partition that contains `memtest.bin` as
 
 In case the system does not recognize your disk, even if you are using GParted or `fdisk -l` command, the cause could be that the disk is set to RAID. You must change it to AHCI.
 
-### System
-
-<!--
-#### Athena Fedora broken
-
-If you removed critical files from the system (like **openssl** libraries), you cannot run **dnf** or **rpm** to reinstall the packages. At that point a lot of critical components will break, like **systemd**.
-
-To solve the issue, prepare an Athena Fedora Live ISO (it is important because the Live ISO must have the same kernel as the target system), and mount the target system on the Live ISO mount directory.
-
-Copy manually the libraries you removed to the same path on the target system (usually they could be **/usr/lib** or **/usr/lib64** -> it is the main referred in a x86_64 system). This manual copy is needed to have **dnf** working and to reinstall the removed critical packages.
-
-Then, run:
-```shell
-sudo athena-chroot /mnt
-```
-
-Once inside chroot, run:
-```shell
-rpm --rebuilddb
-dnf distro-sync -y --allowerasing
-dnf reinstall -y dracut kernel-core kernel systemd systemd-udev openssl openssl-libs kmod kmod-libs glibc
-dracut --regenerate-all --force
-for ver in $(basename -a /lib/modules/*); do [ -f "/boot/vmlinuz-${ver}" ] || continue; dracut --force --no-hostonly "/boot/initramfs-${ver}.img" "$ver"; done
-touch /.autorelabel
-exit
-umount -R /mnt
-reboot
-
-```
-Check if at reboot you can access again to the target system.
--->
-
 ### Boot
 
 #### Login freeze at ISO Live boot
