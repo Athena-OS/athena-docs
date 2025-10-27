@@ -9,7 +9,7 @@ import { LinkCard, CardGrid } from '@astrojs/starlight/components';
 
 Athena Arch supports **Secure Boot** in UEFI. Its deployment is managed automatically by Aegis installer that will detect if the system is UEFI and will create the proper certificates and sign the boot and kernel files needed for this process.
 
-# Key Enrollment
+## Key Enrollment
 
 The ISO Live Environment must be currently run with no Secure Boot. When Athena OS Arch-base is installed, the user must enable Secure Boot from BIOS settings.
 
@@ -48,7 +48,7 @@ Once you land on Athena environment, you can remove the MOK certificate from EFI
 sudo rm -rf /boot/efi/EFI/MOK.cer
 ```
 
-# File Re-validation
+## File Revalidation
 
 During the updates of packages involving kernel and GRUB, files signed by Secure Boot key could change and be not valid and trusted anymore. So, they need to be signed again.
 
