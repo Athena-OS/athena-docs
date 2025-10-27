@@ -442,6 +442,8 @@ Random seed file /boot/loader/random-seed successfully written (32 bytes).
 It is related to all Linux systems, but it should be mitigated by using encrypted partitions. To get more details about this warning, refer to [this resource](https://discourse.nixos.org/t/security-warning-when-installing-nixos-23-11/37636).
 :::
 
+For Athena Arch installation on UEFI, if you would like to enable Secure Boot, it is needed to enroll the proper certificate. The process is described in [Secure Boot](/en/installation/secureboot/) documentation.
+
 For Athena Nix installation, once reboot and land on the installed system, initialize Nix Channels by opening the terminal and running:
 ```shell
 sudo nix-channel --update

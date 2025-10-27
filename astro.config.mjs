@@ -96,12 +96,16 @@ export default defineConfig({
               link: "/en/installation/install-guest-utm",
             },
             {
-              label: "Updating Athena OS",
-              link: "/en/installation/update-athena",
+              label: "Secure Boot",
+              link: "/en/installation/secureboot",
             },
             {
               label: "Aegis Installer",
               link: "/en/installation/aegis",
+            },
+            {
+              label: "Updating Athena OS",
+              link: "/en/installation/update-athena",
             },
           ],
         },

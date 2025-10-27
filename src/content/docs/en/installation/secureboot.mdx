@@ -1,0 +1,64 @@
+---
+title: Secure Boot
+description: Secure Boot.
+---
+import ImageComponent from "@components/ImageComponent.astro";
+import ThemedImage from '@components/ThemedImage.astro';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import { LinkCard, CardGrid } from '@astrojs/starlight/components';
+
+Athena Arch supports **Secure Boot** in UEFI. Its deployment is managed automatically by Aegis installer that will detect if the system is UEFI and will create the proper certificates and sign the boot and kernel files needed for this process.
+
+# Key Enrollment
+
+The ISO Live Environment must be currently run with no Secure Boot. When Athena OS Arch-base is installed, the user must enable Secure Boot from BIOS settings.
+
+At first reboot, it gets a **MOK (Machine Owner Key)** request for enrolling the Secure Boot certificate previously created for you by Aegis.
+
+![MOK](@assets/images/mok.png)
+
+Press any key on your keyboard, and then select **Enroll MOK**.
+
+:::note
+If the **Enroll MOK** entry is not shown, select **Enroll key from disk** and search for **MOK.cer** file inside the directory with long string and, inside of it, enter into **EFI** directory.
+:::
+
+![MOK Enroll](@assets/images/mok-enroll.png)
+
+Press on **Continue**.
+
+![MOK Continue](@assets/images/mok-continue.png)
+
+Press on **Yes** to confirm the enrollment.
+
+![MOK Confirm](@assets/images/mok-confirm.png)
+
+Insert the root password you defined during the installation.
+
+![MOK Password](@assets/images/mok-password.png)
+
+Finally, select **Reboot**.
+
+![MOK Reboot](@assets/images/mok-reboot.png)
+
+After reboot, you should be able to access to Athena through Secure Boot.
+
+Once you land on Athena environment, you can remove the MOK certificate from EFI partition:
+```shell
+sudo rm -rf /boot/efi/EFI/MOK.cer
+```
+
+# File Re-validation
+
+During the updates of packages involving kernel and GRUB, files signed by Secure Boot key could change and be not valid and trusted anymore. So, they need to be signed again.
+
+Athena OS performs signing automatically for you, but in the worst scenario these files are not re-validated, and at boot you get an error like **policy violated**, you can boot by ISO Live Environment, mount the root and boot partitions to their proper mount points and running:
+```shell
+sudo arch-chroot /mnt
+
+sbsign --key /etc/.secureboot/keys/MOK.key --cert /etc/.secureboot/keys/MOK.crt --output /boot/vmlinuz-linux-lts /boot/vmlinuz-linux-lts
+sbsign --key /etc/.secureboot/keys/MOK.key --cert /etc/.secureboot/keys/MOK.crt --output /boot/efi/EFI/GRUB/grubx64.efi /boot/efi/EFI/GRUB/grubx64.efi
+cp /boot/efi/EFI/GRUB/grubx64.efi /boot/efi/EFI/BOOT/grubx64.efi
+```
+
+<ImageComponent />
