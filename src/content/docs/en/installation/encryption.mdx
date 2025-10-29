@@ -1,0 +1,102 @@
+---
+title: LUKS Encryption with TPM
+description: LUKS encryption with TPM key integration.
+---
+import ImageComponent from "@components/ImageComponent.astro";
+import ThemedImage from '@components/ThemedImage.astro';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import { LinkCard, CardGrid } from '@astrojs/starlight/components';
+
+Athena OS supports **LUKS encryption** for full-disk or root partition encryption.  
+Optionally, in Athena Arch, the encryption key can be automatically **stored and managed by the TPM (Trusted Platform Module)**, providing secure key handling without requiring you to manually type a passphrase on every boot.
+
+This integration is handled automatically by **Aegis Installer**, which can detect your TPM device and configure LUKS to unlock the encrypted partition using the TPM key at boot time.
+
+By integrating LUKS with TPM, Athena OS ensures a high level of data protection while maintaining usability and system integrity.
+
+---
+
+## How It Works
+
+LUKS (Linux Unified Key Setup) provides strong disk encryption by securing your partitions with AES-based cryptography.  
+When combined with TPM, the decryption key is securely sealed within the TPM hardware and can be unsealed only under the same platform configuration (PCR values).
+
+In practice:
+
+1. The partition (usually `/`) is encrypted with LUKS.
+2. A keyslot is added to LUKS that uses a TPM-stored key.
+3. At boot, **systemd-cryptsetup** (or **clevis**) retrieves the key from the TPM to unlock the partition automatically.
+
+This ensures that:
+- Your encryption key never leaves the TPM chip.
+- The system can auto-unlock without manual password entry (optional).
+- The disk remains unreadable if removed or the platform changes significantly.
+
+---
+
+## Setup During Installation
+
+During installation with **Aegis**, you can choose to:
+- **Encrypt ROOT (LUKS)** - a passphrase is requested.
+- **Bind the key to TPM** - if TPM is detected, Aegis will store the decryption key securely in the TPM and configure automatic unlocking.
+
+:::tip
+If the TPM option is not available, verify that **TPM is enabled in BIOS/UEFI** and **not owned by another OS**.
+:::
+
+---
+
+## Post-installation Management
+
+You can manage TPM-bound LUKS keys using `systemd-cryptenroll` or `clevis`.  
+For example:
+
+```shell
+sudo systemd-cryptenroll --tpm2-device=auto /dev/nvme0n1p3
+```
+
+This command will create a TPM2-bound keyslot for the encrypted partition `/dev/nvme0n1p3`.
+If the TPM is cleared or replaced, this keyslot becomes invalid, hence why backups or recovery passphrases are essential.
+
+To verify TPM enrollment:
+```shell
+sudo systemd-cryptenroll --list /dev/nvme0n1p3
+```
+
+## Important Warnings for Dual Boot with Windows
+
+If you are dual booting with Windows that uses BitLocker, be extremely careful.
+
+BitLocker also stores its encryption keys in the same TPM chip.
+:::danger
+If you clear or wipe the TPM from Linux, you will erase all keys stored in it, including the BitLocker key, making your Windows drive inaccessible.
+If you clear or reset the TPM from Linux, and you don’t have your BitLocker recovery key, you will lose access to your Windows installation.
+:::
+
+Before performing any TPM operations from Linux:
+
+1. Backup your BitLocker recovery key.
+   You can find it in your Microsoft Account → https://account.microsoft.com/devices/recoverykey
+
+2. Suspend BitLocker protection from Windows before manipulating TPM.
+   ```powershell
+   manage-bde -protectors -disable C:
+   ```
+
+3. After operations are done, re-enable protection:
+   ```powershell
+   manage-bde -protectors -enable C:
+   ```
+
+If you previously used BitLocker and reinstalled Athena on the same system, it is highly recommended to clear TPM only after backing up all Windows recovery keys.
+
+## Recovery Tips
+
+If you lose TPM access or reinstall your firmware, your TPM keyslot will no longer unlock your LUKS partition automatically.
+You can still unlock it using your manual passphrase entered during setup:
+```shell
+cryptsetup open /dev/nvme0n1p3 cryptroot
+```
+Then you can re-enroll a new TPM keyslot once the system boots again.
+
+<ImageComponent />

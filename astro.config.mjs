@@ -96,6 +96,10 @@ export default defineConfig({
               link: "/en/installation/install-guest-utm",
             },
             {
+              label: "LUKS Encryption with TPM",
+              link: "/en/installation/encryption",
+            },
+            {
               label: "Secure Boot",
               link: "/en/installation/secureboot",
             },
