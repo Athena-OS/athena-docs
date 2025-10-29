@@ -18,7 +18,8 @@ By integrating LUKS with TPM, Athena OS ensures a high level of data protection 
 
 ## How It Works
 
-LUKS (Linux Unified Key Setup) provides strong disk encryption by securing your partitions with AES-based cryptography.  
+LUKS (Linux Unified Key Setup) provides strong disk encryption by securing your partitions with AES-based cryptography.
+
 When combined with TPM, the decryption key is securely sealed within the TPM hardware and can be unsealed only under the same platform configuration (PCR values).
 
 In practice:
@@ -41,7 +42,7 @@ During installation with **Aegis**, you can choose to:
 - **Bind the key to TPM** - if TPM is detected, Aegis will store the decryption key securely in the TPM and configure automatic unlocking.
 
 :::tip
-If the TPM option is not available, verify that **TPM is enabled in BIOS/UEFI** and **not owned by another OS**.
+If the TPM option is not available, the set passphrase will be prompted at each boot for decrypting the encrypted partition.
 :::
 
 ---
@@ -62,6 +63,35 @@ To verify TPM enrollment:
 ```shell
 sudo systemd-cryptenroll --list /dev/nvme0n1p3
 ```
+
+:::warning
+Don't lose your passphrase because, if PCR values change because of malicious tampering on your system, at boot you will be asked to type your passphrase to decrypt the encrypted partition. Store it securely.
+:::
+
+## PCR Table
+
+Athena OS uses PCR7, PCR9, PCR11, PCR14 registries. If the values of these registries changes because of activities that change the resources they are tied with, the system detects a tampering activity and will ask for the LUKS passphrase to decrypt the encrypted partition.
+
+| PCR | Description | Extended by |
+| --- | ----------- | ----------- |
+| PCR0 | Core System Firmware executable code (aka Firmware). May change if you upgrade your UEFI.  | Firmware |
+| PCR1 | Core System Firmware data (aka UEFI settings; configured boot order, for example)  | Firmware |
+| PCR2 | Extended or pluggable executable code (aka [OpROMs](https://en.wikipedia.org/wiki/Option_ROM))  | Firmware |
+| PCR3 | Extended or pluggable firmware data. Set during Boot Device Select UEFI boot phase.  | Firmware |
+| PCR4 | Boot Manager Code and Boot Attempts. Measures the boot manager and the devices that the firmware tried to boot from.  | Firmware |
+| PCR5 | Boot Manager Configuration and Data. Can measure configuration of boot loaders; includes the GPT Partition Table.  | Firmware |
+| PCR6 | Resume from S4 and S5 Power State Events  | Firmware |
+| PCR7 | [Secure Boot State](https://superuser.com/questions/1640985/how-to-enable-bitlocker-when-booting-windows-10-from-a-non-microsoft-boot-manage). Contains the full contents of PK/KEK/db, as well as the specific certificates used to validate each boot application | Firmware, shim (adds MokList, MokListX, and MokSBState)  |
+| PCR8 | Hash of the kernel command line  | [GRUB](https://lists.gnu.org/archive/html/grub-devel/2017-07/msg00003.html) |
+| PCR9 | Hash of the initramfs and EFI Load Options  | Linux (measures the initramfs and EFI Load Options, essentially the kernel cmdline options)  |
+| PCR10 | Reserved for Future Use  |  |
+| PCR11 | Hash of the [Unified kernel image](https://wiki.archlinux.org/title/Unified_kernel_image) | [systemd-stub](https://man.archlinux.org/man/systemd-stub.7) |
+| PCR12 | Overridden kernel command line, Credentials  | [systemd-stub](https://man.archlinux.org/man/systemd-stub.7) |
+| PCR13 | System Extensions  | [systemd-stub](https://man.archlinux.org/man/systemd-stub.7) |
+| PCR14 | [shim's](https://github.com/rhboot/shim/blob/main/README.tpm) MokList, MokListX, and MokSBState. | shim |
+| PCR15 | Hash of the LUKS volume key | [systemd-cryptsetup](https://systemd.io/TPM2_PCR_MEASUREMENTS/#pcr-measurements-made-by-systemd-cryptsetup-userspace) |
+| PCR16 | Debug. May be used and reset at any time. May be absent from an official firmware release.  |  |
+| PCR23 | Application Support. The OS can set and reset this PCR.  |  |
 
 ## Important Warnings for Dual Boot with Windows
 
@@ -98,5 +128,9 @@ You can still unlock it using your manual passphrase entered during setup:
 cryptsetup open /dev/nvme0n1p3 cryptroot
 ```
 Then you can re-enroll a new TPM keyslot once the system boots again.
+
+## Additional information
+* https://wiki.archlinux.org/title/Trusted_Platform_Module
+* https://wiki.archlinux.org/title/Systemd-cryptenroll#Trusted_Platform_Module
 
 <ImageComponent />
