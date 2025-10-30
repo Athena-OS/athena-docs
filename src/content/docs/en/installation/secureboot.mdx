@@ -55,11 +55,15 @@ Once you land on Athena environment, you can remove the MOK certificate from EFI
 sudo rm -rf /boot/efi/EFI/MOK.cer
 ```
 
+:::warning
+**/etc/.secureboot/keys/MOK.key** is used to sign boot files. It has restricted permission. Don't delete it. If you delete it, to access to the system, you must disable Secure Boot from BIOS if you have the grants to access to it.
+:::
+
 ## File Revalidation
 
 During the updates of packages involving kernel and GRUB, files signed by Secure Boot key could change and be not valid and trusted anymore. So, they need to be signed again.
 
-Athena OS performs signing automatically for you, but in the worst scenario these files are not re-validated, and at boot you get an error like **policy violated**, you can boot by ISO Live Environment, mount the root and boot partitions to their proper mount points and running:
+Athena OS performs signing automatically for you, but in the worst scenario these files are not re-validated, and at boot you get an error like **policy violated**, you can boot by ISO Live Environment, mount the root and boot partitions to their proper mount points and run:
 ```shell
 sudo arch-chroot /mnt
 
@@ -68,7 +72,7 @@ sbsign --key /etc/.secureboot/keys/MOK.key --cert /etc/.secureboot/keys/MOK.crt 
 cp /boot/efi/EFI/GRUB/grubx64.efi /boot/efi/EFI/BOOT/grubx64.efi
 ```
 
-## Secure Boot and TPM Measurements
+## TPM Measurements
 
 In Athena OS, Secure Boot is tightly integrated with the TPM to strengthen system integrity verification.
 
@@ -84,7 +88,11 @@ That means:
 - If Secure Boot is disabled, modified, or an untrusted bootloader/kernel is used, the PCR measurements will change.
 - The TPM will then **refuse to release the decryption key**, prompting for your manual LUKS passphrase instead.
 
-This link between Secure Boot and TPM guarantees that only systems booting in a verified and trusted state can automatically unlock encrypted volumes.
+This link between Secure Boot and TPM guarantees that only some specific measured systems (verified and trusted) boots and automatically unlock encrypted volumes.
+
+:::tip
+It is strongly suggested to protect your BIOS authentication by a **PIN** or **strong password** to prevent that an unauthorized actor can disable the Secure Boot.
+:::
 
 
 <ImageComponent />
