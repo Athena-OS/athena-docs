@@ -128,12 +128,14 @@ If you previously used BitLocker and reinstalled Athena on the same system, it i
 
 ## Recovery Tips
 
-If you lose TPM access or reinstall your firmware, your TPM keyslot will no longer unlock your LUKS partition automatically.
-You can still unlock it using your manual passphrase entered during setup:
+If you lose TPM access or reinstall your firmware, your TPM keyslot will no longer unlock your LUKS partition automatically, and you will be asked to manually enter the LUKS passphrase.
+You can unlock it using your manual passphrase entered during Athena OS installation.
+
+Once ologged on the system, you can re-enroll a new TPM keyslot by executing:
 ```shell
-cryptsetup open /dev/nvme0n1p3 cryptroot
+sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=7+9+11+14 /dev/nvme0n1p3
 ```
-Then you can re-enroll a new TPM keyslot once the system boots again.
+and entering the LUKS passphrase.
 
 ## Additional information
 * https://wiki.archlinux.org/title/Trusted_Platform_Module
