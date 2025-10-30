@@ -55,7 +55,7 @@ Once you land on Athena environment, you can remove the MOK certificate from EFI
 sudo rm -rf /boot/efi/EFI/MOK.cer
 ```
 
-:::warning
+:::caution
 **/etc/.secureboot/keys/MOK.key** is used to sign boot files. It has restricted permission. Don't delete it. If you delete it, to access to the system, you must disable Secure Boot from BIOS if you have the grants to access to it.
 :::
 
