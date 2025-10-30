@@ -17,7 +17,7 @@ Those measurements can then be used to:
 
 Athena OS integrates this with features like:
 - Secure Boot
-- Unified Kernel Images (UKI) / `systemd-stub`
+- Unified Kernel Images (UKI) / systemd-stub
 - TPM-bound LUKS unlock (see “LUKS Encryption with TPM”)
 
 ## What is a TPM?
@@ -79,10 +79,10 @@ Athena OS focuses on integrity checks involving:
 - **PCR9** – initramfs and EFI boot options.  
   Detects changes to initramfs or unexpected kernel parameters that could weaken security.
 
-- **PCR11** – Unified Kernel Image (UKI) measurement by `systemd-stub`.  
+- **PCR11** – Unified Kernel Image (UKI) measurement by systemd-stub.  
   Confirms that the kernel+initrd bundle we’re booting is the one we intended.
 
-- **PCR14** – `shim` state (MOK lists, Secure Boot overrides).  
+- **PCR14** – shim state (MOK lists, Secure Boot overrides).  
   Detects if someone slipped in new keys or disabled protections through shim.
 
 These PCRs are also (optionally) used to gate access to disk encryption keys during early boot.
