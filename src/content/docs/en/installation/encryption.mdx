@@ -97,7 +97,7 @@ Athena OS uses PCR7, PCR9, PCR11, PCR14 registries. If the values of these regis
 | PCR16 | Debug. May be used and reset at any time. May be absent from an official firmware release.  |  |
 | PCR23 | Application Support. The OS can set and reset this PCR.  |  |
 
-## What Happens When PCRs Change
+**What happens when PCRs change?**
 
 During each boot, Athena OS measures firmware, bootloader, and kernel components into TPM registers (PCRs).  
 If the current measurements match those taken when the LUKS key was enrolled, the TPM releases the key automatically.  
