@@ -1,0 +1,108 @@
+---
+title: LUKS Encryption with TPM
+description: LUKS encryption with TPM key integration.
+---
+import ImageComponent from "@components/ImageComponent.astro";
+import ThemedImage from '@components/ThemedImage.astro';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import { LinkCard, CardGrid } from '@astrojs/starlight/components';
+
+Athena OS supports **LUKS encryption** for full-disk or root partition encryption with TPM 2.0.  
+Optionally, in Athena Arch, the encryption key can be automatically **stored and managed by the TPM (Trusted Platform Module)**, providing secure key handling without requiring you to manually type a passphrase on every boot.
+
+This integration is handled automatically by **Aegis Installer**, which can detect your TPM device and configure LUKS to unlock the encrypted partition using the TPM key at boot time.
+
+By integrating LUKS with TPM, Athena OS ensures a high level of data protection while maintaining usability and system integrity.
+
+---
+
+## How It Works
+
+LUKS (Linux Unified Key Setup) provides strong disk encryption by securing your partitions with AES-based cryptography.
+
+When combined with TPM, the decryption key is securely sealed within the TPM hardware and can be unsealed only under the same platform configuration (PCR values).
+
+In practice:
+
+1. The root partition (usually `/`) is encrypted with LUKS.
+2. A keyslot is added to LUKS that uses a TPM-stored key.
+3. At boot, **systemd-cryptsetup** retrieves the key from the TPM to unlock the partition automatically.
+
+This ensures that:
+- Your encryption key never leaves the TPM chip.
+- The system can auto-unlock without manual password entry (optional).
+- The disk remains unreadable if removed or the platform changes significantly.
+
+---
+
+## Setup During Installation
+
+During installation with **Aegis**, you can choose to:
+- **Encrypt ROOT (LUKS)** - a passphrase is requested.
+- **Bind the key to TPM** - if TPM is detected, Aegis will store the decryption key securely in the TPM and configure automatic unlocking.
+
+:::tip
+If the TPM option is not available, the set passphrase will be prompted at each boot for decrypting the encrypted partition.
+:::
+
+---
+
+## Post-installation Management
+
+You can manage TPM-bound LUKS keys using `systemd-cryptenroll` or `clevis`.  
+For example:
+
+```shell
+sudo systemd-cryptenroll --tpm2-device=auto /dev/nvme0n1p3
+```
+
+This command will create a TPM2-bound keyslot for the encrypted partition `/dev/nvme0n1p3`.
+If the TPM is cleared or replaced, this keyslot becomes invalid, hence why backups or recovery passphrases are essential.
+
+To verify TPM enrollment:
+```shell
+sudo systemd-cryptenroll --list /dev/nvme0n1p3
+```
+
+:::caution
+If the TPM is cleared, replaced, or its policy no longer matches the current system state, that TPM-bound slot becomes invalid.
+This is why you MUST keep your original passphrase stored safely offline. If PCR values change because of firmware, bootloader, or kernel tampering, the TPM may stop auto-unlocking. Athena OS will then ask you to type your passphrase at boot. Do not lose it.
+:::
+
+## Dual Boot with Windows
+
+If you are dual booting with Windows that uses BitLocker, be extremely careful with TPM operations.
+
+BitLocker also stores its encryption keys in the same TPM chip.
+:::danger
+If you clear or wipe the TPM from Linux without backing up your BitLocker recovery key, Windows may become permanently inaccessible.
+:::
+
+Before performing any TPM operations from Linux:
+
+1. Backup your BitLocker recovery key.
+   You can find it in your Microsoft Account → https://account.microsoft.com/devices/recoverykey
+
+2. Suspend BitLocker protection from Windows before manipulating TPM.
+   ```powershell
+   manage-bde -protectors -disable C:
+   ```
+
+3. After operations are done, re-enable protection:
+   ```powershell
+   manage-bde -protectors -enable C:
+   ```
+
+If you previously had BitLocker enabled and reinstalled Athena on the same machine, it is highly recommended to clear TPM only after backing up all Windows recovery keys.
+
+## Recovery Tips
+
+If TPM auto-unlock stops working (for example after a firmware update), boot manually with your LUKS passphrase.
+
+Then you can re-enroll a fresh TPM-bound keyslot matching the new boot measurements:
+```shell
+sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=7+9+11+14 /dev/nvme0n1p3
+```
+You’ll be prompted for the LUKS passphrase to authorize adding the new slot.
+
+<ImageComponent />

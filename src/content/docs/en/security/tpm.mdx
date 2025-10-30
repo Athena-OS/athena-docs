@@ -1,0 +1,132 @@
+---
+title: System Integrity with TPM and PCRs
+description: How Athena OS uses TPM 2.0, Secure Boot, and Measured Boot to protect system integrity.
+---
+import ImageComponent from "@components/ImageComponent.astro";
+import ThemedImage from '@components/ThemedImage.astro';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import { LinkCard, CardGrid } from '@astrojs/starlight/components';
+
+Athena OS leverages the system's TPM 2.0 (Trusted Platform Module) to **measure and attest the integrity of the boot chain** — firmware, bootloader, kernel, and in some cases even the disk encryption policy.
+
+This is called *measured boot*: each critical component is hashed and recorded in TPM registers called **PCRs (Platform Configuration Registers)**.  
+Those measurements can then be used to:
+- Decide whether to release secrets (like disk decryption keys).
+- Detect tampering in firmware, bootloader, or kernel.
+- Prove to the OS that the machine booted in a trusted state.
+
+Athena OS integrates this with features like:
+- Secure Boot
+- Unified Kernel Images (UKI) / `systemd-stub`
+- TPM-bound LUKS unlock (see “LUKS Encryption with TPM”)
+
+## What is a TPM?
+
+A TPM is a hardware security chip. It can:
+- Store secrets (keys) in a way that software alone can’t just read out.
+- “Seal” secrets to a known-good system state, defined by PCR values.
+- Detect when firmware/bootloader/kernel changed unexpectedly, including malicious changes.
+
+In Athena OS, this means:
+- Your encryption key can be released automatically *only if* the system still matches the trusted boot measurements.
+- If someone tampers with your bootloader or kernel, the TPM refuses to release that key.
+
+## PCRs (Platform Configuration Registers)
+
+**PCRs are small registers in the TPM that hold cryptographic measurements of the boot process.**  
+Each PCR corresponds to a different stage or component. Values are “extended,” not overwritten — so they form an audit trail of what actually booted.
+
+| PCR | Description | Extended by |
+| --- | ----------- | ----------- |
+| PCR0 | Core System Firmware executable code (aka Firmware). May change if you upgrade your UEFI.  | Firmware |
+| PCR1 | Core System Firmware data (aka UEFI settings; configured boot order, for example)  | Firmware |
+| PCR2 | Extended or pluggable executable code (aka [OpROMs](https://en.wikipedia.org/wiki/Option_ROM))  | Firmware |
+| PCR3 | Extended or pluggable firmware data. Set during Boot Device Select UEFI boot phase.  | Firmware |
+| PCR4 | Boot Manager Code and Boot Attempts. Measures the boot manager and the devices that the firmware tried to boot from.  | Firmware |
+| PCR5 | Boot Manager Configuration and Data. Can measure configuration of boot loaders; includes the GPT Partition Table.  | Firmware |
+| PCR6 | Resume from S4 and S5 Power State Events  | Firmware |
+| PCR7 | [Secure Boot State](https://superuser.com/questions/1640985/how-to-enable-bitlocker-when-booting-windows-10-from-a-non-microsoft-boot-manage). Contains the full contents of PK/KEK/db, as well as the specific certificates used to validate each boot application | Firmware, shim (adds MokList, MokListX, and MokSBState)  |
+| PCR8 | Hash of the kernel command line  | [GRUB](https://lists.gnu.org/archive/html/grub-devel/2017-07/msg00003.html) |
+| PCR9 | Hash of the initramfs and EFI Load Options  | Linux (measures the initramfs and EFI Load Options, essentially the kernel cmdline options)  |
+| PCR10 | Reserved for Future Use  |  |
+| PCR11 | Hash of the [Unified kernel image](https://wiki.archlinux.org/title/Unified_kernel_image) | [systemd-stub](https://man.archlinux.org/man/systemd-stub.7) |
+| PCR12 | Overridden kernel command line, Credentials  | [systemd-stub](https://man.archlinux.org/man/systemd-stub.7) |
+| PCR13 | System Extensions  | [systemd-stub](https://man.archlinux.org/man/systemd-stub.7) |
+| PCR14 | [shim's](https://github.com/rhboot/shim/blob/main/README.tpm) MokList, MokListX, and MokSBState. | shim |
+| PCR15 | Hash of the LUKS volume key | [systemd-cryptsetup](https://systemd.io/TPM2_PCR_MEASUREMENTS/#pcr-measurements-made-by-systemd-cryptsetup-userspace) |
+| PCR16 | Debug. May be used and reset at any time. May be absent from an official firmware release.  |  |
+| PCR23 | Application Support. The OS can set and reset this PCR.  |  |
+
+### Why PCRs matter
+
+Secrets (like your LUKS decryption key) can be *sealed* to specific PCR values.  
+That means: “only release this secret if PCR7, PCR9, PCR11, PCR14 match what they were when I enrolled.”
+
+If anything in the boot chain changes — new firmware, unsigned bootloader, injected kernel, malicious initramfs — those PCR values change, and the TPM refuses to release the secret.
+
+This protects you even if:
+- The attacker has physical access.
+- The drive is stolen.
+- Someone tries an “evil maid” attack by swapping your bootloader.
+
+## PCRs used by Athena OS
+
+Athena OS focuses on integrity checks involving:
+
+- **PCR7** – Secure Boot policy, allowed keys, shim trust status.  
+  Confirms we’re still booting with the expected signing chain.
+
+- **PCR9** – initramfs and EFI boot options.  
+  Detects changes to initramfs or unexpected kernel parameters that could weaken security.
+
+- **PCR11** – Unified Kernel Image (UKI) measurement by `systemd-stub`.  
+  Confirms that the kernel+initrd bundle we’re booting is the one we intended.
+
+- **PCR14** – `shim` state (MOK lists, Secure Boot overrides).  
+  Detects if someone slipped in new keys or disabled protections through shim.
+
+These PCRs are also (optionally) used to gate access to disk encryption keys during early boot.
+
+## “Why did my machine suddenly ask for the LUKS passphrase?”
+
+Scenario:
+- Yesterday it auto-unlocked via TPM.
+- Today it dropped to a password prompt.
+
+This is expected when PCR measurements change.
+
+Typical reasons:
+- Firmware/UEFI update
+- Kernel/initramfs update (especially if you switched kernels manually or modified initramfs)
+- Secure Boot policy / shim MOK changes
+- Real tampering with bootloader or kernel
+
+When that happens:
+1. The TPM says “this isn’t the same platform state I trust.”
+2. The TPM will *not* unseal the stored LUKS key.
+3. The boot process falls back to asking you for the passphrase you set at install time.
+
+After you successfully boot with the manual passphrase, you can safely **re-enroll a fresh TPM key binding** to match the new trusted state:
+```shell
+sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=7+9+11+14 /dev/nvme0n1p3
+```
+
+Keep that passphrase safe. If you lose it and PCRs no longer match, you’re locked out.
+
+If you clear or wipe the TPM, you destroy sealed secrets — including Windows BitLocker keys on dual-boot systems. Back up your BitLocker recovery key before doing anything that resets TPM state.
+
+## Relationship to Secure Boot & UKI
+
+* Secure Boot makes sure only signed boot components are executed.
+* Measured Boot (PCRs) records what actually ran.
+* UKI (Unified Kernel Image) puts the kernel, initramfs, and command line into one signed artifact measured into PCR11.
+
+Athena OS uses all of these together. The end result: tampering with firmware, shim, kernel, initramfs, or kernel parameters is detectable, and can directly block access to secrets.
+
+## See also
+* https://wiki.archlinux.org/title/Trusted_Platform_Module
+* https://wiki.archlinux.org/title/Systemd-cryptenroll#Trusted_Platform_Module
+* https://www.gnu.org/software/grub/manual/grub/html_node/Measured-Boot.html
+
+
+<ImageComponent />

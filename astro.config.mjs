@@ -96,20 +96,29 @@ export default defineConfig({
               link: "/en/installation/install-guest-utm",
             },
             {
-              label: "LUKS Encryption with TPM",
-              link: "/en/installation/encryption",
-            },
-            {
-              label: "Secure Boot",
-              link: "/en/installation/secureboot",
-            },
-            {
               label: "Aegis Installer",
               link: "/en/installation/aegis",
             },
             {
               label: "Updating Athena OS",
               link: "/en/installation/update-athena",
+            },
+          ],
+        },
+        {
+          label: "Security",
+          items: [
+            {
+              label: "Trusted Platform Module",
+              link: "/en/security/tpm",
+            },
+            {
+              label: "LUKS Encryption with TPM",
+              link: "/en/security/encryption",
+            },
+            {
+              label: "Secure Boot",
+              link: "/en/security/secureboot",
             },
           ],
         },
