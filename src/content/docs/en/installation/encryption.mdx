@@ -64,8 +64,8 @@ To verify TPM enrollment:
 sudo systemd-cryptenroll --list /dev/nvme0n1p3
 ```
 
-:::warning
-Don't lose your passphrase because, if PCR values change because of malicious tampering on your system, at boot you will be asked to type your passphrase to decrypt the encrypted partition. Store it securely.
+:::caution
+Don't lose your passphrase. If PCR values change because of malicious tampering on your system, at boot you will be asked to type your passphrase to decrypt the encrypted partition. Store it securely.
 :::
 
 ## Platform Configuration Registers
