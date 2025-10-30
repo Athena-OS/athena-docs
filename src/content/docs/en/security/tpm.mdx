@@ -7,7 +7,7 @@ import ThemedImage from '@components/ThemedImage.astro';
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import { LinkCard, CardGrid } from '@astrojs/starlight/components';
 
-Athena OS leverages the system's TPM 2.0 (Trusted Platform Module) to **measure and attest the integrity of the boot chain** — firmware, bootloader, kernel, and in some cases even the disk encryption policy.
+Athena OS leverages the system's TPM 2.0 (Trusted Platform Module) to **measure and attest the integrity of the boot chain**: firmware, bootloader, kernel, and in some cases even the disk encryption policy.
 
 This is called *measured boot*: each critical component is hashed and recorded in TPM registers called **PCRs (Platform Configuration Registers)**.  
 Those measurements can then be used to:
@@ -18,13 +18,13 @@ Those measurements can then be used to:
 Athena OS integrates this with features like:
 - Secure Boot
 - Unified Kernel Images (UKI) / systemd-stub
-- TPM-bound LUKS unlock (see “LUKS Encryption with TPM”)
+- TPM-bound LUKS unlock (see "LUKS Encryption with TPM")
 
 ## What is a TPM?
 
 A TPM is a hardware security chip. It can:
 - Store secrets (keys) in a way that software alone can’t just read out.
-- “Seal” secrets to a known-good system state, defined by PCR values.
+- "Seal" secrets to a known-good system state, defined by PCR values.
 - Detect when firmware/bootloader/kernel changed unexpectedly, including malicious changes.
 
 In Athena OS, this means:
@@ -34,7 +34,7 @@ In Athena OS, this means:
 ## PCRs (Platform Configuration Registers)
 
 **PCRs are small registers in the TPM that hold cryptographic measurements of the boot process.**  
-Each PCR corresponds to a different stage or component. Values are “extended,” not overwritten — so they form an audit trail of what actually booted.
+Each PCR corresponds to a different stage or component. Values are "extended", not overwritten, so they form an audit trail of what actually booted.
 
 | PCR | Description | Extended by |
 | --- | ----------- | ----------- |
@@ -60,14 +60,14 @@ Each PCR corresponds to a different stage or component. Values are “extended,�
 ### Why PCRs matter
 
 Secrets (like your LUKS decryption key) can be *sealed* to specific PCR values.  
-That means: “only release this secret if PCR7, PCR9, PCR11, PCR14 match what they were when I enrolled.”
+That means: "only release this secret if PCR7, PCR9, PCR11, PCR14 match what they were when I enrolled."
 
-If anything in the boot chain changes — new firmware, unsigned bootloader, injected kernel, malicious initramfs — those PCR values change, and the TPM refuses to release the secret.
+If anything in the boot chain changes - new firmware, unsigned bootloader, injected kernel, malicious initramfs - those PCR values change, and the TPM refuses to release the secret.
 
 This protects you even if:
 - The attacker has physical access.
 - The drive is stolen.
-- Someone tries an “evil maid” attack by swapping your bootloader.
+- Someone tries an "evil maid" attack by swapping your bootloader.
 
 ## PCRs used by Athena OS
 
@@ -87,7 +87,7 @@ Athena OS focuses on integrity checks involving:
 
 These PCRs are also (optionally) used to gate access to disk encryption keys during early boot.
 
-## “Why did my machine suddenly ask for the LUKS passphrase?”
+## "Why did my machine suddenly ask for the LUKS passphrase?"
 
 Scenario:
 - Yesterday it auto-unlocked via TPM.
@@ -102,7 +102,7 @@ Typical reasons:
 - Real tampering with bootloader or kernel
 
 When that happens:
-1. The TPM says “this isn’t the same platform state I trust.”
+1. The TPM says "this isn’t the same platform state I trust."
 2. The TPM will *not* unseal the stored LUKS key.
 3. The boot process falls back to asking you for the passphrase you set at install time.
 
@@ -113,7 +113,7 @@ sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=7+9+11+14 /dev/nvme0n1p3
 
 Keep that passphrase safe. If you lose it and PCRs no longer match, you’re locked out.
 
-If you clear or wipe the TPM, you destroy sealed secrets — including Windows BitLocker keys on dual-boot systems. Back up your BitLocker recovery key before doing anything that resets TPM state.
+If you clear or wipe the TPM, you destroy sealed secrets, including Windows BitLocker keys on dual-boot systems. Back up your BitLocker recovery key before doing anything that resets TPM state.
 
 ## Relationship to Secure Boot & UKI
 
