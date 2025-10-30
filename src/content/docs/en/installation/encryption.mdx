@@ -74,8 +74,6 @@ Don't lose your passphrase because, if PCR values change because of malicious ta
 Each PCR represents a stage of the boot process, from firmware and bootloader to kernel and Secure Boot data.
 These measurements ensure that the TPM will only release the LUKS decryption key if the system's boot components match the same trusted state recorded during enrollment.
 
-Athena OS uses PCR7, PCR9, PCR11, PCR14 registries. If the values of these registries changes because of activities that change the resources they are tied with, the system detects a tampering activity and will ask for the LUKS passphrase to decrypt the encrypted partition.
-
 | PCR | Description | Extended by |
 | --- | ----------- | ----------- |
 | PCR0 | Core System Firmware executable code (aka Firmware). May change if you upgrade your UEFI.  | Firmware |
@@ -99,11 +97,7 @@ Athena OS uses PCR7, PCR9, PCR11, PCR14 registries. If the values of these regis
 
 **What happens when PCRs change?**
 
-During each boot, Athena OS measures firmware, bootloader, and kernel components into TPM registers (PCRs).  
-If the current measurements match those taken when the LUKS key was enrolled, the TPM releases the key automatically.  
-If they differ, for example, after firmware or kernel updates, or potential tampering, the TPM refuses to unseal the key.  
-In that case, you'll be prompted to enter your LUKS passphrase manually.  
-Once booted, you can safely re-enroll the TPM keyslot to reflect the new measurements.
+Athena OS uses PCR7, PCR9, PCR11, PCR14 registries. During each boot, Athena OS measures firmware, bootloader, and kernel components into TPM registers (PCRs). If the current measurements match those taken when the LUKS key was enrolled, the TPM releases the key automatically. If they differ, for example, after firmware or kernel updates, or potential tampering on kernel, firmware or bootloader, the TPM refuses to unseal the key. In that case, you'll be prompted to enter your LUKS passphrase manually. Once booted, you can safely re-enroll the TPM keyslot to reflect the new measurements.
 
 ## Important Warnings for Dual Boot with Windows
 
