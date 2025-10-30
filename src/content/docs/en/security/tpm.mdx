@@ -73,16 +73,16 @@ This protects you even if:
 
 Athena OS focuses on integrity checks involving:
 
-- **PCR7** – Secure Boot policy, allowed keys, shim trust status.  
+- **PCR7** - Secure Boot policy, allowed keys, shim trust status.  
   Confirms we’re still booting with the expected signing chain.
 
-- **PCR9** – initramfs and EFI boot options.  
+- **PCR9** - initramfs and EFI boot options.  
   Detects changes to initramfs or unexpected kernel parameters that could weaken security.
 
-- **PCR11** – Unified Kernel Image (UKI) measurement by systemd-stub.  
+- **PCR11** - Unified Kernel Image (UKI) measurement by systemd-stub.  
   Confirms that the kernel+initrd bundle we’re booting is the one we intended.
 
-- **PCR14** – shim state (MOK lists, Secure Boot overrides).  
+- **PCR14** - shim state (MOK lists, Secure Boot overrides).  
   Detects if someone slipped in new keys or disabled protections through shim.
 
 These PCRs are also (optionally) used to gate access to disk encryption keys during early boot.
