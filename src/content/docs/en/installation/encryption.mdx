@@ -7,7 +7,7 @@ import ThemedImage from '@components/ThemedImage.astro';
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import { LinkCard, CardGrid } from '@astrojs/starlight/components';
 
-Athena OS supports **LUKS encryption** for full-disk or root partition encryption.  
+Athena OS supports **LUKS encryption** for full-disk or root partition encryption with TPM 2.0.  
 Optionally, in Athena Arch, the encryption key can be automatically **stored and managed by the TPM (Trusted Platform Module)**, providing secure key handling without requiring you to manually type a passphrase on every boot.
 
 This integration is handled automatically by **Aegis Installer**, which can detect your TPM device and configure LUKS to unlock the encrypted partition using the TPM key at boot time.
@@ -68,7 +68,11 @@ sudo systemd-cryptenroll --list /dev/nvme0n1p3
 Don't lose your passphrase because, if PCR values change because of malicious tampering on your system, at boot you will be asked to type your passphrase to decrypt the encrypted partition. Store it securely.
 :::
 
-## PCR Table
+## Platform Configuration Registers
+
+**PCRs (Platform Configuration Registers)** are small memory registers inside the TPM that store cryptographic measurements of critical system components taken during boot.
+Each PCR represents a stage of the boot process, from firmware and bootloader to kernel and Secure Boot data.
+These measurements ensure that the TPM will only release the LUKS decryption key if the system's boot components match the same trusted state recorded during enrollment.
 
 Athena OS uses PCR7, PCR9, PCR11, PCR14 registries. If the values of these registries changes because of activities that change the resources they are tied with, the system detects a tampering activity and will ask for the LUKS passphrase to decrypt the encrypted partition.
 
@@ -93,6 +97,14 @@ Athena OS uses PCR7, PCR9, PCR11, PCR14 registries. If the values of these regis
 | PCR16 | Debug. May be used and reset at any time. May be absent from an official firmware release.  |  |
 | PCR23 | Application Support. The OS can set and reset this PCR.  |  |
 
+## What Happens When PCRs Change
+
+During each boot, Athena OS measures firmware, bootloader, and kernel components into TPM registers (PCRs).  
+If the current measurements match those taken when the LUKS key was enrolled, the TPM releases the key automatically.  
+If they differ, for example, after firmware or kernel updates, or potential tampering, the TPM refuses to unseal the key.  
+In that case, you'll be prompted to enter your LUKS passphrase manually.  
+Once booted, you can safely re-enroll the TPM keyslot to reflect the new measurements.
+
 ## Important Warnings for Dual Boot with Windows
 
 If you are dual booting with Windows that uses BitLocker, be extremely careful.
@@ -100,7 +112,7 @@ If you are dual booting with Windows that uses BitLocker, be extremely careful.
 BitLocker also stores its encryption keys in the same TPM chip.
 :::danger
 If you clear or wipe the TPM from Linux, you will erase all keys stored in it, including the BitLocker key, making your Windows drive inaccessible.
-If you clear or reset the TPM from Linux, and you don’t have your BitLocker recovery key, you will lose access to your Windows installation.
+If you clear or reset the TPM from Linux, and you don't have your BitLocker recovery key, you will lose access to your Windows installation.
 :::
 
 Before performing any TPM operations from Linux:
@@ -132,5 +144,6 @@ Then you can re-enroll a new TPM keyslot once the system boots again.
 ## Additional information
 * https://wiki.archlinux.org/title/Trusted_Platform_Module
 * https://wiki.archlinux.org/title/Systemd-cryptenroll#Trusted_Platform_Module
+* https://www.gnu.org/software/grub/manual/grub/html_node/Measured-Boot.html
 
 <ImageComponent />
