@@ -103,7 +103,7 @@ HOOKS=(base systemd autodetect modconf kms keyboard sd-vconsole block sd-encrypt
 ```
 and save the file.
 
-Check on `/etc/default/grub`, inside `GRUB_CMDLINE_LINUX_DEFAULT` variable, that no `nvidia` parameters are stored, otherwise delete them.
+Check on kernel parameters that no `nvidia` parameters are stored, otherwise delete them.
 
 Run:
 ```shell

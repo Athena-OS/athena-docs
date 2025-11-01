@@ -212,10 +212,6 @@ If you select **Encrypt ROOT (LUKS)**, and press **Continue**, insert your LUKS 
 
 Once confirmed, it will automatically propose a partitioning layout for you.
 
-:::note
-Aegis detects the type of Partition Table set on the selected disk. If it is **msdos**, it will create a **BIOS/Legacy GRUB** boot partition; if it is **gpt**, it will create a **EFI** boot partition.
-:::
-
 
 ### Configure partitions manually
 
@@ -235,20 +231,13 @@ You can mainly create a partition by an available free space or by deleting a sp
 
 **Create from free space**
 
-In case you need to create a new EFI or GRUB Legacy partition, and no free space is already available, select an **existing partition** to be deleted, and select **Delete Partition**. It will create a new **free** entry and press **"Enter"**.
+In case you need to create a new EFI partition, and no free space is already available, select an **existing partition** to be deleted, and select **Delete Partition**. It will create a new **free** entry and press **"Enter"**.
 
 It will ask for size. Type **512MiB**.
 
-<Tabs>
-<TabItem label="UEFI Boot Partition">
 If you are dual booting with a Windows or another Linux system, as filesystem select **don't format**.
 If you are removing all the operating systems from your disk to keep only Athena OS, as filesystem, select **fat32** and as mount point, type **/boot/efi**.
-</TabItem>
-<TabItem label="GRUB Legacy Boot Partition">
-If you are dual booting with a Windows or another Linux system, as filesystem select **don't format**.
-If you are removing all the operating systems from your disk to keep only Athena OS, as filesystem, select **ext4** and as mount point, type **/boot**.
-</TabItem>
-</Tabs>
+
 Finally, don't select **Encryption (LUKS)** and press on **Continue**.
 
 
@@ -268,25 +257,14 @@ Press on **Mark For Modification** entry.
 If you don't see all the entries in the image, expand your terminal.
 :::
 
-<Tabs>
-<TabItem label="UEFI Boot Partition">
 Enter on **Set Mount Point** and type **/boot/efi**. Successively, check on **Mark as bootable partition** and **Mark as ESP partition** flags. In this manner the installer will be aware you are creating an EFI boot partition.
 
 Click on **Change Filesystem** and select **fat32**.
 
 Finally, select **Back**.
-</TabItem>
-<TabItem label="GRUB Legacy Boot Partition">
-Enter on **Set Mount Point** and type **/boot**. Successively, check on **Mark as bootable partition** flag. In this manner the installer will be aware you are creating a GRUB Legacy boot partition.
-
-Click on **Change Filesystem** and select **ext4**.
-
-Finally, select **Back**.
-</TabItem>
-</Tabs>
 
 :::tip
-If you are in a UEFI system, and **you are going to encrypt the root partition**, you need to create an additional partition of **"1024MiB"** with **/boot** as mount point with no flags. It is needed to store the initramfs and GRUB configuration files in an unencrypted partition to make LUKS encryption working properly for root partition.
+Since you are in a UEFI system, and **you are going to encrypt the root partition**, you need to create an additional partition of **"1024MiB"** with **/boot** as mount point with no flags. It is needed to store the initramfs and boot configuration files in an unencrypted partition to make LUKS encryption working properly for root partition.
 :::
 
 #### Create root partition
@@ -414,12 +392,7 @@ sudo mount /dev/nvme0n1p1 /mnt
 sudo cp -rf ~/Microsoft /mnt/EFI/
 sudo umount /mnt
 ```
-Once you reboot, and you land on the installed system, open the terminal and run:
-```shell
-sudo os-prober
-sudo grub-mkconfig -o /boot/grub/grub.cfg
-```
-In this manner, Windows entry should be added in GRUB.
+Once you reboot, and you land on the installed system, if systemd- boot is not able to detect Windows, you must manually add it inside the systemd-boot configuration file.
 
 :::note
 At the end of a successful installation in an EFI system, you could get a message like:

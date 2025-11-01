@@ -37,7 +37,7 @@ If you won't format the existing boot partition, some existing files could confl
 Before running it, once you land on the Live Environment, open terminal and mount your existing boot partition (i.e., `/dev/nvme0n1p1`) and let's remove them:
 ```shell
 sudo mount /dev/nvme0n1p1 /mnt
-sudo rm -rf /mnt/memtest86+ /mnt/syslinux /mnt/*-ucode.img /mnt/grub/themes/athena*
+sudo rm -rf /mnt/memtest86+ /mnt/syslinux /mnt/*-ucode.img
 sudo umount /mnt
 ```
 */}
@@ -46,16 +46,8 @@ sudo umount /mnt
 
 Once prepared the setup as described in [Baremetal installation prepare](/en/installation/prepare-install/#prepare-baremetal-installation), and rebooted the system with your plugged USB drive containing the Athena OS installation media, you will see:
 
-<Tabs>
-<TabItem label="UEFI">
 ![EFI Boot](@assets/images/efi-boot.png)
 Select **Athena OS install medium**.
-</TabItem>
-<TabItem label="BIOS/Legacy">
-![BIOS/Legacy Boot](@assets/images/bios-boot.png)
-Select **Boot Athena OS (x86_64, BIOS, open source)**.
-</TabItem>
-</Tabs>
 
 Once you land on the Terminal UI Live Environment, if you need to connect to Internet by WiFi, follow the shown instruction:
 ![WiFi Connect](@assets/images/athena-welcome-install.png)

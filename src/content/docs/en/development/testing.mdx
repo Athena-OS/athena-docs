@@ -91,27 +91,12 @@ Boot into Athena Live Environment by using Athena ISO.
 Create the needed partitions.
 ```shell
 sudo -i
-```
-<Tabs>
-<TabItem label="EFI">
-```shell
 parted /dev/sda -- mklabel gpt
 parted /dev/sda -- mkpart ESP fat32 1MiB 512MiB
 parted /dev/sda -- set 1 esp on
 parted /dev/sda -- mkpart swap linux-swap 512MiB 8GB
 parted /dev/sda -- mkpart primary 8GB 100%
 ```
-</TabItem>
-<TabItem label="BIOS/Legacy">
-```shell
-parted /dev/sda -- mklabel msdos
-parted /dev/sda -- mkpart primary 1MiB 512MiB
-parted /dev/sda -- mkpart primary linux-swap 512MiB 8GB
-parted /dev/sda -- mkpart primary 8GB 100%
-parted /dev/sda -- set 1 boot on
-```
-</TabItem>
-</Tabs>
 
 The created partitions are:
 * /dev/sda1 -> Boot partition
@@ -136,19 +121,9 @@ mount /dev/mapper/crypted /mnt
 </TabItem>
 </Tabs>
 Format the boot partition:
-<Tabs>
-<TabItem label="EFI">
 ```shell
 mkfs.fat -F 32 -n BOOT /dev/sda1
 ```
-</TabItem>
-<TabItem label="BIOS/Legacy">
-```shell
-mkfs.ext4 /dev/sda1
-```
-</TabItem>
-</Tabs>
-
 and mount it:
 ```shell
 mount --mkdir /dev/sda1 /mnt/boot
@@ -183,24 +158,13 @@ sda
 Enter in the mounted partition by `arch-chroot`:
 ```shell
 arch-chroot /mnt
+pacman -S nano mkinitcpio linux-lts linux-lts-headers efibootmgr
 ```
-<Tabs>
-<TabItem label="EFI">
-```shell
-pacman -S nano mkinitcpio linux-lts linux-lts-headers grub efibootmgr
+Then, edit `/etc/kernel/cmdline` and add the `rd.luks.name` to the kernel parameters as:
 ```
-</TabItem>
-<TabItem label="BIOS/Legacy">
-```shell
-pacman -S nano mkinitcpio linux-lts linux-lts-headers grub
+rd.luks.name=7ab2a484-95a8-4ded-b483-b0bf086c7e41=crypted root=/dev/mapper/crypted loglevel=3 quiet
 ```
-</TabItem>
-</Tabs>
-Then, edit `/etc/default/grub` and add the `rd.luks.name` to `GRUB_CMDLINE_LINUX_DEFAULT` as:
-```
-GRUB_CMDLINE_LINUX_DEFAULT="rd.luks.name=7ab2a484-95a8-4ded-b483-b0bf086c7e41=crypted root=/dev/mapper/crypted loglevel=3 quiet"
-```
-Save it and run:
+Run:
 ```shell
 echo "en_US.UTF-8 UTF-8" > /etc/locale.gen
 locale-gen
@@ -216,22 +180,6 @@ HOOKS=(base systemd autodetect modconf kms keyboard sd-vconsole sd-encrypt block
 Save it and run:
 ```shell
 mkinitcpio -P
-sed -i "s/#GRUB_ENABLE_CRYPTODISK=.*/GRUB_ENABLE_CRYPTODISK=y/g" /etc/default/grub
-```
-<Tabs>
-<TabItem label="EFI">
-```shell
-grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
-```
-</TabItem>
-<TabItem label="BIOS/Legacy">
-```shell
-grub-install --target=i386-pc --recheck --boot-directory=/boot /dev/sda
-```
-</TabItem>
-</Tabs>
-```shell
-grub-mkconfig -o /boot/grub/grub.cfg
 passwd
 exit
 umount -R /mnt
@@ -253,10 +201,6 @@ curl -o /tmp/athena-nix.zip https://codeload.github.com/Athena-OS/athena-nix/zip
 unzip /tmp/athena-nix.zip -d /tmp/
 cp -rf /tmp/athena-nix-main/nixos/home-manager /tmp/athena-nix-main/nixos/hosts /tmp/athena-nix-main/nixos/modules /tmp/athena-nix-main/nixos/pkgs /tmp/athena-nix-main/nixos/users /tmp/athena-nix-main/nixos/configuration.nix /tmp/athena-nix-main/nixos/default.nix /mnt/etc/nixos/
 sed -i "s/\/etc\/nixos\/hardware-configuration.nix/.\/hardware-configuration.nix/g" /mnt/etc/nixos/configuration.nix
-```
-If you are in a GRUB BIOS/Legacy environment, run:
-```shell
-sed -i "s/bootloader = \"systemd\"/bootloader = \"grub\"/g" /mnt/etc/nixos/configuration.nix
 ```
 Finally, run the Athena Nix installation:
 ```shell

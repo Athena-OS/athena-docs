@@ -61,15 +61,18 @@ sudo rm -rf /boot/efi/EFI/MOK.cer
 
 ## File Revalidation
 
-During the updates of packages involving kernel and GRUB, files signed by Secure Boot key could change and be not valid and trusted anymore. So, they need to be signed again.
+During the updates of packages involving kernel, files signed by Secure Boot key could change and be not valid and trusted anymore. So, they need to be signed again.
 
 Athena OS performs signing automatically for you, but in the worst scenario these files are not re-validated, and at boot you get an error like **policy violated**, you can boot by ISO Live Environment, mount the root and boot partitions to their proper mount points and run:
 ```shell
 sudo arch-chroot /mnt
 
-sbsign --key /etc/secureboot/keys/MOK.key --cert /etc/secureboot/keys/MOK.crt --output /boot/vmlinuz-linux-lts /boot/vmlinuz-linux-lts
-sbsign --key /etc/secureboot/keys/MOK.key --cert /etc/secureboot/keys/MOK.crt --output /boot/efi/EFI/GRUB/grubx64.efi /boot/efi/EFI/GRUB/grubx64.efi
-cp /boot/efi/EFI/GRUB/grubx64.efi /boot/efi/EFI/BOOT/grubx64.efi
+sbsign --key /etc/secureboot/keys/MOK.key --cert /etc/secureboot/keys/MOK.crt --output /boot/efi/EFI/systemd/systemd-bootx64.efi /boot/efi/EFI/systemd/systemd-bootx64.efi
+cp /boot/efi/EFI/systemd/systemd-bootx64.efi /boot/efi/EFI/BOOT/grubx64.efi
+
+ukify build --linux /boot/vmlinuz-linux-lts --initrd /boot/initramfs-linux-lts.img --cmdline <list of kernel params> --os-release /usr/lib/os-release --uname linux-lts --signtool=sbsign --secureboot-private-key /etc/secureboot/keys/MOK.key --secureboot-certificate /etc/secureboot/keys/MOK.crt --output /boot/efi/EFI/Athena/linux-lts.efi
+
+ukify build --linux /boot/vmlinuz-linux-hardened --initrd /boot/initramfs-linux-hardened.img --cmdline <list of kernel params> --os-release /usr/lib/os-release --uname linux-hardened --signtool=sbsign --secureboot-private-key /etc/secureboot/keys/MOK.key --secureboot-certificate /etc/secureboot/keys/MOK.crt --output /boot/efi/EFI/Athena/linux-hardened.efi
 ```
 
 ## TPM Measurements
