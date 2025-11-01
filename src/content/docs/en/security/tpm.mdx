@@ -69,30 +69,15 @@ This protects you even if:
 - The drive is stolen.
 - Someone tries an "evil maid" attack by swapping your bootloader.
 
-## PCRs used by Athena OS
+## PCR enforcing
 
-Athena OS focuses on integrity checks involving:
-
-- **PCR0** – Firmware and hardware initialization.  
-  Contains measurements of the system firmware (BIOS/UEFI) and certain hardware components during the very first boot stage.  
-  Confirms that the platform firmware and configuration haven’t been tampered with — changes here usually indicate a firmware update or malicious modification before the OS even loads.
-
-- **PCR11** – Unified Kernel Image (UKI) measurement by systemd-stub.  
-  Confirms that the kernel+initrd bundle we’re booting is the one we intended.
-
-- **PCR15** – Vendor- or firmware-specific measurements.  
-  Reserved for OEM or platform-specific use. May contain measurements of device firmware (e.g., Intel Boot Guard, AMD PSP) or other custom early-boot components.  
-  Changes here typically happen only with firmware updates or hardware modifications.
-
-These PCRs are also (optionally) used to gate access to disk encryption keys during early boot.
-
-:::tip
-After Athena OS installation, you can set up the PCRs that fit more your security needs by running:
+To improve integrity checks in Athena at firmware, boot and kernel level, after Athena OS installation, set up the following PCRs by running:
 ```
-sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=7+9+11+14 /dev/nvme0n1p3
+sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=7+11+15 /dev/nvme0n1p3
 ```
 and providing the LUKS password.
-:::
+
+In this manner, on the next boots, until the integrity of your firmware, boot loader and kernel is not tampered, you will automatically get into Athena OS without entering the LUKS passphrase.
 
 ## "Why did my machine suddenly ask for the LUKS passphrase?"
 

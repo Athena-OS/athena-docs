@@ -1,0 +1,80 @@
+---
+title: Unified Kernel Image (UKI)
+description: Understanding UKI and how Athena OS leverages it for security and integrity.
+---
+import ImageComponent from "@components/ImageComponent.astro";
+import ThemedImage from '@components/ThemedImage.astro';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import { LinkCard, CardGrid } from '@astrojs/starlight/components';
+
+A **Unified Kernel Image (UKI)** is a single, signed EFI executable that contains all components needed to boot Linux securely under **UEFI**, **Secure Boot**, and **TPM** environments.
+
+Athena OS builds and uses UKIs for each installed kernel (LTS and Hardened) to guarantee **measurable integrity** and **tamper-proof booting**.
+
+## What is inside a UKI?
+
+A UKI bundles these components into one signed `.efi` file:
+
+| Component | Description |
+| ---------- | ----------- |
+| **EFI Stub** | Small loader that allows the image to be directly executed by UEFI firmware |
+| **Linux Kernel** | The main kernel binary |
+| **Initramfs** | Early userspace environment for mounting the root filesystem |
+| **Kernel Command Line** | Static boot parameters, embedded in the image |
+| **Metadata Section** | Optional signature, OS release information, and PCR policy data |
+
+All of these are **cryptographically signed** and **measured** by Secure Boot and TPM at startup.
+
+## Why UKI is More Secure
+
+### 1. All-in-One Signed Artifact
+Traditional boot setups load multiple files (bootloader → kernel → initramfs), each potentially modifiable.
+With UKI, the **kernel, initramfs, and parameters are unified and signed together**.
+
+Tampering with *any* component invalidates the entire signature.
+
+### 2. Seamless Secure Boot Integration
+Because a UKI is a standalone EFI executable, it is directly validated by **UEFI Secure Boot**.
+
+This eliminates risks from:
+- Unsigned kernel/initramfs mismatches
+- Modified kernel command lines
+- Malicious injected initramfs content
+
+### 3. TPM Measurement and Binding
+Each UKI is measured into **PCR11**, **PCR12**, and **PCR13** by **systemd-stub**, creating an attestation trail.
+When used with **LUKS + TPM**, this ensures:
+- The TPM will only unseal secrets if the measured UKI matches the enrolled trusted state.
+- Any modification in kernel, parameters, or initramfs will invalidate the PCRs.
+
+### 4. Reproducibility & Rollback Protection
+Every UKI is reproducible from deterministic build metadata.  
+Versioned entries in `/boot/loader/entries/` ensure that updates create new signed UKIs, leaving older ones intact for rollback.
+
+### 5. Simplified Boot Flow
+No external bootloader scripting or initramfs juggling, the firmware directly executes the UKI:
+```
+UEFI → systemd-boot → UKI (kernel+initramfs+cmdline)
+```
+
+This reduces attack vectors and improves reliability.
+
+## UKIs in Athena OS
+
+Athena OS automatically generates and signs UKIs during kernel installation and updates.  
+For example:
+
+| Entry | Kernel | Description |
+| ------ | ------- | ----------- |
+| **Athena OS LTS** | Linux LTS | Stable, long-term kernel for compatibility and pentesting |
+| **Athena OS Hardened** | Linux Hardened | Extra protections for high-security environments |
+
+Each entry corresponds to a UKI file stored in:
+```
+/boot/efi/EFI/Linux/athena-lts.efi
+/boot/efi/EFI/Linux/athena-hardened.efi
+```
+These are automatically signed with the same MOK keys used by **Secure Boot** and measured by the **TPM**.
+
+
+<ImageComponent />

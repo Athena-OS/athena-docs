@@ -109,6 +109,14 @@ export default defineConfig({
           label: "Security",
           items: [
             {
+              label: "Systemd-Boot",
+              link: "/en/security/systemd-boot",
+            },
+            {
+              label: "Unified Kernel Image",
+              link: "/en/security/uki",
+            },
+            {
               label: "Trusted Platform Module",
               link: "/en/security/tpm",
             },

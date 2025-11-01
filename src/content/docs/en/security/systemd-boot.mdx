@@ -1,0 +1,78 @@
+---
+title: Systemd-boot
+description: Why Athena OS uses systemd-boot for secure and simplified booting.
+---
+import ImageComponent from "@components/ImageComponent.astro";
+import ThemedImage from '@components/ThemedImage.astro';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import { LinkCard, CardGrid } from '@astrojs/starlight/components';
+
+Athena OS replaces **GRUB** with **systemd-boot** as the default boot manager to enhance **security**, **simplicity**, and **tight integration** with modern Linux technologies like [Secure Boot](/en/installation/secureboot/), [TPM](/en/installation/tpm/), and [Unified Kernel Images (UKI)](/en/installation/uki/).
+
+## Why systemd-boot?
+
+Unlike GRUB, which is a large, insecure and scriptable bootloader supporting legacy BIOS environments and complex configurations, **systemd-boot** is a **minimalistic EFI boot manager** that works exclusively on modern **UEFI systems**. It directly loads EFI executables (like signed UKIs) from the EFI System Partition.
+
+### Advantages over GRUB
+
+| Feature | GRUB | systemd-boot |
+| -------- | ---- | ------------- |
+| Complexity | High (shell, modules, scripting) | Minimal and deterministic |
+| UEFI Support | Partial / optional | Native |
+| Secure Boot | Requires shim or manual signing | Direct signing, fully UEFI-compliant |
+| TPM / Measured Boot | Limited support | Native integration with PCR11, PCR12, PCR13 via systemd-stub |
+| UKI (Unified Kernel Image) | Not supported | First-class support |
+| Speed | Slower (multiple stages) | Very fast (single EFI load) |
+| Configuration | grub.cfg scripts | Simple text files in `/boot/loader/entries/` |
+
+## Security Advantages
+
+### 1. Smaller Attack Surface
+systemd-boot has a minimal codebase, no scripting engine, and no legacy BIOS compatibility layer.  
+This drastically reduces the risk of **code injection**, **buffer overflows**, or **malicious configuration tampering**.
+
+### 2. Directly Verifiable EFI Executables
+Each boot entry in systemd-boot points directly to a **signed EFI image** (usually a UKI).  
+These files can be authenticated by **Secure Boot** and measured into the **TPM** at boot.
+
+### 3. Integrated with Secure Boot and TPM
+systemd-boot works seamlessly with **Secure Boot**, **Measured Boot**, and **TPM-bound encryption**.  
+Because it uses **systemd-stub**, every kernel image is:
+- Verified by Secure Boot.
+- Measured into PCR11 (and related registers).
+- Capable of proving integrity before decryption keys are released.
+
+### 4. Native Support for Unified Kernel Images
+Unlike GRUB, which loads a kernel and initramfs separately, systemd-boot loads a single **UKI** (Unified Kernel Image), a self-contained, signed EFI file that includes:
+- The kernel
+- The initramfs
+- The kernel command line
+
+This integration eliminates configuration drift and makes verification simple and reproducible.
+
+## Athena OS Boot Options
+
+When Athena OS boots, the user is offered two main entries:
+
+### **Athena OS LTS**
+Uses the **Linux LTS kernel**, providing maximum **stability** and compatibility with **pentesting tools** requiring low-level kernel access or custom modules.
+
+Ideal for:
+- Daily use
+- Tools that interact deeply with the network stack or kernel memory
+
+### **Athena OS Hardened**
+Uses the **Linux Hardened kernel**, which applies additional hardening measures such as:
+- Stronger kernel memory protections (KSPP patches)
+- Syscall filtering and exploit mitigations
+- Reduced kernel attack surface
+- Enhanced Spectre/Meltdown mitigations
+
+This mode is recommended when performing operations in **untrusted environments** or handling **sensitive data**.
+
+:::tip
+The Hardened kernel ensures a security-first environment.  
+However, some low-level pentesting tools may not function correctly due to restricted kernel hooks.
+:::
+
+<ImageComponent />
