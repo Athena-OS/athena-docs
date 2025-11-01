@@ -56,7 +56,7 @@ sudo rm -rf /boot/efi/EFI/MOK.cer
 ```
 
 :::caution
-**/etc/.secureboot/keys/MOK.key** is used to sign boot files. It has restricted permission. Don't delete it. If you delete it, to access to the system, you must disable Secure Boot from BIOS if you have the grants to access to it.
+**/etc/secureboot/keys/MOK.key** is used to sign boot files. It has restricted permission. Don't delete it. If you delete it, to access to the system, you must disable Secure Boot from BIOS if you have the grants to access to it.
 :::
 
 ## File Revalidation
@@ -67,8 +67,8 @@ Athena OS performs signing automatically for you, but in the worst scenario thes
 ```shell
 sudo arch-chroot /mnt
 
-sbsign --key /etc/.secureboot/keys/MOK.key --cert /etc/.secureboot/keys/MOK.crt --output /boot/vmlinuz-linux-lts /boot/vmlinuz-linux-lts
-sbsign --key /etc/.secureboot/keys/MOK.key --cert /etc/.secureboot/keys/MOK.crt --output /boot/efi/EFI/GRUB/grubx64.efi /boot/efi/EFI/GRUB/grubx64.efi
+sbsign --key /etc/secureboot/keys/MOK.key --cert /etc/secureboot/keys/MOK.crt --output /boot/vmlinuz-linux-lts /boot/vmlinuz-linux-lts
+sbsign --key /etc/secureboot/keys/MOK.key --cert /etc/secureboot/keys/MOK.crt --output /boot/efi/EFI/GRUB/grubx64.efi /boot/efi/EFI/GRUB/grubx64.efi
 cp /boot/efi/EFI/GRUB/grubx64.efi /boot/efi/EFI/BOOT/grubx64.efi
 ```
 
