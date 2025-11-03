@@ -19,7 +19,7 @@ Athena OS ships with AppArmor **pre-enabled**. This page explains **how to use i
 - **Lateral movement on the host:** Restricts executing arbitrary binaries, loading helpers, or opening unexpected sockets.
 - **Privilege abuse by misconfigurations:** Profiles can remove dangerous capabilities (e.g., raw sockets) from apps that don't need them.
 
-> AppArmor doesn't "stop" vulnerabilities—it **shrinks blast radius** when bugs are hit.
+> AppArmor doesn't "stop" vulnerabilities. It **shrinks blast radius** when bugs are hit.
 
 ## Key concepts
 
@@ -84,7 +84,7 @@ CLI tools (complain → selective enforce)
 
 :::tip
 Enforce for high-risk GUI apps and anything parsing untrusted content.
-Complain for new/complex CLI tools until you're confident—then enforce if stable.
+Complain for new/complex CLI tools until you're confident, then enforce if stable.
 :::
 
 ### Create new tool profile
