@@ -109,6 +109,10 @@ export default defineConfig({
           label: "Security",
           items: [
             {
+              label: "Devotio",
+              link: "/en/security/devotio"
+            },
+            {
               label: "Hardened Kernel",
               link: "/en/security/hardened",
             },
@@ -191,7 +195,6 @@ export default defineConfig({
               link: "/en/resources/browser-pentesting",
             },
             { label: "NIST Feed", link: "/en/resources/nist-feed" },
-            { label: "Devotio", link: "/en/resources/devotio" },
           ],
         },
         //{

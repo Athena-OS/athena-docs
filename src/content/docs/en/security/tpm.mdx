@@ -71,13 +71,15 @@ This protects you even if:
 
 ## PCR enforcing
 
-To improve integrity checks in Athena at firmware, boot and kernel level, after Athena OS installation, set up the following PCRs by running:
+To improve integrity checks in Athena at firmware, boot and kernel level, after Athena OS installation, set up the PCRs you wish, for example PCR7, PCR11 and PCR15, by running:
 ```
 sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=7+11+15 /dev/nvme0n1p3
 ```
 and providing the LUKS password.
 
 In this manner, on the next boots, until the integrity of your firmware, boot loader and kernel is not tampered, you will automatically get into Athena OS without entering the LUKS passphrase.
+
+If you are interested to set different PCRs, refer to the table above for details and assign their ID number to the `--tpm2-pcrs` parameter.
 
 ## "Why did my machine suddenly ask for the LUKS passphrase?"
 
