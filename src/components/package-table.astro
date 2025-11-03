@@ -258,23 +258,23 @@ let categoriesUnique: string[] = [...new Set(categoriesList.sort())];
                   ${p.version}
                 </td>
                 <td class="relative py-4 pl-3 pr-4 text-left text-sm font-medium sm:pr-3 text-gray-500 dark:text-gray-400">
-                  ${p.category ? p.category : "—"}
+                  ${p.category ? p.category : "-"}
                 </td>
                 <td class="px-3 py-4 text-sm text-gray-500 dark:text-gray-300">
                   ${p.description}
                 </td>
                 <td class="px-3 py-4 text-sm text-gray-500 dark:text-gray-400">
-                  ${p.installed_size ? p.installed_size : "—"}
+                  ${p.installed_size ? p.installed_size : "-"}
                 </td>
                 <td
                   class="px-3 py-4 text-sm text-gray-500 dark:text-gray-300"
                 >
-                  ${p.license ? p.license : "—"}
+                  ${p.license ? p.license : "-"}
                 </td>
                 <td
                   style="padding-right: 1rem; word-break:break-all;"
                  class="px-3 py-4 text-sm text-gray-500 dark:text-gray-300">
-                  ${p.upstream_url ? "<a href='" + p.upstream_url + "' target='_blank' rel='noopener noreferrer' class='text-blue-500 underline hover:text-blue-700' >" + p.upstream_url + "</a>" : "—"}
+                  ${p.upstream_url ? "<a href='" + p.upstream_url + "' target='_blank' rel='noopener noreferrer' class='text-blue-500 underline hover:text-blue-700' >" + p.upstream_url + "</a>" : "-"}
                 </td>
 
       `;

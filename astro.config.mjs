@@ -109,6 +109,10 @@ export default defineConfig({
           label: "Security",
           items: [
             {
+              label: "Hardened Kernel",
+              link: "/en/security/hardened",
+            },
+            {
               label: "LUKS Encryption with TPM",
               link: "/en/security/encryption",
             },

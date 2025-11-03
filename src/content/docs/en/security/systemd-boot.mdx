@@ -50,29 +50,4 @@ Unlike GRUB, which loads a kernel and initramfs separately, systemd-boot loads a
 
 This integration eliminates configuration drift and makes verification simple and reproducible.
 
-## Athena OS Boot Options
-
-When Athena OS boots, the user is offered two main entries:
-
-### **Athena OS LTS**
-Uses the **Linux LTS kernel**, providing maximum **stability** and compatibility with **pentesting tools** requiring low-level kernel access or custom modules.
-
-Ideal for:
-- Daily use
-- Tools that interact deeply with the network stack or kernel memory
-
-### **Athena OS Hardened**
-Uses the **Linux Hardened kernel**, which applies additional hardening measures such as:
-- Stronger kernel memory protections (KSPP patches)
-- Syscall filtering and exploit mitigations
-- Reduced kernel attack surface
-- Enhanced Spectre/Meltdown mitigations
-
-This mode is recommended when performing operations in **untrusted environments** or handling **sensitive data**.
-
-:::tip
-The Hardened kernel ensures a security-first environment.  
-However, some low-level pentesting tools may not function correctly due to restricted kernel hooks.
-:::
-
 <ImageComponent />

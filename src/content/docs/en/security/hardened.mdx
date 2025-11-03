@@ -1,0 +1,193 @@
+---
+title: Hardened Kernel
+description: Understanding the Linux Hardened kernel in Athena OS, its protections, and when to use it.
+---
+import ImageComponent from "@components/ImageComponent.astro";
+import ThemedImage from '@components/ThemedImage.astro';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import { LinkCard, CardGrid } from '@astrojs/starlight/components';
+
+Athena OS ships with **two kernels**:
+
+- **Linux Hardened** - a security-focused kernel with extra exploit mitigations and tighter defaults.
+- **Linux LTS** - a stable long-term support kernel with maximum hardware compatibility and fewer behavioral restrictions.
+
+At boot, you can choose which one to run.  
+This gives you flexibility:
+- Run **Hardened** when you're working in hostile environments, handling sensitive data, or doing incident response.
+- Run **LTS** when you need maximum compatibility with low-level pentesting tools, custom modules, wireless injection frameworks, etc.
+
+
+## What is the Hardened Kernel?
+
+The **Linux Hardened** kernel is a variant of Linux that applies additional security hardening patches and enables stricter security configurations at compile-time and runtime.
+
+These changes aim to:
+- make exploitation harder,
+- reduce the kernel attack surface,
+- limit what a compromised process can actually do,
+- block entire exploit classes (not just specific CVEs).
+
+In other words: Hardened doesn't just "fix known bugs", it tries to make whole categories of attacks impractical.
+
+### Key design goals of Hardened
+- Enforce sane, locked-down defaults (instead of letting userspace opt-in).
+- Reduce dangerous legacy features and debugging surfaces.
+- Treat *local attackers* (malicious userspace, malicious USB drivers, compromised apps) as real threats.
+- Raise the cost of privilege escalation.
+
+
+## Mitigations
+
+Below are common attack vectors in offensive / red team / malware scenarios, and how Hardened helps:
+
+1. Local privilege escalation (getting root from user space)
+Many kernel exploits boil down to "unprivileged user triggers a bug in the kernel to become root."
+
+The Hardened kernel raises the bar with:
+- **Stricter memory protections** like enhanced `CONFIG_STRICT_KERNEL_RWX` (kernel code is read/execute, not writable) and `CONFIG_STRICT_MODULE_RWX` (loaded modules also get strict permissions).  
+  This blocks common post-exploit steps like injecting shellcode into kernel memory.
+- **Hardened `copy_from_user` / `copy_to_user` patterns** and stack protections that reduce the reliability of typical write-what-where bugs.
+- **CONFIG_REFCOUNT_FULL**-style refcount hardening, making refcount overflows (a common LPE primitive) less usable.
+
+Effect: even if an attacker finds a bug, turning it into reliable root is harder.
+
+
+2. Kernel module abuse / rootkits
+Attackers (and some pentesting tools) love to load kernel modules to hook syscalls, hide processes, sniff traffic, or patch credentials in memory.
+
+Hardened typically:
+- Enforces **module signature verification** and can mark the kernel as "locked down," preventing unsigned modules from loading unless you explicitly relax it.
+- Can **disable kexec/kprobe/debugfs surfaces** or mark them root-only / unavailable to unprivileged users.
+- Can restrict BPF/JIT usage to privileged code.
+
+Effect: stealthy runtime rootkits and "drop-in LKM backdoors" become much less trivial.
+
+**Note:** This is *great* for defense, but it can break some offensive tooling that expects to slide a custom module into the kernel. In Athena OS, that's why LTS is also available.
+
+
+3. Kernel introspection / memory snooping
+Post-exploitation tooling often tries to read kernel memory, trace other processes, or dump secrets from RAM.
+
+Protections commonly enabled in Hardened:
+- **`kernel.kptr_restrict=2`** by default, hiding kernel symbol addresses from unprivileged users.
+- **`dmesg_restrict=1`** restricting access to the kernel ring buffer (stops info leaks that help build ROP chains).
+- **`perf_event_paranoid=3`** and tighter perf/ftrace access to stop unprivileged code from using performance tracing interfaces to spy on other processes or the kernel.
+- **Yama ptrace scope** (e.g. `kernel.yama.ptrace_scope=2`) so a random process can't just `ptrace` another and scrape secrets.
+
+Effect: much less side-channeling and credential scraping, especially from non-root processes.
+
+
+4. Attack surface exposure to untrusted apps
+Some kernel features are convenient for developers and pentesters but are also juicy escalation surfaces, because they expose complex subsystems to unprivileged users.
+
+The Hardened kernel tends to:
+- Disable or greatly limit **unprivileged user namespaces** or **unprivileged BPF**.  
+  User namespaces and eBPF are powerful but historically full of LPE bugs.
+- Reduce available syscalls or mark them privileged-only in some configs.
+- Clamp down on dangerous `ioctl()` paths and legacy network protocols.
+
+Effect: random unprivileged tools can't just spin up a private "fake root" sandbox and then punch into the kernel from there.
+
+
+5. Exploit reliability / ROP gadget predictability
+Modern exploits often rely on predictable memory layout, known symbol addresses, or writable/executable memory regions.
+
+The Hardened kernel stacks multiple mitigations:
+- Stronger ASLR for kernel structures.
+- Read-only kernel data sections (or as close as the architecture allows).
+- Marking parts of memory non-exec where historically attackers would inject code.
+- Restricting `/dev/mem`, `/dev/kmem`, and other direct-mapped interfaces.
+
+Effect: even if an attacker has an info leak, turning that into stable code execution in the kernel is way harder.
+
+
+## What are the downsides of the Hardened kernel?
+
+All this extra protection comes with some trade-offs that matter in a pentesting distro:
+
+1. Some pentest tools will break
+Low-level offensive tooling often:
+- injects kernel modules,
+- needs raw/monitor mode access to Wi-Fi chipsets,
+- pokes perf/ftrace,
+- uses BPF helpers in creative (and sometimes sketchy) ways,
+- expects to ptrace everything freely.
+
+The Hardened kernel may block or heavily restrict those operations by default.
+
+2. Debugging / RE work is harder
+If you're doing exploit dev, kernel debugging, or live forensics that rely on unrestricted `/dev/mem`, perf, or kptr leaks, Hardened actively gets in your way. That's its job.
+
+3. Compatibility
+Sometimes the Hardened kernel lags a bit on certain bleeding-edge drivers or wireless injection patches compared to the mainstream LTS kernel. The LTS kernel generally "just works" with weird adapters and hardware hacking dongles.
+
+
+## Hardened vs LTS
+
+Athena OS gives you a choice *every time you boot*.
+
+### Hardened
+
+Security properties you get:
+- Tighter kernel memory protections.
+- Stricter module loading rules.
+- Reduced kernel info leaks.
+- Syscall filtering and exploit mitigations.
+- Less attack surface for unprivileged escalation.
+- Synergy with Secure Boot + UKI + TPM-bound unlock (the boot chain is measured, and the kernel is harder to tamper with after boot).
+
+Use this when:
+- You're doing incident response on a potentially compromised host.
+- You're in an untrusted environment.
+- You're handling sensitive data.
+- You're traveling and plugging into untrusted networks, conference gear, or client-owned USB.
+- You're handling sensitive credentials, crypto material, or reports you really don't want stolen.
+- You're demoing in front of potentially hostile audiences (live hacking events, trainings, CTF rooms, etc.).
+
+It is recommended for high-risk environments.
+
+### LTS
+
+Security properties you keep:
+- Still signed boot chain (Secure Boot).
+- Still encrypted root with LUKS (if enabled).
+- Still TPM measurement/attestation (if enabled).
+- Long-term stable driver support and better compatibility with legacy or exotic hardware.
+
+Use this when:
+- You need to run Wi-Fi injection / monitor mode drivers.
+- You need to load out-of-tree kernel modules for hardware implants.
+- You're doing exploit development or kernel debugging and need access to lower-level primitives.
+- You're running post-exploitation tools that rely on ptrace, perf, or unrestricted namespaces.
+
+It is recommended for low-level pentesting tools usage.
+
+In other words:
+
+- **Hardened = "I'm in enemy territory, protect me."**
+- **LTS = "I need low-level hacking compatibility."**
+
+You decide at boot which world you live in today.
+
+
+## Boot selection
+
+On every boot, Athena OS shows multiple boot entries, for example:
+
+- **Athena OS Hardened**
+- **Athena OS LTS**
+
+Each entry boots its own [UKI (Unified Kernel Image)](/en/security/uki):
+- The UKI is a signed EFI image that includes the kernel, initramfs, and kernel command line.
+- Each UKI is measured into the TPM, if enabled, and validated by Secure Boot.
+- You get cryptographic verification and measured boot regardless of which kernel you choose.
+
+This design means:
+- You don't have to reinstall or reconfigure to "switch modes."
+- You can pick Hardened on a red-team onsite, then reboot into LTS back home when you need full driver/module freedom.
+- Rollback is simple - both kernels are first-class, not "fallback hacks."
+
+Athena OS lets you switch modes at boot instead of forcing you to pick one forever. You get security when you need it, flexibility when you need it, and both kernels are still signed, measured, and integrated into Secure Boot + TPM.
+
+<ImageComponent />
