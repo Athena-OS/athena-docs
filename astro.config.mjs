@@ -109,24 +109,28 @@ export default defineConfig({
           label: "Security",
           items: [
             {
-              label: "Systemd-Boot",
-              link: "/en/security/systemd-boot",
-            },
-            {
-              label: "Unified Kernel Image",
-              link: "/en/security/uki",
-            },
-            {
-              label: "Trusted Platform Module",
-              link: "/en/security/tpm",
-            },
-            {
               label: "LUKS Encryption with TPM",
               link: "/en/security/encryption",
             },
             {
               label: "Secure Boot",
               link: "/en/security/secureboot",
+            },
+            {
+              label: "Systemd-Boot",
+              link: "/en/security/systemd-boot",
+            },
+            {
+              label: "Trusted Platform Module",
+              link: "/en/security/tpm",
+            },
+            {
+              label: "Unified Kernel Image",
+              link: "/en/security/uki",
+            },
+            {
+              label: "USB Device Control",
+              link: "/en/security/usb",
             },
           ],
         },
