@@ -48,12 +48,55 @@ The heritage of Fedora impacts positively Athena OS according to the following c
 
 ### Athena Arch
 The heritage of Arch Linux impacts positively Athena OS according to the following characteristics:
-* **More and more pentesting tools**: Athena OS relies on [Athena repository](https://github.com/Athena-OS/athena), a fork of [BlackArch repository](https://blackarch.org), containing 2800+ pentesting and security tools. These tools are continuously maintained in order to improve the efficiency of their usage and kept updated for getting a cleaned and secured environment.
+* **More and more pentesting tools**: Athena OS relies on [Athena repository](https://github.com/Athena-OS/athena), and [BlackArch repository](https://blackarch.org), containing 2800+ pentesting and security tools, along with [Chaotic-AUR repository](https://aur.chaotic.cx/) that provides you already built packages from [AUR (Arch User Repository)](https://aur.archlinux.org/). These tools are continuously maintained in order to improve the efficiency of their usage and kept updated for getting a cleaned and secured environment.
 * **Trusted packages**: all the packages developed on Athena are GPG-signed and maintained in a public and dedicated repository.
 * **Rolling release model**: rolling release distribution, meaning you receive updates continuously rather than waiting for major releases. This ensures you always have access to the latest features, security patches, and software versions without the need for full system upgrades.
-* **Secure Boot Support**: UEFI Secure Boot is supported and ensures that only trusted software is allowed to start when your computer boots up. No malware or rootkits could try to take control before your OS even starts.
 * **Customizability**: "do-it-yourself" philosophy, allowing users to build their system from the ground up. You install only the packages and components you need, resulting in a highly customized environment tailored to your preferences.
 * **AUR (Arch User Repository)**: being based on Arch-Linux, Athena Arch can access to the AUR. It is a vast community-driven repository that extends the official Arch Linux repositories. It allows users to easily access and install thousands of additional packages maintained by the community. This vast collection of software expands the capabilities of Athena Arch and makes it easy to find and install software that may not be available in the official repositories.
+* **Cybersecurity AI (CAI) (WIP)**:  
+Athena OS integrates **CAI (Cybersecurity Artificial Intelligence)**, an artificial intelligence framework designed specifically for offensive and defensive security workflows.  
+CAI assists users in **pentesting, threat analysis, exploit research, and defensive hardening** directly from the command line or graphical interface.  
+It can explain tool output, suggest next steps, correlate findings, and even automate parts of complex assessments using contextual understanding.  
+CAI's purpose is not only to enhance productivity but also to **educate and guide security professionals** through advanced scenarios, making Athena OS the first Arch-based pentesting distribution with an embedded cybersecurity-focused AI assistant.
+
+Athena OS is built to not only provide a rich pentesting toolkit but also a **secure and trustworthy operating environment**.
+The following technologies work together to strengthen system integrity and minimize attack surfaces.
+
+* **Secure Boot Support**:
+UEFI Secure Boot is supported and ensures that only trusted software is allowed to start when your computer boots up. No malware or rootkits could try to take control before your OS even starts.
+
+* **systemd-boot integration**:  
+  Athena OS uses [systemd-boot](https://wiki.archlinux.org/title/Systemd-boot) as its modern UEFI boot manager. It supports **Secure Boot verification**, **Unified Kernel Images (UKI)**, and seamless kernel selection (LTS or Hardened) at startup. systemd-boot ensures a fast, simple, and cryptographically verifiable boot chain that integrates perfectly with Secure Boot and TPM measurements.
+
+* **Hardened Kernel**:  
+  Athena includes both a **Linux Hardened** kernel and a **Long-Term Support (LTS)** kernel.  
+  The Hardened kernel enables additional exploit mitigations, memory protections, module signature enforcement, restricted kernel info leaks, and disabled unprivileged namespaces to make privilege-escalation attacks and kernel rootkits significantly harder.  
+  Users can select the desired kernel at boot according to their task: *maximum security* (Hardened) or *maximum compatibility* (LTS).
+
+* **Mandatory Access Control**:  
+  Athena OS ships with **AppArmor** enabled by default.  
+  AppArmor enforces **per-application confinement** through readable profiles that specify which files, capabilities, and network resources each process may access.  
+  This mandatory access control mechanism limits damage if a pentesting tool or application is compromised, effectively containing attacks and protecting user data and system integrity.
+
+* **Sandboxing**:  
+  Athena integrates **Firejail**, a lightweight sandbox utility that uses Linux namespaces, seccomp filters, and capability dropping to isolate applications at runtime.  
+  Browsers, document viewers, and other high-risk applications automatically run inside Firejail sandboxes.  
+  Combined with AppArmor, this delivers *defense-in-depth*, kernel-level and userspace isolation to contain potential exploits and prevent lateral movement.
+
+* **Trusted Platform Module (TPM) integration**:  
+  Athena leverages **TPM 2.0** for measured boot and disk-encryption key protection.  
+  During startup, firmware, bootloader, and kernel measurements are stored in **PCR registers**, ensuring that secrets (like LUKS keys) are released only when the system matches its trusted state.  
+  If any boot component changes or is tampered with, TPM refuses to unseal the key, falling back to manual passphrase entry, guaranteeing platform integrity.
+
+* **Unified Kernel Image (UKI)**:  
+  Each Athena kernel is built as a **Unified Kernel Image**, bundling the kernel, initramfs, and kernel command line into one signed EFI executable.  
+  The UKI is verified by Secure Boot and measured into the TPM, ensuring that both the kernel and its boot parameters are authenticated before execution.  
+  This design simplifies updates, improves reliability, and makes tampering detectable at boot.
+
+* **USB Device Control**:  
+  To defend against physical attacks, Athena includes **USBGuard** to control hot-plugged USB devices.  
+  Unknown or unauthorized devices are blocked by default until explicitly allowed by the user or administrator.  
+  This mitigates **"BadUSB"**-style attacks, data exfiltration through rogue storage devices, and malicious keyboard or network emulation peripherals.
 
 ### Athena Nix
 The heritage of Nix impacts positively Athena OS according to the following characteristics:
