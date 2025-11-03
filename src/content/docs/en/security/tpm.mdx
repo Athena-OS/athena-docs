@@ -23,7 +23,7 @@ Athena OS integrates this with features like:
 ## What is a TPM?
 
 A TPM is a hardware security chip. It can:
-- Store secrets (keys) in a way that software alone can’t just read out.
+- Store secrets (keys) in a way that software alone can't just read out.
 - "Seal" secrets to a known-good system state, defined by PCR values.
 - Detect when firmware/bootloader/kernel changed unexpectedly, including malicious changes.
 
@@ -94,7 +94,7 @@ Typical reasons:
 - Real tampering with bootloader or kernel
 
 When that happens:
-1. The TPM says "this isn’t the same platform state I trust."
+1. The TPM says "this isn't the same platform state I trust."
 2. The TPM will *not* unseal the stored LUKS key.
 3. The boot process falls back to asking you for the passphrase you set at install time.
 
@@ -103,7 +103,7 @@ After you successfully boot with the manual passphrase, you can safely **re-enro
 sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=7+9+11+14 /dev/nvme0n1p3
 ```
 
-Keep that passphrase safe. If you lose it and PCRs no longer match, you’re locked out.
+Keep that passphrase safe. If you lose it and PCRs no longer match, you're locked out.
 
 If you clear or wipe the TPM, you destroy sealed secrets, including Windows BitLocker keys on dual-boot systems. Back up your BitLocker recovery key before doing anything that resets TPM state.
 

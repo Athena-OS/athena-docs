@@ -90,7 +90,7 @@ const tabsProcessor = rehype()
           node.properties.hidden = true;
         }
 
-        // Skip over the tab panel’s children.
+        // Skip over the tab panel's children.
         return SKIP;
       });
     };

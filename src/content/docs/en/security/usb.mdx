@@ -1,0 +1,210 @@
+---
+title: USB Device Control
+description: Protect Athena OS from malicious USB devices.
+---
+import ImageComponent from "@components/ImageComponent.astro";
+import ThemedImage from '@components/ThemedImage.astro';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import { LinkCard, CardGrid } from '@astrojs/starlight/components';
+
+Athena OS ships with **USBGuard** to protect you from malicious or unauthorized USB devices.
+
+USBGuard lets you define a policy of which USB devices are allowed to talk to your system.  
+Anything not explicitly allowed is blocked.
+
+This matters because:
+- A USB device is not "just storage". It can pretend to be a **keyboard** and inject keystrokes (Rubber Ducky-style HID attacks).
+- It can present itself as a **network card** and hijack routing/DNS.
+- It can expose itself as **mass storage** with autorun-style malware.
+- It can even exploit driver bugs in the kernel by pretending to be unusual hardware.
+
+The service is not enabled out of the box to avoid locking out your keyboard/mouse during first boot. The user can generate the suitable configuration by automatically capturing the set of trusted devices that are physically attached right now.
+
+This design is especially good for:
+* consultants on client sites,
+* red teamers in hostile offices,
+* people traveling through airports / hotels who don't want “mystery USB” to instantly own their laptop,
+* anyone doing incident response on compromised hardware where physical ports may not be trustworthy.
+
+## How it works
+
+USBGuard enforces a simple rule:
+
+> *Only the USB devices in the policy are allowed. Everything else is blocked.*
+
+The policy lives in:
+```
+/etc/usbguard/rules.conf
+```
+
+When USBGuard is running, every time a USB device appears, it is checked:
+* If there is a matching "allow" rule → the device is usable.
+* If there is a matching "block" or "reject" rule → it is denied.
+* If there is no rule at all → it is denied by default.
+
+This is whitelisting by hardware identity.
+
+Athena OS includes USBGuard by default, but the service is not enabled automatically on first boot.
+This is intentional for safety. You configure first, then enable.
+
+:::danger
+If you enable usbguard before creating a rules file that includes your current keyboard and mouse, those devices will be blocked.
+
+That means:
+* External USB keyboard? Dead.
+* External USB mouse? Dead.
+
+Laptop built-in keyboard/touchpad (PS/2 or I²C) typically still works, so you might be able to recover locally.
+On some desktops, though, you can lock yourself out completely.
+
+Always generate and review a baseline policy **BEFORE** enabling the *usbguard* service.
+:::
+
+## Getting started
+
+The usage of USBGuard is very easy.
+
+1. Plug in everything you trust
+
+Connect all USB devices you consider "safe" and want to allow:
+* keyboard
+* mouse
+* YubiKey / smart token
+* USB Wi-Fi adapter
+* storage drives you actually use
+* etc.
+
+Do this now, before enabling the service.
+
+2. Generate a rules file
+
+Run:
+```shell
+sudo usbguard generate-policy | sudo tee /etc/usbguard/rules.conf
+```
+This creates **/etc/usbguard/rules.conf** containing **allow/block** rules for every currently connected USB device.
+
+You can open it to inspect:
+```shell
+sudo nano /etc/usbguard/rules.conf
+```
+
+A typical "allow" rule looks like:
+```
+allow id 1d6b:0002 name "USB3.0 Hub" hash "1234abcd..." parent-hash "ffffeeee..." via-port "1-2" with-interface { 09:00:00 09:00:01 }
+```
+
+3. Enable usbguard
+
+After (and only after) you have a good rules file:
+```shell
+sudo systemctl enable --now usbguard.service
+```
+
+From now on:
+* Allowed devices = work normally.
+* Unknown/new devices = silently blocked.
+
+
+## Allow a New USB Device
+
+Scenario: You later plug in a new USB stick, Wi-Fi dongle, hardware implant, etc. and it doesn't work because usbguard is blocking it.
+
+You have two ways to allow it:
+
+**Option A: Regenerate rules automatically (recommended)**
+
+Plug in the new USB device along with all the ones you still want allowed. Re-run:
+```shell
+sudo usbguard generate-policy | sudo tee /etc/usbguard/rules.conf
+```
+The configuration overwrites the old one by allowing all the currently attached USB devices.
+
+Restart the service:
+```shell
+sudo systemctl restart usbguard.service
+```
+
+**Option B: Manual edit (surgical)**
+
+List current devices and their IDs:
+```shell
+sudo usbguard list-devices
+```
+You'll get lines like:
+```
+7: block id 0951:16a4 serial "123456ABCDEF" name "SanDisk DataTraveler" hash "abcd..." with-interface { 08:06:50 }
+```
+
+Copy that line into **/etc/usbguard/rules.conf**, but change **block** → **allow**. Example rule you'd add:
+```
+allow id 0951:16a4 serial "123456ABCDEF" name "Kingston DataTraveler" hash "abcd..." with-interface { 08:06:50 }
+```
+Reload the policy:
+```shell
+sudo systemctl restart usbguard.service
+```
+Now that specific device is trusted.
+
+
+## Block-by-default vs Allow-by-default
+
+There are two main policy styles with usbguard:
+
+1. Default-deny (recommended)
+* Policy explicitly allows known/trusted hardware.
+* Anything not listed is blocked.
+* Approach applied by **usbguard generate-policy** command as shown above.
+
+This is what Athena OS encourages because it protects you from:
+* malicious HID injectors (fake keyboards),
+* USB network interface implants,
+* random charging-station implants.
+
+This is the safest for pentesters traveling or plugging into unknown client hardware.
+
+2. Default-allow with targeted blocks
+
+You can flip the idea: allow most devices, and only block specific high-risk ones (or entire interface classes).
+
+That policy to apply looks like:
+```
+allow with-interface *:*:*        # allow everything by default
+block with-interface 03:00:00     # block HID keyboards
+block with-interface 03:01:01     # block HID mice
+block id 1a2b:3c4d                # block a known-bad vendor:product
+```
+
+Explanation:
+* `with-interface 03:00:00` = USB Human Interface Device / Boot Keyboard class.
+* `with-interface 03:01:01` = HID / Boot Mouse class.
+* You can also `block id vendor:product`.
+
+Why would you do this?
+* On a lab desktop where you constantly hot-plug random USB storage and you don't want to babysit the policy.
+* On a Red Team dropbox where you specifically want to prevent keystroke injection but you don't care about mass storage.
+
+Downside: If you allow everything except a few classes, you're no longer protected against rogue network cards, rogue serial adapters, etc., unless you remember to block them too. So this mode is more lenient and therefore weaker.
+
+
+## Recovery
+
+If you enabled usbguard too early and now your external keyboard/mouse are blocked:
+
+1. Try the built-in laptop keyboard/touchpad. Those often are not USB and still work.
+2. If you do have an internal pointing device, log in and:
+   ```
+   sudo systemctl stop usbguard.service
+   ```
+   Then regenerate the policy properly (see above) and re-enable.
+
+3. If you're on a desktop with only USB input and you fully blocked yourself:
+   * Boot Athena OS live ISO.
+   * Mount your root filesystem and **arch-chroot** on it.
+   * Disable the systemd service by systemctl disable usbguard in a chroot:
+     ```
+     sudo systemctl disable --now usbguard.service
+     ```
+     and reboot.
+
+<ImageComponent />
