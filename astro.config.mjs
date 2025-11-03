@@ -145,7 +145,6 @@ export default defineConfig({
             // { label: "Athena Fedora", link: "/en/configuration/fedora" },
             { label: "Athena Nix", link: "/en/configuration/nix-config" },
             // { label: "Calamares Installer", link: "/en/configuration/calamares" },
-            { label: "Kernel", link: "/en/configuration/kernel" },
             { label: "Shell", link: "/en/configuration/shell" },
             {
               label: "Display Manager Themes",
