@@ -12,7 +12,7 @@ It allows to select the specific device to erase or every disk on your system. I
 * HDD
 * SSD
 * LUKS
-* USB storage devices
+* Flash drive
 * RAM
 * Zram
 * Swap
@@ -84,6 +84,11 @@ To erase a Flash device, Devotio executes:
 * LUKS encryption
 * LUKS header destruction
 
+### RAM
+
+To erase RAM, Devotio executes:
+* Cache drop
+
 ### Zram
 
 To erase a zram device, Devotio executes:
@@ -96,10 +101,5 @@ To erase a zram device, Devotio executes:
 To erase a swap device, Devotio executes:
 * Turning off swap device
 * Writing all zeroes
-
-### RAM
-
-To erase RAM, Devotio executes:
-* Cache drop
 
 All data on volatile memories will be deleted at reboot.
