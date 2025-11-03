@@ -1,0 +1,181 @@
+---
+title: Sandboxing
+description: Lightweight sandboxing with Linux namespaces, seccomp, and capability dropping—perfect for browsers, viewers, and untrusted tools.
+---
+import ImageComponent from "@components/ImageComponent.astro";
+import ThemedImage from '@components/ThemedImage.astro';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import { LinkCard, CardGrid } from '@astrojs/starlight/components';
+
+**Firejail** runs applications inside lightweight sandboxes using Linux **namespaces**, **seccomp** syscall filters, **capability dropping**, **filesystem whitelists/blacklists**, and optional **network isolation**.
+
+Athena OS ships Firejail **preinstalled and enabled** where appropriate. This page shows **how to use it** to keep risky apps and files corralled—without blocking pentesting workflows.
+
+## What Firejail mitigates
+
+- **Drive-by exploits & malicious documents:** If a browser/PDF viewer is compromised, the sandbox restricts file access, syscalls, and capabilities.
+- **Credential/data theft:** Whitelist only what the app needs (e.g., Downloads), blocking access to `~/.ssh`, secrets, or project repos by default.
+- **Network abuse:** Run with `--net=none` or bind to a specific interface/namespace to prevent accidental beaconing or lateral movement.
+- **Persistence:** Use ephemeral homes/overlays so malware can't survive app exit.
+
+## Quick usage patterns
+
+Run any app sandboxed:
+```shell
+firejail <program> [args...]
+```
+Isolate an app from your real HOME (ephemeral):
+```shell
+firejail --private firefox
+```
+
+Allow only a couple of folders:
+```shell
+firejail --private --whitelist=$HOME/Downloads --whitelist=$HOME/burp-projects burpsuite
+```
+
+No network:
+```shell
+firejail --net=none evince sample.pdf
+```
+
+Ephemeral writes (discard on exit):
+```shell
+firejail --overlay firefox
+```
+
+Drop dangerous capabilities and enable seccomp:
+```shell
+firejail --caps.drop=all --seccomp <program>
+```
+
+Bind to a specific interface (e.g., keep scans off your management NIC):
+```shell
+firejail --net=eth1 nmap -sS -Pn 10.10.0.0/24
+```
+
+List sandboxes / debug:
+```shell
+firejail --list
+firejail --debug --trace=all <program>
+```
+
+## Profiles
+
+Firejail uses per-app profiles to standardize restrictions.
+* System profiles live in /etc/firejail/*.profile
+* User overrides: ~/.config/firejail/*.profile
+
+### Example: Firefox sandbox
+
+Create **/etc/firejail/firefox.athena.profile**:
+```bash
+# Firefox sandbox for Athena
+private-cache
+whitelist ${HOME}/Downloads
+blacklist ${HOME}/.ssh
+read-only /usr
+read-only /etc
+caps.drop all
+seccomp
+protocol unix,inet,inet6
+# Prefer Wayland (less X11 leakage); falls back to X11 if needed
+# x11 filtering options are available; Wayland is recommended
+```
+
+Run:
+```shell
+firejail --profile=/etc/firejail/firefox.athena.profile firefox
+```
+
+### Example: Burp Suite
+
+In this example: workspace-only, persistent projects.
+
+Create **/etc/firejail/burpsuite.athena.profile**:
+```bash
+private
+whitelist ${HOME}/burp-projects
+read-only /usr
+read-only /etc
+caps.drop all
+seccomp
+netfilter
+```
+
+Run:
+```shell
+firejail --profile=/etc/firejail/burpsuite.athena.profile burpsuite
+# or: firejail --profile=... java -jar /opt/burpsuite/burpsuite.jar
+```
+
+### Example: Wireshark
+
+Packet capture requires raw sockets. Use capabilities on dumpcap and keep the GUI confined:
+```shell
+# one-time capability grant (already handled on Athena in most cases)
+sudo setcap cap_net_raw,cap_net_admin+ep /usr/bin/dumpcap
+```
+
+Create **/etc/firejail/wireshark.athena.profile**:
+```bash
+noblacklist ${HOME}/.wireshark
+read-only /usr
+read-only /etc
+caps.drop all
+seccomp
+net host      # capture host interfaces
+```
+
+Run:
+```shell
+firejail --profile=/etc/firejail/wireshark.athena.profile wireshark
+```
+:::note
+For wireless injection or custom drivers, prefer a disposable VM. Firejail won't grant kernel-module magic that the OS denies.
+:::
+
+## AppArmor integration
+
+Using Firejail integrated with AppArmor yields defense-in-depth:
+* Firejail: runtime isolation (namespaces, seccomp, caps, private FS, network).
+* AppArmor: kernel-enforced path rules (what files/sockets the app can touch).
+
+What this mix mitigates better than either alone
+* Escape attempts from a compromised app: AppArmor blocks access to sensitive paths; Firejail blocks dangerous syscalls and caps.
+* Credential theft & data exfiltration: AppArmor denies **~/.ssh**, **~/.gnupg**, etc.; Firejail's **--private**/whitelists hide most of **$HOME**.
+* Network-pivot risks: Firejail can disable or fence off networking per-app; AppArmor can still restrict IPC and filesystem escape tricks.
+* X11 abuse: Prefer Wayland; otherwise, combine Firejail's X filters with AppArmor to limit file fallout if X leaks keystrokes/window grabs.
+
+Practical pattern on Athena
+* Browsers, PDF, media viewers → Firejail (enforce) + AppArmor (enforce)
+* New/unknown CLI tools → Firejail with **--private** and minimal whitelists + AppArmor in complain while you learn, then enforce if stable.
+
+## Working with files safely
+* "Open suspicious file":
+  Put into a dedicated ~/Samples folder and open with:
+  ```shell
+  firejail --net=none --private --whitelist=$HOME/Samples evince ~/Samples/suspicious.pdf
+  ```
+  The viewer sees only **Samples**, has no network, and can't write outside.
+* Browser downloads:
+  Restrict the browser to **~/Downloads** and move files to a lab VM if they require execution.
+
+## Network isolation tips
+  * No surprises: **--net=none** for tools that never need internet (document viewers).
+  * Controlled egress: **--netfilter** applies a per-sandbox filter (nft/iptables).
+  * Dedicated interface: Pin scans to an attack NIC (**--net=eth1**) so they don't leak over Wi-Fi.
+
+## Wayland vs X11
+* Prefer Wayland for sandboxed GUI apps: it reduces classic X11 input/screen snooping.
+* If you must use X11, Firejail offers **--x11** and even nested servers (Xephyr). Combine with AppArmor to protect files if X is abused.
+
+## Troubleshooting
+
+App won't see files → you're probably using --private. Add precise whitelists:
+```shell
+firejail --private --whitelist=$HOME/Downloads <app>
+```
+* Network missing → remove --net=none or specify the right interface.
+* Weird Java/Electron issues → add specific runtime whitelists for their config folders, then iterate.
+<ImageComponent />

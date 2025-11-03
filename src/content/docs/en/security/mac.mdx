@@ -1,0 +1,181 @@
+---
+title: Mandatory Access Control
+description: Mandatory Access Control profiles that confine applications and limit damage when something goes wrong.
+---
+import ImageComponent from "@components/ImageComponent.astro";
+import ThemedImage from '@components/ThemedImage.astro';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import { LinkCard, CardGrid } from '@astrojs/starlight/components';
+
+**AppArmor** is a Linux *Mandatory Access Control* (MAC) framework that confines programs with per-application policies ("profiles").  
+Instead of trusting every app equally once it runs, AppArmor lets Athena OS **declare what each app is allowed to read, write, execute, and network**, even if the app gets exploited.
+
+Athena OS ships with AppArmor **pre-enabled**. This page explains **how to use it**, what attacks it mitigates, and how to tune profiles for offensive tooling without breaking your workflow.
+
+## What AppArmor mitigates
+
+- **Post-exploit containment:** If a browser, document viewer, or helper tool is exploited, the profile limits what the attacker can touch (e.g., block reading `~/.ssh`, writing outside Downloads, or ptracing other processes).
+- **Data exfiltration & credential theft:** Prevents compromised apps from reading tokens, SSH keys, cookies, or password stores outside their allowed paths.
+- **Lateral movement on the host:** Restricts executing arbitrary binaries, loading helpers, or opening unexpected sockets.
+- **Privilege abuse by misconfigurations:** Profiles can remove dangerous capabilities (e.g., raw sockets) from apps that don't need them.
+
+> AppArmor doesn't "stop" vulnerabilities—it **shrinks blast radius** when bugs are hit.
+
+## Key concepts
+
+- **Profile:** Ruleset that applies to one program (path-based).
+- **Modes:**  
+  - **enforce** → deny & log violations.  
+  - **complain** → *allow* but log (used to learn behavior).
+- **Where profiles live:**  
+  - System: `/etc/apparmor.d/`  
+  - Local overrides: `/etc/apparmor.d/local/*`
+
+Athena ships curated profiles with sensible defaults: **GUI apps (browsers, PDF viewers) are enforced**, while many CLI pentest tools start in **complain** (learn-first).
+
+## Usage
+
+### Check status
+
+AppArmor comes with a set of pre-defined profiles, some already enforced, some unconfined (not enforced). To see this detail, run:
+```shell
+aa-status
+journalctl -b -u apparmor --no-pager
+```
+
+### Switch a profile's mode
+
+Use enforce for risky GUI apps; use complain while you test new pentest tools.
+```shell
+sudo aa-enforce /etc/apparmor.d/obsidian
+
+# Temporarily relax a CLI tool while building rules
+sudo aa-complain /etc/apparmor.d/usr.bin.nmap
+```
+
+### Evolve a profile from real usage
+
+1. Run the app and exercise features you need.
+2. Review logs and accept suggested rules:
+```shell
+# Propose rule updates from logged denials
+sudo aa-logprof
+```
+This iterative loop keeps you productive while gradually tightening policy.
+
+### Understanding profiles
+
+Simple profile description can be read [here](https://wiki.archlinux.org/title/AppArmor#Understanding_profiles).
+
+### Pentester profiles
+
+Browsers (enforce)
+* Limit FS access to ~/Downloads (or a dedicated workspace).
+* Deny reading ~/.ssh, ~/.gnupg, password stores, and generic ~/*.
+* Allow network, but block listening sockets you don't need.
+
+Document/PDF viewers (enforce)
+* Read-only access to specific folders (e.g., a "Samples" directory).
+* No network (most viewers don't need it).
+
+CLI tools (complain → selective enforce)
+* Start in complain so nothing breaks during engagements.
+* For tools that need raw sockets, prefer Linux capabilities via setcap on the binary (e.g., cap_net_raw) and keep a minimal AppArmor profile.
+
+:::tip
+Enforce for high-risk GUI apps and anything parsing untrusted content.
+Complain for new/complex CLI tools until you're confident—then enforce if stable.
+:::
+
+### Create new tool profile
+
+**aa-genprof** runs an app in complain mode, watches its accesses via audit logs, and interactively proposes rules. You approve what's legit and reject what's not. When you finish, it writes the profile and loads it.
+
+1. Start the generator
+```shell
+# Replace with the real binary path
+sudo aa-genprof /usr/bin/exampletool
+```
+
+What happens:
+
+* If no profile exists, a skeleton is created in complain mode.
+* **aa-genprof** tells you to "exercise" the program.
+
+2. Exercise the program
+
+While **aa-genprof** is waiting:
+
+* In another terminal (or it may auto-launch the app), run real tasks: open files you expect, connect to hosts, etc.
+* Try the features you want to allow; skip anything you don't want the app to do.
+
+3. Return to **aa-genprof** and review suggestions
+
+**aa-genprof** will show batched accesses it observed and ask how to handle each:
+
+* **A (Allow)** add a rule
+* **D (Deny)** refuse it (keeps the sandbox tight)
+* **P (Path)** edit/trim the path (e.g., whitelist one directory instead of **~**)
+* **G (Grant abstraction)** include a prebuilt rule set (e.g., **abstractions/base**, **abstractions/nameservice**)
+* **C (Capabilities)** add specific caps if needed (e.g., **cap_net_raw**)
+
+Tips:
+* Prefer specific directories over entire **$HOME**.
+* Use abstractions for common needs (DNS, fonts, user db) to keep profiles readable.
+* For tools needing raw sockets, you can grant capability via **setcap** on the binary and keep the profile simpler.
+
+4. Finish and load
+
+When you exit the review loop, **aa-genprof** writes the profile (usually to **/etc/apparmor.d/**), reloads AppArmor, and leaves the profile in complain (or enforce if you chose so).
+
+Check it:
+```shell
+aa-status | grep exampletool
+```
+
+5. Tighten iteratively
+
+Use the tool again; then refine with:
+```shell
+sudo aa-logprof
+```
+
+When you're happy:
+```shell
+sudo aa-enforce /etc/apparmor.d/usr.bin.exampletool
+```
+
+5. Advanced notes
+
+* Profile file name & location
+  By convention, name it after the path: **/etc/apparmor.d/usr.bin.exampletool**.
+  Put site-specific tweaks in **/etc/apparmor.d/local/usr.bin.exampletool** so package updates don't clobber them.
+* Complain vs enforce on demand
+  ```shell
+  sudo aa-complain /etc/apparmor.d/usr.bin.exampletool
+  sudo aa-enforce  /etc/apparmor.d/usr.bin.exampletool
+  ```
+* Re-run training later
+  If new features need access, keep it in complain for a session, use the app, then run **aa-logprof** again.
+* Capabilities choice
+  If the program truly needs raw sockets:
+  * either add **capability net_raw** in the profile,
+  * or (often cleaner) grant the binary a file capability:
+  ```shell
+  sudo setcap cap_net_raw,cap_net_admin+ep /usr/bin/exampletool
+  ```
+  and keep the AppArmor profile focused on files and network rules.
+* Network rules in profiles
+  AppArmor's network rules are coarse (e.g., **network inet stream**,). For fine-grained egress control, combine with Firejail (**--net=none**, **--net=eth1**, **--netfilter**) as described on the Firejail page.
+
+## How AppArmor plays with other Athena defenses
+* [Firejail](/en/security/sandboxing): Namespaces/seccomp/capability dropping at runtime + AppArmor's LSM policies = defense-in-depth. Use both for browsers/viewers.
+* [Secure Boot](/en/security/secureboot) + [UKI](/en/security/uki) + [TPM](/en/security/tpm): Protect the boot chain; AppArmor protects user space after boot.
+* [Hardened kernel](/en/security/hardened): Reduces kernel attack surface; AppArmor limits app damage in user space.
+
+## Troubleshooting
+* "policy interface not available" in logs → you're not on Athena defaults or kernel cmdline lacks AppArmor (Athena sets this up by default).
+* App breaks in enforce → flip to **complain**, use **aa-logprof** to refine, return to **enforce**.
+* Too chatty logs → audit only risky apps; keep others in complain.
+
+<ImageComponent />

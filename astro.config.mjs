@@ -121,6 +121,14 @@ export default defineConfig({
               link: "/en/security/encryption",
             },
             {
+              label: "Mandatory Access Control",
+              link: "/en/security/mac"
+            },
+            {
+              label: "Sandboxing",
+              link: "/en/security/sandboxing"
+            },
+            {
               label: "Secure Boot",
               link: "/en/security/secureboot",
             },
