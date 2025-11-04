@@ -225,7 +225,9 @@ Once you select one, you get the list of the current partition of the disk.
 
 #### Create boot partition
 
-**Only for EFI partitions**: if you are in dual boot with a Windows and/or Linux that use an existing EFI partition, it is not necessary to create a new one.
+:::tip
+If you are in dual boot with a Windows and/or Linux that use an existing EFI partition, it is not necessary to create a new one.
+:::
 
 You can mainly create a partition by an available free space or by deleting a specific partition and use the derived free space, or by replacing an existing partition.
 
@@ -235,8 +237,13 @@ In case you need to create a new EFI partition, and no free space is already ava
 
 It will ask for size. Type **512MiB**.
 
-If you are dual booting with a Windows or another Linux system, as filesystem select **don't format**, as mount point select **/boot/efi** and, if asked, as flags select **Mark as bootable partition** (**boot** flag) and **Mark as ESP partition** (**esp** flag).
-If you are removing all the operating systems from your disk to keep only Athena OS, as filesystem, select **fat32** and as mount point, type **/boot/efi**.
+If you are dual booting with a Windows or another Linux system, select the existing EFI partition. As filesystem select **don't format**, as mount point select **/boot/efi** and, if asked, as flags select **Mark as bootable partition** (**boot** flag) and **Mark as ESP partition** (**esp** flag).
+
+If you need to create a new EFI partition or overwrite the existing one, as filesystem, select **fat32** and as mount point, type **/boot/efi**.
+
+:::danger
+Note that the overwrite of the existing EFI partition could delete Windows boot files.
+:::
 
 Finally, don't select **Encryption (LUKS)** and press on **Continue**.
 
