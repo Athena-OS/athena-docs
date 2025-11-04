@@ -235,7 +235,7 @@ In case you need to create a new EFI partition, and no free space is already ava
 
 It will ask for size. Type **512MiB**.
 
-If you are dual booting with a Windows or another Linux system, as filesystem select **don't format**.
+If you are dual booting with a Windows or another Linux system, as filesystem select **don't format**, as mount point select **/boot/efi** and, if asked, as flags select **Mark as bootable partition** (**boot** flag) and **Mark as ESP partition** (**esp** flag).
 If you are removing all the operating systems from your disk to keep only Athena OS, as filesystem, select **fat32** and as mount point, type **/boot/efi**.
 
 Finally, don't select **Encryption (LUKS)** and press on **Continue**.
@@ -378,7 +378,7 @@ If the screen locks due to user inactivity, unlock the screen by using `athena` 
 If no errors have been raised during the installation phase, you are ready to use Athena OS!
 
 
-Before rebooting, if you installed Athena OS in dual boot with Windows, as explained in the related section, and you used the boot partition intended for Windows, restore Microsoft bootloader inside the boot partition (i.e., `/dev/nvme0n1p1`):
+Before rebooting, if you installed Athena OS in dual boot with Windows, as explained in the related section, and you formatted the boot partition intended for Windows, restore Microsoft bootloader inside the boot partition (i.e., `/dev/nvme0n1p1`):
 ```shell
 sudo mount /dev/nvme0n1p1 /mnt
 sudo cp -rf ~/Microsoft /mnt/EFI/
