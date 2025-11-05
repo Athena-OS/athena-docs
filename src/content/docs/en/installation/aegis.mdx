@@ -85,7 +85,7 @@ Its purpose is to generate JSON system and drive configuration files containing 
           "action": "create",
           "blockdevice": "/dev/sdb1",
           "end": "1026047",
-          "filesystem": "ext4",
+          "filesystem": "fat32",
           "flags": [
             "boot"
           ],
@@ -267,7 +267,7 @@ Click on **Change Filesystem** and select **fat32**.
 Finally, select **Back**.
 
 :::tip
-Since you are in a UEFI system, and **you are going to encrypt the root partition**, you need to create an additional partition of **"1024MiB"** with **/boot** as mount point, flag as **XBOOTLDR** and **ext4** as filesystem. It is needed to store the initramfs and boot configuration files in an unencrypted partition to make LUKS encryption working properly for root partition.
+Since you are in a UEFI system, and **you are going to encrypt the root partition**, you need to create an additional partition of **"1024MiB"** with **/boot** as mount point, flag as **XBOOTLDR** and **fat32** as filesystem. It is needed to store the initramfs and boot configuration files in an unencrypted partition to make LUKS encryption working properly for root partition.
 :::
 
 #### Create root partition
