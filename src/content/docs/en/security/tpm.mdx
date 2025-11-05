@@ -73,9 +73,13 @@ This protects you even if:
 
 To improve integrity checks in Athena at firmware, boot and kernel level, after Athena OS installation, set up the PCRs you wish, for example PCR7, PCR11 and PCR15, by running:
 ```
-sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=7+11+15 /dev/nvme0n1p3
+sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=7+11+15 /dev/mapper/nvme0n1p5crypted
 ```
 and providing the LUKS password.
+
+:::note
+The device to specify must be the LUKS decrypted one.
+:::
 
 In this manner, on the next boots, until the integrity of your firmware, boot loader and kernel is not tampered, you will automatically get into Athena OS without entering the LUKS passphrase.
 
@@ -102,7 +106,7 @@ When that happens:
 
 After you successfully boot with the manual passphrase, you can safely **re-enroll a fresh TPM key binding** to match the new trusted state:
 ```shell
-sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=7+9+11+14 /dev/nvme0n1p3
+sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=7+9+11+14 /dev/mapper/nvme0n1p5crypted
 ```
 
 Keep that passphrase safe. If you lose it and PCRs no longer match, you're locked out.

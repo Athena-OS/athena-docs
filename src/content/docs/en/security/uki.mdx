@@ -76,5 +76,13 @@ Each entry corresponds to a UKI file stored in:
 ```
 These are automatically signed with the same MOK keys used by **Secure Boot** and measured by the **TPM**.
 
+### Edit kernel parameters
+
+To modify kernel parameters, edit **/etc/kernel/cmdline**. Once the file is saved, run:
+```shell
+sudo rebuild-ukis
+```
+to rebuild UKI according to the new kernel parameters.
+
 
 <ImageComponent />
