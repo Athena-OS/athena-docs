@@ -52,11 +52,11 @@ Then, run:
 ```shell
 mkdir /tmp/intermediate
 sudo mount /dev/nvme0n1p1 /tmp/intermediate
-sudo mount --bind /tmp/intermediate /mnt/boot/efi/
+sudo mount --bind /tmp/intermediate /mnt/efi/
 
 sudo arch-chroot /mnt
 ```
-Now, check the directory tree in `/boot/efi` folder and you should have only these files/directories:
+Now, check the directory tree in `/efi` folder and you should have only these files/directories:
 ```
 '$RECYCLE.BIN'  EFI  'System Volume Information'
 ```
@@ -66,15 +66,15 @@ Boot Microsoft
 ```
 If you see also another `EFI` directory or other ones containing the file `grubx64.efi` (i.e., `GRUB` directory), delete these folders. Note that in other distros, `GRUB` folder could have a different name. Don't worry to delete `GRUB`folder by:
 ```shell
-rm -rf /boot/efi/EFI/GRUB
+rm -rf /efi/EFI/GRUB
 ```
 The next command will create it again.
 
 Then run:
 ```shell
-grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB
+grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id=GRUB
 ```
-This command will create the file `/boot/efi/EFI/GRUB/grubx64.efi`.
+This command will create the file `/efi/EFI/GRUB/grubx64.efi`.
 
 Finally:
 ```shell
@@ -96,7 +96,7 @@ In case you previously formatted your EFI partition, its UUID could be changed, 
 ```
 [ TIME ] Timed out waiting for device /dev/disk/by-uuid/0EBF-C0AD.
 [DEPEND] Dependency failed for File System Check on /dev/disk/by-uuid/0EBF-C0AD.
-[DEPEND] Dependency failed for /boot/efi
+[DEPEND] Dependency failed for /efi
 [DEPEND] Dependency failed for Local File Systems.
 You are in emergency mode. After logging in, type "journalctl -xb" to view system logs, "systemctl reboot" to reboot, or "exit" to continue bootup.
 Give root password for maintenance
@@ -116,7 +116,7 @@ Then, run:
 ```shell
 mkdir /tmp/intermediate
 sudo mount /dev/nvme0n1p1 /tmp/intermediate
-sudo mount --bind /tmp/intermediate /mnt/boot/efi/
+sudo mount --bind /tmp/intermediate /mnt/efi/
 
 sudo arch-chroot /mnt
 ```
@@ -141,13 +141,13 @@ and you should get something similar to:
 # disks are added and removed. See fstab(5).
 #
 # <file system>             <mount point>  <type>  <options>  <dump>  <pass>
-UUID=0EBF-C0AD                            /boot/efi      vfat    umask=0077 0 2
+UUID=0EBF-C0AD                            /efi      vfat    umask=0077 0 2
 UUID=f1392ba6-7931-4805-8af1-8fb48bca8f4c /              btrfs   subvol=/@,noatime,autodefrag,compress=zstd 0 0
 UUID=f1392ba6-7931-4805-8af1-8fb48bca8f4c /home          btrfs   subvol=/@home,noatime,autodefrag,compress=zstd 0 0
 UUID=f1392ba6-7931-4805-8af1-8fb48bca8f4c /var/cache     btrfs   subvol=/@cache,noatime,autodefrag,compress=zstd 0 0
 UUID=f1392ba6-7931-4805-8af1-8fb48bca8f4c /var/log       btrfs   subvol=/@log,noatime,autodefrag,compress=zstd 0 0
 ```
-Replace the **UUID** value of the line containing `/boot/efi` with the one obtained by the `sudo blkid` command above. Save the file, exit from chroot environment by `exit` command, and reboot the system. Again, at reboot, be sure that on BIOS the **GRUB** entry has the first priority over Windows Boot Manager. Then, it should work.
+Replace the **UUID** value of the line containing `/efi` with the one obtained by the `sudo blkid` command above. Save the file, exit from chroot environment by `exit` command, and reboot the system. Again, at reboot, be sure that on BIOS the **GRUB** entry has the first priority over Windows Boot Manager. Then, it should work.
 
 Once landed on your working and fixed Linux environment, open the terminal and run:
 ```shell

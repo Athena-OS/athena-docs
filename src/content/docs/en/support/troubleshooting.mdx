@@ -232,7 +232,7 @@ sudo mount /dev/nvme0n1p1 /tmp/intermediate
 ```
 If EFI boot, run:
 ```shell
-sudo mount --bind /tmp/intermediate /mnt/boot/efi/
+sudo mount --bind /tmp/intermediate /mnt/efi/
 ```
 If GRUB BIOS/Legacy boot:
 ```shell
@@ -242,7 +242,7 @@ Finally:
 ```shell
 sudo arch-chroot /mnt
 ```
-Now, check the directory tree in `/boot/efi` folder and you should have only these files/directories:
+Now, check the directory tree in `/efi` folder and you should have only these files/directories:
 ```
 '$RECYCLE.BIN'  EFI  'System Volume Information'
 ```
@@ -252,7 +252,7 @@ Boot Microsoft
 ```
 If you see also another `EFI` directory or other ones containing the file `grubx64.efi` (i.e., `GRUB` directory), delete these folders. Note that in other distros, `GRUB` folder could have a different name. Don't worry to delete `GRUB`folder by:
 ```shell
-rm -rf /boot/efi/EFI/GRUB
+rm -rf /efi/EFI/GRUB
 ```
 The next command will create it again.
 

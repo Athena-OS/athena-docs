@@ -52,7 +52,7 @@ After reboot, you should be able to access to Athena through Secure Boot.
 
 Once you land on Athena environment, you can remove the MOK certificate from EFI partition:
 ```shell
-sudo rm -rf /boot/efi/EFI/MOK.cer
+sudo rm -rf /efi/EFI/Athena/AthenaSecureBoot.cer
 ```
 
 :::caution
@@ -67,12 +67,12 @@ Athena OS performs signing automatically for you, but in the worst scenario thes
 ```shell
 sudo arch-chroot /mnt
 
-sbsign --key /etc/secureboot/keys/MOK.key --cert /etc/secureboot/keys/MOK.crt --output /boot/efi/EFI/systemd/systemd-bootx64.efi /boot/efi/EFI/systemd/systemd-bootx64.efi
-cp /boot/efi/EFI/systemd/systemd-bootx64.efi /boot/efi/EFI/BOOT/grubx64.efi
+sbsign --key /etc/secureboot/keys/MOK.key --cert /etc/secureboot/keys/MOK.crt --output /efi/EFI/systemd/systemd-bootx64.efi /efi/EFI/systemd/systemd-bootx64.efi
+cp /efi/EFI/systemd/systemd-bootx64.efi /efi/EFI/BOOT/grubx64.efi
 
-ukify build --linux /boot/vmlinuz-linux-lts --initrd /boot/initramfs-linux-lts.img --cmdline <list of kernel params> --os-release /usr/lib/os-release --uname linux-lts --signtool=sbsign --secureboot-private-key /etc/secureboot/keys/MOK.key --secureboot-certificate /etc/secureboot/keys/MOK.crt --output /boot/efi/EFI/Athena/linux-lts.efi
+ukify build --linux /boot/vmlinuz-linux-lts --initrd /boot/initramfs-linux-lts.img --cmdline <list of kernel params> --os-release /usr/lib/os-release --uname linux-lts --signtool=sbsign --secureboot-private-key /etc/secureboot/keys/MOK.key --secureboot-certificate /etc/secureboot/keys/MOK.crt --output /efi/EFI/Athena/linux-lts.efi
 
-ukify build --linux /boot/vmlinuz-linux-hardened --initrd /boot/initramfs-linux-hardened.img --cmdline <list of kernel params> --os-release /usr/lib/os-release --uname linux-hardened --signtool=sbsign --secureboot-private-key /etc/secureboot/keys/MOK.key --secureboot-certificate /etc/secureboot/keys/MOK.crt --output /boot/efi/EFI/Athena/linux-hardened.efi
+ukify build --linux /boot/vmlinuz-linux-hardened --initrd /boot/initramfs-linux-hardened.img --cmdline <list of kernel params> --os-release /usr/lib/os-release --uname linux-hardened --signtool=sbsign --secureboot-private-key /etc/secureboot/keys/MOK.key --secureboot-certificate /etc/secureboot/keys/MOK.crt --output /efi/EFI/Athena/linux-hardened.efi
 ```
 
 ## TPM Measurements

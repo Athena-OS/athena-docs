@@ -237,9 +237,9 @@ In case you need to create a new EFI partition, and no free space is already ava
 
 It will ask for size. Type **512MiB**.
 
-If you are dual booting with a Windows or another Linux system, select the existing EFI partition. As filesystem select **don't format**, as mount point select **/boot/efi** and, if asked, as flags select **Mark as bootable partition** (**boot** flag) and **Mark as ESP partition** (**esp** flag).
+If you are dual booting with a Windows or another Linux system, select the existing EFI partition. As filesystem select **don't format**, as mount point select **/efi** and, if asked, as flags select **Mark as bootable partition** (**boot** flag) and **Mark as ESP partition** (**esp** flag).
 
-If you need to create a new EFI partition or overwrite the existing one, as filesystem, select **fat32** and as mount point, type **/boot/efi**.
+If you need to create a new EFI partition or overwrite the existing one, as filesystem, select **fat32** and as mount point, type **/efi**.
 
 :::danger
 Note that the overwrite of the existing EFI partition could delete Windows boot files.
@@ -260,7 +260,7 @@ Press on **Mark For Modification** entry.
 
 ![Aegis Partition Mark](@assets/images/aegis-partition-manual-modify.png)
 
-Enter on **Set Mount Point** and type **/boot/efi**. Successively, check on **Mark as bootable partition** and **Mark as ESP partition** flags. In this manner the installer will be aware you are creating an EFI boot partition.
+Enter on **Set Mount Point** and type **/efi**. Successively, check on **Mark as bootable partition** and **Mark as ESP partition** flags. In this manner the installer will be aware you are creating an EFI boot partition.
 
 Click on **Change Filesystem** and select **fat32**.
 
