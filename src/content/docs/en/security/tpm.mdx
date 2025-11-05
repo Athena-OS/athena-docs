@@ -77,9 +77,59 @@ sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=7+11+15 /dev/nvme0n1p5
 ```
 and providing the LUKS password.
 
+It will add that information in a TPM keyslot.
+
 In this manner, on the next boots, until the integrity of your firmware, boot loader and kernel is not tampered, you will automatically get into Athena OS without entering the LUKS passphrase.
 
 If you are interested to set different PCRs, refer to the table above for details and assign their ID number to the `--tpm2-pcrs` parameter.
+
+To view the list of all created keyslots in TPM, run:
+```shell
+sudo cryptsetup luksDump /dev/nvme0n1p5
+```
+
+To remove specific TPM slots, run:
+```shell
+sudo systemd-cryptenroll --wipe-slot=1,3
+```
+
+If you want to remove all the TPM slots:
+```shell
+sudo systemd-cryptenroll --wipe-slot=tpm2 /dev/sdXN
+```
+:::caution
+If you delete the last usable keyslot and have no backup key or passphrase, the data becomes irrecoverable. Always ensure you have at least one working unlock method before deleting others.
+:::
+
+## Multiple TPM key slots - Which one unlocks?
+
+You can add more than one **TPM2-based key slot** to your encrypted disk.  
+Each slot can use different **PCRs** (Platform Configuration Registers). These are numbers that represent what parts of your system are *measured* into the TPM when you boot.
+
+For example:
+
+| Slot | PCRs Used | What It Checks |
+|------|------------|----------------|
+| 0 | 1, 5, 7 | Firmware + Bootloader + Kernel |
+| 1 | 7 | Only the Kernel / UKI |
+| 2 | 1–6, 8, 10 | Almost the entire boot chain |
+
+When you start your computer:
+
+1. **systemd-cryptsetup** tries every TPM key slot in order.  
+2. Each slot asks the TPM: *"Do the PCR values still match what I was sealed with?"*  
+3. The first slot whose PCRs **match** will unseal the secret key and unlock the disk.  
+4. Slots whose PCRs no longer match (because the firmware or kernel changed) are ignored.
+
+**In plain English:**  
+> The disk will unlock as long as *one* TPM key slot still matches your current boot state.
+
+This means you can safely create:
+- a **strict slot** tied to everything (detects tampering), and  
+- a **relaxed slot** (for example, PCR 7 only) that still works after firmware updates.
+
+If a stricter slot fails but the relaxed one matches, your system still boots. You just lose the extra tamper-evidence until you re-enroll the strict slot.
+
 
 ## "Why did my machine suddenly ask for the LUKS passphrase?"
 
