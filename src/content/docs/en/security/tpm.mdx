@@ -60,7 +60,7 @@ Each PCR corresponds to a different stage or component. Values are "extended", n
 ### Why PCRs matter
 
 Secrets (like your LUKS decryption key) can be *sealed* to specific PCR values.  
-That means: "only release this secret if PCR7, PCR9, PCR11, PCR14 match what they were when I enrolled."
+That means: "only release this secret if PCRx, PCRy, PCRz, ... match what they were when I enrolled."
 
 If anything in the boot chain changes - new firmware, unsigned bootloader, injected kernel, malicious initramfs - those PCR values change, and the TPM refuses to release the secret.
 
@@ -71,17 +71,31 @@ This protects you even if:
 
 ## PCR enforcing
 
-To improve integrity checks in Athena at firmware, boot and kernel level, after Athena OS installation, set up the PCRs you wish, for example PCR7, PCR11 and PCR15, by running:
-```
-sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=7+11+15 /dev/nvme0n1p5
+To improve integrity checks in Athena at firmware, boot and kernel level, after Athena OS installation, set up the PCRs you wish, for example PCR7 and PCR15, by running:
+```shell
+sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=7+15 /dev/nvme0n1p5
 ```
 and providing the LUKS password.
 
-It will add that information in a TPM keyslot.
+:::note
+PCR11 changes throughout the boot phases to then back to its original value. It means that if you directly add `11` in `--tpm2-pcrs=`, it won't apply autounlock. For this reason Athena signs the TPM measurement policy and will bind the related decryption key to PCR11. So, if you would like to add PCR11 in your command, run it as follows:
+```shell
+sudo systemd-cryptenroll --tpm2-device=auto --tpm2-public-key=/etc/systemd/tpm2-pcr-initrd-public-key.pem --tpm2-public-key-pcrs=11 --tpm2-pcrs=7+15 /dev/nvme0n1p5
+```
+More details are documented in one of the next sections below.
+:::
+
+The command will add that information in a TPM keyslot.
 
 In this manner, on the next boots, until the integrity of your firmware, boot loader and kernel is not tampered, you will automatically get into Athena OS without entering the LUKS passphrase.
 
-If you are interested to set different PCRs, refer to the table above for details and assign their ID number to the `--tpm2-pcrs` parameter.
+A good initial approach would be to add PCR7 and PCR11, in order to not be too much strict:
+```shell
+sudo systemd-cryptenroll --tpm2-device=auto --tpm2-public-key=/etc/systemd/tpm2-pcr-initrd-public-key.pem --tpm2-public-key-pcrs=11 --tpm2-pcrs=7 /dev/nvme0n1p5
+```
+If you are interested to set more PCRs, refer to the table above for details and assign their ID number to the `--tpm2-pcrs` parameter.
+
+## Keyslot management
 
 To view the list of all created keyslots in TPM, run:
 ```shell
@@ -100,6 +114,35 @@ sudo systemd-cryptenroll --wipe-slot=tpm2 /dev/sdXN
 :::caution
 If you delete the last usable keyslot and have no backup key or passphrase, the data becomes irrecoverable. Always ensure you have at least one working unlock method before deleting others.
 :::
+
+## TPM Policy Signing for PCR11
+
+During UKI generation, Athena OS automatically **signs the TPM measurement policy** so that
+the Unified Kernel Image (UKI) can participate in *measured boot* and support automatic LUKS unlocks bound to **PCR 11**.
+
+This is handled by the system's UKI build script, which calls [`ukify`](https://www.freedesktop.org/software/systemd/man/latest/ukify.html) with TPM measurement keys:
+
+```bash
+--pcr-private-key /etc/systemd/tpm2-pcr-private-key-system.pem \
+--pcr-public-key /etc/systemd/tpm2-pcr-public-key-system.pem \
+--phases enter-initrd
+```
+Those key pairs are generated during installation and used to sign the boot measurement policy.
+That signature allows the TPM to verify and attest the authenticity of the measurements extending into PCR 11, which records the unified kernel image.
+
+In practice, this means:
+* The TPM can validate that the UKI itself has not been replaced or tampered with.
+* When a LUKS key slot is sealed to PCR 11 (for example, `--tpm2-public-key-pcrs=11 --tpm2-pcrs=7+15`), it will automatically unlock only if the booted UKI matches the trusted, signed measurement policy.
+* Any unsigned or modified UKI will change PCR11, causing the TPM to refuse to release the decryption key and instead prompt for your passphrase.
+
+Athena OS defines these UKI signing parameters in its build script:
+```bash
+PHASES_SYSTEM="enter-initrd"
+PHASES_INITRD="enter-initrd"
+```
+Only the early boot stage (`enter-initrd`) is measured, ensuring safe and reproducible TPM-bound behavior while maintaining system integrity.
+
+This approach integrates seamlessly with Athena's Secure Boot and Measured Boot pipeline.
 
 ## Multiple TPM key slots - Which one unlocks?
 
