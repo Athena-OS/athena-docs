@@ -12,8 +12,7 @@ This guide shows you how to run Athena OS inside of **QEMU** and **KVM** as hype
 First, you need to prepare your environment for running Virt-Manager (LibVirt GUI client) that will allow you to run Athena OS in QEMU. In an Arch-based Linux environment as host to use Athena OS as guest, install Virt-Manager by:
 ```shell
 sudo pacman -S virt-manager qemu-full dnsmasq swtpm
-sudo systemctl enable libvirtd
-sudo systemctl start libvirtd
+sudo systemctl enable --now libvirtd
 ```
 Run `virt-manager`. At first run, in case there is only `LXC` connection but not `QEMU/KVM` connection, click on **File** -> **Add Connection...**, be sure that **Hypervisor** field is set to **QEMU/KVM** and click on **Connect**
 
