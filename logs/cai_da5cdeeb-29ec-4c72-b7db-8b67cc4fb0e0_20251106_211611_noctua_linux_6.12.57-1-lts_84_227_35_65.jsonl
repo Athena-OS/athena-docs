@@ -1,0 +1,4 @@
+{"event": "session_start", "timestamp": "2025-11-06T21:16:11.308566+01:00", "session_id": "da5cdeeb-29ec-4c72-b7db-8b67cc4fb0e0"}
+{"event": "user_message", "timestamp": "2025-11-06T21:16:12.944285+01:00", "content": "agent"}
+{"event": "user_message", "timestamp": "2025-11-06T22:18:59.968784+01:00", "content": "agent"}
+{"event": "user_message", "timestamp": "2025-11-06T22:18:59.968970+01:00", "content": "exit"}

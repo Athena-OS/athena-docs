@@ -1,0 +1,65 @@
+---
+title: CAI (Cybersecurity AI)
+description: How to use CAI (Cybersecurity AI) in Athena OS - setup, models, commands and example prompts for pentesters.
+---
+import ImageComponent from "@components/ImageComponent.astro";
+import ThemedImage from '@components/ThemedImage.astro';
+
+Athena OS includes **CAI (Cybersecurity AI)**, a lightweight, open-source framework that empowers security professionals to build and deploy AI-powered offensive and defensive automation. CAI is the de facto framework for AI Security, already used by thousands of individual users and hundreds of organizations. Whether you're a security researcher, ethical hacker, IT professional, or organization looking to enhance your security posture, CAI provides the building blocks to create specialized AI agents that can assist with mitigation, vulnerability discovery, exploitation, and security assessment.
+
+
+## Features
+
+CAI is designed to:
+
+
+* **300+ AI Models**: Support for OpenAI, Anthropic, DeepSeek, Ollama, and more
+* **Built-in Security Tools**: Ready-to-use tools for reconnaissance, exploitation, and privilege escalation
+* **Battle-tested**: Proven in HackTheBox CTFs, bug bounties, and real-world security [case studies](https://aliasrobotics.com/case-studies-robot-cybersecurity.php)
+* **Agent-based Architecture**: Modular framework design to build specialized agents for different security tasks
+* **Guardrails Protection**: Built-in defenses against prompt injection and dangerous command execution
+* **Research-oriented**: Research foundation to democratize cybersecurity AI for the community
+
+
+:::caution
+CAI is an *assistant*, not an automated exploit engine. Always review and manually verify any commands or exploit suggestions before running them on targets. Do **not** send sensitive target data to third-party APIs unless you have explicit permission and have ensured compliance with contracts and law.
+:::
+
+## Environment configuration
+
+Place a `.env` in `/usr/share/cai/.env` or in the working directory. CAI reads these variables to determine backend, model, and runtime behaviour.
+
+```bash
+OPENAI_API_KEY="sk-1234" # this field must always be kept, even if openai is not used
+OLLAMA=""
+ALIAS_API_KEY="<sk-your-key>"  # note, add yours if you use alias1 model
+CAI_STEAM=False
+CAI_MODEL="alias1" # or gpt-4o or another model
+```
+:::note
+Keep API keys secret.
+:::
+
+## Getting started
+
+Run:
+```shell
+cai
+```
+To set an agent, list all the available ones:
+```shell
+CAI> /agent list
+```
+Then, set the agent you needby assigning the related number, for example:
+```shell
+CAI> /agent 7
+```
+Now you can start typing on CAI prompt:
+```shell
+Can you test contoso.local and perform a port scan to see if there are some exposed services?
+```
+After the processing, CAI will generate a report with all the retrieved information.
+
+For detailed information, check out official CAI repository: https://github.com/aliasrobotics/cai
+
+<ImageComponent />
