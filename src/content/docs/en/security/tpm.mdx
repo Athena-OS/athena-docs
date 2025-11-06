@@ -115,7 +115,7 @@ sudo systemd-cryptenroll --wipe-slot=tpm2 /dev/sdXN
 If you delete the last usable keyslot and have no backup key or passphrase, the data becomes irrecoverable. Always ensure you have at least one working unlock method before deleting others.
 :::
 
-## TPM Policy Signing for PCR11
+## TPM policy signing for PCR11
 
 During UKI generation, Athena OS automatically **signs the TPM measurement policy** so that
 the Unified Kernel Image (UKI) can participate in *measured boot* and support automatic LUKS unlocks bound to **PCR 11**.
