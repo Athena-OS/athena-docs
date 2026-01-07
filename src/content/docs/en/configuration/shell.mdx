@@ -29,7 +29,7 @@ The implementation of Fish shell has been decided according to some characterist
 
 Since Fish and Bash use different statements, at the beginning of the session, the user is associated with Bash because several bash scripts must be sourced at the login (i.e., `/etc/profile.d/` scripts). When the user opens a terminal, `.bashrc` is sourced for setting configuration and variables and at the end it executes FISH.
 
-Finally, for [keeping FISH as shell](https://wiki.archlinux.org/title/fish#Modify_.bashrc_to_drop_into_fish) even if in the terminal we open new tabs and preventing that it switches to BASH, the following code has been added at the end of `.bashrc` and delete each `alias ps` in your `.bashrc` or `.bash_aliases` file for avoding conflicting errors:
+Finally, for [keeping FISH as shell](https://wiki.archlinux.org/title/fish#Modify_.bashrc_to_drop_into_fish) even if in the terminal we open new tabs and preventing that it switches to BASH, the following code has been added at the end of `.bashrc` and delete each `alias ps` in your `.bashrc` or `.bash_aliases` file for avoiding conflicting errors:
 ```
 [[ $(ps --no-header --pid=$PPID --format=comm) != "${SHELL#/usr/bin/}" && -z ${BASH_EXECUTION_STRING} && ${SHELL} != "/usr/bin/bash" ]] && exec $SHELL
 ```
