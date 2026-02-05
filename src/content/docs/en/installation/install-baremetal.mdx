@@ -113,26 +113,31 @@ Its purpose is to generate JSON system and drive configuration files containing 
         {
           "action": "delete",
           "blockdevice": "/dev/sdb1",
+          "end": "1026047",
           "filesystem": "ext4",
           "flags": [],
           "label": null,
           "mountpoint": "/mnt/boot",
           "size": "524M",
+          "start": "2048",
           "type": "filesystem"
         },
         {
           "action": "delete",
           "blockdevice": "/dev/sdb2",
+          "end": "30711807",
           "filesystem": "ext4",
           "flags": [],
           "label": null,
           "mountpoint": "/mnt",
           "size": "15G",
+          "start": "1026048",
           "type": "filesystem"
         },
         {
           "action": "create",
           "blockdevice": "/dev/sdb1",
+          "end": "1026047",
           "filesystem": "fat32",
           "flags": [
             "boot"
@@ -140,26 +145,31 @@ Its purpose is to generate JSON system and drive configuration files containing 
           "label": "BOOT",
           "mountpoint": "/boot",
           "size": "524M",
+          "start": "2048",
           "type": "filesystem"
         },
         {
           "action": "create",
           "blockdevice": "/dev/sdb2",
+          "end": "28614655",
           "filesystem": "btrfs",
           "flags": [],
           "label": "ROOT",
           "mountpoint": "/",
           "size": "14G",
+          "start": "1026048",
           "type": "filesystem"
         },
         {
           "action": "create",
           "blockdevice": "/dev/sdb3",
+          "end": "30711807",
           "filesystem": "swap",
           "flags": [],
           "label": "SWAP",
           "mountpoint": null,
           "size": "1G",
+          "start": "28614656",
           "type": "filesystem"
         }
       ],
