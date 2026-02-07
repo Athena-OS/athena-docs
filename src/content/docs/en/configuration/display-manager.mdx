@@ -6,7 +6,19 @@ import ImageComponent from "@components/ImageComponent.astro";
 import ThemedImage from '@components/ThemedImage.astro';
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 
-Athena OS uses **SDDM** as Display Manager because of its reliability and flexibility, in particular the [sddm-astronaut-theme](https://github.com/Keyitdev/sddm-astronaut-theme).
+## Ly
+
+Athena OS ships **Ly** as a lightweight, terminal-based display manager, designed for users who value simplicity, speed, and minimal resource usage.
+
+![Ly Matrix Theme](@assets/images/ly-matrix.png)
+
+Ly runs entirely in a text user interface (TUI) and is especially well suited for tiling window managers and low-overhead setups. It is ultra-lightweight and fast, provides a fully keyboard-driven login experience, has no dependency on a graphical stack, and is ideal for minimal and advanced workflows alike.
+
+Ly is configured through a single configuration file `/etc/ly/config.ini`.
+
+## SDDM
+
+Athena OS provides **SDDM** as Display Manager because of its reliability and flexibility, in particular the [sddm-astronaut-theme](https://github.com/Keyitdev/sddm-astronaut-theme).
 
 It offers several themes, static and dynamic, that can be set by editing:
 
