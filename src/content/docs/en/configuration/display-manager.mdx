@@ -1,5 +1,5 @@
 ---
-title: Display Manager Themes
+title: Display Managers
 description: Athena OS Display Managers.
 ---
 import ImageComponent from "@components/ImageComponent.astro";
@@ -93,6 +93,31 @@ To set a different theme, edit `embeddedTheme = "cyberpunk";` line by replacing 
 ### Purple Leaves
 **Themes/purple_leaves.conf**
 ![SDDM Purple Leaves Theme](@assets/images/sddm-purple_leaves-login.png)
+
+## Multiple monitors
+
+On some systems, the display manager may appear on an unexpected monitor.
+In framebuffer-based setups, this can be influenced via kernel parameters.
+
+To force the Linux framebuffer console (and framebuffer-based display managers) to appear on a specific framebuffer device, edit `/etc/kernel/cmdline` and add:
+```shell
+fbcon=map:N
+```
+where `N` is the framebuffer index. Finally, run:
+```shell
+sudo rebuild-ukis
+```
+
+Available framebuffer devices can be listed with:
+```shell
+ls /dev/fb*
+```
+This method affects the kernel framebuffer console, not display managers using modern KMS/DRM paths.
+
+Framebuffer indices do not necessarily match physical monitor order. On modern systems (especially Wayland or multi-GPU setups), this option may have no effect.
+
+If this does not work, monitor selection must be handled via GPU driver
+configuration or display manager–specific settings.
 
 {/*
 An important element in the system is the **Display Manager** that manages the login phase. By Athena OS installer, users can choose among different Display Managers as they wish under the "Login Manager" pane. Indeed, currently Athena offers three solutions: **GDM**, **LightDM** and **SDDM**.

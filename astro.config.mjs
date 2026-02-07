@@ -155,7 +155,7 @@ export default defineConfig({
             // { label: "Calamares Installer", link: "/en/configuration/calamares" },
             { label: "Shell", link: "/en/configuration/shell" },
             {
-              label: "Display Manager Themes",
+              label: "Display Manager",
               link: "/en/configuration/display-manager",
             },
             { label: "GNOME", link: "/en/configuration/gnome" },
