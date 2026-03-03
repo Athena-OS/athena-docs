@@ -10,7 +10,9 @@ The following section will guide you through the steps to install Athena OS as b
 
 ## Pre-installation
 
-In case you are installing Athena OS in dual boot with Windows, make sure that **Fast Startup** is disabled. For doing that on Windows, open **Control Panel** -> **Hardware and Sound** -> **Power Options** -> click on **Choose what the power buttons do** on the left side -> click on **Change Settings that are currently unavailable** on top (This will ask for administrator permissions) -> Unselect the **Turn on fast startup** option and click on **Save Changes** button.
+In case you are installing Athena OS in dual boot with Windows, make sure that **Fast Startup** is disabled. As explained [here](https://wiki.archlinux.org/title/Dual_boot_with_Windows#Fast_Startup_and_hibernation), data loss or filesystem corruption can occur when dual-booting between Windows and another operating system, like Linux, if either OS hibernates instead of fully shutting down. For example, if you access to Linux after Windows hibernated the system, the WiFi module could stop to work.
+
+To disable Fast Startup on Windows, open **Control Panel** -> **Hardware and Sound** -> **Power Options** -> click on **Choose what the power buttons do** on the left side -> click on **Change Settings that are currently unavailable** on top (This will ask for administrator permissions) -> Unselect the **Turn on fast startup** option and click on **Save Changes** button.
 
 Furthermore, you need to preserve the Microsoft bootloader files. We need to face the following scenario:
 * Format the existing boot partition: save Microsoft bootloader folder somewhere, format the boot partition, and move Microsoft bootloader folder inside it.
