@@ -1,0 +1,329 @@
+---
+title: Athena Settings
+description: System-level optimizations shipped with Athena OS, designed to improve performance, responsiveness, and wireless compatibility for security researchers and penetration testers.
+---
+
+import { Aside, Badge, Card, CardGrid, Tabs, TabItem } from '@astrojs/starlight/components';
+
+Athena OS ships a curated set of system-level configuration files. These settings are applied automatically at install time and cover kernel tuning, device management, wireless configuration, and hardware optimization, all tailored to the workflows of penetration testers, security researchers, and CTF players.
+
+The package takes inspiration from [CachyOS Settings](https://github.com/CachyOS/CachyOS-Settings) and adapts each setting specifically for a security-focused use case.
+
+<Aside type="tip">
+All distro-owned files follow the standard `/usr/lib/` hierarchy so you can override any setting cleanly by dropping a file in the corresponding `/etc/` directory without risking conflicts on package updates.
+</Aside>
+
+## File Hierarchy
+
+| Package ships in | Your overrides go in |
+|---|---|
+| *usr/lib/modprobe.d/* | *etc/modprobe.d/* |
+| *usr/lib/sysctl.d/* | *etc/sysctl.d/* |
+| *usr/lib/udev/rules.d/* | *etc/udev/rules.d/* |
+| *usr/lib/systemd/system/* | *etc/systemd/system/* |
+| *usr/lib/tmpfiles.d/* | *etc/tmpfiles.d/* |
+| *usr/share/libalpm/hooks/* | *etc/pacman.d/hooks/* |
+
+---
+
+## Udev Rules
+
+Udev rules automatically apply system configurations when devices are detected or change state. All rules live in *usr/lib/udev/rules.d/*.
+
+### I/O Scheduler Assignment
+
+**60-ioschedulers.rules**
+
+<Badge text="Core optimization" variant="success" /> <Badge text="All drives" variant="note" />
+
+Dynamically assigns the optimal I/O scheduler based on drive type:
+
+| Drive type | Scheduler | Reason |
+|---|---|---|
+| NVMe SSD | **none** | Fast enough that a scheduler adds only overhead |
+| SATA SSD / eMMC | **mq-deadline** | Low latency for sequential writes |
+| HDD | **bfq** | Bandwidth fairness across competing processes |
+
+This is one of the highest-impact settings for day-to-day responsiveness. Without it, all drives use the kernel default which is rarely optimal for any of them.
+
+### ZRAM Swap Optimization
+
+**30-zram.rules**
+
+<Badge text="Core optimization" variant="success" /> <Badge text="RAM-limited systems" variant="note" />
+
+When ZRAM finishes initializing (confirmed by *initstate==1*), this rule:
+- Sets **vm.swappiness=150** to strongly prefer anonymous page compression over disk
+- Disables Zswap to prevent double compression and ensure accurate ZRAM accounting via *zramctl*
+
+The high swappiness value is safe here because it only activates once ZRAM is confirmed running. Pages are compressed in RAM, not written to a slow disk.
+
+### Wireless Regulatory Domain
+
+**85-iw-regulatory.rules**
+
+<Badge text="Core optimization" variant="success" /> <Badge text="Wireless assessments" variant="caution" />
+
+Triggers the **iw-set-regdomain** service whenever a wireless device is added to the system. This ensures USB WiFi adapters plugged in after boot receive the correct regulatory domain immediately - critical for full channel and TX power availability during wireless assessments.
+
+<Aside type="caution">
+Without a correct regulatory domain, the kernel defaults to world domain **00** - the most restrictive common denominator. This silently disables channels 12 and 13 in the 2.4 GHz band, restricts most 5 GHz DFS channels, and caps TX power well below hardware capability. Tools like *airodump-ng* and *wash* will miss networks on restricted channels with no warning. Run *iw reg get* to verify your current domain.
+</Aside>
+
+### Audio Power Management
+
+**20-audio-pm.rules**
+
+<Badge text="Bug fix" variant="caution" /> <Badge text="Intel HDA laptops" variant="note" />
+
+Manages **snd_hda_intel** power saving to eliminate audio crackling. Disables power saving when on AC power and restores it on battery. Stateful - saves and restores the original value across plug/unplug cycles.
+
+### SATA Performance
+
+**50-sata.rules**
+
+<Badge text="Targeted optimization" variant="note" /> <Badge text="SATA drives only" variant="note" />
+
+Sets SATA host link power management to **max_performance**. Only applied on controllers that explicitly report LPM support (**link_power_management_supported=="1"**), preventing issues on unsupported hardware.
+
+### HDD Performance Tuning
+
+**69-hdparm.rules**
+
+<Badge text="Targeted optimization" variant="note" /> <Badge text="HDD only" variant="note" />
+
+Applies **hdparm -B 254 -S 0** to rotational ATA disks - sets near-maximum Advanced Power Management and disables automatic spindown to prevent latency spikes from drive spin-up.
+
+### NVIDIA Runtime Power Management
+
+**71-nvidia.rules**
+
+<Badge text="NVIDIA only" variant="caution" />
+
+Enables runtime PM (**power/control=auto**) on NVIDIA GPU driver bind and restores it (**power/control=on**) on unbind - reducing idle power draw and improving thermal behavior on both desktop and laptop systems.
+
+### Device Permissions
+
+- **40-hpet-permissions.rules** - sets **rtc0** and **hpet** device group to **audio**, giving timing-sensitive applications access to hardware timers without root.
+- **99-cpu-dma-latency.rules** - sets group ownership of **/dev/cpu_dma_latency** to **audio**, allowing applications to request CPU latency targets and prevent deep sleep states that cause audio dropouts.
+
+---
+
+## Kernel Parameters (sysctl)
+
+Sysctl settings are applied via *usr/lib/sysctl.d/70-athena-settings.conf*, which uses a *70-* prefix to load after all Arch Linux defaults and take correct precedence.
+
+### Memory Management
+
+| Parameter | Value | Effect |
+|---|---|---|
+| *vm.swappiness* | **100** | Pairs with the ZRAM udev rule which raises this to **150** once ZRAM is active. Strongly prefers RAM-based swap over disk. |
+| *vm.vfs_cache_pressure* | **50** | Keeps inode/dentry caches in RAM longer - reduces syscall overhead for tools that traverse large directory trees. |
+| *vm.dirty_bytes* | **268435456** | Caps dirty page accumulation at a fixed threshold for predictable write-back, preventing sudden I/O stalls. |
+| *vm.dirty_background_bytes* | **67108864** | Background flush threshold - fixed bytes rather than percentages for consistent behavior. |
+| *vm.dirty_writeback_centisecs* | **1500** | Extends kernel flusher wake-up interval to reduce unnecessary CPU wake-ups. |
+| *vm.page-cluster* | **0** | Disables swap readahead - reads exactly one page per fault. Optimal with ZRAM where random access cost is negligible. |
+
+### Kernel Behavior
+
+| Parameter | Value | Effect |
+|---|---|---|
+| *kernel.nmi_watchdog* | **0** | Disables the NMI watchdog, freeing a hardware performance counter and reducing interrupt overhead. |
+| *kernel.unprivileged_userns_clone* | **1** | Allows normal users to create unprivileged namespaces - required for Podman, Flatpak sandboxing, and browser sandboxes. |
+| *kernel.kptr_restrict* | **1** | Hides kernel pointers from unprivileged users. Set to **1** rather than **2** so root retains access to */proc/kallsyms*, needed for kernel exploit development and security research. |
+
+### Network and Filesystem
+
+| Parameter | Value | Effect |
+|---|---|---|
+| *net.core.netdev_max_backlog* | **4096** | Larger network receive queue - reduces packet drops under heavy load. Directly benefits *wireshark*, *tcpdump*, and *airodump-ng* during captures. |
+| *fs.file-max* | **2097152** | Raises system-wide open file handle limit - prevents "too many open files" errors when running *nmap*, *masscan*, fuzzers, or proxy tools with many simultaneous connections. |
+
+---
+
+## Modprobe Configuration
+
+All files are placed in *usr/lib/modprobe.d/* - override any setting by dropping a file in */etc/modprobe.d/*.
+
+### Module blacklist
+
+**blacklist.conf**
+
+| Module | Reason |
+|---|---|
+| **iTCO_wdt**, **sp5100_tco** | Intel and AMD TCO watchdog timers - can cause spurious resets and add minor IRQ overhead. |
+| **evbug** | Logs every keypress and mouse movement to the kernel ring buffer. On a security-focused system this module is functionally a **keylogger** and must not be loaded. |
+| **pcspkr**, **snd_pcsp** | PC speaker and its ALSA driver - prevents unwanted beeps and spurious audio devices. |
+| **nouveau** | Prevents conflict with *nvidia-open* kernel modules. Arch Linux no longer ships the proprietary *nvidia* package. |
+
+### AMD GPU Driver Enforcement
+
+**amdgpu.conf**
+
+Forces the **amdgpu** driver for older Southern Islands (GCN 1.0) and Sea Islands (GCN 2.x) AMD GPUs by enabling **si_support** and **cik_support** on the **amdgpu** module and disabling them on **radeon**. Without this, cards from the HD 7000 / R7 / R9 series default to the legacy **radeon** driver, losing access to modern Vulkan, compute (ROCm), and power management features. Has no effect on GCN 3+ hardware (RX 400 series onwards).
+
+### NVIDIA Driver Parameters
+
+**nvidia.conf**
+
+| Parameter | Value | Effect |
+|---|---|---|
+| *NVreg_UsePageAttributeTable* | **1** | Enables PAT for faster CPU↔GPU memory access via write-combining. |
+| *NVreg_InitializeSystemMemoryAllocations* | **0** | Skips zeroing GPU memory buffers on allocation - faster launch times. |
+| *NVreg_DynamicPowerManagement* | **0x02** | Fine-grained runtime power management for mobile NVIDIA GPUs. |
+| *NVreg_EnableS0ixPowerManagement* | **1** | Enables S0ix modern standby for proper suspend/resume on NVIDIA laptops. |
+
+---
+
+## Kernel Module Loading
+
+### NT Sync
+
+**modules-load.d/ntsync.conf**
+
+<Badge text="Kernel 6.14+" variant="note" />
+
+Loads the **ntsync** module at boot. NT Sync implements Windows NT synchronization primitives (*NtCreateMutant*, *NtCreateSemaphore*, *NtCreateEvent*) directly in the kernel, dramatically improving Wine and Proton compatibility and performance.
+
+For security researchers this is relevant when running Windows-only tools - malware analysis binaries, licensed security software, and older exploit frameworks - under Wine, where proper NT sync support reduces CPU overhead and improves timing accuracy.
+
+---
+
+## Systemd Configuration
+
+### ZRAM Generator
+
+**zram-generator.conf**
+
+<Badge text="Core optimization" variant="success" />
+
+```ini
+[zram0]
+zram-size = ram
+compression-algorithm = zstd
+swap-priority = 100
+fs-type = swap
+```
+
+ZRAM is always enabled on Athena OS. Key choices:
+
+- **zram-size = ram** - allocates up to the full physical RAM as a ceiling. Because *zstd* compression is dynamic, the pool only physically consumes what has actually been compressed into it - the *ram* ceiling is never reserved upfront. This provides maximum virtual memory headroom for memory-hungry pentesting workloads: running Burp Suite, Android emulators for mobile assessments, *hashcat* GPU cracking sessions, and multiple browser instances simultaneously no longer risks OOM kills, since excess pages are compressed in RAM rather than triggering the OOM killer or stalling on slow disk swap.
+- **swap-priority = 100** - ensures ZRAM is always preferred over any disk swap partition the user may optionally add.
+- **zstd** - best compression ratio of available algorithms with acceptable CPU overhead on any modern processor.
+
+### Service Timeouts
+
+**system.conf.d/00-timeout.conf**
+
+Reduces *DefaultTimeoutStartSec* to **15s** and *DefaultTimeoutStopSec* to **10s**, down from the systemd default of 90 seconds. Hung services fail fast and shutdowns do not stall.
+
+### File Descriptor Limits
+
+**system.conf.d/10-limits.conf**
+
+Sets **DefaultLimitNOFILE=2048:2097152** for all system services. The higher hard limit is essential for tools that open large numbers of simultaneous file handles or network connections.
+
+### Time Synchronization
+
+**timesyncd.conf.d/10-timesyncd.conf**
+
+Uses Cloudflare (*time.cloudflare.com*) as the primary NTP server with Google and the Arch pool as fallbacks - lower latency and more reliable than default servers.
+
+### Journal Size
+
+**journald.conf.d/00-journal-size.conf**
+
+Caps the systemd journal at **200M**. Large enough to retain meaningful diagnostic history for driver issues, tool crashes, and kernel events, while preventing the journal from consuming gigabytes on long-running systems.
+
+### User Service Resource Delegation
+
+**user.conf.d/delegate.conf**
+
+Delegates **cpu**, **cpuset**, **io**, **memory**, and **pids** cgroup controllers to user sessions - enabling proper per-user resource isolation and supporting rootless container workflows with Podman.
+
+### Wireless Regulatory Domain Service
+
+A **.path** unit watches */etc/localtime* for changes and triggers **iw-set-regdomain.service** to reapply the correct WiFi regulatory domain whenever the timezone changes. Works in conjunction with *85-iw-regulatory.rules* for complete regulatory domain coverage across all trigger events.
+
+---
+
+## Tmpfiles
+
+### THP Defragmentation
+
+**thp.conf**
+
+Sets **transparent_hugepage/defrag** to **defer+madvise**. Prevents the kernel from aggressively defragmenting RAM to form huge pages - which causes latency stalls - and instead only forms them when applications explicitly request it. Particularly beneficial for Chrome, Electron-based security tools, and any application using tcmalloc.
+
+### THP Shrinker
+
+**thp-shrinker.conf**
+
+<Badge text="Kernel 6.12+" variant="note" />
+
+Sets **khugepaged/max_ptes_none=409** - splits huge pages where more than 80% of sub-pages are zero-filled. Reduces memory waste from the **THP=always** policy while preserving performance for genuinely populated pages.
+
+### Coredump Retention
+
+**coredump.conf**
+
+Clears coredumps older than 3 days. On a pentesting system where crashes are expected - fuzzing, exploit development, deliberate fault injection - coredumps accumulate quickly. 3 days is enough to diagnose a crash without filling the disk.
+
+---
+
+## Wireless Regulatory Domain
+
+A complete regulatory domain management system ensuring WiFi adapters always operate on the correct channels and at full legal TX power for the user's region.
+
+### How it works
+
+The **iw-set-regdomain** script determines the correct country code from the system timezone via *timedatectl* and */usr/share/zoneinfo/zone.tab*, then applies it with *iw reg set*. It supports a manual override file at */etc/iw-regdomain*:
+
+```ini
+# /etc/iw-regdomain
+COUNTRY=DE
+```
+
+The correct domain is applied automatically at three independent trigger points:
+
+<CardGrid>
+  <Card title="Boot" icon="rocket">
+    **iw-set-regdomain.service** runs at startup and sets the domain for all adapters present at boot time.
+  </Card>
+  <Card title="Timezone change" icon="setting">
+    **iw-set-regdomain.path** watches */etc/localtime* and re-triggers the service whenever the timezone changes - useful for travelers.
+  </Card>
+  <Card title="Device plug-in" icon="laptop">
+    **85-iw-regulatory.rules** triggers the service on every *ieee80211* device add event - so USB WiFi adapters plugged in mid-session are configured immediately.
+  </Card>
+</CardGrid>
+
+### Why this matters for wireless pentesting
+
+Without a correct regulatory domain, Linux falls back to world domain `00`:
+
+- Channels 12 and 13 (2.4 GHz) are **disabled** - legal in Europe and most of the world, invisible under **00**
+- Most 5 GHz DFS channels (100–140 range) are restricted or unavailable
+- TX power is capped well below hardware capability - reducing effective range for injection attacks
+- *airodump-ng*, *wash*, and similar tools **silently miss** networks on blocked channels
+
+A wireless pentester operating under **00** may conclude that certain networks don't exist when they are simply on channels the kernel is blocking. This system ensures the pentester never misses a network, a channel, or a beacon.
+
+```bash
+# Verify your current regulatory domain
+iw reg get
+```
+
+---
+
+## Security Considerations
+
+Several settings in this package involve deliberate trade-offs for a security-focused distribution:
+
+<Aside type="note" title="kernel.kptr_restrict = 1, not 2">
+The default on most systems is **0** (fully open). We set **1** rather than **2** so root retains access to */proc/kallsyms* - required for kernel exploit development, *perf* profiling, and kernel-level security research. Unprivileged users cannot read kernel pointers.
+</Aside>
+
+<Aside type="danger" title="evbug is blacklisted unconditionally">
+The **evbug** module logs every keypress, mouse movement, and touchpad event to the kernel ring buffer - readable by anyone with journal access. On a security-focused system this is functionally a keylogger. It is blacklisted regardless of any other configuration.
+</Aside>
