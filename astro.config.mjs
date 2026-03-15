@@ -87,6 +87,7 @@ export default defineConfig({
               label: "Installing as guest in Quickemu",
               link: "/en/installation/install-guest-quickemu",
             },
+            /*
             {
               label: "Installing as guest in Parallels",
               link: "/en/installation/install-guest-parallels",
@@ -95,6 +96,7 @@ export default defineConfig({
               label: "Installing as guest in UTM",
               link: "/en/installation/install-guest-utm",
             },
+            */
             {
               label: "Updating Athena OS",
               link: "/en/installation/update-athena",
@@ -157,13 +159,13 @@ export default defineConfig({
             { label: "Athena Welcome", link: "/en/resources/athena-welcome" },
             { label: "Cybersecurity AI", link: "/en/resources/cai" },
             {
-              label: "Pentesting Tools",
-              link: "/en/resources/pentesting-tools",
+              label: "Hack The Box Toolkit",
+              link: "/en/resources/htb-toolkit",
             },
             { label: "Nexus", link: "/en/resources/nexus" },
             {
-              label: "Hack The Box Toolkit",
-              link: "/en/resources/htb-toolkit",
+              label: "Pentesting Tools",
+              link: "/en/resources/pentesting-tools",
             },
             { label: "PWNanel Menu", link: "/en/resources/pwnanel" },
             { label: "Payload to Dock", link: "/en/resources/payload-dock" },
