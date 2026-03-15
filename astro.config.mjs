@@ -105,6 +105,10 @@ export default defineConfig({
           label: "Security",
           items: [
             {
+              label: "Core Settings",
+              link: "/en/security/settings"
+            },
+            {
               label: "Devotio",
               link: "/en/security/devotio"
             },
@@ -147,20 +151,6 @@ export default defineConfig({
           ],
         },
         {
-          label: "Configuration",
-          items: [
-            // Each item here is one entry in the navigation menu.
-            // { label: "Athena Fedora", link: "/en/configuration/fedora" },
-            { label: "Athena Nix", link: "/en/configuration/nix-config" },
-            { label: "NVIDIA GPU", link: "/en/configuration/nvidia" },
-            { label: "Repositories", link: "/en/configuration/repositories" },
-            { label: "RDP", link: "/en/configuration/rdp" },
-            { label: "Shell", link: "/en/configuration/shell" },
-            { label: "Settings", link: "/en/configuration/settings" },
-            { label: "Utilities", link: "/en/configuration/utilities" },
-          ],
-        },
-        {
           label: "Cyber Resources",
           items: [
             // Each item here is one entry in the navigation menu.
@@ -170,14 +160,12 @@ export default defineConfig({
               label: "Pentesting Tools",
               link: "/en/resources/pentesting-tools",
             },
-            { label: "Athena Cyber Hub", link: "/en/resources/cyber-hub" },
+            { label: "Nexus", link: "/en/resources/nexus" },
             {
               label: "Hack The Box Toolkit",
               link: "/en/resources/htb-toolkit",
             },
-            { label: "PWNage Menu", link: "/en/resources/pwnage-menu" },
-            { label: "Blue Team Menu", link: "/en/resources/blueteam-menu" },
-            { label: "Red Team Menu", link: "/en/resources/redteam-menu" },
+            { label: "PWNanel Menu", link: "/en/resources/pwnanel" },
             { label: "Payload to Dock", link: "/en/resources/payload-dock" },
             {
               label: "Payload Environment Variables",
@@ -188,6 +176,19 @@ export default defineConfig({
               link: "/en/resources/browser-pentesting",
             },
             { label: "NIST Feed", link: "/en/resources/nist-feed" },
+          ],
+        },
+        {
+          label: "Configuration",
+          items: [
+            // Each item here is one entry in the navigation menu.
+            // { label: "Athena Fedora", link: "/en/configuration/fedora" },
+            { label: "Athena Nix", link: "/en/configuration/nix-config" },
+            { label: "NVIDIA GPU", link: "/en/configuration/nvidia" },
+            { label: "Repositories", link: "/en/configuration/repositories" },
+            { label: "RDP", link: "/en/configuration/rdp" },
+            { label: "Shell", link: "/en/configuration/shell" },
+            { label: "Utilities", link: "/en/configuration/utilities" },
           ],
         },
         {

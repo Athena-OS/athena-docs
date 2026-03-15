@@ -1,0 +1,186 @@
+---
+title: PWNanel
+description: Details about PWNanel Menus in Athena OS.
+---
+import ImageComponent from "@components/ImageComponent.astro";
+import ThemedImage from '@components/ThemedImage.astro';
+
+**PWNanel** is one of the main menus in Athena OS, based on [Kando](https://github.com/kando-menu/kando), aiming to distribute centrally the main security offensive and defensive tools and the learning resources and providing great accessibility.
+
+PWNanel can be accessed by `CTRL+SPACE`.
+
+## PWNage Menu
+
+**PWNage Menu** allows users to access instantly to the main hacking platforms for learning purposes and to join the main Discord InfoSec Communities.
+
+![PWNage Menu](@assets/images/pwnage-menu.png)
+
+One of the most interesting features of Athena is the deep **integration** with [Hack The Box](https://app.hackthebox.com) platform, accessible by PWNage menu. Athena gives the possibility to play Hack The Box machines directly on the OS environment in a **quick** and **comfortable** manner. It offers:
+* **Connect/Disconnect** to/from Hack The Box VPN servers
+* **Play** any active free machine you wish
+* **Reset** the active machine
+* **Stop** any active machine
+* **Submit** a flag and write a **review** about your hacking experience!
+* ... and access to the Hack The Box **website**
+
+It can be done by accessing to the Hack The Box icon in PWNage menu.
+
+![Hack The Box Menu](@assets/images/hackthebox.png)
+
+The menu is updated by a cronjob in order to call Hack The Box APIs and retrieve the last free active machines.
+
+Playing with one of these machines will edit the PROMPT of the shell by showing the name of the laboratory, the target IP address, the attacker IP address, the Hack The Box username of the user and the prize points.
+
+![Hack The Box Machine](@assets/images/htb-spawn.png)
+
+The set of tools that manages the Hack The Box environment needs of the App Token of the Hack The Box user that can be set as described in [Athena Welcome section](/en/resources/athena-welcome/#htb-update) or by calling `htb-update` command.
+
+## Red Team Menu
+
+**Red Team Menu** is born for organizing in pretty manner the main pentesting tools that users need to start their hacking activity. It is deployed in different manner according to the installed environment.
+
+It consists of two levels:
+* 1st level containing several hacking categories, plus browser and VSCodium as editor
+* 2nd level consisting of hacking tools deployed for each hacking category
+
+![Red Team Menu](@assets/images/redteam-menu.png)
+
+In details:
+<table>
+  <tr>
+    <th>Information Gathering</th>
+    <td>Dmitry</td>
+    <td>Nmap</td>
+    <td>Spiderfoot</td>
+    <td>TheHarvester</td>
+    <td>enum4linux</td>
+    <td>wafw00f</td>
+    <td>Fierce</td>
+  </tr>
+  <tr>
+    <th>Vulnerability Analysis</th>
+    <td>Legion</td>
+    <td>Nikto</td>
+    <td>unix-privesc-check</td>
+  </tr>
+  <tr>
+    <th>Web Application Analysis</th>
+    <td>WPScan</td>
+    <td>Burpsuite</td>
+    <td>dirb</td>
+    <td>dirbuster</td>
+    <td>ffuf</td>
+    <td>Wfuzz</td>
+    <td>sqlmap</td>
+  </tr>
+  <tr>
+    <th>Password Attacks</th>
+    <td>John</td>
+    <td>Hashcat</td>
+    <td>Hydra</td>
+    <td>CEWL</td>
+    <td>CRUNCH</td>
+    <td>RSMangler</td>
+    <td>Medusa</td>
+  </tr>
+  <tr>
+    <th>Sniffing</th>
+    <td>mitmproxy</td>
+    <td>Responder</td>
+    <td>Wireshark</td>
+  </tr>
+  <tr>
+    <th>Wireless Testing</th>
+    <td>Aircrack-ng</td>
+    <td>Kismet</td>
+    <td>Reaver</td>
+    <td>Wifite</td>
+    <td>Fern Wifi Cracker</td>
+    <td>Spooftooph</td>
+  </tr>
+  <tr>
+    <th>Reverse Engineering</th>
+    <td>NASM</td>
+    <td>Radare2</td>
+  </tr>
+  <tr>
+    <th>Exploitation</th>
+    <td>SearchSploit</td>
+    <td>Metasploit</td>
+    <td>SEToolkit</td>
+  </tr>
+  <tr>
+    <th>Post Exploitation</th>
+    <td>PowerSploit</td>
+    <td>Mimikatz</td>
+    <td>evil-winrm</td>
+    <td>proxychains-ng</td>
+    <td>weevely</td>
+  </tr>
+</table>
+
+The tools can also be accessed by the classic menu:
+
+![Red Team Menu](@assets/images/xfce-well-redmenu.png)
+
+
+## Blue Team Menu
+
+**Blue Team Menu** is born for organizing in pretty manner the main security defensive tools that users need to start their Blue Team activity. It is deployed in different manner according to the installed environment.
+
+It consists of two levels:
+* 1st level containing the [NIST Cybersecurity Framework](https://www.nist.gov/cyberframework) phases
+* 2nd level consisting of defensive tools deployed for each NIST category
+
+![Blue Team Menu](@assets/images/blueteam-menu.png)
+
+In details:
+<table>
+  <tr>
+    <th>Identify</th>
+    <td>Spiderfoot</td>
+    <td>Wapiti</td>
+    <td>Maltego</td>
+    <td>OWASP ZAP</td>
+    <td>Searchsploit</td>
+  </tr>
+  <tr>
+    <th>Protect</th>
+    <td>ClamAV</td>
+    <td>Firewall Builder</td>
+  </tr>
+  <tr>
+    <th>Detect</th>
+    <td>SentryPeer</td>
+  </tr>
+  <tr>
+    <th>Respond</th>
+    <td>Foremost</td>
+    <td>Wireshark</td>
+    <td>OllyDbg</td>
+    <td>netsniff-ng</td>
+    <td>Mactime</td>
+    <td>ILS</td>
+    <td>ICAT</td>
+    <td>Guymager</td>
+    <td>Ghidra</td>
+    <td>Galleta</td>
+  </tr>
+  <tr>
+    <th>Recover</th>
+    <td>Scrounge NTFS</td>
+  </tr>
+</table>
+
+The tools can also be accessed by the classic menu:
+
+![Blue Team Menu](@assets/images/xfce-well-bluemenu.png)
+
+
+:::note
+In a fresh Athena machine, Red and Blue Team tools are not preinstalled to avoid that users would keep and waste the disk space for unused installed tools or services. By clicking on the icon of a pentesting tool, it will start its installation.
+:::
+
+In Athena Nix, these tools are run in an ephimeral environment by Nix Shell. It means that once the user exits from Nix Shell, the tool is unlinked/removed. To keep a specific tool permanent on the system, you can set a Cyber Role or edit `/etc/nixos/configuration.nix` by adding explicitly the tool you need and run `sudo nixos-rebuild switch`.
+
+<ImageComponent />
