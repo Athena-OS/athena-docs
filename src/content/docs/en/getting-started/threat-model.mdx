@@ -1,0 +1,651 @@
+---
+title: Threat Model
+description: Athena OS security posture, what it protects against, what it does not, and how to configure it for your context.
+---
+
+Athena OS is a penetration testing distribution optimized for offensive security work, which inherently requires capabilities that reduce the operating system's own defensive posture. At the same time, Athena ships one of the most comprehensive security feature sets available in any Linux distribution, including a hardened kernel, measured boot, LUKS encryption with TPM binding, AppArmor MAC, Firejail sandboxing, USB device control, and secure data erasure.
+
+Some of these features are active immediately after installation. Others are installed and ready but require explicit configuration before they provide any protection. This document is precise about that distinction because knowing which protections are genuinely active by default, and which require your intervention, is the foundation of understanding your actual security posture.
+
+:::caution
+Read this document before using Athena OS on a professional engagement or any machine that holds sensitive data.
+:::
+
+---
+
+## Audience
+
+Athena OS is designed for people who conduct offensive security work like penetration testing, vulnerability research, CTF competitions, red team operations, digital forensics, and security education. Its primary users are:
+
+- **Penetration testers** conducting authorized assessments of client infrastructure
+- **Security researchers** analyzing vulnerabilities, malware, and exploitation techniques
+- **CTF players** competing in Capture the Flag competitions
+- **Red team operators** simulating adversary behavior against organizations
+- **Security students and educators** learning and teaching offensive techniques
+- **Forensic investigators** performing digital forensics and incident response
+- **Power users and developers** who want a fast, well-hardened daily driver with a serious security stack
+
+Athena OS is also a capable general-purpose operating system. Its performance foundation - BORE scheduler, -O3 optimization, 1000Hz timer, native CPU targeting - means it competes directly with gaming and performance-focused distributions on raw desktop speed. Its security stack - Secure Boot, TPM-bound LUKS, AppArmor, Firejail, USBGuard - exceeds what most mainstream distributions ship by default. A developer, researcher, or power user running Athena as a daily driver gets a faster and better-protected system than they would get from most conventional choices.
+
+The most important question to ask before using Athena OS in a professional context is: **are you the attacker or the target right now?** Athena provides the tools and configuration to be effective as the attacker. When you are the target - when your machine holds sensitive data on a hostile network - you activate the defensive features this document describes. Athena supports both modes simultaneously and does not force you to choose one permanently. Most users will occupy both positions depending on context, sometimes within the same day.
+
+---
+
+## Security-by-context
+
+A fundamental contradiction exists at the heart of every penetration testing distribution: the tools that make you effective as an attacker are the same tools that make your own machine less secure.
+
+- Loading unsigned kernel modules is essential for tools like LiME (live memory acquisition), custom WiFi drivers, and kernel instrumentation, but also allows a compromised root session to install a kernel rootkit
+- Unrestricted `/dev/mem` access enables memory forensics and low-level hardware tools, but also allows a privileged process to read any physical memory address
+- Disabling `kptr_restrict` is necessary for kernel exploit development, but exposes kernel addresses that help attackers bypass KASLR
+- Running as root is common practice in pentesting workflows, but means any compromise immediately grants full system access
+
+There is no configuration that is simultaneously maximally effective for offensive work and maximally secure against attack. Every decision involves a trade-off. This document maps those trade-offs explicitly so you can make them consciously.
+
+Athena OS's answer to this tension is a **layered, selectable security architecture**, not a single fixed configuration, but a set of features you activate based on context:
+
+- Two kernel variants with documented, deliberate differences
+- A complete measured boot chain from firmware to kernel
+- Full disk encryption with hardware-backed key management
+- Application-level sandboxing and mandatory access control
+- USB device control against physical attack vectors
+- Secure data erasure when decommissioning or sanitizing
+
+---
+
+## Security architecture
+
+### Boot chain integrity
+
+```
+UEFI Firmware
+    ↓ validates signature via Secure Boot (MOK enrolled by Aegis)
+systemd-boot
+    ↓ loads signed EFI executable
+Unified Kernel Image (UKI)
+    │  single signed artifact: kernel + initramfs + cmdline + metadata
+    ↓ measured into TPM PCR11 by systemd-stub
+Running kernel (linux-aegis or linux-aegis-hardened)
+    ↓
+Encrypted root partition (LUKS2)
+    ↓ key sealed to TPM PCRs
+    ↓ auto-unlocks only when boot chain matches enrolled measurements
+Athena OS userspace
+```
+
+Each step in this chain is verified. Tampering with any component - firmware, bootloader, kernel, initramfs, or kernel parameters - changes the TPM PCR measurements and causes the TPM to refuse to release the LUKS decryption key.
+
+### Feature map
+
+| Layer | Feature | Default State | Reference |
+|---|---|---|---|
+| **Boot** | Unified Kernel Image (UKI) | Active | [Link](/en/security/uki) |
+| **Boot** | Secure Boot with MOK | Active (UEFI only) | [Link](/en/security/secureboot) |
+| **Boot** | TPM measured boot (PCR7, PCR11) | Available; requires LUKS enrollment | [Link](/en/security/tpm) |
+| **Boot** | systemd-boot bootloader | Active | [Link](/en/security/systemd-boot) |
+| **Storage** | LUKS2 full disk encryption | Installer option | [Link](/en/security/encryption) |
+| **Storage** | TPM-bound LUKS auto-unlock | Requires manual enrollment | [Link](/en/security/encryption) |
+| **Storage** | Devotio secure erasure | Live ISO tool; invoke manually | [Link](/en/security/devotio) |
+| **Kernel** | `linux-aegis` (offensive, performance-first) | Default boot | [Link](/en/security/TBD) |
+| **Kernel** | `linux-aegis-hardened` (exploit mitigations, relevant performance impact) | Boot selection | [Link](/en/security/TBD) |
+| **Kernel** | Core sysctl and udev tuning | Active | [Link](/en/security/settings) |
+| **Process** | AppArmor LSM framework | Active (framework only) | [Link](/en/security/mac) |
+| **Process** | AppArmor per-app enforcement | Partial; most apps unconfined by default | [Link](/en/security/mac) |
+| **Process** | Firejail sandboxing | Installed; invoke manually per-command | [Link](/en/security/sandboxing) |
+| **Hardware** | USBGuard device control | Installed; service disabled - requires policy + enable | [Link](/en/security/usb) |
+| **Hardware** | BIOS/UEFI password | User-configured | - |
+
+---
+
+## Protection model
+
+Athena's security features fall into two categories: those that are **active immediately after installation** with no configuration required, and those that are **available but require explicit activation**. Understanding this distinction is critical, several of the most powerful protections are opt-in, not opt-out.
+
+### Enabled-by-default
+
+#### Boot-level tampering and evil maid attacks
+
+Athena OS ships with Secure Boot support managed automatically by the Aegis installer. Each kernel is packaged as a **Unified Kernel Image (UKI)**, a single signed EFI executable containing the kernel, initramfs, and kernel command line together. Tampering with any component invalidates the entire cryptographic signature.
+
+This protects against:
+- Bootloader replacement or modification between boots
+- Kernel binary swapping
+- Initramfs injection of malicious early userspace
+- Kernel command line parameter modification (e.g., disabling security settings)
+
+When combined with TPM-bound LUKS, boot-level tampering also makes the encryption key unavailable. An attacker cannot boot into the system AND cannot read the encrypted data offline, both attack vectors are closed simultaneously.
+
+See: [Secure Boot](/en/security/secureboot) · [Unified Kernel Image](/en/security/uki)
+
+#### Hardware-bound encryption key management
+
+Athena OS supports **LUKS2 full disk encryption with TPM 2.0 key binding** via `systemd-cryptenroll`. The decryption key is sealed inside the TPM hardware chip and released only when the Platform Configuration Registers (PCRs) match the enrolled trusted state at installation time.
+
+PCR values measured in Athena's boot chain:
+
+| PCR | What it measures | What changes it |
+|---|---|---|
+| PCR7 | Secure Boot state, PK/KEK/db certificates | Disabling Secure Boot, changing keys |
+| PCR9 | initramfs hash, EFI load options | Modified initramfs, changed kernel cmdline |
+| PCR11 | UKI hash (kernel + initramfs + cmdline) | Any modification to the unified image |
+| PCR14 | shim MOK list | Adding or removing machine owner keys |
+
+In practice: a stolen drive cannot be read without the TPM chip from the original machine. An evil maid attack that modifies the bootloader or kernel changes PCR measurements, causing the TPM to refuse auto-unlock and requiring the passphrase instead.
+
+:::danger
+Always maintain a backup LUKS passphrase stored securely offline. If the TPM is cleared, replaced, or PCR values change after legitimate firmware or kernel updates, the passphrase is the only remaining unlock method. Losing it after the TPM is cleared means permanent data loss.
+:::
+
+See: [LUKS Encryption with TPM](/en/security/encryption) · [Trusted Platform Module](/en/security/tpm)
+
+#### Kernel-level exploit mitigations
+
+The `linux-aegis-hardened` kernel applies extensive security hardening on top of the same BORE + -O3 + 1000Hz performance base as `linux-aegis`. It is significantly faster than other distributions. However, the hardening layer adds measurable overhead — memory zeroing on every allocation and free, hardened usercopy bounds checking, stack canaries on all functions, and refcount validation all consume CPU cycles. CachyOS themselves describe this variant as carrying "very aggressive hardening that significantly stifles performance." The honest position is that `linux-aegis-hardened` is fast but not as fast as `linux-aegis` — the security gains come at a real throughput cost:
+
+- **Strict kernel memory protections** - `CONFIG_STRICT_KERNEL_RWX` and `CONFIG_STRICT_MODULE_RWX` mark kernel code as read/execute only, blocking post-exploit shellcode injection
+- **Refcount hardening** - makes refcount overflow exploits (a common LPE primitive) significantly less reliable
+- **Module signature verification and lockdown** - prevents unsigned kernel modules from loading; combined with lockdown `integrity`, deploying a stealthy LKM rootkit requires a kernel exploit rather than just root access
+- **`kernel.kptr_restrict=2`** - kernel symbol addresses hidden from all users including root
+- **`dmesg_restrict=1`** - kernel ring buffer restricted to privileged users, blocking information leakage that helps build ROP chains
+- **`perf_event_paranoid=3`** - restricts perf/ftrace access, preventing unprivileged side-channel attacks via performance counters
+- **Yama ptrace scope** - prevents arbitrary process-to-process ptrace, protecting in-memory secrets from unprivileged scraping
+- **`INIT_ON_ALLOC/FREE_DEFAULT_ON`** - kernel memory zeroed on every allocation and free, preventing use-after-free data leakage
+- **`HARDENED_USERCOPY`** - bounds checking on every kernel/userspace memory copy
+- **`STACKPROTECTOR_STRONG`** - stack canaries on all functions
+- **Enhanced ASLR** - stronger kernel memory layout randomization
+
+The `linux-aegis-hardened` kernel is a first-class boot entry. Switching requires only a reboot, no reinstallation. Both kernels maintain the full Secure Boot + UKI + TPM chain. Choose `linux-aegis-hardened` when security is the priority and accept the performance trade-off consciously.
+
+See: [linux-aegis](/en/security/hardened)
+
+#### Core system hardening
+
+The `athena-settings` package applies system-level tuning active immediately after installation:
+
+- **`evbug` blacklisted unconditionally** - this module logs every keypress, mouse click, and touchpad event to the kernel ring buffer, readable by anyone with journal access; on a security-focused system it is functionally a keylogger
+- **`kernel.kptr_restrict=1`** - hides kernel pointers from unprivileged users while preserving root access to `/proc/kallsyms` for legitimate security research
+- **`kernel.unprivileged_userns_clone=1`** - enables unprivileged user namespaces required for Podman, Flatpak, and browser sandbox isolation
+- **Watchdog timers blacklisted** - `iTCO_wdt` and `sp5100_tco` removed; they serve no useful function on a pentesting workstation and create unnecessary attack surface
+- **`pcspkr` and `snd_pcsp` blacklisted** - PC speaker modules have been used in timing side-channel attacks; removed unconditionally
+- **Wireless regulatory domain enforced** - correct domain applied at boot, on timezone change, and on every adapter plug-in event; prevents silent channel restriction causing missed networks during assessments
+- **`net.core.netdev_max_backlog=4096`** - larger receive queue reduces packet drops under high-rate capture with `wireshark`, `tcpdump`, and `airodump-ng`
+- **`fs.file-max=2097152`** - prevents "too many open files" errors during high-parallelism scans with nmap, masscan, or fuzzing tools
+
+See: [Core Settings](/en/security/settings)
+
+#### Secure data erasure
+
+**Devotio** is Athena's secure disk erasure tool, available from the Live ISO. It implements DoD 5220.22-M overwriting, ATA Secure Erase, and encryption-based destruction.
+
+| Device type | Erasure method |
+|---|---|
+| HDD | Filesystem format → 3-pass overwrite → zero/one/random writes → LUKS encrypt → LUKS header destroy |
+| SSD | Filesystem format → TRIM → ATA Secure Erase → LUKS encrypt → LUKS header destroy |
+| LUKS volume | Random data write → 3-pass overwrite → LUKS header destroy |
+| Flash drive | Filesystem format → 3-pass overwrite → LUKS encrypt → header destroy |
+| RAM | Cache drop |
+| ZRAM | Device off → random write → device reset |
+| Swap | Device off → zero fill |
+
+Use Devotio when ending an engagement, returning hardware, or decommissioning a machine that has held sensitive data.
+
+See: [Devotio](/en/security/devotio)
+
+---
+
+### Opt-In Protections
+
+The following features are installed and ready to use but require explicit configuration before they provide any protection. This is intentional because enabling them without configuration would break normal workflows (locking out a keyboard, sandboxing a tool it cannot run inside). The responsibility to activate them at the appropriate time rests with the user.
+
+#### AppArmor - Mandatory access control
+
+**AppArmor** is pre-enabled as an LSM on Athena OS, the framework is running at the kernel level from the first boot. However, the protection it provides depends entirely on which profiles are loaded and in what mode.
+
+**What ships by default:**
+- AppArmor is active and enforcing upstream system profiles for a small set of system services
+- several applications ship with no AppArmor profile at all. They run **unconfined**, meaning AppArmor provides them zero protection
+- Applications that do have upstream profiles may be in `complain` mode (log but allow all access) rather than `enforce` mode
+
+:::note
+A fresh Athena installation does **not** automatically confine your browser, PDF viewer, or pentesting tools. AppArmor running in complain mode on an application does not prevent any access, it only logs what the application would have been denied.
+:::
+
+**What you must do to get real protection:**
+
+```bash
+# Check current status - what is enforced vs unconfined
+aa-status
+
+# Move a browser profile from complain to enforce
+sudo aa-enforce /etc/apparmor.d/firefox
+
+# Generate a profile for a tool that has none
+sudo aa-genprof /usr/bin/burpsuite
+
+# Review and tighten a complain-mode profile after observing real usage
+sudo aa-logprof
+```
+
+See: [Mandatory Access Control](/en/security/mac)
+
+#### Firejail - Application sandboxing
+
+**Firejail** is installed but provides **no automatic protection**. An application launched normally runs outside any sandbox unless you explicitly wrap it.
+
+**When to invoke it:**
+
+```bash
+# Open a suspicious PDF from a client system - no network, isolated home
+firejail --net=none --private evince client-report.pdf
+
+# Run Burp Suite with access only to a project directory
+firejail --private --whitelist=$HOME/burp-projects burpsuite
+
+# Open a document with no network and no real filesystem access
+firejail --net=none --private libreoffice document.docx
+
+# Run an unknown binary with full isolation
+firejail --net=none --private --caps.drop=all ./unknown-binary
+```
+
+The practical rule: anything that touches untrusted content should run through Firejail. Files received from client systems, samples from engagements, unknown binaries, and documents of any kind are candidates. The overhead of adding `firejail --net=none --private` before a command is seconds. The risk of not doing so when a document is weaponized is significant.
+
+See: [Sandboxing](/en/security/sandboxing)
+
+#### USBGuard - USB device control
+
+**USBGuard** is installed but the service is **disabled by default**. Enabling it before a policy exists would block all USB devices including the keyboard and mouse.
+
+```bash
+# Step 1: Plug in all USB devices you trust (keyboard, mouse, WiFi adapters, etc.)
+
+# Step 2: Generate a policy from currently connected devices
+sudo usbguard generate-policy | sudo tee /etc/usbguard/rules.conf
+
+# Step 3: Review the generated policy
+sudo nano /etc/usbguard/rules.conf
+
+# Step 4: Only then enable the service
+sudo systemctl enable --now usbguard.service
+```
+
+Once enabled, any USB device not in the policy is silently blocked. This includes HID injection devices (Rubber Ducky, O.MG cable), rogue network adapters, and devices exploiting kernel USB driver vulnerabilities.
+
+:::tip
+Enable USBGuard before connecting to client networks, entering conference environments, or any situation where physical access to your USB ports cannot be guaranteed.
+:::
+
+See: [USB Device Control](/en/security/usb)
+
+---
+
+## Protection boundaries
+
+### Privileged attackers
+
+On `linux-aegis` with default settings, a user with root access has near-total control over the system. Root can load arbitrary unsigned modules, read physical memory, use kexec to replace the running kernel, dump any process's memory, and modify any file.
+
+**This is partially intentional.** Pentesting tools legitimately need these capabilities. The threat model of `linux-aegis` assumes root is the authorized user in a controlled environment.
+
+The `linux-aegis-hardened` kernel significantly reduces this exposure through lockdown enforcement, mandatory module signing, and memory hardening - an attacker with root access can no longer trivially install a kernel rootkit, read physical memory, or replace the kernel. However, even `linux-aegis-hardened` cannot fully contain a sophisticated root-level attacker with unlimited time. It raises the bar for persistence and escalation significantly, but does not eliminate the risk.
+
+**The practical takeaway:** Keep root access controlled. Use LUKS on the drive, Secure Boot on the firmware, USBGuard on the ports, and maintain defensive awareness on networks you do not control.
+
+### Physical access attacks
+
+Neither kernel variant fully protects against an attacker with unconstrained physical access and time:
+
+- **Cold boot attacks** - DRAM contents can be read after power cycling under controlled conditions, especially on systems without memory encryption
+- **DMA attacks** - Thunderbolt/PCIe DMA can bypass the CPU and read memory directly if IOMMU is not correctly configured
+- **Firmware implants** - a sophisticated attacker with physical access can modify UEFI firmware below the level Secure Boot measures
+
+**Mitigations available within Athena's stack:**
+- LUKS encryption protects data at rest even if the drive is physically removed
+- Secure Boot + TPM measured boot detects bootloader/kernel tampering and refuses key release
+- BIOS/UEFI password prevents trivial Secure Boot reconfiguration from UEFI setup
+- The `linux-aegis-hardened` kernel locks down `/dev/mem` and other DMA-adjacent interfaces
+
+Physical security of the hardware itself remains the user's responsibility. No software stack fully compensates for an attacker with unlimited unobserved physical access.
+
+### Supply chain attacks
+
+Athena OS ships tools from upstream repositories without performing additional source code auditing beyond what upstream maintainers provide. A compromised upstream package - a backdoored Metasploit module, a malicious Burp Suite extension, a trojanized Python library - would not be detected by the distribution's default configuration.
+
+**Mitigations:**
+- Verify checksums and signatures of tools downloaded manually outside the package manager
+- Use official Athena and Arch repositories rather than third-party or AUR sources for sensitive tools
+- Be cautious with Burp Suite BApp extensions and Metasploit modules from unverified authors
+- Run unknown tooling inside a VM or Firejail sandbox rather than directly on the host
+- AppArmor and Firejail limit blast radius when a tool behaves maliciously
+
+### Kernel exploits
+
+No kernel configuration makes exploitation of an unknown vulnerability impossible. `linux-aegis-hardened` substantially increases exploitation difficulty - KASLR, KSLR, hardened usercopy, stack canaries, and memory zeroing all work together - but a motivated attacker with a working kernel exploit may still succeed. Keeping the kernel updated is the most effective mitigation. Athena OS is rolling release; apply kernel updates promptly.
+
+---
+
+## User profiles and threat scenarios
+
+Identify the profile that best matches your current context: not your general identity as a security professional, but what you are doing right now with this specific machine.
+
+### Profile 1: Penetration tester
+
+**Context:** Conducting authorized assessments of client infrastructure. Machine holds client data, discovered credentials, sensitive findings, and scope documents.
+
+**Adversary:** Opportunistic attackers on client networks, potentially security-aware defenders who may inspect devices, and the general hostile environment of client sites and conference networks.
+
+**Data at risk:** Client confidential data. Credentials and vulnerabilities discovered during testing. Previous client reports. Scope documentation revealing client infrastructure details.
+
+**Kernel:** `linux-aegis-hardened`
+
+| Control | Requirement | Reason |
+|---|---|---|
+| Full disk encryption (LUKS2) | **Mandatory** | Physical loss of a machine holding client data is a serious professional and legal liability |
+| TPM-bound LUKS | **Strongly recommended** | Auto-unlock only when boot chain is unmodified; detects evil maid attacks at client sites |
+| Secure Boot + UKI | **Mandatory** | Completes the measured boot chain; required for TPM binding to be meaningful |
+| BIOS/UEFI password | **Strongly recommended** | Prevents Secure Boot reconfiguration without your presence |
+| `linux-aegis-hardened` kernel | **Mandatory** | Reduces kernel attack surface when operating on hostile client networks |
+| USBGuard - configure and enable | **Mandatory** | Client sites and conference venues are environments where physical USB attacks occur in practice |
+| AppArmor - move GUI profiles to enforce | **Mandatory** | Framework is active but most apps are unconfined by default |
+| Firejail for all untrusted file opening | **Strongly recommended** | Any file from a client system should be opened in `--net=none --private` sandbox |
+| Screen lock ≤5 minute timeout | **Mandatory** | An unattended machine on a client site is a serious risk |
+| Encrypted engagement notes | **Mandatory** | Engagement notes contain sensitive findings |
+
+:::caution
+**Counter-exploitation threat:** If your presence is detected, a security team may attempt to exploit vulnerabilities in your tooling. Your operator machine is the most valuable target on the network from a blue team perspective. Boot `linux-aegis-hardened`. Use AppArmor and Firejail on tools that process untrusted data.
+:::
+
+### Profile 2: Red Team operator
+
+**Context:** Extended operations simulating advanced persistent threats. Machine operates in environments where physical or logical capture is a realistic scenario.
+
+**Adversary:** An active, skilled security team. Sophisticated blue teams with EDR, network monitoring, and incident response capability. Potentially physical security.
+
+**Data at risk:** Campaign data. C2 infrastructure details. TTPs that could be disclosed on machine capture. Client data.
+
+**Kernel:** `linux-aegis-hardened`
+
+| Control | Requirement | Reason |
+|---|---|---|
+| Full disk encryption | **Mandatory** | Machine capture must not reveal campaign data under any forensic examination |
+| TPM-bound LUKS with PCR7+PCR11 | **Mandatory** | Physical tamper detection; failed unlock after imaging attempts indicates compromise |
+| Secure Boot + BIOS password | **Mandatory** | Physical access is a realistic attack vector; firmware must be protected |
+| `linux-aegis-hardened` kernel | **Mandatory** | The machine is itself an active target |
+| USBGuard strict whitelist | **Mandatory** | Blue team members may have physical access to your operator station |
+| Minimal local data retention | **Mandatory** | Campaign data should not persist longer than operationally necessary |
+| Separate C2 infrastructure | **Mandatory** | Operator machine and C2 server must be isolated |
+| AppArmor + Firejail on all tooling | **Mandatory** | Limit blast radius if your tooling is exploited through a malicious server response |
+| Devotio on decommission | **Mandatory** | No campaign artifacts survive hardware handover or retirement |
+
+:::danger
+**Counter-intrusion threat:** Red team C2 frameworks, implants, and tooling have historically contained exploitable vulnerabilities. A sophisticated blue team may respond to detection by exploiting your infrastructure. Assume your C2 and your operator machine are targeted. Design your infrastructure accordingly.
+:::
+
+### Profile 3: CTF player
+
+**Context:** Local machine, home environment, no sensitive client data, competing in CTF competitions or practicing on HackTheBox, TryHackMe, PentesterLab, or similar.
+
+**Adversary:** Nobody meaningful. The machine is not a target. The CTF infrastructure is intentionally hostile but contained.
+
+**Data at risk:** Personal data, CTF platform credentials.
+
+**Kernel:** `linux-aegis`
+
+**Configuration:**
+- Full disk encryption recommended
+- Default Athena OS installation is sufficient
+- Focus on tool availability and performance over defensive posture
+- USBGuard optional unless machine travels
+
+**Watch items:**
+- CTF challenges that try to escape their container - always run challenge binaries with Firejail `--private --net=none` or in a VM
+- Malicious challenge files - open unknown binaries in Firejail before examining them
+- Reusing passwords between CTF platform accounts and real accounts
+
+### Profile 4: Student / Educator
+
+**Context:** Learning offensive techniques, building a home lab, running intentionally vulnerable machines, studying courses.
+
+**Adversary:** Largely theoretical. Primary risk is accidental misconfiguration exposing vulnerable VMs to real networks, or lab credentials leaking to production services.
+
+**Data at risk:** Personal data, academic credentials, API tokens.
+
+**Kernel:** `linux-aegis` for the lab machine; `linux-aegis-hardened` if the machine also handles personal or professional data.
+
+**Configuration:**
+- Full disk encryption
+- Vulnerable VMs on host-only or NAT - never bridged to real networks without explicit, intentional firewall rules
+- AppArmor enforce on browsers and document viewers
+- Do not store real SSH keys, cloud credentials, or production API tokens alongside lab credentials
+
+**Watch items:**
+- Vulnerable Docker containers that accidentally reach real networks
+- Metasploit listeners or C2 payloads calling back to the internet from lab machines
+- Intentionally vulnerable services listening on all interfaces rather than localhost only
+
+### Profile 5: Malware analyst / Reverse engineer
+
+**Context:** Analyzing malware samples, unpacking binaries, studying exploit techniques, interacting with live malware and hostile network infrastructure.
+
+**Adversary:** The malware itself. Sophisticated samples detect analysis environments. Some attempt VM escape.
+
+**Data at risk:** Analysis infrastructure. Credentials on the analysis machine. Network reachability to sensitive systems if malware escapes.
+
+**Kernel (analysis VM host):** `linux-aegis` - maximum VM performance and device passthrough capability.
+
+| Control | Requirement | Reason |
+|---|---|---|
+| All analysis in VM - no bare metal exceptions | **Mandatory** | Even "probably benign" samples run inside a VM |
+| Isolated network for analysis VM | **Mandatory** | INetSim or no network; never give live samples real internet connectivity |
+| Snapshots before every sample | **Mandatory** | Restore clean state between samples; never reuse a contaminated VM |
+| IOMMU enabled on host | **Strongly recommended** | Prevents DMA-based VM escape through passed-through hardware |
+| No real credentials in analysis VM | **Mandatory** | Assume any VM running unknown code is fully compromised |
+| Firejail on host for sample file handling | **Recommended** | Open sample files in `--net=none` sandbox even on the host |
+| AppArmor on host analysis tools | **Recommended** | Hex editors, PDF viewers, and debuggers that parse sample files may be exploitable |
+
+**Watch items:**
+- Anti-VM techniques (CPU timing, CPUID hypervisor detection) - evasion-aware samples may behave differently in a VM; bare-metal analysis requires a fully disposable physical machine
+- Samples calling back to live attacker infrastructure - always monitor egress from analysis VMs
+- QEMU/KVM vulnerabilities - the hypervisor must be kept updated
+
+### Profile 6: Forensic investigator
+
+**Context:** Digital forensics and incident response. Analyzing evidence drives and memory images in legally sensitive contexts where evidence integrity may be challenged.
+
+**Adversary:** The evidence itself - malicious artifacts, weaponized files, antiforensic techniques. Legal adversaries who may challenge the integrity of the forensic process.
+
+**Data at risk:** Evidence integrity. Chain of custody. Victim data protected by legal obligations.
+
+**Kernel:** `linux-aegis` (maximum tool compatibility; required for LiME and custom forensic modules).
+
+| Control | Requirement | Reason |
+|---|---|---|
+| Hardware write blockers for evidence drives | **Mandatory** | Software write blocking is insufficient for legal forensics |
+| Verify read-only mount before touching evidence | **Mandatory** | Check `mount \| grep ro` before every session |
+| Hash evidence before and after analysis | **Mandatory** | MD5 and SHA256 both; verify chain of custody at every handover |
+| Encrypted evidence storage | **Mandatory** | Evidence drives contain victim data with legal protection requirements |
+| Isolated forensic workstation | **Mandatory** | Forensic analysis must not share infrastructure with active pentesting |
+| Timestamped documentation of every action | **Mandatory** | Legal admissibility requires a documented audit trail |
+| Firejail for opening all evidence files | **Mandatory** | Open evidence in `--net=none --private` sandbox |
+
+**Watch items:**
+- Anti-forensics in evidence: timestomping, log wiping, encrypted containers, filesystem-level hiding
+- Evidence files that exploit analysis tools - assume every file in evidence is potentially weaponized
+- Accidental writes to evidence - verify write blocker operation before touching real evidence
+
+---
+
+## Kernel selection and implications
+
+The kernel choice is a security decision, but for Athena OS it is also a performance decision that directly affects how fast your tools run. This section maps both dimensions.
+
+### Performance foundation
+
+Both variants share the CachyOS performance foundation — BORE, -O3, 1000Hz, native CPU, LRU_GEN — making both significantly faster than any stock pentesting distro kernel for the same workloads. However they are not equal in performance. `linux-aegis-hardened` carries real overhead from its hardening layer: memory zeroing on every allocation and free, hardened usercopy bounds checking on every kernel/userspace copy, stack canaries on all functions, and refcount validation. CachyOS themselves describe the hardened variant as containing "very aggressive hardening that significantly stifles performance." Additionally, `linux-aegis-hardened` does not support sched-ext — the hardened patchset is incompatible with the framework. The honest summary: `linux-aegis-hardened` is fast relative to Kali, Parrot, and BlackArch, but measurably slower than `linux-aegis` for throughput-sensitive pentesting workloads. That is the performance cost of the hardened profile.
+
+| Tool class | Examples | Performance benefit |
+|---|---|---|
+| GPU password cracking | `hashcat`, `john` (GPU) | BORE keeps the terminal and GUI responsive while the GPU saturates; -O3 reduces CPU coordination overhead; 1000Hz improves burst scheduling |
+| High-rate network scanning | `nmap`, `masscan`, `zmap` | Optimized kernel network paths; `net.core.netdev_max_backlog=4096` reduces drops; native CPU instruction set accelerates packet processing |
+| Packet capture under load | `wireshark`, `tcpdump`, `airodump-ng` | Tuned socket buffers prevent drops during simultaneous scan + capture; BORE prioritizes capture threads under concurrent CPU load |
+| Web application testing | `burpsuite`, `ffuf`, `feroxbuster` | BORE keeps Burp Suite interactive while fuzzing saturates CPU; `fs.file-max` prevents open-file exhaustion under high-concurrency fuzzing |
+| Wireless assessment | `aircrack-ng`, `hcxtools` | WiFi injection built in; regulatory domain enforced; 1000Hz improves frame timing accuracy |
+| Binary analysis / RE | `ghidra`, `ida`, `radare2` | -O3 and native CPU optimize decompilation throughput; BORE keeps the UI responsive during long analysis passes |
+| Exploit development | `pwndbg`, `gef`, `bpftrace` | kprobes, uprobes, and full eBPF available on both kernels; BORE reduces debugging session jitter |
+| Wordlist operations | `hashcat` CPU, `john` CPU | ADIOS I/O scheduler optimizes sequential wordlist reads; LRU_GEN keeps the wordlist working set in RAM |
+
+### Comparison
+
+| Feature | `linux-aegis` | `linux-aegis-hardened` |
+|---|---|---|
+| BORE scheduler | ◯ | ◯ identical |
+| -O3 / 1000Hz / native CPU | ◯ | ◯ identical |
+| sched-ext support | ◯ | X not supported |
+| Unsigned module loading | ◯ allowed by default | X blocked by module signing |
+| `/dev/mem` access | ◯ available | X disabled |
+| Kernel lockdown | None | `integrity` |
+| `kptr_restrict` | 1 - root sees kallsyms | 2 - all users blocked |
+| `dmesg_restrict` | 0 - any user | 1 - privileged only |
+| `perf_event_paranoid` | standard | 3 - highly restricted |
+| Memory zeroing (alloc/free) | X | ◯ |
+| Hardened usercopy | X | ◯ |
+| Stack protection | standard | STRONG - all functions |
+| KASLR / KSLR | ◯ | ◯ enhanced |
+| Yama ptrace scope | standard | stricter |
+| Refcount hardening | X | ◯ |
+| Module signature enforcement | optional | enforced |
+| Full eBPF (privileged) | ◯ | ◯ |
+| kprobes / uprobes | ◯ | ◯ |
+| WiFi injection and monitor mode | ◯ | ◯ |
+| `perf` tool | ◯ | privileged only |
+
+### Lockdown integrity
+
+**Blocked:**
+- Loading unsigned kernel modules - sign with the kernel's sign-file tool using the MOK key from /etc/secureboot/keys/, or add a DKMS post-build signing hook
+- `/dev/mem` and `/dev/kmem` direct hardware memory access - live memory acquisition requires a signed LiME module
+- Unsigned `kexec` (runtime kernel replacement without reboot)
+- Hibernation (potential memory extraction vector)
+
+**Preserved (pentesting capability intact):**
+- Full privileged eBPF - `bpftrace`, `bcc`, `bpftool` work without restriction
+- kprobes and uprobes - dynamic kernel and userspace tracing fully available
+- ftrace - function-level kernel tracing unaffected
+- WiFi injection and monitor mode - completely unaffected by lockdown
+- Full network stack - all packet capture and injection tools work
+- `perf` with elevated privilege - hardware performance counters available to root
+
+### Selection
+
+Both kernels appear as separate first-class entries in the systemd-boot menu at every boot. Both are signed as UKIs and measured by the TPM. Switching requires only a reboot - no configuration change, no reinstallation.
+
+:::tip
+Boot `linux-aegis-hardened` when going to a client site, connecting to conference networks, or handling sensitive data. Boot `linux-aegis` when returning to a controlled lab environment and needing full kernel module freedom for tool development.
+:::
+
+---
+
+## Scenario-Based Configuration Guide
+
+| Situation | Kernel | LUKS | TPM Bind | Secure Boot | USBGuard | AppArmor Enforce | Firejail |
+|---|---|---|---|---|---|---|---|
+| Client engagement | **`linux-aegis-hardened`** | **Yes** | **Yes** | **Yes** | **Yes** | All GUI apps | All file opening |
+| Red team operation | **`linux-aegis-hardened`** | **Yes** | **Yes** | **Yes** | **Yes** | All GUI apps | All tooling |
+| CTF at home | `linux-aegis` | Recommended | Optional | Recommended | Optional | Browsers | Suspicious files |
+| Home lab / learning | `linux-aegis` | Recommended | Optional | Recommended | Optional | Browsers | Unknown binaries |
+| Bug bounty (from home) | `linux-aegis` | **Yes** | Recommended | **Yes** | Recommended | Browsers + viewers | All file opening |
+| Conference (DEF CON, etc.) | **`linux-aegis-hardened`** | **Yes** | **Yes** | **Yes** | **Yes** | All GUI apps | All file opening |
+| Malware analysis (host) | `linux-aegis` | **Yes** | Recommended | **Yes** | **Yes** | Host tools | Sample file handling |
+| Forensic investigation | `linux-aegis` | **Yes** | Recommended | **Yes** | **Yes** | Viewers | All evidence files |
+| Public WiFi (any context) | **`linux-aegis-hardened`** | **Yes** | **Yes** | **Yes** | **Yes** | All GUI apps | All file opening |
+| Shared / borrowed machine | **`linux-aegis-hardened`** | **Yes** | **Yes** | **Yes** | **Yes** | All GUI apps | Everything |
+
+---
+
+## Leaks
+
+A correctly configured Athena OS installation still exposes information passively.
+
+### Network identity
+
+| What leaks | Where it goes | Mitigation |
+|---|---|---|
+| MAC address | Every network segment you connect to | NetworkManager MAC randomization per connection |
+| Hostname | DHCP requests, Avahi/mDNS broadcasts | Randomize before connecting; disable `avahi-daemon` for engagements |
+| OS fingerprint | TCP/IP stack characteristics to passive observers | VPN tunneling masks some; difficult to fully eliminate |
+| DNS queries | Configured resolver and everyone on the path | Route all DNS through VPN; use an encrypted resolver |
+| NTP queries | `time.cloudflare.com` and Arch pool | Reveals your IP to time servers; route through VPN if necessary |
+| Avahi/mDNS | Local network multicast announcing hostname and services | `systemctl stop avahi-daemon` during engagements |
+| Bluetooth advertising | Local RF environment if Bluetooth is active | `rfkill block bluetooth` when not in use |
+| WiFi probe requests | Local RF environment - announces networks you have connected to | Use monitor mode for assessments; clear WiFi history before sensitive work |
+
+### Application-level telemetry
+
+Many security tools initiate outbound connections at startup or during operation:
+- Metasploit checks for updates on startup
+- Burp Suite performs version checks and optional telemetry
+- pip and Python package managers may send network requests during tool execution
+- Browser-based tools may send crash reports or update checks
+
+A VPN with kill switch mitigates many of these at the network level, but application-level telemetry is difficult to fully eliminate without per-process network isolation (Firejail `--net=none` or dedicated network namespaces).
+
+---
+
+## Operational security checklist
+
+Items marked **[CRITICAL]** are non-negotiable for professional work.
+
+### Before the engagement
+
+- [ ] **[CRITICAL]** Full disk encryption is enabled and the LUKS passphrase is stored securely offline
+- [ ] **[CRITICAL]** `linux-aegis-hardened` is installed and set as the default boot entry
+- [ ] **[CRITICAL]** Scope documentation is reviewed and accessible offline
+- [ ] **[CRITICAL]** Previous engagement data is securely deleted with Devotio or isolated in encrypted storage
+- [ ] Secure Boot is enabled in UEFI and the Athena MOK is enrolled
+- [ ] TPM-bound LUKS is configured (at minimum PCR7 + PCR11)
+- [ ] BIOS/UEFI is protected by a strong password
+- [ ] VPN is configured, tested, and kill switch behavior verified
+- [ ] **USBGuard:** policy has been generated (`usbguard generate-policy`), reviewed, and service enabled (`systemctl enable --now usbguard`)
+- [ ] **AppArmor:** profiles for browsers and document viewers moved to enforce (`aa-enforce /etc/apparmor.d/<profile>`); verify with `aa-status`
+- [ ] Screen lock timeout is 5 minutes or less
+- [ ] System is fully updated - kernel, tools, microcode, firmware
+
+### Connecting to the client network
+
+- [ ] **[CRITICAL]** Verify `linux-aegis-hardened` is running: `uname -r`
+- [ ] **[CRITICAL]** VPN is active and kill switch is functioning before connecting
+- [ ] **[CRITICAL]** MAC address is randomized: `ip link show`
+- [ ] Hostname is randomized: `hostname`
+- [ ] DNS resolves through VPN: `resolvectl status`
+- [ ] Bluetooth is disabled: `rfkill list`
+- [ ] USBGuard is running: `systemctl status usbguard`
+- [ ] Avahi is stopped: `systemctl stop avahi-daemon`
+- [ ] CUPS is stopped if not needed: `systemctl stop cups`
+- [ ] No cloud sync services are running
+
+### During the engagement
+
+- [ ] Store credentials and findings in an encrypted notes application
+- [ ] Never leave the machine unattended without screen lock
+- [ ] Open any file received from client systems in Firejail `--net=none --private` before examining
+- [ ] Monitor for unexpected outbound connections from your machine
+- [ ] Do not connect analysis VMs to networks outside the defined engagement scope
+
+### After the engagement
+
+- [ ] Transfer findings to encrypted, backed-up storage
+- [ ] Run Devotio to securely erase engagement working files
+- [ ] Rotate credentials used during the engagement (VPN keys, API tokens, SSH keys)
+- [ ] Re-enable any services disabled for the engagement
+- [ ] Verify the machine state is clean before beginning the next engagement
+
+---
+
+## Boundaries of this document
+
+This document describes the threat model and security posture of Athena OS as a platform. It does not cover:
+
+- **Legal authorization** - Always obtain explicit written authorization before testing any system. Unauthorized access is illegal regardless of intent or tooling. This document does not constitute legal advice.
+- **Engagement methodology** - How to conduct a penetration test, approach specific vulnerability classes, or scope an engagement.
+- **Client data handling regulations** - GDPR, HIPAA, PCI-DSS, and other legal frameworks may impose obligations on how you handle client data. Consult qualified legal counsel for your specific situation.
+- **Tool-specific security** - Individual tools shipped with Athena OS have their own security properties and vulnerability histories. Review upstream security advisories for tools you rely on professionally.

@@ -41,6 +41,7 @@ export default defineConfig({
             // Each item here is one entry in the navigation menu.
             { label: "Manifesto", link: "/en/getting-started/manifesto" },
             { label: "Why Athena OS?", link: "/en/getting-started/athenaos" },
+            //{ label: "Threat Model", link: "/en/getting-started/threat-model" },
             {
               label: "Downloading Athena OS",
               link: "/en/getting-started/download",
