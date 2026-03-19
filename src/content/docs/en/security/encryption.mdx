@@ -10,7 +10,7 @@ import { LinkCard, CardGrid } from '@astrojs/starlight/components';
 Athena OS supports **LUKS encryption** for full-disk or root partition encryption with TPM 2.0.  
 Optionally, in Athena Arch, the encryption key can be automatically **stored and managed by the TPM (Trusted Platform Module)**, providing secure key handling without requiring you to manually type a passphrase on every boot.
 
-This integration is handled automatically by **Aegis Installer**, which can detect your TPM device and configure LUKS to unlock the encrypted partition using the TPM key at boot time.
+This integration is handled automatically by **Dory Installer**, which can detect your TPM device and configure LUKS to unlock the encrypted partition using the TPM key at boot time.
 
 By integrating LUKS with TPM, Athena OS ensures a high level of data protection while maintaining usability and system integrity.
 
@@ -37,9 +37,9 @@ This ensures that:
 
 ## Setup During Installation
 
-During installation with **Aegis**, you can choose to:
+During installation by **Dory**, you can choose to:
 - **Encrypt ROOT (LUKS)** - a passphrase is requested.
-- **Bind the key to TPM** - if TPM is detected, Aegis will store the decryption key securely in the TPM and configure automatic unlocking.
+- **Bind the key to TPM** - if TPM is detected, Dory will store the decryption key securely in the TPM and configure automatic unlocking.
 
 :::tip
 If the TPM option is not available, the set passphrase will be prompted at each boot for decrypting the encrypted partition.

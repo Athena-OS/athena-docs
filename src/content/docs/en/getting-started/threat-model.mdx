@@ -59,7 +59,7 @@ Athena OS's answer to this tension is a **layered, selectable security architect
 
 ```
 UEFI Firmware
-    ↓ validates signature via Secure Boot (MOK enrolled by Aegis)
+    ↓ validates signature via Secure Boot (MOK enrolled by Dory)
 systemd-boot
     ↓ loads signed EFI executable
 Unified Kernel Image (UKI)
@@ -105,7 +105,7 @@ Athena's security features fall into two categories: those that are **active imm
 
 #### Boot-level tampering and evil maid attacks
 
-Athena OS ships with Secure Boot support managed automatically by the Aegis installer. Each kernel is packaged as a **Unified Kernel Image (UKI)**, a single signed EFI executable containing the kernel, initramfs, and kernel command line together. Tampering with any component invalidates the entire cryptographic signature.
+Athena OS ships with Secure Boot support managed automatically by the Dory installer. Each kernel is packaged as a **Unified Kernel Image (UKI)**, a single signed EFI executable containing the kernel, initramfs, and kernel command line together. Tampering with any component invalidates the entire cryptographic signature.
 
 This protects against:
 - Bootloader replacement or modification between boots

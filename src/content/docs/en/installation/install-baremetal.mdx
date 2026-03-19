@@ -62,15 +62,15 @@ Once you land on the Terminal UI Live Environment, if you need to connect to Int
 In case your Internet connection is restricted, please use a VPN service.
 :::
 
-Finally, run the **Aegis Installer**.
+Finally, run the **Dory Installer**.
 
-[Aegis](https://github.com/Athena-OS/aegis) is a terminal-based installer, developed, tailored and optimized specifically for Athena OS.
+[Dory](https://github.com/Athena-OS/dory) is a terminal-based installer, developed, tailored and optimized specifically for Athena OS.
 
-To provide more accessible resources to the users, Aegis provides a terminal interface to configure and install your systems according to your preferences.
+To provide more accessible resources to the users, Dory provides a terminal interface to configure and install your systems according to your preferences.
 
-Aegis will improve over time in order to detect automatically your hardware. It means that the installer is able to detect your environment (baremetal or virtualized), your CPU and your GPU. According to this information, all the needed drivers are automatically installed with no any actions by your side.
+Dory will improve over time in order to detect automatically your hardware. It means that the installer is able to detect your environment (baremetal or virtualized), your CPU and your GPU. According to this information, all the needed drivers are automatically installed with no any actions by your side.
 
-Aegis can be run by running `sudo aegis` command and requires a working Internet connection.
+Dory can be run by running `sudo dory` command and requires a working Internet connection.
 
 Its purpose is to generate JSON system and drive configuration files containing all the user choices, set during the installation. The JSON configuration files will be saved as hidden temporary files `/tmp` directory. Configurations have the following structure:
 <Tabs>
@@ -185,16 +185,16 @@ Its purpose is to generate JSON system and drive configuration files containing 
 </TabItem>
 </Tabs>
 
-The installation logs will be saved to `/tmp/aegis.log` and copied to the installed system to `/var/log/aegis.log`.
+The installation logs will be saved to `/tmp/dory.log` and copied to the installed system to `/var/log/dory.log`.
 
 Open the terminal and run:
 ```shell
-sudo aegis
+sudo dory
 ```
-![Aegis](@assets/images/aegis.png)
+![Dory](@assets/images/dory.png)
 
 Choose your favourite base system
-![Aegis Base](@assets/images/aegis-base.png)
+![Dory Base](@assets/images/dory-base.png)
 
 :::note
 Some options can vary according to the chosen base system.
@@ -204,13 +204,13 @@ Some options can vary according to the chosen base system.
 
 Select the timezone
 
-![System Timezone](@assets/images/aegis-timezone.png)
+![System Timezone](@assets/images/dory-timezone.png)
 
 ## Keyboard Layout
 
 Select the keyboard layout
 
-![Keymap](@assets/images/aegis-keyboard.png)
+![Keymap](@assets/images/dory-keyboard.png)
 
 :::note
 In Wayland environments, you must manually set the keyboard layout on the installed system.
@@ -220,13 +220,13 @@ In Wayland environments, you must manually set the keyboard layout on the instal
 
 Select the locale
 
-![System Locale](@assets/images/aegis-locale.png)
+![System Locale](@assets/images/dory-locale.png)
 
 ## Partitioning
 
 Select **Use a best-effort default partition layout** or **Configure partitions manually** according to your need:
 
-![Aegis Partitioning](@assets/images/aegis-partitioning.png)
+![Dory Partitioning](@assets/images/dory-partitioning.png)
 
 :::note
 At this time, any choice done on partitioning does not affect your disks or partitions.
@@ -236,11 +236,11 @@ At this time, any choice done on partitioning does not affect your disks or part
 
 By clicking on this mode, you are asked to select among the available disks or devices.
 
-![Aegis Device List](@assets/images/aegis-device-list.png)
+![Dory Device List](@assets/images/dory-device-list.png)
 
 Once you select one, you are asked for a swap device.
 
-![Aegis Swap](@assets/images/aegis-swap.png)
+![Dory Swap](@assets/images/dory-swap.png)
 
 :::note
 **Zram** will be automatically enabled, so for systems with **4GB+ RAM**, you don't actually need to create a Swap partition.
@@ -248,7 +248,7 @@ Once you select one, you are asked for a swap device.
 
 Next, you must choose the filesystem for your root partition where Athena OS will be installed.
 
-![Aegis Filesystem](@assets/images/aegis-filesystem.png)
+![Dory Filesystem](@assets/images/dory-filesystem.png)
 
 :::tip
 **btrfs** is a good choice.
@@ -256,11 +256,11 @@ Next, you must choose the filesystem for your root partition where Athena OS wil
 
 Finally, you can choose to encrypt your root partition.
 
-![Aegis Encrypt](@assets/images/aegis-encrypt-root.png)
+![Dory Encrypt](@assets/images/dory-encrypt-root.png)
 
 If you select **Encrypt ROOT (LUKS)**, and press **Continue**, insert your LUKS passphrase.
 
-![Aegis LUKS](@assets/images/aegis-encrypt-luks.png)
+![Dory LUKS](@assets/images/dory-encrypt-luks.png)
 
 Once confirmed, it will automatically propose a partitioning layout for you.
 
@@ -269,11 +269,11 @@ Once confirmed, it will automatically propose a partitioning layout for you.
 
 By clicking on this mode, you are asked to select among the available disks or devices.
 
-![Aegis Device List](@assets/images/aegis-device-list.png)
+![Dory Device List](@assets/images/dory-device-list.png)
 
 Once you select one, you get the list of the current partition of the disk.
 
-![Aegis Partition List](@assets/images/aegis-partition-manual-list.png)
+![Dory Partition List](@assets/images/dory-partition-manual-list.png)
 
 #### Create boot partition
 
@@ -306,11 +306,11 @@ From the partition list, select an existing partition you want to replace and us
 
 Select the interested partition.
 
-![Aegis Partition Mark](@assets/images/aegis-partition-mark.png)
+![Dory Partition Mark](@assets/images/dory-partition-mark.png)
 
 Press on **Mark For Modification** entry.
 
-![Aegis Partition Mark](@assets/images/aegis-partition-manual-modify.png)
+![Dory Partition Mark](@assets/images/dory-partition-manual-modify.png)
 
 Enter on **Set Mount Point** and type **/efi**. Successively, check on **Mark as bootable partition** and **Mark as ESP partition** flags. In this manner the installer will be aware you are creating an EFI boot partition.
 
@@ -344,11 +344,11 @@ From the partition list, select an existing partition you want to replace and us
 
 Select the interested partition.
 
-![Aegis Partition Mark](@assets/images/aegis-partition-mark.png)
+![Dory Partition Mark](@assets/images/dory-partition-mark.png)
 
 Press on **Mark For Modification** entry.
 
-![Aegis Partition Mark](@assets/images/aegis-partition-manual-modify.png)
+![Dory Partition Mark](@assets/images/dory-partition-manual-modify.png)
 
 Enter on **Set Mount Point** and type **/**. If you want to encrypt the root partition, check on **Encryption (LUKS)** flag.
 
@@ -377,39 +377,39 @@ Once all partitions have been configured, just press on **Confirm and Exit**.
 
 Set the hostname
 
-![System Hostname](@assets/images/aegis-hostname.png)
+![System Hostname](@assets/images/dory-hostname.png)
 
 ## Root password
 
 Set the password for **root** account
 
-![User Password](@assets/images/aegis-root.png)
+![User Password](@assets/images/dory-root.png)
 
 ## Users
 
 Set your user account
-![Users](@assets/images/aegis-users.png)
+![Users](@assets/images/dory-users.png)
 
 By pressing on **Add a new user** you can setup your account.
 
-![Users](@assets/images/aegis-user-info.png)
+![Users](@assets/images/dory-user-info.png)
 
 ## Desktop
 
 Select your favourite environment
-![System Desktop](@assets/images/aegis-desktop.png)
+![System Desktop](@assets/images/dory-desktop.png)
 
 ## Login Manager
 
 Select your [favourite display manager](https://athenaos.org/en/configuration/display-manager/) for login.
 
-![Display Manager](@assets/images/aegis-dm.png)
+![Display Manager](@assets/images/dory-dm.png)
 
 ## Design
 
 Select your favourite design
 
-![System Theme](@assets/images/aegis-design.png)
+![System Theme](@assets/images/dory-design.png)
 
 Choose your favourite one, check out [here](/en/configuration/themes/).
 
@@ -417,18 +417,18 @@ Choose your favourite one, check out [here](/en/configuration/themes/).
 
 Press on **Done** and review your JSON configuration.
 
-![Install Configuration](@assets/images/aegis-config-preview.png)
+![Install Configuration](@assets/images/dory-config-preview.png)
  
 Finally, if you are ready to install, proceed on **Begin Installation**.
 
-![Install System](@assets/images/aegis-installation.png)
+![Install System](@assets/images/dory-installation.png)
  
-During the installation, installation logs are saved in `/tmp/aegis.log`.
+During the installation, installation logs are saved in `/tmp/dory.log`.
 
 If the installation fails, you can generate a link with install logs that can be used for troubleshooting.
 
-![Install Fails](@assets/images/aegis-failed.png)
-![Install Logs](@assets/images/aegis-logs.png)
+![Install Fails](@assets/images/dory-failed.png)
+![Install Logs](@assets/images/dory-logs.png)
 
 Communicate the link to Athena OS Team for getting support.
  

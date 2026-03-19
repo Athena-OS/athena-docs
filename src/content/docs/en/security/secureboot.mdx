@@ -14,13 +14,13 @@ It prevents unauthorized or malicious code-like rootkits or modified bootloaders
 When enabled, the firmware verifies each boot component against a trusted certificate database before loading it.
 If a file is unsigned or tampered with, the firmware blocks it and displays a **Secure Boot violation** error.
 
-Athena Arch supports Secure Boot in UEFI. Its deployment is managed automatically by Aegis installer that will detect if the system is UEFI and will create the proper certificates and sign the boot and kernel files needed for this process.
+Athena Arch supports Secure Boot in UEFI. Its deployment is managed automatically by Dory installer that will detect if the system is UEFI and will create the proper certificates and sign the boot and kernel files needed for this process.
 
 ## Key Enrollment
 
 The ISO Live Environment must be currently run with no Secure Boot. When Athena OS Arch-base is installed, the user must enable Secure Boot from BIOS settings.
 
-At first reboot, it gets a **MOK (Machine Owner Key)** request for enrolling the Secure Boot certificate previously created for you by Aegis.
+At first reboot, it gets a **MOK (Machine Owner Key)** request for enrolling the Secure Boot certificate previously created for you by Dory.
 
 ![MOK](@assets/images/mok.png)
 
