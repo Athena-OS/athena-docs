@@ -116,10 +116,6 @@ export default defineConfig({
               link: "/en/security/devotio"
             },
             {
-              label: "Hardened Kernel",
-              link: "/en/security/hardened",
-            },
-            {
               label: "LUKS Encryption with TPM",
               link: "/en/security/encryption",
             },
@@ -127,6 +123,10 @@ export default defineConfig({
               label: "Mandatory Access Control",
               link: "/en/security/mac"
             },
+            /*{
+              label: "Pentesting-patched Kernel",
+              link: "/en/security/kernel",
+            },*/
             {
               label: "Sandboxing",
               link: "/en/security/sandboxing"

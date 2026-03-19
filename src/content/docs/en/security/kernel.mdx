@@ -1,0 +1,646 @@
+---
+title: Pentesting Kernel
+description: The first Linux kernel engineered specifically for offensive security, combining world-class desktop performance, wireless capability, and a dual-profile security strategy.
+---
+import ImageComponent from "@components/ImageComponent.astro";
+import ThemedImage from '@components/ThemedImage.astro';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import { LinkCard, CardGrid } from '@astrojs/starlight/components';
+import { Card } from '@astrojs/starlight/components';
+import { Badge } from '@astrojs/starlight/components';
+
+:::tip[The first pentesting-engineered kernel]
+The first Linux kernel engineered specifically for offensive security, combining world-class desktop performance, wireless capability, and a dual-profile security strategy.
+:::
+
+Linux Aegis is a pentesting-patched Linux kernel, used in [Athena OS](https://athenaos.org), forked from the [CachyOS kernel](https://github.com/CachyOS/linux-cachyos) and enhanced with patches and configuration choices tailored to the real-world needs of penetration testers, security researchers, and CTF players.
+
+It ships in two variants with distinct purposes:
+
+| Variant | Purpose | Performance | Audience |
+|---|---|---|---|
+| `linux-aegis` | Maximum capability, no restrictions | Full stack - BORE, -O3, 1000Hz | Offensive research, CTF, tool development |
+| `linux-aegis-hardened` | Security-first, professionally operable | BORE + -O3 + 1000Hz; faster than stock distro kernels but measurably slower than linux-aegis due to hardening overhead | Client engagements, sensitive data, paranoid mode |
+
+Both variants share the CachyOS performance foundation - BORE, -O3, 1000Hz - making both significantly faster than any stock pentesting distro kernel. The hardened variant carries additional overhead from its security layer (memory zeroing, hardened usercopy, stack canaries) and does not support sched-ext. It is fast, but not as fast as `linux-aegis`. That is the honest trade-off.
+
+---
+
+## Boot Selection
+
+On every boot, systemd-boot presents both kernels as separate entries:
+
+- **Athena OS (Offensive)**
+- **Athena OS (Hardened)**
+
+Each entry boots its own [Unified Kernel Image (UKI)](/en/security/uki), a single signed EFI executable containing the kernel, initramfs, and kernel command line. Both UKIs are measured into the TPM (if enrolled) and validated by Secure Boot. You get cryptographic verification regardless of which variant you choose.
+
+Switching is a reboot. No reinstallation, no reconfiguration. Boot `linux-aegis-hardened` for the client site, reboot into `linux-aegis` back in the lab. Both kernels are first-class entries, not fallbacks.
+
+:::tip
+See the [Scenario-Based Configuration Guide](/en/security/threat-model#scenario-based-configuration-guide) in the Threat Model for a full table of which variant to use in specific situations.
+:::
+
+---
+
+## Why a Custom Kernel for Pentesting?
+
+### The Problem with Every Other Pentesting Distro
+
+Usually pentesting distributions don't ship a kernel that is genuinely engineered for offensive security work.
+
+The only meaningful kernel-level contribution from the entire category is **Kali's WiFi injection patch**. Pentoo historically had the most sophisticated approach with grsecurity, but grsecurity is no longer freely available and some of its security hardening are already enforced on mainline Linux kernels.
+
+This creates a fundamental contradiction: distributions that exist to run the most demanding security tools ship generic desktop kernels, making no concessions to the actual workloads they carry. Not only do these kernels lack pentesting-specific features - they are compiled with conservative, generic settings that actively leave performance on the table for every tool running on top of them. `hashcat` runs slower. `masscan` moves fewer packets. The desktop lags under concurrent load. This is the result of not having built a kernel that treats performance as a requirement rather than an afterthought.
+
+### What Pentesting Actually Needs from a Kernel
+
+A real pentesting workload looks like this simultaneously:
+
+- `hashcat` consuming the GPU at 100% while the operator works in a terminal
+- `nmap` or `masscan` hammering thousands of ports while Burp Suite intercepts traffic
+- `airodump-ng` capturing frames on multiple WiFi channels
+- A debugger with full access to kernel symbols for exploit development
+- USB WiFi adapters that need monitor mode and injection the moment they are plugged in
+- eBPF-based tracing tools like `bpftrace` and `bcc` for kernel-level analysis
+- Raw memory access tools like LiME for live memory acquisition
+
+None of these workloads are served by a generic Debian or Arch kernel with default settings. A generic kernel throttles throughput, restricts kernel access, and provides no guarantees about WiFi injection support. More critically, a kernel compiled at `-O2` with a 300Hz timer and generic x86-64 code paths leaves tangible performance on the table - performance that directly translates into faster scans, higher cracking throughput, and a more responsive desktop under concurrent load.
+
+### Why Fork CachyOS and Not Vanilla Linux
+
+Forking vanilla Linux from scratch is the wrong approach for a distribution kernel:
+
+- The kernel releases every 6–8 weeks with thousands of commits per cycle
+- Rebasing a fork against each release is a full-time job
+- Security patches need to land immediately - falling behind even one release is unacceptable for a security-focused distro
+- CachyOS has already invested years of work producing a high-quality, actively maintained, performance-focused kernel
+
+CachyOS provides the best available starting point:
+
+- **BORE scheduler** (Burst-Oriented Response Enhancer) - patches EEVDF for burst-aware scheduling; keeps interactive tools like Burp Suite and terminals responsive while `hashcat` or a scanner saturates the CPU in the background
+- **-O3 compiler optimization** - the entire kernel compiled at -O3 instead of the default -O2; faster network paths, faster memory operations, faster context switches - the kernel gets out of the way of tools more quickly
+- **1000Hz timer frequency** - scheduling granularity of 1ms vs 3.3ms at 300Hz; measurably better responsiveness under concurrent load, more accurate timing for latency-sensitive security tools
+- **CPU instruction set optimization** - local builds compile with `-march=native`, targeting the actual instruction set of the build machine and enabling AVX2, AVX-512, and other modern extensions in kernel code paths including network checksum offload, memory operations, and internal crypto; CI artifacts use generic x86-64 for compatibility
+- **sched-ext support** - runtime scheduler switching via BPF; specialize the scheduler for a cracking session, a scanning workload, or general use without rebooting
+- **ADIOS I/O scheduler** - improved block layer throughput; matters for disk-heavy forensics work, wordlist operations in password cracking, and log analysis
+- **LRU_GEN** - modern multi-generational page reclaim; better memory management under pressure when running many tools simultaneously
+- **ntsync module** - Windows NT synchronization primitives for Wine and Proton; relevant for running Windows-native security tools and malware analysis under Wine
+- **Full CachyOS patchset** - extensive performance and compatibility improvements baked into the pre-patched tarball, rebased against every new kernel release
+
+Linux Aegis inherits all of this and adds the pentesting-specific layer on top. When CachyOS rebases against a new kernel release, linux-aegis benefits automatically. Their maintenance work flows upstream to us. This is not a kernel built from performance features bolted onto a security base. It is a performance kernel with security capability engineered in.
+
+---
+
+## Performance Foundation
+
+The performance of linux-aegis is not an afterthought layered on top of a security-focused kernel. It is the **foundation**. Both `linux-aegis` and `linux-aegis-hardened` are built on the same CachyOS performance base - BORE, -O3, 1000Hz, native CPU (local) / generic x86-64 (CI), LRU_GEN. This means both are significantly faster than any stock kernel for the same workloads. However, the hardening layer in `linux-aegis-hardened` adds measurable overhead: memory zeroing on every allocation and free, hardened usercopy bounds checks, stack canaries, refcount validation, and stricter kernel protections all consume CPU cycles. CachyOS themselves describe the hardened variant as carrying "very aggressive hardening that significantly stifles performance." `linux-aegis-hardened` is fast, much faster than any generic pentesting distro kernel, but it is not as fast as `linux-aegis`. That is the honest trade-off of choosing the hardened profile, and it is worth knowing.
+
+### Compiler Optimization: -O3 Throughout
+
+The standard Linux kernel is compiled at `-O2` - a conservative setting that prioritizes code size and compilation speed over runtime performance. CachyOS enables `-O3` throughout the entire kernel build, allowing the compiler to apply additional loop unrolling, aggressive function inlining, and auto-vectorization passes that `-O2` explicitly skips.
+
+For a pentesting workload that makes constant heavy use of the kernel - packet processing, memory copies, filesystem I/O, process scheduling under load - this is a measurable improvement. Network paths are faster. Memory management operations complete sooner. The kernel gets out of the way of userspace tools more quickly.
+
+### Compiler Toolchain: Clang with LTO
+
+CI builds of linux-aegis use **Clang with full LTO** (Link Time Optimization). This is a meaningful choice over GCC with no LTO, and it is worth understanding what it actually buys.
+
+**GCC vs Clang** - in terms of runtime kernel quality, GCC and Clang produce essentially equivalent output on x86-64. Both compilers have been heavily tuned for kernel code and the difference in generated instruction quality is typically under 1% in real workloads. The real advantage of Clang is not performance but capability: it unlocks LTO, kCFI (on the hardened variant), and better sanitizer integration.
+
+**LTO - what it does** - without LTO, each `.c` file is compiled and optimized in isolation. The compiler cannot see across file boundaries when making inlining or dead code decisions. With LTO, the compiler sees the entire codebase at link time and can inline across files, eliminate globally dead code, and propagate constants throughout the whole kernel.
+
+**Thin LTO vs Full LTO** - thin LTO produces a compact summary of each translation unit during compilation and performs cross-module optimizations in parallel at link time. It captures roughly 80-90% of the benefit of full LTO at a fraction of the RAM and build time. Full LTO loads the entire kernel's intermediate representation into memory as a single unit and optimizes globally - maximum quality, but requires 32GB+ RAM and is not viable on low resource CI runners. In practice the performance difference between thin and full LTO is under 1% for kernel workloads, because hot paths are already well-optimized within their own translation units.
+
+**What this means in practice** - CI artifacts are built with Clang + full LTO. Local builds default to GCC with no LTO for simplicity, but can be switched:
+
+```bash
+# Build with Clang + thin LTO
+_use_llvm_lto=thin makepkg -s --skippgpcheck
+
+# Build with Clang + full LTO (requires 32GB+ RAM)
+_use_llvm_lto=full makepkg -s --skippgpcheck
+```
+
+### CPU Instruction Set Targeting
+
+A generic distribution kernel is compiled for the lowest common denominator of x86-64 hardware - `x86-64-v1` - to ensure the binary runs on any machine. This means the compiler cannot emit AVX2, AVX-512, or any modern instruction even when the running CPU supports them fully.
+
+linux-aegis supports several CPU targeting modes controlled by `_processor_opt`:
+
+| Value | Behavior | Use case |
+|---|---|---|
+| *(empty, default)* | Native - equivalent to `-march=native`, detects the build machine's CPU automatically | Best for local personal builds |
+| `native` | Explicit native - same as empty | Same as above, explicit form |
+| `generic` | Generic x86-64 - runs on any x86-64 machine | CI artifacts, distributed packages, multi-machine use |
+| `zen4` | AMD Zen4/Zen5 optimized - `znver4` target | AMD Ryzen 7000/9000 series machines |
+
+CI builds use `generic` to produce artifacts that run on any x86-64 hardware. Local builds default to native, meaning the kernel is compiled for and optimized to the exact CPU in the build machine.
+
+For most pentesting workloads the difference between targeting modes is small - the scheduler, timer frequency, WiFi injection patches, and security profile matter far more than whether the kernel uses AVX2 in its internal memory copy routines. The targeting mode matters most for CPU-bound kernel operations like network checksum computation, bulk memory copies, and internal crypto.
+
+### BORE - Burst-Oriented Response Enhancer
+
+BORE patches the in-kernel EEVDF scheduler to add awareness of task burst behavior. Standard EEVDF treats all tasks equally based on their vruntime. BORE additionally tracks how bursty a task's CPU usage is, and uses that information to make smarter preemption decisions.
+
+In practice this means:
+
+- A packet capture tool that suddenly receives a flood of frames gets serviced aggressively
+- A fuzzer that hits a computationally expensive branch is not throttled by smooth background tasks
+- `hashcat` runs at full sustained throughput in the background while the terminal and GUI stay responsive
+- Burp Suite remains usable while a long-running scan consumes all available CPU on other cores
+
+This is the reason linux-aegis feels fast even with no configuration. BORE is always running, always making better decisions than plain EEVDF, and costs nothing at runtime.
+
+### 1000Hz Timer Frequency
+
+The kernel's timer interrupt frequency determines the minimum scheduling granularity. A 300Hz kernel wakes up to make scheduling decisions at most 300 times per second - every 3.3ms. A 1000Hz kernel does so every 1ms.
+
+For a mixed workload where a terminal, Burp Suite, and a background scanner are competing for CPU time, higher timer frequency means faster context switching, better responsiveness under load, and more accurate data from `perf` and other profiling tools. For timing-sensitive security tools that measure response latencies, the improved granularity produces more reliable measurements. The CPU overhead of 1000Hz is negligible on any hardware capable of running modern pentesting tools.
+
+### LRU_GEN - Modern Page Reclaim
+
+Linux Aegis inherits CachyOS's enabled `LRU_GEN` (Multigenerational LRU), a modern page reclaim algorithm that dramatically improves memory management under pressure. When a machine is simultaneously running a browser, Burp Suite, a scanner, and terminal sessions, memory pressure is common. `LRU_GEN` makes better decisions about which pages to evict, reducing the chance of thrashing and keeping the working set of active tools resident in RAM. On a pentesting laptop with 16GB of RAM running five tools simultaneously, this is one of the more meaningful day-to-day improvements over a stock kernel.
+
+### A Note on vm_swappiness
+
+`vm_swappiness=100` is baked directly into `mm/vmscan.c` under `CONFIG_CACHY`. For pentesting workloads it is good only when zram-backed swap is used. If not, the value must be overridden via sysctl because hashcat GPU buffers, masscan connection state, and large wordlists held in RAM will be aggressively swapped out under memory pressure, degrading tool performance significantly.
+
+`athena-settings` keeps this to `vm.swappiness=100` via sysctl. Without zram (disk-backed swap) lower this further to 10.
+
+### sched-ext - Runtime Scheduler Specialization
+
+The sched-ext framework allows loading a BPF program that completely replaces the CPU scheduling policy at runtime - no reboot required. Linux Aegis ships with full sched-ext support, enabling users to switch between specialized schedulers optimized for specific workload profiles. See the [Scheduler Architecture](#scheduler-architecture) section for details on when each scheduler delivers the best results.
+
+### Performance Impact on Specific Pentesting Workloads
+
+| Workload | Generic Kernel | linux-aegis | Why |
+|---|---|---|---|
+| `hashcat` GPU cracking | Baseline | Faster CPU coordination | -O3, native ISA, better IRQ handling, BORE |
+| `nmap` / `masscan` throughput | Baseline | Higher packet rate | Optimized network paths, 1000Hz scheduling |
+| `airodump-ng` frame capture | Packet drops under load | Fewer drops | Tuned socket buffers, BORE prioritizes capture threads |
+| Burp Suite + background scan | Laggy under load | Responsive | BORE keeps interactive threads prioritized |
+| `bpftrace` / kernel tracing | Restricted or unavailable | Full access | No lockdown, full eBPF, kprobes open |
+| Multiple tools simultaneously | Context switch lag visible | Smooth | 1000Hz + BORE + LRU_GEN |
+| Wine-based Windows tools | Poor timing accuracy | Improved | ntsync, better scheduler integration |
+| USB WiFi adapter plug-in | Manual driver setup | Instant injection ready | Built-in injection patch + regulatory domain udev |
+
+### Performance Beyond Pentesting - A Genuine Daily Driver
+
+Because linux-aegis is built on CachyOS's performance foundation rather than a minimal security kernel with performance bolted on, it performs exceptionally well as a **general-purpose daily driver** and not just during active engagements.
+
+A security professional who uses their machine for development, research, content creation, or gaming between engagements gets a kernel that competes directly with gaming-focused Linux distributions:
+
+- **Desktop responsiveness** that is noticeably faster than any stock distribution kernel
+- **Gaming performance** on par with CachyOS and other performance distributions - BORE is the same scheduler used by CachyOS users for gaming, and the characteristics that help games (low latency, consistent frame pacing, minimal scheduler jitter) are identical to those that help interactive security tools
+- **Faster compilation** when building tools from source - `-O3` optimization affects every kernel operation involved in a build: filesystem I/O, process scheduling, memory allocation
+- **Better battery life on laptops** through more efficient scheduling, reduced unnecessary wakeups at 1000Hz full-tickless mode, and BORE's avoidance of unnecessary preemptions
+- **Smooth video playback and desktop animation** even under background load - the same BORE burst-awareness that keeps a terminal responsive under a port scan keeps a video player stutter-free under a compilation job
+
+The machine is fast all day, every day, not only when running specific security tools. This is a meaningful quality-of-life advantage for professionals who live in their operating system.
+
+---
+
+## Variant Comparison
+
+<Tabs>
+  <TabItem label="linux-aegis (Offensive)">
+
+Designed for maximum capability. Every restriction that blocks legitimate security tooling is removed. This kernel assumes the user is the attacker and their tools need full kernel access.
+
+**Scheduler and Performance:**
+- BORE scheduler as the default, always-available fallback
+- 1000Hz timer frequency for fine-grained scheduling
+- -O3 compiler optimization
+- Native CPU instruction set for local builds (AVX2, AVX-512 where available); generic x86-64 for CI artifacts
+- sched-ext support - switch to `scx_bpfland`, `scx_lavd`, `scx_rusty` at runtime
+- Clang + full LTO in CI builds for improved cross-module code generation
+- TCP BBR congestion control available as a build option (`_tcp_bbr3=yes`) for better VPN and tunnel throughput
+
+**Unrestricted Capability:**
+- `LOCK_DOWN_IN_EFI_SECURE_BOOT` - lockdown active only under EFI Secure Boot; disabled in normal boot
+- `MODULE_SIG_FORCE` disabled - load any kernel module without signing
+- `SECURITY_DMESG_RESTRICT` disabled - unrestricted kernel ring buffer access
+- `/dev/mem` access enabled - raw memory access for forensics tools (LiME, etc.)
+- Full privileged eBPF - `bpftrace`, `bcc`, offensive eBPF tools work without restriction
+- Full `perf` access - no hardware performance counter restrictions (`perf_event_paranoid` unrestricted)
+- kprobes and uprobes fully available - dynamic kernel and userspace tracing
+- `USB_MON` built-in - USB traffic capture without loading extra modules
+- `kptr_restrict=1` - root retains access to `/proc/kallsyms` for kernel exploit development
+
+**WiFi and Network:**
+- Kali's battle-tested global WiFi injection patch applied to `net/mac80211/`
+- CFG80211 and MAC80211 built in (not modules) for driver reliability
+- Wireless regulatory domain correctly applied at boot and on every adapter plug-in event
+- Increased socket buffer sizes for high-rate packet capture (`wireshark`, `tcpdump`, `airodump-ng`)
+
+:::note
+The WiFi injection patch in `net/mac80211/tx.c` uses a NO_ACK approach for injected frames that can interfere with hostapd in AP mode. This is a known limitation documented in the patch itself. For pure injection and capture workflows - airodump-ng, aireplay-ng, mdk4 - it has no practical impact.
+:::
+
+  </TabItem>
+  <TabItem label="linux-aegis-hardened">
+
+Designed for professional engagements where the machine carries client data and operates on hostile networks. BORE performance and pentesting capabilities are preserved, but the kernel defends itself against privilege escalation, unauthorized module loading, and raw memory attacks.
+
+**Performance is not touched by hardening.** Hardening is applied at the memory safety, module integrity, and hardware access layer, not at the scheduler, compiler, or timer layer. The machine runs fast. The machine is also protected.
+
+One genuine exception exists: `linux-aegis-hardened` does not support sched-ext. BORE remains the scheduler - and BORE is an excellent default that handles all pentesting workloads well.
+
+**Scheduler and Performance:**
+- BORE scheduler - same performance profile, no compromise
+- 1000Hz timer frequency
+- -O3 compiler optimization
+- Native CPU instruction set for local builds; generic x86-64 for CI artifacts
+- Clang + full LTO in CI builds
+- kCFI enabled (CI builds) - forward-edge control flow integrity via Clang + LTO
+
+**Security Additions:**
+- `SECURITY_LOCKDOWN_LSM` at `integrity` level - blocks `/dev/mem` and unsigned modules
+- `MODULE_SIG_FORCE` enabled - all modules must be signed with Athena's enrolled MOK key
+- `SECURITY_DMESG_RESTRICT` enabled - kernel logs require privilege
+- `SECURITY_PERF_EVENTS_RESTRICT` enabled - `perf_event_open` restricted to `CAP_PERFMON`; closes CVE-2023-6931, CVE-2022-1729, CVE-2021-29657, CVE-2020-14351
+- `INIT_ON_ALLOC_DEFAULT_ON` - kernel memory zeroed on every allocation
+- `INIT_ON_FREE_DEFAULT_ON` - kernel memory zeroed on every free
+- `BUG_ON_DATA_CORRUPTION` - kernel panics on detected memory corruption rather than continuing
+- `HARDENED_USERCOPY` - bounds checking on every kernel/userspace memory copy
+- `FORTIFY_SOURCE` - compile-time buffer overflow detection throughout the kernel
+- `STACKPROTECTOR_STRONG` - stack canaries on all functions
+- `RANDOMIZE_BASE` (KASLR) - kernel base address randomized on every boot
+- `RANDOMIZE_MEMORY` (KSLR) - kernel memory layout randomized
+- `LEGACY_TIOCSTI` disabled - blocks terminal injection via the TIOCSTI ioctl
+- `/dev/mem` access disabled
+- kptr fully restricted - kernel pointers hidden from all users including root
+- kCFI (Clang + LTO builds) - every indirect function call verified at runtime; kernel panics if call target is hijacked
+
+:::note[perf access]
+Unlike the offensive variant, the hardened kernel restricts `perf_event_open` to `CAP_PERFMON`. This means `hashcat`, `bcc`, and `perf` require elevated privileges. Tools that require it must be run as root or with the `CAP_PERFMON` capability granted explicitly.
+:::
+
+:::caution[sched-ext not supported]
+`linux-aegis-hardened` does **not** support sched-ext. The hardened patchset is incompatible with the sched-ext framework. BORE remains the only available scheduler on this variant.
+:::
+
+  </TabItem>
+</Tabs>
+
+---
+
+## Pentesting Capability Preserved on Hardened
+
+The following capabilities are retained on `linux-aegis-hardened` despite the hardening posture. Each represents a conscious trade-off - the pentesting utility outweighs the marginal additional risk given that the primary threat model is an external attacker who has not yet gained root, not a post-root attacker with unlimited time.
+
+### WiFi injection patch
+
+The Kali WiFi injection patch is applied identically on both profiles. Lockdown `integrity` does not restrict WiFi driver behavior, monitor mode, or frame injection - these operate at the driver and mac80211 layer, entirely below the lockdown boundary. Wireless assessments work identically on hardened: airodump-ng, aireplay-ng, mdk4, hcxdumptool, and hostapd-wpe all function without restriction.
+
+**Risk:** None introduced by retaining this. The patch does not expand kernel attack surface. It modifies transmission behavior in the WiFi stack for frames that the operator is already authorized to inject.
+
+### Full privileged eBPF
+
+Privileged eBPF requires `CAP_SYS_ADMIN` or `CAP_BPF` + `CAP_PERFMON`. Lockdown `integrity` does not restrict it. The lockdown boundary is scoped to preventing persistent kernel modification (unsigned modules, kexec, `/dev/mem`), not to blocking introspection tools that already require root.
+
+Unprivileged eBPF (`BPF_UNPRIV_DEFAULT_OFF`) is disabled on both profiles. Only privileged eBPF is available, and only to root.
+
+**Why it is kept:** `bpftrace` and `bcc` are core pentesting and forensic tools - kernel tracing, dynamic instrumentation, network analysis, and some offensive eBPF workflows all depend on them. Disabling `BPF_SYSCALL` entirely would also break systemd's BPF-based firewall, Cilium, and other system components.
+
+:::danger[Post-root risk]
+This is the most significant capability retained on the hardened profile. A post-root attacker with access to privileged eBPF can:
+- Read arbitrary kernel memory via `bpf_probe_read_kernel`, partially defeating `kptr_restrict=2`
+- Implement a stealthy BPF-based rootkit that hides processes or network connections without loading a kernel module, bypassing module signing enforcement
+- Use BPF maps and ring buffers to exfiltrate kernel data without touching the filesystem
+
+This risk is accepted because `linux-aegis-hardened` is designed to raise the bar against an **external attacker who has not yet gained root**. Against that threat model, privileged eBPF is irrelevant because it requires root the attacker does not have.
+
+If your threat model includes a post-root attacker - for example, a compromised tool running as root that you want to contain - `linux-aegis-hardened` does not fully address that scenario. A VM boundary or a more restrictive configuration would be appropriate.
+:::
+
+### kprobes and uprobes
+
+Dynamic kernel and userspace tracing remain available. Like privileged eBPF, these require root and are not restricted by lockdown `integrity`. They are retained because `pwndbg`, `gef`, `bpftrace`, and kernel exploit development workflows depend on them.
+
+**Risk:** Same category as privileged eBPF - a post-root attacker can use kprobes to hook arbitrary kernel functions. The same threat model scoping applies.
+
+### Module Signing Infrastructure
+
+Users of `linux-aegis-hardened` can sign their own modules - DKMS drivers, LiME, custom out-of-tree modules - using the kernel's built-in signing tooling and the MOK key enrolled during installation:
+
+```bash
+# Sign a module manually using the kernel's sign-file tool
+# and the MOK key created by the Aegis installer
+sudo /usr/lib/linux-<version>/build/scripts/sign-file \
+    sha512 \
+    /etc/secureboot/keys/MOK.key \
+    /etc/secureboot/keys/MOK.crt \
+    /path/to/module.ko
+
+# DKMS modules can be signed automatically post-build
+# by adding a post_build hook to /etc/dkms/post_build.d/
+```
+
+---
+
+## The Patch Stack
+
+Linux Aegis applies patches in a defined order. Patches that modify different kernel subsystems are compatible; patches that touch the same subsystem may conflict and are reviewed carefully before inclusion.
+
+```
+1. CachyOS pre-patched tarball
+   └── CachyOS base patchset already applied
+       (performance fixes, ADIOS I/O scheduler, ntsync, compatibility)
+       Note: unprivileged user namespace sysctl already integrated
+       natively in kernel/fork.c - Kali's patch for this is not applied
+
+2. CachyOS scheduler patch
+   └── 0001-bore-cachy.patch
+       Adds BORE code to kernel/sched/fair.c
+       Adds CONFIG_SCHED_BORE to kernel/sched/Kconfig
+
+3. Kali WiFi injection patches
+   └── kali-wifi-injection.patch
+       Modifies net/mac80211/ for global injection support
+       Different subsystem from BORE - no conflict
+   └── carl9170-promisc.patch
+       AR9170 USB chipset promisc flag fix for aireplay-ng
+   └── intel-iommu-intgpu-off.patch
+       Adds intel_iommu=intgpu_off parameter
+
+4. [linux-aegis-hardened only] CachyOS hardened patch
+   └── 0001-hardened.patch
+       Security hardening patches
+       Different subsystem from BORE and WiFi - no conflict
+       Adds perf_event_paranoid level 3 + CONFIG_SECURITY_PERF_EVENTS_RESTRICT
+   └── platform-keyring-module-sig.patch
+       UEFI DB certs for module signing via platform keyring
+
+5. Config file applied
+   cp ../config .config
+   scripts/config -e CACHY
+   scripts/config -e SCHED_BORE
+   scripts/config --set-val HZ 1000
+   [profile-specific options]
+```
+
+### How Patches and Config Relate
+
+These are two distinct mechanisms that work together:
+
+- **Patches** modify actual C source code before compilation. They add new kernel features, new Kconfig options, or change existing behavior at the code level
+- **Config file** controls which features get compiled in. It answers yes/no questions that the source code exposes
+
+A patch must be applied before its config option can be enabled. For example: `0001-bore-cachy.patch` adds `CONFIG_SCHED_BORE` to the kernel's Kconfig system. Only after the patch is applied can `scripts/config -e SCHED_BORE` have any effect.
+
+### Why Not PREEMPT_RT?
+
+Some distributions ship a PREEMPT_RT kernel variant. The RT patch makes the kernel fully preemptible, giving hard real-time guarantees with microsecond-level timing precision. This sounds appealing but is the wrong trade-off for offensive security work.
+
+**RT trades throughput for latency consistency.** For pentesting, throughput matters far more:
+
+| Tool | Under PREEMPT_RT | Under BORE + sched-ext |
+|---|---|---|
+| `hashcat` GPU cracking | Slower throughput | Maximum throughput |
+| `nmap` / `masscan` | Reduced packet rate | Full rate |
+| `airodump-ng` capture | More consistent timing | Fast with tuned buffers |
+| Interactive terminal | Very responsive | Also very responsive |
+| Simultaneous heavy workloads | RT overhead hurts all | Better overall balance |
+
+BORE with sched-ext delivers better real-world results across every meaningful pentesting workload. RT remains appropriate for pro audio production, industrial control systems, and robotics. For pentesting it is the wrong approach and out of scope.
+
+---
+
+## Pentesting-Specific Kernel Configuration
+
+Beyond patches, linux-aegis explicitly sets kernel configuration options that enable pentesting workflows and enforce security baselines. These are not assumed from the CachyOS base but are set unconditionally in the PKGBUILD because CachyOS cannot be relied upon to maintain them across releases.
+
+:::caution[AppArmor dropped by CachyOS]
+CachyOS silently dropped AppArmor in [issue #574](https://github.com/CachyOS/linux-cachyos/issues/574), which would have broken Athena's entire MAC stack had the PKGBUILD not re-enabled it explicitly.
+:::
+
+### Networking
+
+| Config | Value | Why |
+|---|---|---|
+| `CONFIG_PACKET` | built-in | Raw packet socket - required by tcpdump, scapy, and any tool that captures at the link layer |
+| `CONFIG_TUN` | module | TUN/TAP virtual interfaces - required by OpenVPN, WireGuard userspace, and VPN tooling |
+| `CONFIG_MAC80211_HWSIM` | module | Software-simulated WiFi interfaces for testing injection without physical hardware |
+| `CONFIG_CFG80211_CRDA_SUPPORT` | enabled | Regulatory domain enforcement - ensures correct channel availability on all adapters |
+| `CONFIG_TCP_AO` | enabled | TCP Authentication Option - required for testing modern BGP and routing protocol implementations |
+
+### Security Framework - Both Profiles
+
+| Config | Value | Why |
+|---|---|---|
+| `CONFIG_SECURITY_APPARMOR` | enabled | CachyOS dropped AppArmor in a recent build. Athena OS re-enables it explicitly - AppArmor is a core component of the security stack and cannot be silently absent. |
+| `CONFIG_SECURITY_APPARMOR_HASH` | enabled | AppArmor policy hash - required for policy verification and integrity checking. |
+| `CONFIG_BPF_UNPRIV_DEFAULT_OFF` | enabled | Unprivileged BPF disabled by default. Privileged BPF (`bpftrace`, `bcc`, offensive eBPF) works normally. Reduces kernel attack surface from untrusted userspace. |
+| `CONFIG_USER_NS` | enabled | User namespaces required for Flatpak, rootless Podman, and browser sandbox isolation. |
+| `CONFIG_SECURITY_LOCKDOWN_LSM` | enabled | Lockdown LSM compiled in on both profiles. Offensive: active only under EFI Secure Boot. Hardened: `integrity` level enforced. |
+| `CONFIG_LOCK_DOWN_IN_EFI_SECURE_BOOT` | enabled | Lockdown activates automatically when Secure Boot is active - both profiles. |
+| `CONFIG_STACKPROTECTOR_STRONG` | enabled | Stack canaries on all functions - both profiles. |
+| `CONFIG_STRICT_KERNEL_RWX` | enabled | Kernel code marked read/execute only - blocks post-exploit shellcode injection in kernel space. |
+| `CONFIG_STRICT_MODULE_RWX` | enabled | Module memory marked read/execute only - same protection for loaded modules. |
+| `CONFIG_HARDENED_USERCOPY` | enabled | Bounds checking on every kernel/userspace memory copy - both profiles. |
+| `CONFIG_FORTIFY_SOURCE` | enabled | Compile-time buffer overflow detection throughout the kernel - both profiles. |
+| `CONFIG_SECURITY_YAMA` | enabled | Yama LSM - ptrace scope restrictions. Both profiles enable it; hardened sets stricter scope. |
+
+### Security Framework - Hardened Profile Only
+
+| Config | Value | Why |
+|---|---|---|
+| `CONFIG_SECURITY_PERF_EVENTS_RESTRICT` | enabled | Restricts `perf_event_open` to `CAP_PERFMON`. Closes CVE-2023-6931, CVE-2022-1729, CVE-2021-29657, CVE-2020-14351. Provided by `0001-hardened.patch`. |
+| `CONFIG_SECURITY_DMESG_RESTRICT` | enabled | Kernel ring buffer restricted to privileged users - prevents information leakage that helps build ROP chains. |
+| `CONFIG_MODVERSIONS` | enabled | Module version checking - prevents loading modules built against a different kernel ABI. |
+| `CONFIG_MODULE_SIG` | enabled | Module signature infrastructure compiled in. |
+| `CONFIG_MODULE_SIG_ALL` | enabled | All modules signed at build time with the kernel's signing key. |
+| `CONFIG_MODULE_SIG_SHA512` | enabled | SHA-512 signature algorithm for module signing. |
+| `CONFIG_INTEGRITY` | enabled | Integrity measurement framework - foundation for IMA and platform keyring. |
+| `CONFIG_INTEGRITY_ASYMMETRIC_KEYS` | enabled | Asymmetric key support for integrity verification. |
+| `CONFIG_INTEGRITY_PLATFORM_KEYRING` | enabled | UEFI DB certificates enrolled into the platform keyring for module signature verification. Provided by `platform-keyring-module-sig.patch`. |
+| `CONFIG_IMA` | enabled | Integrity Measurement Architecture - measures files before execution and records hashes. |
+| `CONFIG_IMA_APPRAISE` | enabled | IMA enforcement - can block execution of files that fail integrity checks. |
+| `CONFIG_IMA_ARCH_POLICY` | enabled | Architecture-defined IMA policy applied at boot. |
+| `CONFIG_IMA_KEYRINGS_PERMIT_SIGNED_BY_BUILTIN_OR_SECONDARY` | enabled | Restricts IMA keyrings to keys signed by the builtin or secondary trusted keyring. |
+
+### AppArmor Re-enabled Explicitly
+
+CachyOS [issue #574](https://github.com/CachyOS/linux-cachyos/issues/574) removed AppArmor from their LSM stack. Athena OS re-enables it unconditionally because AppArmor is a core part of the security architecture - the threat model, sandboxing documentation, and user-facing security guidance all depend on it. Rather than trusting the upstream config, the PKGBUILD sets it explicitly and pins the LSM load order:
+
+```bash
+scripts/config \
+    -e SECURITY_APPARMOR \
+    -e SECURITY_APPARMOR_HASH \
+    -e SECURITY_APPARMOR_HASH_DEFAULT \
+    --set-str LSM "landlock,lockdown,yama,integrity,apparmor,bpf"
+```
+
+This ensures AppArmor is always present and always in the correct position in the LSM stack regardless of what CachyOS changes upstream.
+
+---
+
+## Scheduler Architecture
+
+Linux Aegis uses a layered scheduler architecture that provides a reliable, high-performance default with optional runtime specialization for specific workloads:
+
+```
+No scx active (default):
+┌─────────────────────────────────────┐
+│  BORE (EEVDF + burst-awareness)     │  ← Always available, zero config needed
+│  Best general-purpose fallback      │  ← Outperforms plain EEVDF for mixed workloads
+└─────────────────────────────────────┘
+
+scx scheduler loaded:
+┌─────────────────────────────────────┐
+│  scx_bpfland / scx_lavd / etc.      │  ← Completely replaces BORE at runtime
+│  BORE is dormant                    │  ← No reboot required to switch
+└─────────────────────────────────────┘
+
+scx unloaded or crashes:
+┌─────────────────────────────────────┐
+│  BORE resumes automatically         │  ← Safe fallback, system stays stable
+└─────────────────────────────────────┘
+```
+
+**BORE** is a patch to the in-kernel EEVDF scheduler. It is compiled into the kernel, always running, and cannot be removed without rebuilding. It adds burst-aware scheduling that improves desktop responsiveness under mixed workloads.
+
+**sched-ext schedulers** (`scx_bpfland`, `scx_lavd`, `scx_rusty`, etc.) are BPF programs loaded at runtime that **completely replace** the scheduling policy. When one is active, BORE is bypassed entirely. When stopped, BORE resumes. No reboot is required.
+
+### Scheduler Selection by Workload
+
+| Workload | Recommended Scheduler | Reason |
+|---|---|---|
+| General pentesting | BORE (default) | Reliable, zero configuration, good for everything |
+| Burp Suite + terminal + background scan | `scx_bpfland` | Best for mixed interactive + background heavy workloads |
+| GPU cracking + interactive work | `scx_lavd` | Minimum input latency alongside heavy sustained GPU load |
+| High-rate `nmap` / `masscan` | `scx_rusty` | Better multi-core throughput for massively parallel workloads |
+| Active professional engagement | BORE (default) | Predictability and stability over marginal peak performance gains |
+| `linux-aegis-hardened` | BORE only | sched-ext is not supported on the hardened variant |
+
+```bash
+# Install sched-ext schedulers
+sudo pacman -S scx-scheds scx-tools
+
+# Start scx and switch to bpfland for mixed pentesting workloads
+sudo systemctl start scx
+scxctl switch scx_bpfland
+
+# Switch to lavd for a cracking session
+scxctl switch scx_lavd
+
+# Return to BORE
+sudo systemctl stop scx
+
+# Check current state
+cat /sys/kernel/sched_ext/state      # disabled / enabled / disabling
+cat /sys/kernel/sched_ext/root/ops   # name of the currently active scheduler
+```
+
+---
+
+## Security Trade-offs
+
+The two variants represent an explicit, documented choice between two threat models. Neither is universally correct - the right choice depends on context.
+
+### `linux-aegis` - Accepted Trade-offs
+
+| Capability enabled | Security implication | Why it is acceptable |
+|---|---|---|
+| No module signing | Root can load unsigned modules including rootkits | The user IS root; this is intentional by design |
+| Lockdown only under Secure Boot | Raw hardware access, kexec, /dev/mem in normal boot | Tools like LiME, memory forensics require this |
+| dmesg unrestricted | Kernel internals visible to any user | Pentesters need kernel messages for driver debugging |
+| kptr readable by root | Kernel addresses accessible to root | Kernel exploit development requires `/proc/kallsyms` |
+| perf unrestricted | Hardware counters accessible to unprivileged users | hashcat, bcc, bpftrace require this for legitimate workflows |
+
+### `linux-aegis-hardened` - Restrictions and Their Impact
+
+| Restriction | What it blocks | How to work around it |
+|---|---|---|
+| Module signing enforced | Unsigned DKMS modules, custom drivers | Sign with the kernel's `sign-file` tool using the MOK key from `/etc/secureboot/keys/` |
+| Lockdown integrity | `/dev/mem`, unsigned kexec | Live memory acquisition: use LiME with signed module |
+| dmesg restricted | Casual kernel log reading | `journalctl -k` with appropriate privileges |
+| kptr fully hidden | `/proc/kallsyms` from all users | Kernel debugging: use `linux-aegis` for development work |
+| perf restricted to CAP_PERFMON | Unprivileged perf, hashcat perf counters | Run as root or grant `CAP_PERFMON` capability |
+
+### Runtime Flexibility on `linux-aegis`
+
+`linux-aegis` compiles lockdown support in but defaults to none in normal boot. You can tighten it without rebooting (one-way ratchet - cannot be loosened without reboot):
+
+```bash
+# Temporarily enable lockdown on the offensive kernel
+echo integrity > /sys/kernel/security/lockdown
+```
+
+Module signing on `linux-aegis` can be toggled per-boot via kernel parameter (`MODULE_SIG` is compiled in but `MODULE_SIG_FORCE` is not):
+
+```bash
+# In bootloader entry - enforce signing for a specific boot
+module.sig_enforce=1
+```
+
+---
+
+## Relationship to athena-settings
+
+Linux Aegis and `athena-settings` are complementary and independent. The kernel handles what is static and determined at compile/boot time. `athena-settings` handles what is dynamic and changes per session or per engagement.
+
+| Concern | linux-aegis / linux-aegis-hardened | athena-settings |
+|---|---|---|
+| Module signing enforcement | ✅ | ❌ |
+| Memory hardening (KASLR, stack protectors) | ✅ | ❌ |
+| WiFi injection capability | ✅ | ❌ |
+| BORE scheduler availability | ✅ | ❌ |
+| I/O scheduler assignment per drive | ❌ | ✅ udev rules |
+| ZRAM configuration and priority | ❌ | ✅ zram-generator |
+| Sysctl tuning (swappiness, dirty bytes, etc.) | ❌ | ✅ 70-athena-settings.conf |
+| Wireless regulatory domain | ❌ | ✅ iw-set-regdomain |
+| MAC address randomization | ❌ | ✅ NetworkManager config |
+| Firewall and VPN enforcement | ❌ | ✅ athena-engage |
+| Audio power management | ❌ | ✅ udev rules |
+| THP defragmentation policy | ❌ | ✅ tmpfiles.d |
+
+A user running `linux-aegis-hardened` still needs `athena-settings` for ZRAM, sysctl tuning (including the vm_swappiness override from the aggressive default value), the regulatory domain, and engagement-mode networking. The kernel and settings package together form a complete, coherent system - one handling the performance and capability foundation at compile time, the other handling dynamic system tuning and operational security at runtime.
+
+---
+
+## Threat Model Mapping
+
+Each kernel variant maps directly to documented threat models in the Athena OS documentation. This is intentional - the kernel choice is a security decision and should be made consciously.
+
+<CardGrid>
+  <Card title="linux-aegis" icon="seti:shell">
+    **Matches: Offensive Researcher, CTF Player**
+
+    *"You are the threat. Your tools need full kernel capability. You accept that root can do anything, because you are root."*
+
+    Use when:
+    - Local research environment you control
+    - CTF competition
+    - Exploit development and kernel research
+    - Wireless penetration testing
+    - Malware analysis (in a VM on top of this kernel)
+    - Learning and experimentation
+    - Daily driver where you want maximum performance with no restrictions
+  </Card>
+  <Card title="linux-aegis-hardened" icon="seti:lock">
+    **Matches: Paranoid Professional, Daily Driver**
+
+    *"You carry client data. Your machine is a target. You need pentesting capability without sacrificing the machine's own integrity."*
+
+    Use when:
+    - Professional client engagements
+    - Hostile network environments (client sites, conferences)
+    - Machine contains sensitive data
+    - Shared or borrowed hardware
+    - You want to run athena-engage with full effect
+    - Daily driver where security and performance must coexist
+  </Card>
+</CardGrid>
+
+See the [Athena OS Threat Model](/en/security/threat-model) for complete scenario-based guidance.
+
+---
+
+## Name
+
+**Aegis (ἀιγίς)** - in Greek mythology, the divine shield carried by Zeus and Athena. It represented both inviolable protection and the authority to project overwhelming force. The name reflects the dual nature of this kernel: one variant strips away protection to maximize offensive capability, the other applies it fully to protect the operator in the field. Both are aspects of the same shield.
+
+<ImageComponent />
