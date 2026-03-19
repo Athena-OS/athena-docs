@@ -3,7 +3,7 @@ title: Threat Model
 description: Athena OS security posture, what it protects against, what it does not, and how to configure it for your context.
 ---
 
-Athena OS is a penetration testing distribution optimized for offensive security work, which inherently requires capabilities that reduce the operating system's own defensive posture. At the same time, Athena ships one of the most comprehensive security feature sets available in any Linux distribution, including a hardened kernel, measured boot, LUKS encryption with TPM binding, AppArmor MAC, Firejail sandboxing, USB device control, and secure data erasure.
+Athena OS is a penetration testing distribution optimized for offensive security work, which inherently requires capabilities that reduce the operating system's own defensive posture. At the same time, Athena ships one of the most comprehensive security feature sets available in any Linux distribution, including a hardened kernel, measured boot, LUKS encryption with TPM binding, AppArmor MAC, application sandboxing, USB device control, and secure data erasure.
 
 Some of these features are active immediately after installation. Others are installed and ready but require explicit configuration before they provide any protection. This document is precise about that distinction because knowing which protections are genuinely active by default, and which require your intervention, is the foundation of understanding your actual security posture.
 
@@ -25,7 +25,7 @@ Athena OS is designed for people who conduct offensive security work like penetr
 - **Forensic investigators** performing digital forensics and incident response
 - **Power users and developers** who want a fast, well-hardened daily driver with a serious security stack
 
-Athena OS is also a capable general-purpose operating system. Its performance foundation - BORE scheduler, -O3 optimization, 1000Hz timer, native CPU targeting - means it competes directly with gaming and performance-focused distributions on raw desktop speed. Its security stack - Secure Boot, TPM-bound LUKS, AppArmor, Firejail, USBGuard - exceeds what most mainstream distributions ship by default. A developer, researcher, or power user running Athena as a daily driver gets a faster and better-protected system than they would get from most conventional choices.
+Athena OS is also a capable general-purpose operating system. Its performance foundation - BORE scheduler, -O3 optimization, 1000Hz timer, native CPU targeting - means it competes directly with gaming and performance-focused distributions on raw desktop speed. Its security stack - Secure Boot, TPM-bound LUKS, AppArmor, application sandboxing, USBGuard - exceeds what most mainstream distributions ship by default. A developer, researcher, or power user running Athena as a daily driver gets a faster and better-protected system than they would get from most conventional choices.
 
 The most important question to ask before using Athena OS in a professional context is: **are you the attacker or the target right now?** Athena provides the tools and configuration to be effective as the attacker. When you are the target - when your machine holds sensitive data on a hostile network - you activate the defensive features this document describes. Athena supports both modes simultaneously and does not force you to choose one permanently. Most users will occupy both positions depending on context, sometimes within the same day.
 
@@ -91,7 +91,7 @@ Each step in this chain is verified. Tampering with any component - firmware, bo
 | **Kernel** | Core sysctl and udev tuning | Active | [Link](/en/security/settings) |
 | **Process** | AppArmor LSM framework | Active (framework only) | [Link](/en/security/mac) |
 | **Process** | AppArmor per-app enforcement | Partial; most apps unconfined by default | [Link](/en/security/mac) |
-| **Process** | Firejail sandboxing | Installed; invoke manually per-command | [Link](/en/security/sandboxing) |
+| **Process** | Application sandboxing (Firejail / AppArmor + apparmor.d) | Installed; invoke manually per-command | [Link](/en/security/sandboxing) |
 | **Hardware** | USBGuard device control | Installed; service disabled - requires policy + enable | [Link](/en/security/usb) |
 | **Hardware** | BIOS/UEFI password | User-configured | - |
 
@@ -228,27 +228,54 @@ sudo aa-logprof
 
 See: [Mandatory Access Control](/en/security/mac)
 
-#### Firejail - Application sandboxing
+#### Application sandboxing
 
-**Firejail** is installed but provides **no automatic protection**. An application launched normally runs outside any sandbox unless you explicitly wrap it.
+Athena OS ships **Firejail** for wrapper-style process isolation and supports the **apparmor.d** project for MAC-based sandboxing. Neither provides automatic protection — both require explicit invocation or profile activation.
 
-**When to invoke it:**
+**Understanding what Firejail actually protects against**
 
+Firejail is a SUID wrapper sandbox that uses Linux namespaces, seccomp-bpf, and filesystem isolation to restrict what a process can access. It is useful for a specific threat model and counterproductive for others. The Firejail maintainers themselves are explicit about this distinction.
+
+*Where Firejail provides real value:*
+- Isolating applications that have **no internal sandboxing of their own** — document viewers (evince, libreoffice), PDF parsers, media players, unknown binaries, legacy tools
+- Containing **opportunistic attackers** — mass-targeting malware, ransomware, scripts that rely on filesystem access rather than kernel exploits
+- Limiting blast radius of a **compromised tool** that processes untrusted input
+
+*Where Firejail provides limited or no value:*
+- **Browsers (Firefox, Chromium)** — modern browsers implement a broker-architecture sandbox that isolates every renderer process far more thoroughly than Firejail can. Running Firefox inside Firejail adds a weak outer perimeter around a much stronger inner one, and can actively weaken the browser's own sandbox by restricting the syscalls Firefox needs to build its process isolation. Do not run browsers in Firejail with `--no-sandbox` or equivalent options that disable the internal sandbox to satisfy Firejail's requirements — this is strictly worse than running the browser normally.
+- **Sophisticated targeted attackers** — an attacker with a kernel exploit and full code execution bypasses Firejail's namespace-based containment. The Firejail collaborators estimate that with full code execution inside the sandbox, around 80-90% of profiles can be escaped.
+- **As a substitute for AppArmor** — Firejail's SUID binary has accumulated 18 CVEs, most involving privilege escalation. AppArmor profiles achieve similar filesystem isolation without introducing a SUID attack surface.
+
+*The SUID concern:*
+Firejail runs as a SUID binary — it temporarily holds elevated privileges to set up the sandbox. This means Firejail itself is an attack surface. If a vulnerability exists in the sandbox setup code, it can be exploited to gain root from an unprivileged process. 18 CVEs in Firejail's history are directly attributable to this design. This does not make Firejail useless, but it means the security calculus is not simply additive — you are adding protection against one threat while introducing surface for another.
+
+**When to use Firejail:**
 ```bash
-# Open a suspicious PDF from a client system - no network, isolated home
+# Open a suspicious PDF from a client system — no network, isolated home
 firejail --net=none --private evince client-report.pdf
-
-# Run Burp Suite with access only to a project directory
-firejail --private --whitelist=$HOME/burp-projects burpsuite
 
 # Open a document with no network and no real filesystem access
 firejail --net=none --private libreoffice document.docx
 
 # Run an unknown binary with full isolation
 firejail --net=none --private --caps.drop=all ./unknown-binary
+
+# Run a legacy tool that has no internal sandboxing
+firejail --net=none --private --noroot some-old-tool
 ```
 
-The practical rule: anything that touches untrusted content should run through Firejail. Files received from client systems, samples from engagements, unknown binaries, and documents of any kind are candidates. The overhead of adding `firejail --net=none --private` before a command is seconds. The risk of not doing so when a document is weaponized is significant.
+**When to use AppArmor profiles instead:**
+
+For applications you run regularly — browsers, email clients, media players — AppArmor profiles from the [apparmor.d](https://github.com/roddhjav/apparmor.d) project provide comparable filesystem restriction without the SUID attack surface. The apparmor.d project also supports the `userns` AppArmor feature that restricts user namespace creation to confined processes, which means browser internal sandboxing is preserved rather than weakened.
+```bash
+# Install apparmor.d profiles
+yay -S apparmor.d
+
+# Enforce a browser profile that preserves internal sandboxing
+sudo aa-enforce /etc/apparmor.d/firefox
+```
+
+**The practical rule:** anything that touches untrusted content and has no internal sandboxing should run through Firejail. For applications that already have strong internal sandboxing (browsers), enforce an AppArmor profile instead. The overhead of adding `firejail --net=none --private` before a command is seconds. The risk of not doing so when a document is weaponized is significant.
 
 See: [Sandboxing](/en/security/sandboxing)
 
@@ -315,7 +342,7 @@ Athena OS ships tools from upstream repositories without performing additional s
 - Verify checksums and signatures of tools downloaded manually outside the package manager
 - Use official Athena and Arch repositories rather than third-party or AUR sources for sensitive tools
 - Be cautious with Burp Suite BApp extensions and Metasploit modules from unverified authors
-- Run unknown tooling inside a VM or Firejail sandbox rather than directly on the host
+- Run unknown tooling inside a VM or inside a Firejail sandbox (`--net=none --private --caps.drop=all`) rather than directly on the host
 - AppArmor and Firejail limit blast radius when a tool behaves maliciously
 
 ### Kernel exploits
@@ -347,7 +374,7 @@ Identify the profile that best matches your current context: not your general id
 | `linux-aegis-hardened` kernel | **Mandatory** | Reduces kernel attack surface when operating on hostile client networks |
 | USBGuard - configure and enable | **Mandatory** | Client sites and conference venues are environments where physical USB attacks occur in practice |
 | AppArmor - move GUI profiles to enforce | **Mandatory** | Framework is active but most apps are unconfined by default |
-| Firejail for all untrusted file opening | **Strongly recommended** | Any file from a client system should be opened in `--net=none --private` sandbox |
+| Firejail for all untrusted file opening (non-browser) | **Strongly recommended** | Any file from a client system should be opened in `--net=none --private` sandbox; use AppArmor enforce for browsers
 | Screen lock ≤5 minute timeout | **Mandatory** | An unattended machine on a client site is a serious risk |
 | Encrypted engagement notes | **Mandatory** | Engagement notes contain sensitive findings |
 
@@ -560,6 +587,10 @@ Boot `linux-aegis-hardened` when going to a client site, connecting to conferenc
 | Public WiFi (any context) | **`linux-aegis-hardened`** | **Yes** | **Yes** | **Yes** | **Yes** | All GUI apps | All file opening |
 | Shared / borrowed machine | **`linux-aegis-hardened`** | **Yes** | **Yes** | **Yes** | **Yes** | All GUI apps | Everything |
 
+:::note
+"Firejail" in this table refers to Firejail for non-browser applications (document viewers, unknown binaries, evidence files). For browsers, enforce an AppArmor profile instead of wrapping with Firejail.
+:::
+
 ---
 
 ## Leaks
@@ -606,7 +637,7 @@ Items marked **[CRITICAL]** are non-negotiable for professional work.
 - [ ] BIOS/UEFI is protected by a strong password
 - [ ] VPN is configured, tested, and kill switch behavior verified
 - [ ] **USBGuard:** policy has been generated (`usbguard generate-policy`), reviewed, and service enabled (`systemctl enable --now usbguard`)
-- [ ] **AppArmor:** profiles for browsers and document viewers moved to enforce (`aa-enforce /etc/apparmor.d/<profile>`); verify with `aa-status`
+- [ ] **AppArmor:** profiles for browsers and document viewers moved to enforce (`aa-enforce /etc/apparmor.d/<profile>`); verify with `aa-status`. Do not use Firejail as a substitute for browser AppArmor profiles
 - [ ] Screen lock timeout is 5 minutes or less
 - [ ] System is fully updated - kernel, tools, microcode, firmware
 
@@ -627,7 +658,7 @@ Items marked **[CRITICAL]** are non-negotiable for professional work.
 
 - [ ] Store credentials and findings in an encrypted notes application
 - [ ] Never leave the machine unattended without screen lock
-- [ ] Open any file received from client systems in Firejail `--net=none --private` before examining
+- [ ] Open any non-browser file received from client systems in Firejail `--net=none --private` before examining; open in a VM if the file type is high-risk (Office macros, PDFs from unknown sources)
 - [ ] Monitor for unexpected outbound connections from your machine
 - [ ] Do not connect analysis VMs to networks outside the defined engagement scope
 
