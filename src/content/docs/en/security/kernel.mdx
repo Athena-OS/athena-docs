@@ -94,7 +94,7 @@ Linux Aegis inherits all of this and adds the pentesting-specific layer on top. 
 
 ## Performance Foundation
 
-The performance of linux-aegis is not an afterthought layered on top of a security-focused kernel. It is the **foundation**. Both `linux-aegis` and `linux-aegis-hardened` are built on the same CachyOS performance base - BORE, -O3, 1000Hz, native CPU (local) / generic x86-64 (CI), LRU_GEN. This means both are significantly faster than any stock kernel for the same workloads. However, the hardening layer in `linux-aegis-hardened` adds measurable overhead: memory zeroing on every allocation and free, hardened usercopy bounds checks, stack canaries, refcount validation, and stricter kernel protections all consume CPU cycles. CachyOS themselves describe the hardened variant as carrying "very aggressive hardening that significantly stifles performance." `linux-aegis-hardened` is fast, much faster than any generic pentesting distro kernel, but it is not as fast as `linux-aegis`. That is the honest trade-off of choosing the hardened profile, and it is worth knowing.
+The performance of linux-aegis is not an afterthought layered on top of a security-focused kernel. It is the **foundation**. Both `linux-aegis` and `linux-aegis-hardened` are built on the same CachyOS performance base - BORE, -O3, 1000Hz, native CPU (local) / generic x86-64 (CI), LRU_GEN. This means both are significantly faster than any stock kernel for the same workloads. However, the hardening layer in `linux-aegis-hardened` adds measurable overhead: memory zeroing on every allocation and free, hardened usercopy bounds checks, stack canaries, refcount validation, and stricter kernel protections all consume CPU cycles. `linux-aegis-hardened` is fast, much faster than any generic pentesting distro kernel, but it is not as fast as `linux-aegis`. That is the honest trade-off of choosing the hardened profile, and it is worth knowing.
 
 ### Compiler Optimization: -O3 Throughout
 
@@ -365,8 +365,8 @@ Linux Aegis applies patches in a defined order. Patches that modify different ke
    └── intel-iommu-intgpu-off.patch
        Adds intel_iommu=intgpu_off parameter
 
-4. [linux-aegis-hardened only] CachyOS hardened patch
-   └── 0001-hardened.patch
+4. [linux-aegis-hardened only] linux-hardened patch
+   └── hardened.patch
        Security hardening patches
        Different subsystem from BORE and WiFi - no conflict
        Adds perf_event_paranoid level 3 + CONFIG_SECURITY_PERF_EVENTS_RESTRICT
