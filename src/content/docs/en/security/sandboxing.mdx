@@ -1,6 +1,6 @@
 ---
 title: Sandboxing
-description: Lightweight sandboxing with Linux namespaces, seccomp, and capability dropping, perfect for browsers, viewers, and untrusted tools.
+description: Application sandboxing with Firejail and AppArmor - when to use each, their limitations, and how to protect untrusted files and tools without weakening browser security.
 ---
 import ImageComponent from "@components/ImageComponent.astro";
 import ThemedImage from '@components/ThemedImage.astro';
@@ -9,14 +9,31 @@ import { LinkCard, CardGrid } from '@astrojs/starlight/components';
 
 **Firejail** runs applications inside lightweight sandboxes using Linux **namespaces**, **seccomp** syscall filters, **capability dropping**, **filesystem whitelists/blacklists**, and optional **network isolation**.
 
-Athena OS ships Firejail **preinstalled and enabled** where appropriate. This page shows **how to use it** to keep risky apps and files corralled, without blocking pentesting workflows.
+Athena OS ships Firejail **preinstalled**. This page explains when Firejail is the right tool, when AppArmor profiles are more appropriate, and how to use both without accidentally weakening the security of applications that already have strong internal sandboxing.
 
-## What Firejail mitigates
+## When to use Firejail
 
-- **Drive-by exploits & malicious documents:** If a browser/PDF viewer is compromised, the sandbox restricts file access, syscalls, and capabilities.
-- **Credential/data theft:** Whitelist only what the app needs (e.g., Downloads), blocking access to `~/.ssh`, secrets, or project repos by default.
-- **Network abuse:** Run with `--net=none` or bind to a specific interface/namespace to prevent accidental beaconing or lateral movement.
-- **Persistence:** Use ephemeral homes/overlays so malware can't survive app exit.
+Firejail is a wrapper sandbox - it applies isolation around a process from the outside. This makes it effective in specific situations and ineffective in others. Knowing the difference matters.
+
+**Use Firejail for:**
+- **Document viewers and file parsers** - evince, libreoffice, zathura, media players. These have no internal sandboxing and regularly parse untrusted content.
+- **Unknown binaries** - executables from client systems, CTF challenges, or unverified sources.
+- **Legacy or simple CLI tools** - tools with no built-in privilege separation that touch untrusted input.
+- **Containing opportunistic threats** - mass-targeting malware, scripts that rely on filesystem access rather than kernel exploits.
+
+**Do not use Firejail as the primary sandbox for browsers:**
+
+Modern browsers (Firefox, Chromium) implement a broker-architecture sandbox that isolates every renderer process individually - a far stronger model than what any wrapper sandbox can provide. Wrapping Firefox in Firejail puts a weak outer perimeter around a much stronger inner one. More critically, if Firejail's seccomp profile blocks syscalls that Firefox needs to build its own internal sandbox, you end up with *worse* security than running Firefox normally.
+
+Never run a browser with `--no-sandbox` or equivalent options to satisfy Firejail's requirements. Use AppArmor enforce instead - see [AppArmor integration](#apparmor-integration) below.
+
+**The SUID tradeoff:**
+
+Firejail is a SUID binary. It temporarily holds elevated privileges to set up the sandbox. This means Firejail itself is an attack surface - 18 CVEs in its history are directly attributable to this design, most involving privilege escalation. This does not make Firejail useless, but it means it is not a zero-cost addition. For applications you run constantly (browsers, email), AppArmor profiles are a better choice: same filesystem isolation, no SUID surface.
+
+**What Firejail does not protect against:**
+
+A sophisticated attacker with a kernel exploit and full code execution inside the sandbox can escape from the majority of Firejail profiles. Firejail is not a mitigation against targeted kernel-level attacks. It protects against opportunistic threats and limits blast radius - that is genuinely useful, but it is not the same as strong isolation.
 
 ## Quick usage patterns
 
@@ -66,27 +83,19 @@ Firejail uses per-app profiles to standardize restrictions.
 * System profiles live in /etc/firejail/*.profile
 * User overrides: ~/.config/firejail/*.profile
 
-### Example: Firefox sandbox
+### Example: Firefox
 
-Create **/etc/firejail/firefox.athena.profile**:
+Firefox has strong internal sandboxing. Use AppArmor rather than Firejail to avoid interfering with it:
 ```bash
-# Firefox sandbox for Athena
-private-cache
-whitelist ${HOME}/Downloads
-blacklist ${HOME}/.ssh
-read-only /usr
-read-only /etc
-caps.drop all
-seccomp
-protocol unix,inet,inet6
-# Prefer Wayland (less X11 leakage); falls back to X11 if needed
-# x11 filtering options are available; Wayland is recommended
+# Enforce the upstream Firefox AppArmor profile
+sudo aa-enforce /etc/apparmor.d/firefox
+
+# Or use the apparmor.d project profile for more complete coverage
+yay -S apparmor.d
+sudo aa-enforce /etc/apparmor.d/firefox
 ```
 
-Run:
-```shell
-firejail --profile=/etc/firejail/firefox.athena.profile firefox
-```
+If you need additional filesystem restrictions beyond what the profile provides, add a local override in `/etc/apparmor.d/local/firefox` rather than wrapping with Firejail.
 
 ### Example: Burp Suite
 
@@ -147,9 +156,31 @@ What this mix mitigates better than either alone
 * Network-pivot risks: Firejail can disable or fence off networking per-app; AppArmor can still restrict IPC and filesystem escape tricks.
 * X11 abuse: Prefer Wayland; otherwise, combine Firejail's X filters with AppArmor to limit file fallout if X leaks keystrokes/window grabs.
 
-Practical pattern on Athena
-* Browsers, PDF, media viewers → Firejail (enforce) + AppArmor (enforce)
-* New/unknown CLI tools → Firejail with **--private** and minimal whitelists + AppArmor in complain while you learn, then enforce if stable.
+**Practical pattern on Athena:**
+- **Browsers** → AppArmor enforce only (do not wrap with Firejail - it can weaken the browser's internal sandbox)
+- **PDF viewers, media players, document editors** → Firejail + AppArmor enforce
+- **New/unknown CLI tools** → Firejail with `--private` and minimal whitelists + AppArmor in complain while you learn, then enforce if stable
+- **Unknown binaries** → Firejail `--net=none --private --caps.drop=all` or a VM for anything high-risk
+
+## Browsers
+
+Firefox and Chromium implement multi-process sandboxing internally. Every tab renderer runs in a restricted child process with minimal capabilities and a tight seccomp filter. This is a broker-architecture sandbox - the browser coordinates dangerous operations through a privileged parent, and the child processes that parse untrusted content get almost nothing.
+
+Wrapping this in Firejail does not add meaningfully to this protection. What it can do is break it: if Firejail's seccomp profile blocks `unshare`, `clone`, or other syscalls that Firefox needs to create its renderer sandboxes, you get a browser that runs with weaker internal isolation.
+
+The correct approach is an AppArmor profile that enforces filesystem boundaries without interfering with the browser's internal process model. The [apparmor.d](https://github.com/roddhjav/apparmor.d) project maintains well-tested profiles:
+```bash
+# Install apparmor.d
+sudo pacman -S apparmor.d-git
+
+# Enforce the Firefox profile
+sudo aa-enforce /etc/apparmor.d/firefox
+
+# Verify it is enforcing
+aa-status | grep firefox
+```
+
+The apparmor.d Firefox profile also supports the AppArmor `userns` feature, which restricts user namespace creation to confined processes - preserving Firefox's ability to build its own sandbox while preventing an escaped renderer from creating new namespaces.
 
 ## Working with files safely
 * "Open suspicious file":
