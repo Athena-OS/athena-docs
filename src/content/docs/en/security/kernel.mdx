@@ -1,5 +1,5 @@
 ---
-title: Pentesting Kernel
+title: Pentesting-patched Kernel
 description: The first Linux kernel engineered specifically for offensive security, combining world-class desktop performance, wireless capability, and a dual-profile security strategy.
 ---
 import ImageComponent from "@components/ImageComponent.astro";
@@ -593,7 +593,7 @@ Linux Aegis and `athena-settings` are complementary and independent. The kernel 
 | Sysctl tuning (swappiness, dirty bytes, etc.) | ❌ | ✅ 70-athena-settings.conf |
 | Wireless regulatory domain | ❌ | ✅ iw-set-regdomain |
 | MAC address randomization | ❌ | ✅ NetworkManager config |
-| Firewall and VPN enforcement | ❌ | ✅ athena-engage |
+| Firewall and VPN enforcement | ❌ | ✅ user-configured |
 | Audio power management | ❌ | ✅ udev rules |
 | THP defragmentation policy | ❌ | ✅ tmpfiles.d |
 
@@ -630,7 +630,6 @@ Each kernel variant maps directly to documented threat models in the Athena OS d
     - Hostile network environments (client sites, conferences)
     - Machine contains sensitive data
     - Shared or borrowed hardware
-    - You want to run athena-engage with full effect
     - Daily driver where security and performance must coexist
   </Card>
 </CardGrid>
