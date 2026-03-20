@@ -256,22 +256,68 @@ One genuine exception exists: `linux-aegis-hardened` does not support sched-ext.
 - kCFI enabled (CI builds) - forward-edge control flow integrity via Clang + LTO
 
 **Security Additions:**
-- `SECURITY_LOCKDOWN_LSM` at `integrity` level - blocks `/dev/mem` and unsigned modules
+
+*Module and boot integrity:*
+- `SECURITY_LOCKDOWN_LSM` at `integrity` level - blocks `/dev/mem` and unsigned modules, does not block perf, kprobes, uprobes, or ftrace
 - `MODULE_SIG_FORCE` enabled - all modules must be signed with Athena's enrolled MOK key
+- `MSEAL_SYSTEM_MAPPINGS` enabled - system mappings (vdso, vvar) are memory-sealed and cannot be remapped
+- kCFI (Clang + LTO builds) - every indirect function call verified at runtime; kernel panics if call target is hijacked
+
+*Information restriction:*
 - `SECURITY_DMESG_RESTRICT` enabled - kernel logs require privilege
+- kptr fully restricted (`kptr_restrict=2` default) - kernel pointers hidden from all users including root
+- `DEBUG_FS_ALLOW_NONE` - debugfs inaccessible by default; eliminates a significant kernel introspection surface
+- `device_sidechannel_restrict=1` - character and block device timestamps normalized for unprivileged users, preventing timing side-channel attacks
+
+*perf and tracing:*
 - `SECURITY_PERF_EVENTS_RESTRICT` enabled - `perf_event_open` restricted to `CAP_PERFMON`; closes CVE-2023-6931, CVE-2022-1729, CVE-2021-29657, CVE-2020-14351
+
+*Memory safety:*
 - `INIT_ON_ALLOC_DEFAULT_ON` - kernel memory zeroed on every allocation
 - `INIT_ON_FREE_DEFAULT_ON` - kernel memory zeroed on every free
-- `BUG_ON_DATA_CORRUPTION` - kernel panics on detected memory corruption rather than continuing
+- `PAGE_SANITIZE_VERIFY` - verifies pages are actually zeroed after init_on_free, catching write-after-free bugs
+- `SLAB_SANITIZE_VERIFY` - verifies slab objects are actually zeroed after init_on_free
+- `SLAB_CANARY` - randomized canaries at the end of every kernel heap allocation; detects overflows, absorbs small corruptions, provides double-free detection
+- `SLAB_FREELIST_RANDOM` - randomizes freelist order on new slab pages, reducing heap spray predictability
+- `SLAB_FREELIST_HARDENED` - hardens slab freelist metadata against corruption
+- `SLAB_MERGE_DEFAULT` disabled - prevents slab cache merging, reducing heap spray effectiveness
+- `RANDOM_KMALLOC_CACHES` - randomizes which slab cache kmalloc allocations use
+- `BUG_ON_DATA_CORRUPTION` - kernel panics on detected memory corruption rather than continuing; automatically enables `LIST_HARDENED`
+- `KFENCE_BUG_ON_DATA_CORRUPTION` - kernel panics on kfence-detected memory corruption
 - `HARDENED_USERCOPY` - bounds checking on every kernel/userspace memory copy
 - `FORTIFY_SOURCE` - compile-time buffer overflow detection throughout the kernel
 - `STACKPROTECTOR_STRONG` - stack canaries on all functions
+- `PANIC_ON_OOPS` - kernel panics on oops rather than attempting to continue in a potentially corrupted state
+
+*ASLR and address space:*
 - `RANDOMIZE_BASE` (KASLR) - kernel base address randomized on every boot
 - `RANDOMIZE_MEMORY` (KSLR) - kernel memory layout randomized
+- `RANDOMIZE_KSTACK_OFFSET_DEFAULT` - kernel stack offset randomized per syscall, defeating stack-based info leaks
+- `ARCH_MMAP_RND_BITS` set to maximum - strongest available ASLR entropy for mmap base
+- `ARCH_MMAP_RND_COMPAT_BITS` set to maximum - same for compat applications
+- `COMPAT_BRK` disabled - heap randomization enabled
+- `DEFAULT_MMAP_MIN_ADDR=65536` - raised from 4096, reducing NULL pointer dereference attack surface
+
+*Filesystem and namespace:*
 - `LEGACY_TIOCSTI` disabled - blocks terminal injection via the TIOCSTI ioctl
+- `SECURITY_TIOCSTI_RESTRICT` - additionally requires `CAP_SYS_ADMIN` for TIOCSTI
+- `sysctl_protected_symlinks=1`, `sysctl_protected_hardlinks=1` - symlink and hardlink protections enabled by default
+- `sysctl_protected_fifos=2`, `sysctl_protected_regular=2` - FIFO and regular file protections at maximum
+- `OVERLAY_FS_UNPRIVILEGED` disabled - overlayfs not mountable by unprivileged users
+- `USER_NS_UNPRIVILEGED` default `n` - unprivileged user namespace creation disabled by default; overridable at runtime via `kernel.unprivileged_userns_clone`
 - `/dev/mem` access disabled
-- kptr fully restricted - kernel pointers hidden from all users including root
-- kCFI (Clang + LTO builds) - every indirect function call verified at runtime; kernel panics if call target is hijacked
+- `IO_STRICT_DEVMEM` enabled - even root cannot access I/O memory regions actively claimed by a driver via `/dev/mem`
+
+*Networking:*
+- `SYN_COOKIES` enabled by default - TCP SYN flood protection always active
+- `tcp_simult_connect` disabled - removes a TCP weakness allowing source-port-guessing attacks
+
+*BPF and io_uring:*
+- `bpf_jit_harden=2` default - maximum BPF JIT hardening; constants are blinded, limiting JIT spray attacks
+- `io_uring` disabled by default - io_uring has been a prolific kernel exploit surface; disabled unless explicitly re-enabled via sysctl
+
+*USB:*
+- `deny_new_usb` sysctl available - root can block new USB device connections at runtime (`echo 1 > /proc/sys/kernel/deny_new_usb`), useful during sensitive engagements to prevent BadUSB attacks
 
 :::note[perf access]
 Unlike the offensive variant, the hardened kernel restricts `perf_event_open` to `CAP_PERFMON`. This means `hashcat`, `bcc`, and `perf` require elevated privileges. Tools that require it must be run as root or with the `CAP_PERFMON` capability granted explicitly.
@@ -460,6 +506,18 @@ CachyOS silently dropped AppArmor in [issue #574](https://github.com/CachyOS/lin
 | `CONFIG_IMA_APPRAISE` | enabled | IMA enforcement - can block execution of files that fail integrity checks. |
 | `CONFIG_IMA_ARCH_POLICY` | enabled | Architecture-defined IMA policy applied at boot. |
 | `CONFIG_IMA_KEYRINGS_PERMIT_SIGNED_BY_BUILTIN_OR_SECONDARY` | enabled | Restricts IMA keyrings to keys signed by the builtin or secondary trusted keyring. |
+| `CONFIG_IO_STRICT_DEVMEM` | enabled | Filters I/O port access through `/dev/mem` - root cannot access I/O memory regions actively claimed by a driver, blocking hardware-level attacks. |
+| `CONFIG_SLAB_CANARY` | enabled | Randomized canaries at the end of every kernel heap allocation - detects overflows, absorbs small corruptions, provides basic double-free detection. |
+| `CONFIG_SLAB_FREELIST_RANDOM` | enabled | Randomizes freelist order on new slab pages - reduces predictability of heap spray attacks. |
+| `CONFIG_SLAB_FREELIST_HARDENED` | enabled | Hardens slab freelist metadata - makes freelist corruption harder to exploit. |
+| `CONFIG_RANDOM_KMALLOC_CACHES` | enabled | Randomizes slab cache selection for kmalloc - reduces determinism in heap layout attacks. |
+| `CONFIG_PAGE_SANITIZE_VERIFY` | enabled | Verifies pages are zeroed after `init_on_free` - catches write-after-free bugs that init_on_free would otherwise silently mask. |
+| `CONFIG_SLAB_SANITIZE_VERIFY` | enabled | Same verification for slab objects - ensures `init_on_free` actually worked on every allocation. |
+| `CONFIG_PANIC_ON_OOPS` | enabled | Kernel panics on oops rather than continuing in a potentially corrupted state. |
+| `CONFIG_RANDOMIZE_KSTACK_OFFSET_DEFAULT` | enabled | Randomizes kernel stack offset on every syscall - defeats stack-based information leaks. |
+| `CONFIG_MSEAL_SYSTEM_MAPPINGS` | enabled | Memory-seals system mappings (vdso, vvar) - prevents remapping attacks. |
+| `CONFIG_SECURITY_TIOCSTI_RESTRICT` | enabled | Requires `CAP_SYS_ADMIN` for TIOCSTI - additional restriction on top of `LEGACY_TIOCSTI` being disabled. |
+| `CONFIG_OVERLAY_FS_UNPRIVILEGED` | disabled | Overlayfs not mountable by unprivileged users - closes a historically exploited privilege escalation surface. |
 
 ### AppArmor Re-enabled Explicitly
 
