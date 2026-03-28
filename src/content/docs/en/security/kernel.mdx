@@ -221,7 +221,7 @@ Designed for maximum capability. Every restriction that blocks legitimate securi
 - `LOCK_DOWN_IN_EFI_SECURE_BOOT` - lockdown active only under EFI Secure Boot; disabled in normal boot
 - `MODULE_SIG_FORCE` disabled - load any kernel module without signing
 - `SECURITY_DMESG_RESTRICT` disabled - unrestricted kernel ring buffer access
-- `/dev/mem` access enabled - raw memory access for forensics tools (LiME, etc.)
+- `/dev/mem` access filtered (`STRICT_DEVMEM`) - RAM regions accessible; hardware MMIO ranges blocked
 - Full privileged eBPF - `bpftrace`, `bcc`, offensive eBPF tools work without restriction
 - Full `perf` access - no hardware performance counter restrictions (`perf_event_paranoid` unrestricted)
 - kprobes and uprobes fully available - dynamic kernel and userspace tracing
@@ -305,7 +305,7 @@ One genuine exception exists: `linux-aegis-hardened` does not support sched-ext.
 - `sysctl_protected_fifos=2`, `sysctl_protected_regular=2` - FIFO and regular file protections at maximum
 - `OVERLAY_FS_UNPRIVILEGED` disabled - overlayfs not mountable by unprivileged users
 - `USER_NS_UNPRIVILEGED` default `n` - unprivileged user namespace creation disabled by default; overridable at runtime via `kernel.unprivileged_userns_clone`
-- `/dev/mem` access disabled
+- `/dev/mem` device absent entirely (`CONFIG_DEVMEM` not set)
 - `IO_STRICT_DEVMEM` enabled - even root cannot access I/O memory regions actively claimed by a driver via `/dev/mem`
 
 *Networking:*
@@ -314,7 +314,7 @@ One genuine exception exists: `linux-aegis-hardened` does not support sched-ext.
 
 *BPF and io_uring:*
 - `bpf_jit_harden=2` default - maximum BPF JIT hardening; constants are blinded, limiting JIT spray attacks
-- `io_uring` disabled by default - io_uring has been a prolific kernel exploit surface; disabled unless explicitly re-enabled via sysctl
+- `io_uring` compiled in but disabled at runtime by default (`sysctl_io_uring_disabled=1`) - io_uring has been a prolific kernel exploit surface; can be re-enabled via `sysctl kernel.io_uring_disabled=0`
 
 *USB:*
 - `deny_new_usb` sysctl available - root can block new USB device connections at runtime (`echo 1 > /proc/sys/kernel/deny_new_usb`), useful during sensitive engagements to prevent BadUSB attacks
@@ -506,7 +506,7 @@ CachyOS silently dropped AppArmor in [issue #574](https://github.com/CachyOS/lin
 | `CONFIG_IMA_APPRAISE` | enabled | IMA enforcement - can block execution of files that fail integrity checks. |
 | `CONFIG_IMA_ARCH_POLICY` | enabled | Architecture-defined IMA policy applied at boot. |
 | `CONFIG_IMA_KEYRINGS_PERMIT_SIGNED_BY_BUILTIN_OR_SECONDARY` | enabled | Restricts IMA keyrings to keys signed by the builtin or secondary trusted keyring. |
-| `CONFIG_IO_STRICT_DEVMEM` | enabled | Filters I/O port access through `/dev/mem` - root cannot access I/O memory regions actively claimed by a driver, blocking hardware-level attacks. |
+| `CONFIG_IO_STRICT_DEVMEM` | enabled | Filters I/O port access - defense-in-depth alongside `CONFIG_DEVMEM` not being set; ensures even if `/dev/mem` were present, I/O memory regions claimed by drivers cannot be accessed. |
 | `CONFIG_SLAB_CANARY` | enabled | Randomized canaries at the end of every kernel heap allocation - detects overflows, absorbs small corruptions, provides basic double-free detection. |
 | `CONFIG_SLAB_FREELIST_RANDOM` | enabled | Randomizes freelist order on new slab pages - reduces predictability of heap spray attacks. |
 | `CONFIG_SLAB_FREELIST_HARDENED` | enabled | Hardens slab freelist metadata - makes freelist corruption harder to exploit. |
@@ -613,7 +613,7 @@ The two variants represent an explicit, documented choice between two threat mod
 | Restriction | What it blocks | How to work around it |
 |---|---|---|
 | Module signing enforced | Unsigned DKMS modules, custom drivers | Sign with the kernel's `sign-file` tool using the MOK key from `/etc/secureboot/keys/` |
-| Lockdown integrity | `/dev/mem`, unsigned kexec | Live memory acquisition: use LiME with signed module |
+| Lockdown integrity + `CONFIG_DEVMEM` not set | `/dev/mem` absent entirely; kexec disabled | Live memory acquisition: use LiME with signed module |
 | dmesg restricted | Casual kernel log reading | `journalctl -k` with appropriate privileges |
 | kptr fully hidden | `/proc/kallsyms` from all users | Kernel debugging: use `linux-aegis` for development work |
 | perf restricted to CAP_PERFMON | Unprivileged perf, hashcat perf counters | Run as root or grant `CAP_PERFMON` capability |
