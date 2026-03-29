@@ -305,8 +305,8 @@ One genuine exception exists: `linux-aegis-hardened` does not support sched-ext.
 - `sysctl_protected_fifos=2`, `sysctl_protected_regular=2` - FIFO and regular file protections at maximum
 - `OVERLAY_FS_UNPRIVILEGED` disabled - overlayfs not mountable by unprivileged users
 - `USER_NS_UNPRIVILEGED` default `n` - unprivileged user namespace creation disabled by default; overridable at runtime via `kernel.unprivileged_userns_clone`
-- `/dev/mem` device absent entirely (`CONFIG_DEVMEM` not set)
-- `IO_STRICT_DEVMEM` enabled - even root cannot access I/O memory regions actively claimed by a driver via `/dev/mem`
+- `/dev/mem` maximally restricted - RAM regions only (`STRICT_DEVMEM`), I/O port regions blocked even from root (`IO_STRICT_DEVMEM`)
+- `IO_STRICT_DEVMEM` enabled - blocks I/O port region access through `/dev/mem` even from root - stacks on top of `STRICT_DEVMEM` for maximum `/dev/mem` restriction.
 
 *Networking:*
 - `SYN_COOKIES` enabled by default - TCP SYN flood protection always active
@@ -506,7 +506,7 @@ CachyOS silently dropped AppArmor in [issue #574](https://github.com/CachyOS/lin
 | `CONFIG_IMA_APPRAISE` | enabled | IMA enforcement - can block execution of files that fail integrity checks. |
 | `CONFIG_IMA_ARCH_POLICY` | enabled | Architecture-defined IMA policy applied at boot. |
 | `CONFIG_IMA_KEYRINGS_PERMIT_SIGNED_BY_BUILTIN_OR_SECONDARY` | enabled | Restricts IMA keyrings to keys signed by the builtin or secondary trusted keyring. |
-| `CONFIG_IO_STRICT_DEVMEM` | enabled | Filters I/O port access - defense-in-depth alongside `CONFIG_DEVMEM` not being set; ensures even if `/dev/mem` were present, I/O memory regions claimed by drivers cannot be accessed. |
+| `CONFIG_IO_STRICT_DEVMEM` | enabled | Filters I/O port access - defense-in-depth alongside `CONFIG_DEVMEM` not being set; ensures even if `/dev/mem` were present, I/O memory regions claimed by drivers cannot be accessed. | blocks I/O port region access through `/dev/mem` even from root - stacks on top of `STRICT_DEVMEM` for maximum `/dev/mem` restriction.
 | `CONFIG_SLAB_CANARY` | enabled | Randomized canaries at the end of every kernel heap allocation - detects overflows, absorbs small corruptions, provides basic double-free detection. |
 | `CONFIG_SLAB_FREELIST_RANDOM` | enabled | Randomizes freelist order on new slab pages - reduces predictability of heap spray attacks. |
 | `CONFIG_SLAB_FREELIST_HARDENED` | enabled | Hardens slab freelist metadata - makes freelist corruption harder to exploit. |
@@ -613,7 +613,7 @@ The two variants represent an explicit, documented choice between two threat mod
 | Restriction | What it blocks | How to work around it |
 |---|---|---|
 | Module signing enforced | Unsigned DKMS modules, custom drivers | Sign with the kernel's `sign-file` tool using the MOK key from `/etc/secureboot/keys/` |
-| Lockdown integrity + `CONFIG_DEVMEM` not set | `/dev/mem` absent entirely; kexec disabled | Live memory acquisition: use LiME with signed module |
+| Lockdown integrity + `CONFIG_DEVMEM` not set | `/dev/mem` I/O regions, unsigned kexec | Live memory acquisition: use LiME with signed module |
 | dmesg restricted | Casual kernel log reading | `journalctl -k` with appropriate privileges |
 | kptr fully hidden | `/proc/kallsyms` from all users | Kernel debugging: use `linux-aegis` for development work |
 | perf restricted to CAP_PERFMON | Unprivileged perf, hashcat perf counters | Run as root or grant `CAP_PERFMON` capability |
