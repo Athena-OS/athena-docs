@@ -36,7 +36,7 @@ The most important question to ask before using Athena OS in a professional cont
 A fundamental contradiction exists at the heart of every penetration testing distribution: the tools that make you effective as an attacker are the same tools that make your own machine less secure.
 
 - Loading unsigned kernel modules is essential for tools like LiME (live memory acquisition), custom WiFi drivers, and kernel instrumentation, but also allows a compromised root session to install a kernel rootkit
-- `/dev/mem` access is filtered on both profiles; on `linux-aegis-hardened` the device is absent entirely, which blocks memory forensics tools that depend on direct hardware memory access
+- `/dev/mem` is restricted on both profiles; on `linux-aegis-hardened` it is maximally locked down - RAM regions only, I/O port access blocked even from root
 - Disabling `kptr_restrict` is necessary for kernel exploit development, but exposes kernel addresses that help attackers bypass KASLR
 - Running as root is common practice in pentesting workflows, but means any compromise immediately grants full system access
 
@@ -330,7 +330,7 @@ Neither kernel variant fully protects against an attacker with unconstrained phy
 - LUKS encryption protects data at rest even if the drive is physically removed
 - Secure Boot + TPM measured boot detects bootloader/kernel tampering and refuses key release
 - BIOS/UEFI password prevents trivial Secure Boot reconfiguration from UEFI setup
-- The `linux-aegis-hardened` kernel removes `/dev/mem` entirely and filters I/O port access, eliminating direct hardware memory interfaces
+- The `linux-aegis-hardened` kernel maximally restricts `/dev/mem` - RAM regions only via `STRICT_DEVMEM`, with I/O port regions blocked even from root via `IO_STRICT_DEVMEM`
 
 Physical security of the hardware itself remains the user's responsibility. No software stack fully compensates for an attacker with unlimited unobserved physical access.
 
@@ -529,7 +529,7 @@ Both variants share the CachyOS performance foundation - BORE, -O3, 1000Hz, nati
 | -O3 / 1000Hz / native CPU | ◯ | ◯ identical |
 | sched-ext support | ◯ | X not supported |
 | Unsigned module loading | ◯ allowed by default | X blocked by module signing |
-| `/dev/mem` access | ◯ filtered (`STRICT_DEVMEM`) | X filtered (`STRICT_DEVMEM` + `IO_STRICT_DEVMEM`) |
+| `/dev/mem` access | ◯ filtered (`STRICT_DEVMEM`) | ◯ maximally restricted (`STRICT_DEVMEM` + `IO_STRICT_DEVMEM`) |
 | Kernel lockdown | None | `integrity` |
 | `kptr_restrict` | 1 - root sees kallsyms | 2 - all users blocked |
 | `dmesg_restrict` | 0 - any user | 1 - privileged only |
