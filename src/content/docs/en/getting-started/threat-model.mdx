@@ -7,6 +7,10 @@ Athena OS is a penetration testing distribution optimized for offensive security
 
 Some of these features are active immediately after installation. Others are installed and ready but require explicit configuration before they provide any protection. This document is precise about that distinction because knowing which protections are genuinely active by default, and which require your intervention, is the foundation of understanding your actual security posture.
 
+:::note
+The threats, trade-offs, and operational risks described in this document are not specific to Athena OS. They apply to every Linux distribution. Athena documents them explicitly and provides mitigations; most distributions do not.
+:::
+
 :::caution
 Read this document before using Athena OS on a professional engagement or any machine that holds sensitive data.
 :::
@@ -646,6 +650,7 @@ A correctly configured Athena OS installation still exposes information passivel
 | Avahi/mDNS | Local network multicast announcing hostname and services | `systemctl stop avahi-daemon` during engagements |
 | Bluetooth advertising | Local RF environment if Bluetooth is active | `rfkill block bluetooth` when not in use |
 | WiFi probe requests | Local RF environment - announces networks you have connected to | Use monitor mode for assessments; clear WiFi history before sensitive work |
+| debuginfod queries | `https://debuginfod.archlinux.org` - build IDs of every binary you debug | `unset DEBUGINFOD_URLS` before analysis sessions, or `rm /etc/debuginfod/archlinux.urls` |
 
 ### Application-level telemetry
 
@@ -677,6 +682,7 @@ Items marked **[CRITICAL]** are non-negotiable for professional work.
 - [ ] **AppArmor:** profiles for browsers and document viewers moved to enforce (`aa-enforce /etc/apparmor.d/<profile>`); verify with `aa-status`. Do not use Firejail as a substitute for browser AppArmor profiles
 - [ ] Screen lock timeout is 5 minutes or less
 - [ ] System is fully updated - kernel, tools, microcode, firmware
+- [ ] Disable debuginfod before debugging sessions: `unset DEBUGINFOD_URLS`
 
 ### Connecting to the client network
 
