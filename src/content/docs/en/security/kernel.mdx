@@ -19,10 +19,10 @@ It ships in two variants with distinct purposes:
 
 | Variant | Purpose | Performance | Audience |
 |---|---|---|---|
-| `linux-aegis` | Maximum capability, no restrictions | Full stack - BORE, -O3, 1000Hz | Offensive research, CTF, tool development |
-| `linux-aegis-hardened` | Security-first, professionally operable | BORE + -O3 + 1000Hz; faster than stock distro kernels but measurably slower than linux-aegis due to hardening overhead | Client engagements, sensitive data, paranoid mode |
+| `linux-aegis-offensive` | Maximum capability, no restrictions | Full stack - BORE, -O3, 1000Hz | Offensive research, CTF, tool development |
+| `linux-aegis-hardened` | Security-first, professionally operable | BORE + -O3 + 1000Hz; faster than stock distro kernels but measurably slower than linux-aegis-offensive due to hardening overhead | Client engagements, sensitive data, paranoid mode |
 
-Both variants share the CachyOS performance foundation - BORE, -O3, 1000Hz - making both significantly faster than any stock pentesting distro kernel. The hardened variant carries additional overhead from its security layer (memory zeroing, hardened usercopy, stack canaries) and does not support sched-ext. It is fast, but not as fast as `linux-aegis`. That is the honest trade-off.
+Both variants share the CachyOS performance foundation - BORE, -O3, 1000Hz - making both significantly faster than any stock pentesting distro kernel. The hardened variant carries additional overhead from its security layer (memory zeroing, hardened usercopy, stack canaries) and does not support sched-ext. It is fast, but not as fast as ``. That is the honest trade-off.
 
 ---
 
@@ -35,7 +35,7 @@ On every boot, systemd-boot presents both kernels as separate entries:
 
 Each entry boots its own [Unified Kernel Image (UKI)](/en/security/uki), a single signed EFI executable containing the kernel, initramfs, and kernel command line. Both UKIs are measured into the TPM (if enrolled) and validated by Secure Boot. You get cryptographic verification regardless of which variant you choose.
 
-Switching is a reboot. No reinstallation, no reconfiguration. Boot `linux-aegis-hardened` for the client site, reboot into `linux-aegis` back in the lab. Both kernels are first-class entries, not fallbacks.
+Switching is a reboot. No reinstallation, no reconfiguration. Boot `linux-aegis-hardened` for the client site, reboot into `linux-aegis-offensive` back in the lab. Both kernels are first-class entries, not fallbacks.
 
 :::tip
 See the [Scenario-Based Configuration Guide](/en/security/threat-model#scenario-based-configuration-guide) in the Threat Model for a full table of which variant to use in specific situations.
@@ -94,7 +94,7 @@ Linux Aegis inherits all of this and adds the pentesting-specific layer on top. 
 
 ## Performance Foundation
 
-The performance of linux-aegis is not an afterthought layered on top of a security-focused kernel. It is the **foundation**. Both `linux-aegis` and `linux-aegis-hardened` are built on the same CachyOS performance base - BORE, -O3, 1000Hz, native CPU (local) / generic x86-64 (CI), LRU_GEN. This means both are significantly faster than any stock kernel for the same workloads. However, the hardening layer in `linux-aegis-hardened` adds measurable overhead: memory zeroing on every allocation and free, hardened usercopy bounds checks, stack canaries, refcount validation, and stricter kernel protections all consume CPU cycles. `linux-aegis-hardened` is fast, much faster than any generic pentesting distro kernel, but it is not as fast as `linux-aegis`. That is the honest trade-off of choosing the hardened profile, and it is worth knowing.
+The performance of linux-aegis is not an afterthought layered on top of a security-focused kernel. It is the **foundation**. Both `linux-aegis-offensive` and `linux-aegis-hardened` are built on the same CachyOS performance base - BORE, -O3, 1000Hz, native CPU (local) / generic x86-64 (CI), LRU_GEN. This means both are significantly faster than any stock kernel for the same workloads. However, the hardening layer in `linux-aegis-hardened` adds measurable overhead: memory zeroing on every allocation and free, hardened usercopy bounds checks, stack canaries, refcount validation, and stricter kernel protections all consume CPU cycles. `linux-aegis-hardened` is fast, much faster than any generic pentesting distro kernel, but it is not as fast as `linux-aegis-offensive`. That is the honest trade-off of choosing the hardened profile, and it is worth knowing.
 
 ### Compiler Optimization: -O3 Throughout
 
@@ -204,7 +204,7 @@ The machine is fast all day, every day, not only when running specific security 
 ## Variant Comparison
 
 <Tabs>
-  <TabItem label="linux-aegis (Offensive)">
+  <TabItem label="linux-aegis-offensive">
 
 Designed for maximum capability. Every restriction that blocks legitimate security tooling is removed. This kernel assumes the user is the attacker and their tools need full kernel access.
 
@@ -598,7 +598,7 @@ cat /sys/kernel/sched_ext/root/ops   # name of the currently active scheduler
 
 The two variants represent an explicit, documented choice between two threat models. Neither is universally correct - the right choice depends on context.
 
-### `linux-aegis` - Accepted Trade-offs
+### linux-aegis-offensive - Accepted Trade-offs
 
 | Capability enabled | Security implication | Why it is acceptable |
 |---|---|---|
@@ -608,26 +608,26 @@ The two variants represent an explicit, documented choice between two threat mod
 | kptr readable by root | Kernel addresses accessible to root | Kernel exploit development requires `/proc/kallsyms` |
 | perf unrestricted | Hardware counters accessible to unprivileged users | hashcat, bcc, bpftrace require this for legitimate workflows |
 
-### `linux-aegis-hardened` - Restrictions and Their Impact
+### linux-aegis-hardened - Restrictions and Their Impact
 
 | Restriction | What it blocks | How to work around it |
 |---|---|---|
 | Module signing enforced | Unsigned DKMS modules, custom drivers | Sign with the kernel's `sign-file` tool using the MOK key from `/etc/secureboot/keys/` |
 | Lockdown integrity + `CONFIG_DEVMEM` not set | `/dev/mem` I/O regions, unsigned kexec | Live memory acquisition: use LiME with signed module |
 | dmesg restricted | Casual kernel log reading | `journalctl -k` with appropriate privileges |
-| kptr fully hidden | `/proc/kallsyms` from all users | Kernel debugging: use `linux-aegis` for development work |
+| kptr fully hidden | `/proc/kallsyms` from all users | Kernel debugging: use `linux-aegis-offensive` for development work |
 | perf restricted to CAP_PERFMON | Unprivileged perf, hashcat perf counters | Run as root or grant `CAP_PERFMON` capability |
 
-### Runtime Flexibility on `linux-aegis`
+### Runtime Flexibility on linux-aegis-offensive
 
-`linux-aegis` compiles lockdown support in but defaults to none in normal boot. You can tighten it without rebooting (one-way ratchet - cannot be loosened without reboot):
+`linux-aegis-offensive` compiles lockdown support in but defaults to none in normal boot. You can tighten it without rebooting (one-way ratchet - cannot be loosened without reboot):
 
 ```bash
 # Temporarily enable lockdown on the offensive kernel
 echo integrity > /sys/kernel/security/lockdown
 ```
 
-Module signing on `linux-aegis` can be toggled per-boot via kernel parameter (`MODULE_SIG` is compiled in but `MODULE_SIG_FORCE` is not):
+Module signing on `linux-aegis-offensive` can be toggled per-boot via kernel parameter (`MODULE_SIG` is compiled in but `MODULE_SIG_FORCE` is not):
 
 ```bash
 # In bootloader entry - enforce signing for a specific boot
@@ -640,7 +640,7 @@ module.sig_enforce=1
 
 Linux Aegis and `athena-settings` are complementary and independent. The kernel handles what is static and determined at compile/boot time. `athena-settings` handles what is dynamic and changes per session or per engagement.
 
-| Concern | linux-aegis / linux-aegis-hardened | athena-settings |
+| Concern | linux-aegis-offensive / linux-aegis-hardened | athena-settings |
 |---|---|---|
 | Module signing enforcement | ✅ | ❌ |
 | Memory hardening (KASLR, stack protectors) | ✅ | ❌ |
@@ -664,7 +664,7 @@ A user running `linux-aegis-hardened` still needs `athena-settings` for ZRAM, sy
 Each kernel variant maps directly to documented threat models in the Athena OS documentation. This is intentional - the kernel choice is a security decision and should be made consciously.
 
 <CardGrid>
-  <Card title="linux-aegis" icon="seti:shell">
+  <Card title="linux-aegis-offensive" icon="seti:shell">
     **Matches: Offensive Researcher, CTF Player**
 
     *"You are the threat. Your tools need full kernel capability. You accept that root can do anything, because you are root."*
