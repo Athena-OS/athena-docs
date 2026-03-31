@@ -101,7 +101,7 @@ If TPM auto-unlock stops working (for example after a firmware update), boot man
 
 Then you can re-enroll a fresh TPM-bound keyslot matching the new boot measurements:
 ```shell
-sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=7+9+11+14 /dev/nvme0n1p3
+sudo systemd-cryptenroll --tpm2-device=auto --tpm2-public-key=/etc/systemd/tpm2-pcr-initrd-public-key.pem --tpm2-public-key-pcrs=11 --tpm2-pcrs=7+15 /dev/nvme0n1p3
 ```
 You'll be prompted for the LUKS passphrase to authorize adding the new slot.
 
