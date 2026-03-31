@@ -80,7 +80,7 @@ and providing the LUKS password.
 :::note
 PCR11 changes throughout the boot phases to then back to its original value. It means that if you directly add `11` in `--tpm2-pcrs=`, it won't apply autounlock. For this reason Athena signs the TPM measurement policy and will bind the related decryption key to PCR11. So, if you would like to add PCR11 in your command, run it as follows:
 ```shell
-sudo systemd-cryptenroll --tpm2-device=auto --tpm2-public-key=/etc/systemd/tpm2-pcr-initrd-public-key.pem --tpm2-public-key-pcrs=11 --tpm2-pcrs=7+15 /dev/nvme0n1p5
+sudo systemd-cryptenroll --tpm2-device=auto --tpm2-public-key=/etc/systemd/tpm2-pcr-initrd-public-key.pem --tpm2-public-key-pcrs=11 --tpm2-pcrs=7 /dev/nvme0n1p5
 ```
 More details are documented in one of the next sections below.
 :::
@@ -132,7 +132,7 @@ That signature allows the TPM to verify and attest the authenticity of the measu
 
 In practice, this means:
 * The TPM can validate that the UKI itself has not been replaced or tampered with.
-* When a LUKS key slot is sealed to PCR 11 (for example, `--tpm2-public-key-pcrs=11 --tpm2-pcrs=7+15`), it will automatically unlock only if the booted UKI matches the trusted, signed measurement policy.
+* When a LUKS key slot is sealed to PCR 11 (for example, `--tpm2-public-key-pcrs=11 --tpm2-pcrs=7`), it will automatically unlock only if the booted UKI matches the trusted, signed measurement policy.
 * Any unsigned or modified UKI will change PCR11, causing the TPM to refuse to release the decryption key and instead prompt for your passphrase.
 
 Athena OS defines these UKI signing parameters in its build script:
@@ -195,7 +195,7 @@ When that happens:
 
 After you successfully boot with the manual passphrase, you can safely **re-enroll a fresh TPM key binding** to match the new trusted state:
 ```shell
-sudo systemd-cryptenroll --tpm2-device=auto --tpm2-public-key=/etc/systemd/tpm2-pcr-initrd-public-key.pem --tpm2-public-key-pcrs=11 --tpm2-pcrs=7+15 /dev/nvme0n1p5
+sudo systemd-cryptenroll --tpm2-device=auto --tpm2-public-key=/etc/systemd/tpm2-pcr-initrd-public-key.pem --tpm2-public-key-pcrs=11 --tpm2-pcrs=7 /dev/nvme0n1p5
 ```
 
 Keep that passphrase safe. If you lose it and PCRs no longer match, you're locked out.
