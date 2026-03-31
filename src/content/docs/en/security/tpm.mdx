@@ -195,7 +195,7 @@ When that happens:
 
 After you successfully boot with the manual passphrase, you can safely **re-enroll a fresh TPM key binding** to match the new trusted state:
 ```shell
-sudo systemd-cryptenroll --tpm2-device=auto --tpm2-public-key=/etc/systemd/tpm2-pcr-initrd-public-key.pem --tpm2-public-key-pcrs=11 --tpm2-pcrs=7+9+14 /dev/nvme0n1p5
+sudo systemd-cryptenroll --tpm2-device=auto --tpm2-public-key=/etc/systemd/tpm2-pcr-initrd-public-key.pem --tpm2-public-key-pcrs=11 --tpm2-pcrs=7+15 /dev/nvme0n1p5
 ```
 
 Keep that passphrase safe. If you lose it and PCRs no longer match, you're locked out.
