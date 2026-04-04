@@ -44,6 +44,41 @@ html {
   border-color: #2B2E3D !important;
 }
 
+/* ── Search bar ── */
+[data-theme="dark"] button[data-open-modal] {
+  background-color: #1B1E2C !important;
+  border-color: #2B2E3D !important;
+  color: #c0c2c7 !important;
+}
+[data-theme="dark"] button[data-open-modal]:hover {
+  border-color: #F59E0B !important;
+  color: #f5f6f8 !important;
+}
+[data-theme="dark"] button[data-open-modal] > kbd {
+  background-color: #0D0F1C !important;
+  color: #888b96 !important;
+}
+[data-theme="light"] button[data-open-modal]:hover {
+  border-color: #D97706 !important;
+}
+
+/* ── Search modal ── */
+[data-theme="dark"] dialog {
+  background-color: #0D0F1C !important;
+  border-color: #2B2E3D !important;
+}
+[data-theme="dark"] #starlight__search {
+  --pagefind-ui-background: #131628;
+  --pagefind-ui-border: #2B2E3D;
+}
+[data-theme="dark"] #starlight__search .pagefind-ui__result-title:not(:where(.pagefind-ui__result-nested *)),
+[data-theme="dark"] #starlight__search .pagefind-ui__result-nested {
+  background-color: #1B1E2C !important;
+}
+[data-theme="dark"] #starlight__search .pagefind-ui__result-tags {
+  background-color: #131628 !important;
+}
+
 :root[data-theme="light"] {
   --overlay-blurple: rgba(217, 119, 6, 0.12);
   --sl-color-text-accent: #92400E;

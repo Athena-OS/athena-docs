@@ -3,7 +3,7 @@ import { Tabs, TabItem } from "@astrojs/starlight/components";
 import { data } from "src/javascript/downloadsData";
 ---
 
-<div class="max-w-[46rem] mx-auto pb-20" id="downloads">
+<div class="max-w-184 mx-auto pb-20" id="downloads">
   <Tabs>
     {
       data.map((platform) => (
@@ -103,17 +103,17 @@ import { data } from "src/javascript/downloadsData";
       data.forEach(
         (element: { download_type: string; download_count: string }) => {
           let countElement = document.getElementById(
-            "count-" + element.download_type
+            "count-" + element.download_type,
           );
           if (countElement)
             countElement.innerHTML = `Downloaded ${element.download_count} times`;
-        }
+        },
       );
 
       data.forEach(
         (element: { download_type: string; download_count: string }) => {
           const button = document.getElementById(
-            `download-` + element.download_type
+            `download-` + element.download_type,
           );
           let isRequestInProgress = false;
           button?.addEventListener("click", function (e) {
@@ -138,7 +138,7 @@ import { data } from "src/javascript/downloadsData";
               }, 3000);
             }
           });
-        }
+        },
       );
     }
   });
@@ -161,7 +161,7 @@ import { data } from "src/javascript/downloadsData";
   }
   :global([data-theme="dark"]) .card {
     background-color: #131628;
-    border-color: #2B2E3D;
+    border-color: #2b2e3d;
   }
   .card:nth-child(4n + 1) {
     --sl-card-border: var(--sl-color-orange);
@@ -216,7 +216,9 @@ import { data } from "src/javascript/downloadsData";
     background: var(--sl-color-text-accent);
     color: var(--sl-color-bg);
     font-weight: 700;
-    transition: opacity 0.2s, transform 0.2s;
+    transition:
+      opacity 0.2s,
+      transform 0.2s;
   }
   .download-btn:hover {
     opacity: 0.88;
