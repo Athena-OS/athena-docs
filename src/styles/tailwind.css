@@ -81,7 +81,7 @@ html {
 
 :root[data-theme="light"] {
   --overlay-blurple: rgba(217, 119, 6, 0.12);
-  --sl-color-text-accent: #92400E;
+  --sl-color-text-accent: #D97706;
 }
 
 @font-face {
