@@ -12,6 +12,10 @@
 html {
   scroll-behavior: smooth;
 }
+
+.site-title {
+  gap: 0.4rem !important;
+}
 :root {
   .tablist-wrapper:where(.astro-esqgolmp) {
     height: 100%;
@@ -24,7 +28,25 @@ html {
 }
 
 :root[data-theme="light"] {
-  --sl-hue-accent: 45;
+  --sl-hue-accent: 35;
+}
+
+:root[data-theme="dark"] {
+  --overlay-blurple: rgba(16, 18, 26, 0.5);
+  --sl-color-bg: #111425;
+  --sl-color-bg-nav: #0D0F1C;
+  --sl-color-bg-sidebar: #131628;
+  --sl-color-text-accent: #F59E0B;
+}
+
+[data-theme="dark"] .card {
+  background-color: #131628 !important;
+  border-color: #2B2E3D !important;
+}
+
+:root[data-theme="light"] {
+  --overlay-blurple: rgba(217, 119, 6, 0.12);
+  --sl-color-text-accent: #92400E;
 }
 
 @font-face {
@@ -123,9 +145,9 @@ iframe[id="stackblitz-iframe"] {
   content: "";
   width: 25px;
   height: 25px;
-  background-color: #23272e;
+  background-color: #1B1E2C;
   border-radius: 25px;
-  border: 3px solid #343841;
+  border: 3px solid #2B2E3D;
   position: absolute;
   top: -15px;
   left: calc(50% - 12px);
@@ -317,7 +339,7 @@ iframe[id="stackblitz-iframe"] {
 .swiper-mobile-container .time {
   display: inline-block;
   padding: 4px 6px;
-  background: #23272e;
+  background: #1B1E2C;
 }
 .swiper-mobile-container .timeline {
   width: 100%;
@@ -336,7 +358,7 @@ iframe[id="stackblitz-iframe"] {
   text-align: center;
 }
 .swiper-mobile-container .flag {
-  background: #23272e;
+  background: #1B1E2C;
   z-index: 2;
 }
 .swiper-mobile-container .direction-l .flag:before,
@@ -349,9 +371,9 @@ iframe[id="stackblitz-iframe"] {
   width: 1em;
   height: 1em;
   margin-left: -0.5rem;
-  background: #23272e;
+  background: #1B1E2C;
   border-radius: 10px;
-  border: 2px solid #343841;
+  border: 2px solid #2B2E3D;
 }
 .swiper-mobile-container .direction-l .flag:after,
 .swiper-mobile-container .direction-r .flag:after {
@@ -363,7 +385,7 @@ iframe[id="stackblitz-iframe"] {
   width: 0;
   margin-left: -8px;
   border: solid transparent;
-  border-bottom-color: #23272e;
+  border-bottom-color: #1B1E2C;
   border-width: 8px;
   pointer-events: none;
 }
@@ -376,7 +398,7 @@ iframe[id="stackblitz-iframe"] {
   width: 1em;
   height: 1em;
   margin-left: -0.5rem;
-  background: #23272e;
+  background: #1B1E2C;
   border-radius: 10px;
   border: 2px solid darkorange;
 }
@@ -416,9 +438,9 @@ iframe[id="stackblitz-iframe"] {
   justify-content: flex-start;
   width: 2em;
   max-height: 12em;
-  background: #17181c5b; /* Semi-transparent white background */
-  backdrop-filter: blur(10px); /* Apply blur effect */
-  border: 1px solid #353841; /* Optional: add a subtle border for more glassy effect */
+  background: rgba(16, 18, 26, 0.36);
+  backdrop-filter: blur(10px);
+  border: 1px solid #2B2E3D;
   transform: scale(0);
   border-radius: 50%;
   animation: scale-in 0.3s ease-out forwards,
@@ -477,7 +499,7 @@ iframe[id="stackblitz-iframe"] {
     }
 
     &::-webkit-scrollbar-thumb {
-      background: #353841;
+      background: #2B2E3D;
       border-radius: 0.2em;
     }
   }
@@ -526,5 +548,5 @@ iframe[id="stackblitz-iframe"] {
 }
 
 #dataRows tr:is([data-theme="dark"] *) {
-  border-color: #353841;
+  border-color: #2B2E3D;
 }

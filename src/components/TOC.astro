@@ -78,7 +78,7 @@ const logoData = [
   }
 
   :global([data-theme="dark"]) .logo-grid {
-    background: #202127 !important;
+    background: #1B1E2C !important;
   }
   .logo-grid a {
     display: flex;
@@ -92,7 +92,7 @@ const logoData = [
   }
 
   :global([data-theme="dark"]) .logo-grid a {
-    border: 2px solid #161618;
+    border: 2px solid #131628;
   }
   .logo-grid a:hover {
     transform: scale(1.05);
@@ -120,7 +120,7 @@ const logoData = [
   }
 
   :global([data-theme="dark"]) .logo-grid a:hover {
-    background-color: white;
+    background-color: #f5f6f8;
   }
   .first-column {
     grid-column: span 2;
@@ -153,11 +153,14 @@ const logoData = [
   }
 
   :global([data-theme="dark"]) .athena-card {
-    background-color: #161618;
-    border: 2px solid #161618;
+    background-color: #131628;
+    border: 2px solid #1B1E2C;
   }
-  .athena-card:hover {
-    border: 2px solid #747bff;
+  :global([data-theme="light"]) .athena-card:hover {
+    border: 2px solid #D97706;
+  }
+  :global([data-theme="dark"]) .athena-card:hover {
+    border: 2px solid #F59E0B;
   }
   .athena-card:hover img {
     transform: scale(1.75);
@@ -182,8 +185,14 @@ const logoData = [
   :global([data-theme="dark"]) .athena-card {
     color: #fffff5db;
   }
-  .athena-card .heading {
-    background-image: linear-gradient(120deg, #b047ff 16%, #9499ff, #9499ff);
+  :global([data-theme="light"]) .athena-card .heading {
+    background-image: linear-gradient(120deg, #92400E 16%, #D97706, #F59E0B);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  :global([data-theme="dark"]) .athena-card .heading {
+    background-image: linear-gradient(120deg, #EA580C 16%, #F59E0B, #FCD34D);
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;

@@ -26,7 +26,7 @@ import { data } from "src/javascript/downloadsData";
                     <p class="w-full" />
 
                     <div class="max-w-full mx-auto">
-                      <div class="rounded-md p-4 relative border dark:border-gray-600">
+                      <div class="rounded-md p-4 relative border border-gray-300 dark:border-[#2B2E3D]">
                         <p class="text-sm font-mono block mb-8">
                           <code
                             id="code-block"
@@ -39,7 +39,7 @@ import { data } from "src/javascript/downloadsData";
                         {/*  @ts-expect-error */}
                         <button
                           onclick={`copyToClipboard(event, '${platform.hashes[hashType]}')`}
-                          class="absolute bottom-2 right-1/2 translate-x-1/2 bg-blue-500 text-white text-xs px-3 py-1.5 rounded hover:bg-blue-600 cursor-pointer"
+                          class="copy-btn absolute bottom-2 right-1/2 translate-x-1/2 text-xs px-3 py-1.5 rounded cursor-pointer"
                         >
                           Copy
                         </button>
@@ -52,8 +52,7 @@ import { data } from "src/javascript/downloadsData";
 
             <a
               href={platform.downloadURL}
-              style=" background: var(--sl-color-text-accent); color: var(--sl-color-black);"
-              class="mt-8 inline-flex items-center gap-x-2 rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 w-fit no-underline"
+              class="download-btn mt-8 inline-flex items-center gap-x-2 rounded-md px-3.5 py-2.5 text-sm font-semibold shadow-sm w-fit no-underline"
               id={`download-${platform.id}`}
             >
               {platform.buttonLabel}
@@ -160,6 +159,10 @@ import { data } from "src/javascript/downloadsData";
     flex-direction: column;
     gap: clamp(0.5rem, calc(0.125rem + 1vw), 1rem);
   }
+  :global([data-theme="dark"]) .card {
+    background-color: #131628;
+    border-color: #2B2E3D;
+  }
   .card:nth-child(4n + 1) {
     --sl-card-border: var(--sl-color-orange);
     --sl-card-bg: var(--sl-color-orange-low);
@@ -197,6 +200,27 @@ import { data } from "src/javascript/downloadsData";
       calc(0.5rem + 1vw),
       var(--sl-text-body)
     );
+  }
+
+  .copy-btn {
+    background: var(--sl-color-text-accent);
+    color: var(--sl-color-bg);
+    font-weight: 600;
+    transition: opacity 0.2s;
+  }
+  .copy-btn:hover {
+    opacity: 0.85;
+  }
+
+  .download-btn {
+    background: var(--sl-color-text-accent);
+    color: var(--sl-color-bg);
+    font-weight: 700;
+    transition: opacity 0.2s, transform 0.2s;
+  }
+  .download-btn:hover {
+    opacity: 0.88;
+    transform: translateY(-1px);
   }
 
   starlight-tab-item {
