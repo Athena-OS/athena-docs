@@ -11,13 +11,13 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/netlify": "^7.0.2",
-    "@astrojs/starlight": "^0.38.1",
+    "@astrojs/netlify": "^7.0.8",
+    "@astrojs/starlight": "^0.39.2",
     "@astrojs/starlight-tailwind": "^5.0.0",
     "@babel/runtime": "^7.27.6",
     "@fontsource/inter": "^5.1.0",
     "@tailwindcss/vite": "^4.0.7",
-    "astro": "^6.0.4",
+    "astro": "^6.3.1",
     "hast-util-select": "^6.0.3",
     "rehype": "^13.0.2",
     "sharp": "^0.34.2",
