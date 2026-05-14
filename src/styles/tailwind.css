@@ -597,7 +597,7 @@ iframe[id="stackblitz-iframe"] {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #2B2E3D;
+  background: #F59E0B;
   border-radius: 999px;
 }
 
@@ -611,6 +611,6 @@ iframe[id="stackblitz-iframe"] {
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: #2B2E3D transparent;
+  scrollbar-color: #F59E0B transparent;
 }
 
