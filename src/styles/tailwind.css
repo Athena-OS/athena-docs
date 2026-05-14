@@ -585,3 +585,32 @@ iframe[id="stackblitz-iframe"] {
 #dataRows tr:is([data-theme="dark"] *) {
   border-color: #2B2E3D;
 }
+
+/* ── Global scrollbar ── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2B2E3D;
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #F59E0B;
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #2B2E3D transparent;
+}
+
