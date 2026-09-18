@@ -1,0 +1,7 @@
+allowBuilds:
+  esbuild: true
+  sharp: true
+minimumReleaseAgeExclude:
+  - '@astrojs/starlight@0.42.2'
+overrides:
+  sharp: ^0.35.4
