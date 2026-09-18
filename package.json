@@ -14,7 +14,7 @@
     "@astrojs/netlify": "^8.2.6",
     "@astrojs/starlight": "^0.42.2",
     "@astrojs/starlight-tailwind": "^5.0.0",
-    "@babel/runtime": "^7.27.6",
+    "@babel/runtime": "^8.0.5",
     "@fontsource/inter": "^5.1.0",
     "@tailwindcss/vite": "^4.3.3",
     "astro": "^7.3.3",
