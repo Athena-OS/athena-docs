@@ -159,7 +159,7 @@ export default defineConfig({
           items: [
             // Each item here is one entry in the navigation menu.
             { label: "Athena Welcome", link: "/en/resources/athena-welcome" },
-            { label: "Cybersecurity AI", link: "/en/resources/cai" },
+            // { label: "Cybersecurity AI", link: "/en/resources/cai" },
             {
               label: "Hack The Box Toolkit",
               link: "/en/resources/htb-toolkit",
