@@ -16,7 +16,7 @@
     "@astrojs/starlight-tailwind": "^5.0.0",
     "@babel/runtime": "^8.0.8",
     "@fontsource/inter": "^5.1.0",
-    "@tailwindcss/vite": "^4.3.3",
+    "@tailwindcss/vite": "^4.3.4",
     "astro": "^7.4.2",
     "hast-util-select": "^6.0.3",
     "rehype": "^13.0.2",
