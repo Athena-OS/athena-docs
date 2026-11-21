@@ -179,8 +179,8 @@ importers:
         specifier: ^5.0.0
         version: 5.0.0(@astrojs/starlight@0.42.10(astro@7.4.7(@netlify/blobs@11.1.8(supports-color@7.2.0))(@types/node@24.19.2)(esbuild@0.28.1)(jiti@2.7.0)(yaml@2.9.1))(supports-color@7.2.0)(typescript@5.9.3))(tailwindcss@4.3.5)
       '@babel/runtime':
-        specifier: ^8.1.0
-        version: 8.1.0
+        specifier: ^8.1.2
+        version: 8.1.2
       '@fontsource/inter':
         specifier: ^5.3.0
         version: 5.3.0
@@ -347,8 +347,8 @@ packages:
     engines: {node: '>=6.0.0'}
     hasBin: true
 
-  '@babel/runtime@8.1.0':
-    resolution: {integrity: sha512-MQye/pU7gzXerMzlhScFNH1u4Je6rR8cqJWSgAfD+rIwbbtwG8tVDegoI7sWfcXkfVRW09G7vk2vjxGIuKFfwg==}
+  '@babel/runtime@8.1.2':
+    resolution: {integrity: sha512-Ay6HdEKZJAeGs6KKJ/ezCK5ssjFmkvUiR0TEGv/B1abyjLWrQ2RU+M507Ppk0NikhvVFhlEFC1/rHfCiYqSUcw==}
 
   '@babel/types@7.29.11':
     resolution: {integrity: sha512-WCsemW40Cpc6gouC1SrY6PBaZ+oLRlEVY9XBvZBI7il/HyUrb2nJ505wE1MHEFyDZNnrWDEuy4jL50WVHfTTSQ==}
@@ -4300,7 +4300,7 @@ snapshots:
     dependencies:
       '@babel/types': 7.29.11
 
-  '@babel/runtime@8.1.0': {}
+  '@babel/runtime@8.1.2': {}
 
   '@babel/types@7.29.11':
     dependencies:
