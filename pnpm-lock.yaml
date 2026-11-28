@@ -191,8 +191,8 @@ importers:
         specifier: ^7.4.7
         version: 7.4.7(@netlify/blobs@11.1.8(supports-color@7.2.0))(@types/node@24.19.2)(esbuild@0.28.1)(jiti@2.7.0)(yaml@2.9.1)
       hast-util-select:
-        specifier: ^6.0.4
-        version: 6.0.4
+        specifier: ^6.0.5
+        version: 6.0.5
       rehype:
         specifier: ^13.0.2
         version: 13.0.2
@@ -2510,8 +2510,8 @@ packages:
   hast-util-phrasing@3.0.1:
     resolution: {integrity: sha512-6h60VfI3uBQUxHqTyMymMZnEbNl1XmEGtOxxKYL7stY2o601COo62AWAYBQR9lZbYXYSBoxag8UpPRXK+9fqSQ==}
 
-  hast-util-select@6.0.4:
-    resolution: {integrity: sha512-RqGS1ZgI0MwxLaKLDxjprynNzINEkRHY2i8ln4DDjgv9ZhcYVIHN9rlpiYsqtFwrgpYU361SyWDQcGNIBVu3lw==}
+  hast-util-select@6.0.5:
+    resolution: {integrity: sha512-ZNcxJY2vHcvXLL4Puy/EGP69IzL5XkWZyyri4UFA2fCCy1i3GIr426zXwnIcAvam8abQerGQML6m8F9F2A3e2g==}
 
   hast-util-to-html@9.0.6:
     resolution: {integrity: sha512-1SZUxCN3TtJAE7e2BQN2MBHsoZ1gnmi9GoCP5Di59CSWptIezSAW09yDZyVbanb78V9eCwrKqdQsjtfVTxYHWA==}
@@ -4255,7 +4255,7 @@ snapshots:
       astro-expressive-code: 0.44.3(astro@7.4.7(@netlify/blobs@11.1.8(supports-color@7.2.0))(@types/node@24.19.2)(esbuild@0.28.1)(jiti@2.7.0)(yaml@2.9.1))
       bcp-47: 2.1.2
       hast-util-format: 1.1.0
-      hast-util-select: 6.0.4
+      hast-util-select: 6.0.5
       hast-util-to-html: 9.0.6
       hast-util-to-string: 3.0.1
       hastscript: 9.0.3
@@ -4544,7 +4544,7 @@ snapshots:
   '@expressive-code/core@0.44.3':
     dependencies:
       '@ctrl/tinycolor': 4.2.2
-      hast-util-select: 6.0.4
+      hast-util-select: 6.0.5
       hast-util-to-html: 9.0.6
       hast-util-to-text: 4.0.3
       hastscript: 9.0.3
@@ -6586,7 +6586,7 @@ snapshots:
       hast-util-is-body-ok-link: 3.0.1
       hast-util-is-element: 3.0.0
 
-  hast-util-select@6.0.4:
+  hast-util-select@6.0.5:
     dependencies:
       '@types/hast': 3.0.5
       '@types/unist': 3.0.3
